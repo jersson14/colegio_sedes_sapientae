@@ -15,6 +15,6 @@ Este sistema se creo con fines de investigación y posteriores mejoras.
 
 ### AQUITECTURA O PATRON
 
-Se utilizo el patro MVC (Modelo, Vista y Controlador)
+Se utilizo el patron MVC (Modelo, Vista y Controlador)
 
 
