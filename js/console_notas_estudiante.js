@@ -2,7 +2,7 @@
 var tbl_notas;
 function listar_notas_todos(){
   let año = document.getElementById('select_año').value;
-    let grado = document.getElementById('select_aula').value;
+    let id = document.getElementById('txtprincipalid').value;
 
     tbl_notas = $("#tabla_notas").DataTable({
       "ordering":false,   
@@ -17,11 +17,11 @@ function listar_notas_todos(){
       "async": false ,
       "processing": true,
       "ajax":{
-          "url":"../controller/notas/controlador_listar_matriculas_filtro_profesor.php",
+          "url":"../controller/notas/controlador_listar_matriculas_filtro_alumnos.php",
           type:'POST',
           data:{
             año:año,
-            grado:grado
+            id:id
         }
       },
       dom: 'Bfrtip', 
@@ -82,11 +82,10 @@ function listar_notas_todos(){
         {"data":"año_escolar"},
         
 
-      {"defaultContent":"<button class='insert btn btn-success btn-sm' title='Insertar notas'><i class='fas fa-pen'></i> Insertar notas estudiante</button>"},
 
 
 
-        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar notas por bimestre</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar notas'><i class='fa fa-eye'></i> Visualizar notas por bimestre</button>&nbsp;<button style='margin-right: 10px;' class='print btn btn-warning btn-sm' title='Imprimir libretas'><i class='fa fa-print'></i> Imprimir Libreta</button>"},
         
     ],
 
@@ -110,11 +109,11 @@ $(document).on('click', '.insert', function(event) {
   // Aquí va la lógica para manejar el clic cuando el botón no está deshabilitado
   console.log('Botón clickeado');
 });
+function Cargar_Año(){
+  let id = document.getElementById('txtprincipalid').value;
 
-function Cargar_Select_Grado(){
-    let id = document.getElementById('txtprincipalid').value;
     $.ajax({
-      "url":"../controller/notas/controlador_cargar_select_grado_profesor.php",
+      "url":"../controller/notas/controlador_cargar_años_por_estudiante.php",
       type:'POST',
       data:{
         id:id
@@ -124,31 +123,7 @@ function Cargar_Select_Grado(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+ data[i][2]+"</option>";    
-        }
-        $('#select_aula').html(cadena);
-        $('#select_aula_editar').html(cadena);
-
-      }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
-        $('#select_aula').html(cadena);
-        $('#select_aula_editar').html(cadena);
-
-      }
-    })
-  }
-
-//TRAENDO DATOS DE LA SECCION
-function Cargar_Año(){
-    $.ajax({
-      "url":"../controller/matricula/controlador_cargar_select_año.php",
-      type:'POST',
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-      if(data.length>0){
-        let cadena ="";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" || "+data[i][4]+" || "+data[i][5]+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
@@ -158,29 +133,14 @@ function Cargar_Año(){
     })
   }
 
-  function Cargar_Bimestre(){
-    $.ajax({
-      "url":"../controller/notas/controlador_cargar_periodos.php",
-      type:'POST',
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-      if(data.length>0){
-        let cadena ="";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
-        }
-          document.getElementById('select_bimestre').innerHTML=cadena;
-      }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
-        document.getElementById('select_bimestre').innerHTML=cadena;
-      }
-    })
-  }
+
+//TRAENDO DATOS DE LA SECCION
+
 
 
   function Cargar_Bimestre_cargados(id){
     $.ajax({
-      "url":"../controller/notas/controlador_cargar_periodos_cargados_estudiante.php",
+      "url":"../controller/notas/controlador_cargar_periodos_cargados_profesor.php",
       type:'POST',
       data:{
         id:id
@@ -450,7 +410,7 @@ function listar_notas_ver() {
       "processing": true,
       "serverSide": false,
       "ajax": {
-          "url": "../controller/notas/controlador_listar_criterios_notas_mostrar_profesor.php",
+          "url": "../controller/notas/controlador_listar_criterios_notas_mostrar_estudiante.php",
           type: 'POST',
           data: function(d) {
               d.matri = matri;

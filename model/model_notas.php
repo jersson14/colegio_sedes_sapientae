@@ -37,9 +37,39 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_alumnos_notas_alumnos($año,$id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_NOTAS_AULA_AÑO_ALUMNOS(?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$año);
+            $query->bindParam(2,$id);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         public function Cargar_aulas_por_docente($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_AULAS_POR_DOCENTE(?)";
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$id);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+
+        public function Cargar_año_por_estudiante($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_CARGAR_AÑO_POR_ESTUDIANTE(?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->execute();
@@ -133,6 +163,27 @@
             // Devuelve el arreglo (siempre retornará un array, aunque esté vacío)
             return $arreglo;
         }
+        public function Cargar_bimestres_estudiante($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_CARGAR_SELECT_BIMESTRE_ESTUDIANTE(?)";
+            $query  = $c->prepare($sql);
+            $query->bindParam(1, $id);
+            $query->execute();
+            $resultado = $query->fetchAll();
+        
+            // Inicializa la variable $arreglo como un array vacío
+            $arreglo = [];
+        
+            // Si hay resultados, se agregan al arreglo
+            foreach($resultado as $resp){
+                $arreglo[] = $resp;
+            }
+        
+            conexionBD::cerrar_conexion();
+        
+            // Devuelve el arreglo (siempre retornará un array, aunque esté vacío)
+            return $arreglo;
+        }
         public function Listar_criterios_nota($nivel,$aula){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_CRITERIOS_NOTA(?,?)";
@@ -182,9 +233,9 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Listar_criterios_nota_mostrar_profesor($matri,$bime,$id){
+        public function Listar_criterios_nota_mostrar_estudiante($matri,$bime,$id){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PROFESOR(?,?,?)";
+            $sql = "CALL SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_ESTUDIANTE(?,?,?)";
             $arreglo = array();
             $query  = $c->prepare($sql);
             $query->bindParam(1,$matri);

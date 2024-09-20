@@ -114,7 +114,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     }
     ?>
     <!-- /.navbar -->
-    <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>" hidden>
+    <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>">
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -716,14 +716,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Notas
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Tareas
@@ -743,14 +743,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reporte_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Reporte de Asistencias
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario_edtudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Horario
@@ -770,7 +770,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Pago de Pensiones
@@ -1213,73 +1213,91 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-md-12">
           <div class="card card-success">
             <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-id-card""></i><b> DATOS DE MATRICULA</b></h3>
-              <div class=" card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                  </button>
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-id-card"></i><b> DATOS DE MATRICULA</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="card-body" style="display: block;">
-            <div class="table-responsive" style="text-align:center">
-              <div class="card-body">
-                <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                    <tr>
-                      <th style="text-align:center">Nro.</th>
-                      <th style="text-align:center">Grado</th>
-                      <th style="text-align:center">Curso - Docente</th>
-                      <th style="text-align:center">Tema o Tarea</th>
-                      <th style="text-align:center">Descripción</th>
-                      <th style="text-align:center">Fecha de publicación</th>
-                      <th style="text-align:center">Fecha de entrega</th>
-                      <th style="text-align:center">Archivo de Tarea</th>
-                      <th style="text-align:center">Estado</th>
-                    </tr>
-                  </thead>
-                </table>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="overflow-x: hidden;"> <!-- Evita desbordamiento horizontal -->
+                <div class="row">
+                  <div class="col-md-3 form-group">
+                    <label for="">Año académico (matriculado):</label>
+                    <input type="text" class="form-control" id="txt_añoaca" value="2024" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Nivel académico:</label>
+                    <input type="text" class="form-control" id="txt_nivelaca" value="PRIMARIA" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Grado:</label>
+                    <input type="text" class="form-control" id="txt_grado" value="QUINTO GRADO" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Sección:</label>
+                    <input type="text" class="form-control" id="txt_seccion" value="UNICO" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Tipo de alumno:</label>
+                    <input type="text" class="form-control" id="txttipo_alum" value="NUEVO" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Procedencia:</label>
+                    <input type="text" class="form-control" id="txt_proceden" value="CUSCO" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Ultimo Pago de Pensión:</label>
+                    <input type="text" class="form-control" id="txt_ultimo_pago" Value="15 de agosto de 2024" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Mes siguiente de pago:</label>
+                    <input type="text" class="form-control" id="txt_mes_siguiente" value="SETIEMBRE" disabled>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
 
-      <div class="col-md-12">
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-              </button>
+        <div class="col-md-12">
+          <div class="card card-warning">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="card-body" style="display: block;">
-            <div class="table-responsive" style="text-align:center">
-              <div class="card-body">
-                <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                    <tr>
-                      <th style="text-align:center">Nro.</th>
-                      <th style="text-align:center">Grado</th>
-                      <th style="text-align:center">Curso - Docente</th>
-                      <th style="text-align:center">Tema o Tarea</th>
-                      <th style="text-align:center">Descripción</th>
-                      <th style="text-align:center">Fecha de publicación</th>
-                      <th style="text-align:center">Fecha de entrega</th>
-                      <th style="text-align:center">Archivo de Tarea</th>
-                      <th style="text-align:center">Estado</th>
-                    </tr>
-                  </thead>
-                </table>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="text-align:center">
+                <div class="card-body">
+                  <table id="tabla_tarea_menu_estudiante" class="table table-striped table-bordered" style="width:100%">
+                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                      <tr>
+                        <th style="text-align:center">Nro.</th>
+                        <th style="text-align:center">Grado</th>
+                        <th style="text-align:center">Curso - Docente</th>
+                        <th style="text-align:center">Tema o Tarea</th>
+                        <th style="text-align:center">Descripción</th>
+                        <th style="text-align:center">Fecha de publicación</th>
+                        <th style="text-align:center">Fecha de entrega</th>
+                        <th style="text-align:center">Archivo de Tarea</th>
+                        <th style="text-align:center">Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
   </div>
 
   <!-- /.content -->
@@ -1403,6 +1421,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
 
 
 
@@ -1411,7 +1430,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   $(document).ready(function() {
     listar_comunicado_dash();
     listar_tareas_menu();
-
+    listar_tareas_menu_estudiante();
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {
       mostrarSiguienteModal();
