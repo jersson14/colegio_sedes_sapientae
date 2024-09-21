@@ -4,7 +4,9 @@ $MAH = new Modelo_aula_Horas();
 
 if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = htmlspecialchars($_POST['id'], ENT_QUOTES, 'UTF-8');
-    $consulta = $MAH->Listar_componentes_horas_aulas($id);
+    $año = htmlspecialchars($_POST['año'], ENT_QUOTES, 'UTF-8');
+
+    $consulta = $MAH->Listar_componentes_horas_aulas($id,$año);
 
     if ($consulta && is_array($consulta)) {
         echo json_encode([

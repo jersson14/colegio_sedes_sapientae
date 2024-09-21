@@ -174,7 +174,7 @@ $('#tabla_aula_horas').on('click', '.editar', function() {
   }
 
   $("#modal_editar").modal('show');
-  listar_horas_aula_editar(data.id_aula);
+  listar_horas_aula_editar(data.id_aula,data.año_escolar);
 
 
   document.getElementById('select_año_editar').value = data.id_año_academico;
@@ -192,7 +192,7 @@ $('#tabla_aula_horas').on('click', '.editar', function() {
 });
 
 var tbl_traer_datos;
-function listar_horas_aula_editar(id) {
+function listar_horas_aula_editar(id,año) {
 
   tbl_traer_datos = $("#tabla_aula_hora_editar").DataTable({
     "ordering": false,
@@ -208,7 +208,7 @@ function listar_horas_aula_editar(id) {
    "ajax": {
     "url": "../controller/aula_horas/controlador_listar_hora_aula_id2.php",
     "type": 'POST',
-    "data": { id: id },
+    "data": { id: id ,año:año},
     "dataSrc": function (json) {
         console.log("Respuesta del servidor:", json); // Añade esta línea para depuración
         return json.aaData;
@@ -580,7 +580,7 @@ $('#tabla_aula_horas').on('click','.delete',function(){
 
 //MOSTRAR
   var tbl_vistas;
-  function listar_horas(id) {
+  function listar_horas(id,año) {
     tbl_vistas = $("#tabla_vistahoras").DataTable({
         "ordering": false,
         "bLengthChange": true,
@@ -596,7 +596,7 @@ $('#tabla_aula_horas').on('click','.delete',function(){
         "ajax": {
             "url": "../controller/aula_horas/controlador_listar_hora_aula_id.php",
             type: 'POST',
-            data: { id: id },
+            data: { id: id ,año:año},
         },
         "columns": [
             { "data": "id_hora" },
@@ -625,7 +625,7 @@ $('#tabla_aula_horas').on('click','.mostrar',function(){
 $("#modal_ver_horas").modal('show');
   document.getElementById('lb_titulo').innerHTML="<b>AÑO ACADEMICO: "+data.año_escolar+"</b>";
   document.getElementById('lb_titulo2').innerHTML="<b>AULA O GRADO: "+data.Grado+"</b>";
-  listar_horas(data.id_aula);
+  listar_horas(data.id_aula,data.año_escolar);
 
 })
 

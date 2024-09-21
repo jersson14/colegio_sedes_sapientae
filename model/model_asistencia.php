@@ -89,13 +89,14 @@
             conexionBD::cerrar_conexion();
         }
 
-        public function Listar_alumnos_totales($mes,$aula){
+        public function Listar_alumnos_totales($año,$mes,$aula){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES(?,?)";
+            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES(?,?,?)";
             $arreglo = array();
             $query  = $c->prepare($sql);
-            $query->bindParam(1,$mes);
-            $query->bindParam(2,$aula);
+            $query->bindParam(1,$año);
+            $query->bindParam(2,$mes);
+            $query->bindParam(3,$aula);
 
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -105,13 +106,50 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Listar_alumnos_totales_dia($mes,$aula){
+        public function Listar_alumnos_totales_estu($id,$año,$mes,$aula){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES_DIA(?,?)";
+            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES_ESTUDIANTE(?,?,?,?)";
             $arreglo = array();
             $query  = $c->prepare($sql);
-            $query->bindParam(1,$mes);
-            $query->bindParam(2,$aula);
+            $query->bindParam(1,$id);
+            $query->bindParam(2,$año);
+            $query->bindParam(3,$mes);
+            $query->bindParam(4,$aula);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_alumnos_totales_dia($año,$mes,$aula){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES_DIA(?,?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$año);
+            $query->bindParam(2,$mes);
+            $query->bindParam(3,$aula);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_alumnos_totales_dia_estudiante($id,$año,$mes,$aula){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_ALUMNOS_TOTALES_DIA_ESTUDIANTE(?,?,?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$id);
+            $query->bindParam(2,$año);
+            $query->bindParam(3,$mes);
+            $query->bindParam(4,$aula);
 
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);

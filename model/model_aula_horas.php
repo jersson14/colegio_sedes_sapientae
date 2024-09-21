@@ -17,13 +17,15 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Listar_componentes_horas_aulas($id) {
+        public function Listar_componentes_horas_aulas($id,$año) {
             $c = conexionBD::conexionPDO();
             $arreglo = [];
         
-            $sql = "CALL SP_CARGAR_HORA_ID_AULA(?)";
+            $sql = "CALL SP_CARGAR_HORA_ID_AULA(?,?)";
             $query = $c->prepare($sql);
             $query->bindParam(1, $id, PDO::PARAM_INT);
+            $query->bindParam(2, $año, PDO::PARAM_INT);
+
             $query->execute();
         
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -34,11 +36,13 @@
             return $arreglo;
         }
         
-        public function Cargar_Id_aula($id){
+        public function Cargar_Id_aula($id,$año){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_CARGAR_HORA_ID_AULA(?)";
+            $sql = "CALL SP_CARGAR_HORA_ID_AULA(?,?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
+            $query->bindParam(2,$año);
+
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
             foreach($resultado as $resp){
