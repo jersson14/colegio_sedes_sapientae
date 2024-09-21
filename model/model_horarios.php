@@ -3,8 +3,6 @@
 
     class Modelo_Horarios extends conexionBD{
         
-
-
         public function Listar_Horarios(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_HORARIOS()";
@@ -20,9 +18,9 @@
         }
         public function Listar_componentes_horas_aulas($id) {
             $c = conexionBD::conexionPDO();
-            $arreglo = [];
         
             $sql = "CALL SP_CARGAR_HORA_ID_AULA(?)";
+            $arreglo = array();
             $query = $c->prepare($sql);
             $query->bindParam(1, $id, PDO::PARAM_INT);
             $query->execute();
@@ -38,6 +36,8 @@
         public function Listar_pagos_por_id_estudiante_todo($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_TODO(?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->execute();
@@ -51,8 +51,10 @@
         public function Listar_pagos_por_id_estudiante($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE(?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
-            $query->bindParam(1,$id);
+            $query->bindParam(1, $id);
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
             foreach($resultado as $resp){
@@ -61,6 +63,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        
         public function Listar_pagos_por_id_estudiante_año($id,$año){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_AÑO(?,?)";
