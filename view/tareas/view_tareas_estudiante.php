@@ -30,7 +30,7 @@
                     <div class="table-responsive" style="text-align:left">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-3 form-group">
+                                <div class="col-2 form-group">
                                     <label for="">Año académico<b style="color:red">(*)</b>:</label>
                                     <select class="form-control" id="select_año" style="width:100%" disabled>
                                     </select>
@@ -42,12 +42,16 @@
                                 </div>
                                 <div class="col-3 form-group">
                                     <label for="">Curso<b style="color:red">(*)</b>:</label>
-                                    <select class="form-control" id="select_curso" style="width:100%" >
+                                    <select class="form-control" id="select_curso" style="width:100%">
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-3" role="document">
+                                <div class="col-12 col-md-2" role="document">
                                     <label for="">&nbsp;</label><br>
-                                    <button onclick="listar_tareas_id()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar estudiantes</button>
+                                    <button onclick="listar_tareas_id()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar tareas</button>
+                                </div>
+                                <div class="col-12 col-md-2" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_tareas()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
                                 </div>
                             </div>
                         </div>
@@ -65,6 +69,7 @@
                                         <th style="text-align:center">Fecha de publicación</th>
                                         <th style="text-align:center">Fecha de entrega</th>
                                         <th style="text-align:center">Archivo de Tarea</th>
+                                        <th style="text-align:center">Archivo enviado</th>
                                         <th style="text-align:center">Estado</th>
                                         <th style="text-align:center">Acción</th>
                                     </tr>
@@ -98,39 +103,41 @@
                         </div>
                         <div class="col-12 form-group">
                             <label for="">Grado<b style="color:red">(*)</b>:</label>
-                            <select class="form-control" id="select_grado_envio" style="width:100%">
+                            <input type="text" id="txt_id_detalle_tarea" hidden>
+                            <select class="form-control" id="select_grado_envio" style="width:100%" disabled>
                             </select>
                         </div>
                         <div class="col-12 form-group">
                             <label for="">Curso<b style="color:red">(*)</b>:</label>
-                            <select class="form-control" id="select_curso_en" style="width:100%">
+                            <select class="form-control" id="select_curso_en" style="width:100%" disabled>
                             </select>
                         </div>
                         <div class="col-6 form-group">
                             <label for="">Tema<b style="color:red">(*)</b>:</label>
-                            <input type="text" class="form-control" id="txt_tema">
+                            <input type="text" class="form-control" id="txt_tema" disabled>
                         </div>
                         <div class="col-6 form-group">
                             <label for="">Fecha entrega<b style="color:red">(*)</b>:</label>
-                            <input type="datetime-local" class="form-control" id="txt_fecha_entre">
+                            <input type="datetime-local" class="form-control" id="txt_fecha_entre_envio" disabled>
                         </div>
                         <div class="col-12 form-group">
                             <label for="">Descripción<b style="color:red">(*)</b>:</label>
-                            <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;"></textarea>
+                            <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;" disabled></textarea>
                         </div>
                         <div class="col-12 form-group">
-                            <label for="txt_archivo">Adjuntar Archivo<b style="color:red">(*)</b>:</label>
+                            <label for="txt_archivo">Adjuntar Archivo de tarea realizada<b style="color:red">(*)</b>:</label>
                             <form id="form_tramite" method="post" enctype="multipart/form-data">
+                                <input type="text" id="archivo_actual" hidden>
                                 <input class="form-control" type="file" id="txt_archivo" name="archivos[]" multiple><br>
                                 <ul id="fileList" class="file-list"></ul>
-                                <label for="txt_archivo" style="font-size:16px;color:red">La carga de archivos solo se permiten pdf, docs, excel e imagenes.</label>
+                                <label for="txt_archivo" style="font-size:16px;color:red">La carga de archivos solo se permiten pdf, docs, excel e imágenes.</label>
                             </form>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-                    <button type="button" class="btn btn-success" onclick="Registrar_Tarea()"><i class="fas fa-save"></i> Registrar</button>
+                    <button type="button" class="btn btn-success" onclick="Registrar_Tarea_envio()"><i class="fas fa-upload"></i> Enviar tarea</button>
                 </div>
             </div>
         </div>
@@ -139,6 +146,117 @@
 
 
 
+    <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1FA0E0;">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>MODIFICAR ARCHIVOS DE TAREA</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group" style="color:red">
+                            <h6><b>Campos Obligatorios (*)</b></h6>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Grado<b style="color:red">(*)</b>:</label>
+                            <input type="text" id="txt_id_detalle_tarea_editar" hidden>
+                            <select class="form-control" id="select_grado_editar" style="width:100%" disabled>
+                            </select>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Curso<b style="color:red">(*)</b>:</label>
+                            <select class="form-control" id="select_curso_editar" style="width:100%" disabled>
+                            </select>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Tema<b style="color:red">(*)</b>:</label>
+                            <input type="text" class="form-control" id="txt_tema_editar" disabled>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Fecha entrega<b style="color:red">(*)</b>:</label>
+                            <input type="datetime-local" class="form-control" id="txt_fecha_entre_envio_editar" disabled>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+                            <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;" disabled></textarea>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="txt_archivo_editar">Adjuntar Archivo de tarea realizada<b style="color:red">(*)</b>:</label>
+                            <form id="form_tramite" method="post" enctype="multipart/form-data">
+                                <input type="text" id="archivo_actual_editar" hidden>
+                                <input class="form-control" type="file" id="txt_archivo_editar" name="archivos[]" multiple><br>
+                                <ul id="fileList2" class="file-list2"></ul>
+                                <label for="txt_archivo" style="font-size:16px;color:red">La carga de archivos solo se permiten pdf, docs, excel e imágenes.</label>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="Modificar_Tarea_envio()"><i class="fas fa-upload"></i> Enviar tarea</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_nota" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1FA0E0;">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>CALIFICACIÓN</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group" style="color:red">
+                            <h6><b>Campos Obligatorios (*)</b></h6>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Grado<b style="color:red">(*)</b>:</label>
+                            <select class="form-control" id="select_grado_ver" style="width:100%" disabled>
+                            </select>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Curso<b style="color:red">(*)</b>:</label>
+                            <select class="form-control" id="select_curso_ver" style="width:100%" disabled>
+                            </select>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Tema<b style="color:red">(*)</b>:</label>
+                            <input type="text" class="form-control" id="txt_tema_ver" disabled>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Fecha entrega<b style="color:red">(*)</b>:</label>
+                            <input type="datetime-local" class="form-control" id="txt_fecha_entre_envi_ver" disabled>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+                            <textarea name="" id="txt_descripcion_ver" rows="2" class="form-control" style="resize:none;" disabled></textarea>
+                        </div>
+                        <div class="col-12 form-group">
+                            <label style="color:red">Observaciones del profesor <b >(*)</b>:</label>
+                            <textarea name="" id="txt_observacion" rows="2" class="form-control" style="resize:none;" disabled></textarea>
+                        </div>
+                        <!-- Agregando el h1 y h3 con sus respectivos IDs -->
+                        <div class="col-12 form-group" style="text-align:center; border: 1px solid #000;">
+                        <h4 id="titulo_h1"></h4>
+                            <h1 id="titulo_h2" style="font-size:70px;family-font:Arial"></h1>
+                            <h3 id="subtitulo_h3"></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         $(document).ready(function() {
@@ -162,6 +280,15 @@
             Cargar_Select_curso(id);
         });
 
+        $("#select_grado_envio").change(function() {
+            var id = $("#select_grado_envio").val();
+            Cargar_Select_curso(id);
+        });
+
+        $("#select_grado_ver").change(function() {
+            var id = $("#select_grado_ver").val();
+            Cargar_Select_curso(id);
+        });
 
         $('#modal_registro').on('shown.bs.modal', function() {
             $('#txt_tema').trigger('focus')
@@ -217,41 +344,6 @@
 
 
         });
-
-        var n = new Date();
-        var y = n.getFullYear();
-        var m = n.getMonth() + 1;
-        var d = n.getDate();
-        var h = n.getHours();
-        var min = n.getMinutes();
-        var s = n.getSeconds();
-
-        // Asegurar que el día tenga dos dígitos
-        if (d < 10) {
-            d = '0' + d;
-        }
-
-        // Asegurar que el mes tenga dos dígitos
-        if (m < 10) {
-            m = '0' + m;
-        }
-
-        // Asegurar que la hora tenga dos dígitos
-        if (h < 10) {
-            h = '0' + h;
-        }
-
-        // Asegurar que los minutos tengan dos dígitos
-        if (min < 10) {
-            min = '0' + min;
-        }
-
-        // Asegurar que los segundos tengan dos dígitos
-        if (s < 10) {
-            s = '0' + s;
-        }
-
-        document.getElementById('txt_fecha_entre').value = y + "-" + m + "-" + d + " " + h + ":" + min + ":" + s;
     </script>
     <style>
         .file-list {

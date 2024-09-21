@@ -410,209 +410,59 @@ function Cargar_Select_Rol(){
 
 
 //SEGUIMIENTO TRAMITE //
-function Traer_Datos_Seguimiento(){
-  let numero= document.getElementById('txt_numero').value;
-  let dni= document.getElementById('txt_dni').value;
-  if(numero.length==0 || dni.length==0){
-   return Swal.fire("Mensaje de Advertencia","Llene el N° de Documento y DNI para buscar el documento","warning");
+function Traer_Datos() {
+  let id = document.getElementById('txtprincipalid').value;
 
-  }
   $.ajax({
-    "url":"controller/usuario/controlador_traer_seguimiento.php",
-    type:'POST',
-    data:{
-      numero:numero,
-      dni:dni
+    "url": "../controller/usuario/controlador_traer_datos.php",
+    type: 'POST',
+    data: {
+      id: id,
     }
-  }).done(function(resp){
-    let data=JSON.parse(resp);
-    var cadena="";
-    if(data.length>0){
-      document.getElementById("div_buscador").style.display = "block";
-      document.getElementById('lbl_titulo').innerHTML="<b>Seguimiento del Tramite: "+data[0][0]+" - "+data[0][2]+"</b>";
-      cadena +='<div class="timeline">'+
-      '<div class="time-label">'+
-        '<span class="bg-red">'+data[0][4]+'</span>'+
-      '</div>';
-      //AJAX PARA EL DETALLE DEL SEGUIMIENTO//
-      $.ajax({
-        "url":"controller/usuario/controlador_traer_seguimiento_detalle.php",
-        type:'POST',
-        data:{
-          codigo:data[0][0]
-        }
-      }).done(function(resp){
-        let datadetalle=JSON.parse(resp);
-        if(datadetalle.length>0){
-          for (let i = 0; i < datadetalle.length; i++) {
-            if(datadetalle[i][7]=="DERIVADO")
-            {
-            cadena+='<div>'+
-            '<i class="fas fa-envelope bg-blue"></i>'+
-            '<div class="timeline-item">'+
-              '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-              '</span>'+
-              '<h3 class="timeline-header" style="color:blue"><a href="#" style="color:BLUE">El documento fue DERIVADO al área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-              '<div class="timeline-body">'+
-              datadetalle[i][6]+
-              '</div>'+
-            '</div>'+
-          '</div>';
-            }else if(datadetalle[i][7]=="RECHAZADO")
-            {
-            cadena+='<div>'+
-            '<i class="fas fa-envelope bg-red"></i>'+
-            '<div class="timeline-item">'+
-              '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-              '</span>'+
-              '<h3 class="timeline-header" style="color:red"><a href="#" style="color:red">El documento fue RECHAZADO en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-              '<div class="timeline-body">'+
-              datadetalle[i][6]+
-              '</div>'+
-            '</div>'+
-          '</div>';
-            }else if(datadetalle[i][7]=="FINALIZADO")
-            {
-            cadena+='<div>'+
-            '<i class="fas fa-envelope bg-success"></i>'+
-            '<div class="timeline-item">'+
-              '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-              '</span>'+
-              '<h3 class="timeline-header" style="color:green"><a href="#" style="color:green">El documento fue FINALIZADO en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-              '<div class="timeline-body">'+
-              datadetalle[i][6]+
-              '</div>'+
-            '</div>'+
-          '</div>';
-            }else{
-              cadena+='<div>'+
-            '<i class="fas fa-envelope bg-warning"></i>'+
-            '<div class="timeline-item">'+
-              '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-              '</span>'+
-              '<h3 class="timeline-header" style="color:orange"><a href="#" style="color:orange">El documento se ENCUENTRA en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-              '<div class="timeline-body">'+
-              datadetalle[i][6]+
-              '</div>'+
-            '</div>'+
-          '</div>';
-            }   
-          }
-          cadena+='</div>';
-          document.getElementById("div_seguimiento").innerHTML=cadena;
+  }).done(function(resp) {
+    console.log(resp); // Para verificar la respuesta
+    let data = JSON.parse(resp);
 
-        }
-      })
-      ////TERMINA EL AJAX//////////
-    }else{
-      document.getElementById("div_buscador").style.display = "none";
-      return Swal.fire("Mensaje de Advertencia","No se encontraron datos del Documento Buscado","warning");
+    if (data.length > 0) {
+      // Acceder al primer objeto del arreglo
+      let estudiante = data[0]; 
 
+      document.getElementById('txt_añoaca').value = estudiante.año_escolar;
+      document.getElementById('txt_nivelaca').value = estudiante.Nivel_academico;
+      document.getElementById('txt_grado').value = estudiante.Grado;
+      document.getElementById('txt_seccion').value = estudiante.seccion_nombre;
+      document.getElementById('txttipo_alum').value = estudiante.tipo_alum;
+      document.getElementById('txt_proceden').value = estudiante.departamento;
+      const fechaPago = estudiante.FECHA_pago; // "21-09-2024"
+
+      // Dividir la fecha en partes
+      const partes = fechaPago.split("-");
+      const dia = partes[0];
+      const mes = partes[1];
+      const anio = partes[2];
+      
+      // Arreglo de nombres de meses
+      const nombresMes = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ];
+      
+      // Obtener el nombre del mes
+      const mesLargo = nombresMes[parseInt(mes) - 1]; // -1 porque los índices empiezan en 0
+      
+      // Crear el texto largo
+      const fechaLarga = `${dia} de ${mesLargo} de ${anio}`;
+      
+      // Asignar el texto largo al campo
+      document.getElementById('txt_ultimo_pago').value = fechaLarga;      
+      document.getElementById('txt_mes_siguiente').value = estudiante.Mes_Toca_Pagar; // Cambia esto si necesitas otro campo
+
+    } else {
+      return Swal.fire("Mensaje de Advertencia", "No se encontraron datos del estudiante", "warning");
     }
-  })
+  });
 }
 
-function Traer_Datos_Seguimiento2(){
-  let numero= document.getElementById('txt_numero').value;
-  let dni= document.getElementById('txt_dni').value;
-  if(numero.length==0 || dni.length==0){
-   return Swal.fire("Mensaje de Advertencia","Llene el N° de Documento y DNI para buscar el documento","warning");
-
-  }
-  $.ajax({
-    "url":"../controller/usuario/controlador_traer_seguimiento.php",
-    type:'POST',
-    data:{
-      numero:numero,
-      dni:dni
-    }
-  }).done(function(resp){
-    let data=JSON.parse(resp);
-    var cadena="";
-    if(data.length>0){
-      document.getElementById("div_buscador").style.display = "block";
-      document.getElementById('lbl_titulo').innerHTML="<b style='color:white'>Seguimiento del Tramite N°: "+data[0][0]+" - Remitente: "+data[0][2]+"</b>";
-      cadena +='<div class="timeline">'+
-      '<div class="time-label">'+
-        '<span class="bg-red">'+data[0][4]+'</span>'+
-      '</div>';
-      //AJAX PARA EL DETALLE DEL SEGUIMIENTO//
-      $.ajax({
-        "url":"../controller/usuario/controlador_traer_seguimiento_detalle.php",
-        type:'POST',
-        data:{
-          codigo:data[0][0]
-        }
-      }).done(function(resp){
-        let datadetalle=JSON.parse(resp);
-        if(datadetalle.length>0){
-          for (let i = 0; i < datadetalle.length; i++) {
-            if(datadetalle[i][7]=="DERIVADO")
-            {
-              cadena+='<div>'+
-              '<i class="fas fa-arrow-right bg-blue"></i>'+
-              '<div class="timeline-item">'+
-                '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-                '</span>'+
-                '<h3 class="timeline-header" style="color:blue"><a href="#" style="color:BLUE">El documento fue DERIVADO al área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-                '<div class="timeline-body">'+
-                datadetalle[i][6]+
-                '</div>'+
-              '</div>'+
-            '</div>';
-              }else if(datadetalle[i][7]=="RECHAZADO")
-              {
-              cadena+='<div>'+
-              '<i class="fas fa-times bg-red"></i>'+
-              '<div class="timeline-item">'+
-                '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-                '</span>'+
-                '<h3 class="timeline-header" style="color:red"><a href="#" style="color:red">El documento fue RECHAZADO en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-                '<div class="timeline-body">'+
-                datadetalle[i][6]+
-                '</div>'+
-              '</div>'+
-            '</div>';
-              }else if(datadetalle[i][7]=="FINALIZADO")
-              {
-              cadena+='<div>'+
-              '<i class="fas fa-check bg-success"></i>'+
-              '<div class="timeline-item">'+
-                '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-                '</span>'+
-                '<h3 class="timeline-header" style="color:green"><a href="#" style="color:green">El documento fue FINALIZADO en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-                '<div class="timeline-body">'+
-                datadetalle[i][6]+
-                '</div>'+
-              '</div>'+
-            '</div>';
-              }else{
-                cadena+='<div>'+
-              '<i class="fas fa-check bg-warning"></i>'+
-              '<div class="timeline-item">'+
-                '<span class="time"><i class="fas fa-clock"></i>'+datadetalle[i][4]+
-                '</span>'+
-                '<h3 class="timeline-header" style="color:orange"><a href="#" style="color:orange">El documento se ENCUENTRA en el área de: '+datadetalle[i][3]+'</a> - <b>ESTADO: '+datadetalle[i][7]+'</b></h3>'+
-                '<div class="timeline-body">'+
-                datadetalle[i][6]+
-                '</div>'+
-              '</div>'+
-            '</div>';
-              }    
-          }
-          cadena+='</div>';
-          document.getElementById("div_seguimiento").innerHTML=cadena;
-
-        }
-      })
-      ////TERMINA EL AJAX//////////
-    }else{
-      document.getElementById("div_buscador").style.display = "none";
-      return Swal.fire("Mensaje de Advertencia","No se encontraron datos del Documento Buscado","warning");
-
-    }
-  })
-}
 
 
 

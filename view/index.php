@@ -1225,35 +1225,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="row">
                   <div class="col-md-3 form-group">
                     <label for="">Año académico (matriculado):</label>
-                    <input type="text" class="form-control" id="txt_añoaca" value="2024" disabled>
+                    <input type="text" class="form-control" id="txt_añoaca" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Nivel académico:</label>
-                    <input type="text" class="form-control" id="txt_nivelaca" value="PRIMARIA" disabled>
+                    <input type="text" class="form-control" id="txt_nivelaca" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Grado:</label>
-                    <input type="text" class="form-control" id="txt_grado" value="QUINTO GRADO" disabled>
+                    <input type="text" class="form-control" id="txt_grado" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Sección:</label>
-                    <input type="text" class="form-control" id="txt_seccion" value="UNICO" disabled>
+                    <input type="text" class="form-control" id="txt_seccion" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Tipo de alumno:</label>
-                    <input type="text" class="form-control" id="txttipo_alum" value="NUEVO" disabled>
+                    <input type="text" class="form-control" id="txttipo_alum" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Procedencia:</label>
-                    <input type="text" class="form-control" id="txt_proceden" value="CUSCO" disabled>
+                    <input type="text" class="form-control" id="txt_proceden" style="font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
-                    <label for="">Ultimo Pago de Pensión:</label>
-                    <input type="text" class="form-control" id="txt_ultimo_pago" Value="15 de agosto de 2024" disabled>
+                    <label for="">Último Pago de Pensión:</label>
+                    <input type="text" class="form-control" id="txt_ultimo_pago" style="color: green; font-weight: bold;" disabled>
                   </div>
                   <div class="col-md-3 form-group">
                     <label for="">Mes siguiente de pago:</label>
-                    <input type="text" class="form-control" id="txt_mes_siguiente" value="SETIEMBRE" disabled>
+                    <input type="text" class="form-control" id="txt_mes_siguiente" style="color: red; font-weight: bold;" disabled>
                   </div>
                 </div>
               </div>
@@ -1414,7 +1414,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- AdminLTE App -->
 <script src="../plantilla/dist/js/adminlte.min.js"></script>
 <script src="../js/console_comunicados.js?rev=<?php echo time(); ?>"></script>
-<script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 
 <script src="../utilitario/DataTables/datatables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1428,6 +1427,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- Incluye tu JavaScript personalizado -->
 <script>
   $(document).ready(function() {
+    Traer_Datos();
+
     listar_comunicado_dash();
     listar_tareas_menu();
     listar_tareas_menu_estudiante();

@@ -200,6 +200,34 @@
             }
             conexionBD::cerrar_conexion();
         }
+        public function Registrar_envio_tarea($iddetalle,$ruta_carpeta){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_ENVIAR_TAREA(?,?)";
+            $query  = $c->prepare($sql);
+            $query ->bindParam(1,$iddetalle);
+            $query ->bindParam(2,$ruta_carpeta);
+            $resul = $query->execute();
+            if($resul){
+                return 1;
+            }else{
+                return 0;
+            }
+            conexionBD::cerrar_conexion();
+        }
+        public function Modificar_envio_tarea($iddetalle,$ruta_carpeta){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_MODIFICAR_ENVIAR_TAREA(?,?)";
+            $query  = $c->prepare($sql);
+            $query ->bindParam(1,$iddetalle);
+            $query ->bindParam(2,$ruta_carpeta);
+            $resul = $query->execute();
+            if($resul){
+                return 1;
+            }else{
+                return 0;
+            }
+            conexionBD::cerrar_conexion();
+        }
         public function Eliminar_Tareas($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_ELIMINAR_TAREA(?)";
