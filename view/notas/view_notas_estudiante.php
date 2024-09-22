@@ -139,7 +139,35 @@ V<script src="../js/console_notas_estudiante.js?rev=<?php echo time(); ?>"></scr
                                     </table>
                                 </div>
                             </div>
-                         
+                            <button class="btn btn-primary btn-toggle2" onclick="toggleTable2()">
+                                <i class="fa fa-chevron-down"></i> Agregar notas padres/Ocultar notas padres
+                            </button>
+
+                            <div id="table-container2" class="toggle-content2" style="display: none;">
+                                <div class="table-responsive" style="text-align:center">
+
+                                    <div class="card-body">
+                                        <table id="tabla_vistacomp_padre_ver" class="display compact" style="width:100%;">
+                                            <thead>
+                                                <tr style="background-color:#0A5D86; color:#FFFFFF;">
+                                                    <th colspan="2" style="padding: 20px 20px 30px 20px; text-align: center; font-size: 1.2em;">
+                                                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                                                            <span style="flex-grow: 1; text-align: left;">EVALUACIÓN PADRES DE FAMILIA</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                                <tr style="background-color:#0A5D86; color:#FFFFFF;">
+                                                    <th style="text-align:center; padding: 15px; border-top: 2px solid #FFFFFF;">Competencias</th>
+                                                    <th style="text-align:center; padding: 15px; border-top: 2px solid #FFFFFF;">Nota</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Las filas se llenarán dinámicamente -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

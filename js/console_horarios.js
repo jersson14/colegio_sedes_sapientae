@@ -102,6 +102,8 @@ function Cargar_Select_Grado() {
       let cadena = ""; // Inicializa la cadena vacía
       
       if (data.length > 0) {
+        cadena += "<option value='' disabled selected>--SELECCIONE--</option>";
+
         for (let i = 0; i < data.length; i++) {
           cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][2] + "</option>";
         }
@@ -126,14 +128,18 @@ function Cargar_Select_Grado() {
   
   // Función para cargar cursos basados en el aula seleccionada
   function Cargar_Select_curso(id, select_id) {
+
+    let año = document.getElementById('select_año').value;
+
     // Limpia el selector antes de cargar nuevos datos
     $('#' + select_id).empty().append("<option value='' disabled selected>Sin datos disponibles</option>");
   
     $.ajax({
-      url: "../controller/componentes/controlador_cargar_curso_id_detalle.php",
+      url: "../controller/horarios/controlador_cargar_curso_id_detalle.php",
       type: 'POST',
       data: {
-        id: id
+        id: id,
+        año:año
       }
     }).done(function(resp) {
       let data = JSON.parse(resp);
@@ -155,11 +161,14 @@ function Cargar_Select_Grado() {
   
   // Función para cargar los horarios de la aula seleccionada
   function Cargar_Select_horas(id) {
+    let año = document.getElementById('select_año').value;
+
     $.ajax({
       url: "../controller/horarios/controlador_cargar_select_horas.php",
       type: 'POST',
       data: {
-        id: id
+        id: id,
+        año:año
       }
     }).done(function(resp) {
       let data = JSON.parse(resp);

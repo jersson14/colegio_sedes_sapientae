@@ -35,6 +35,7 @@
               <thead style="background-color:#0A5D86;color:#FFFFFF;">
                   <tr>
                       <th style="text-align:center">Nro.</th>
+                      <th style="text-align:center">DNI</th>
                       <th style="text-align:center">Estudiante</th>
                       <th style="text-align:center">Aula o Grado</th>
                       <th style="text-align:center">Nivel Académico</th>
@@ -125,7 +126,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-        <button type="button" class="btn btn-success" onclick="Registrar_Detalle_asigdocente()"><i class="fas fa-save"></i> Registrar</button>
+        <button type="button" class="btn btn-success" onclick="Registrar_Pago()"><i class="fas fa-save"></i> Registrar</button>
       </div>
     </div>
   </div>
@@ -175,81 +176,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE MATRICULA</b></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-        <div class="col-12 form-group" style="color:red">
-            <h6><b>Campos Obligatorios (*)</b></h6>
-            </div>
-            <div class="col-5 form-group">
-                <label for="">DNI - Estudiante<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="select_estudiante_editar" disabled>
-         
-            </div>
-            <div class="col-2 form-group">
-                <label for="">Tipo:</label>
-                <input type="text" class="form-control" id="txt_tipo_editar" disabled>
-          
-            </div>
-            <div class="col-2 form-group">
-                <label for="">Año Académico:</label>
-                <select class="form-control" id="select_año_editar" style="width:100%" disabled>
-                </select>             
-            </div>
-            <div class="col-3 form-group">
-                <label for="">Aula o Grado:</label>
-                <select class="form-control" id="select_aula_editar"  style="width:100%">
-                </select>                
-            </div>
-           
-            <div class="col-3 form-group">
-                <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="txt_nivel_editar">
-            </div>
-          
-            <div class="col-3 form-group">
-                <label for="txt_foto">Pago por Admisión <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_admision_editar" value="0" placeholder="Ingrese el monto">
-            </div>
-            <div class="col-3 form-group">
-                <label for="txt_foto">Pago Alumno Nuevo <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_alum_nuevo_editar" value="0" placeholder="Ingrese el monto">
-            </div>
-            <div class="col-3 form-group">
-            <label for="txt_foto">Pago de Matrícula <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_matricula_editar" value="0" placeholder="Ingrese el monto">
-            </div>
-            <div class="col-4 form-group">
-                <label for="txt_foto">Colegio de Procedencia:</label>
-                <input type="text" class="form-control" id="txt_procedencia_editar" placeholder="Ingrese el coledio de procedencia">
-            </div>
-            <div class="col-4 form-group">
-            <label for="txt_foto">Provincia:</label>
-                <input type="text" class="form-control" id="txt_provincia_editar" placeholder="Ingrese la provincia">
-            </div>
-            <div class="col-4 form-group">
-            <label for="txt_foto">Departamento:</label>
-                <input type="text" class="form-control" id="txt_departamento_editar" placeholder="Ingrese el Departamento">
-            </div>
-          
-           
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-        <button type="button" class="btn btn-success" onclick="Modificar_Matricula()"><i class="fas fa-save"></i> Registrar</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 <style>
     .hidden {
         display: none;

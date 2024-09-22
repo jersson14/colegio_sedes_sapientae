@@ -274,6 +274,21 @@
             }
             conexionBD::cerrar_conexion();
         }
+        public function Modificar_Tarea_Estatus($id,$estatus){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_MODIFICAR_TAREA_ESTATUS(?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query ->bindParam(1,$id);
+            $query ->bindParam(2,$estatus);
+            $resul = $query->execute();
+            if($resul){
+                return 1;
+            }else{
+                return 0;
+            }
+            conexionBD::cerrar_conexion();
+        }
     }
 
 

@@ -61,6 +61,7 @@ function listar_pago_pension(){
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",
@@ -156,6 +157,7 @@ function listar_pago_pension_buscar(){
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",
@@ -250,6 +252,7 @@ function listar_todo(){
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",

@@ -98,9 +98,9 @@ function listar_tareas_id(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                  return "<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
               }else if(data=='FINALIZADO'){
-                return "<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
             }
             }
           },        
@@ -116,6 +116,7 @@ tbl_tareas.on('draw.td',function(){
   });
 });
 }
+
 
 function listar_tareas(){
     let id = document.getElementById('txtprincipalid').value;
@@ -209,10 +210,10 @@ function listar_tareas(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                  return "<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
-              }else if(data=='FINALIZADO'){
-                return "<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
-            }
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'   title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+            }else if(data=='FINALIZADO'){
+              return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+          }
             }
           },        
     ],
@@ -227,6 +228,50 @@ tbl_tareas.on('draw.td',function(){
   });
 });
 }
+function Modificar_Estatus_tarea(id,estatus,temita){
+  let esta=estatus;
+  $.ajax({
+    "url":"../controller/tareas/controlador_modificar_estado_tarea.php",
+    type:'POST',
+    data:{
+      id:id,
+      estatus:estatus
+    }
+  }).done(function(resp){
+    if(resp>0){
+        Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito la tarea con el tema: "+temita,"success").then((value)=>{
+          tbl_examen.ajax.reload();
+        });
+    }else{
+      return Swal.fire("Mensaje de Error","No se completo el cambio","error");
+
+    }
+  })
+}
+
+$('#tabla_tarea').on('click','.activar',function(){
+  var data = tbl_tareas.row($(this).parents('tr')).data();
+
+  if(tbl_tareas.row(this).child.isShown()){
+      var data = tbl_tareas.row(this).data();
+  }
+    Swal.fire({
+      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+data.tema+'</b>?',
+      text: "Una vez finalizado ningún estudiante podra subir su tarea.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, dar como Finalizado'
+      
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Modificar_Estatus_tarea(data.id_tarea,'FINALIZADO',data.tema);
+      }
+    })
+
+})
+
 var tbl_taras_menu
 function listar_tareas_menu(){
   let id = document.getElementById('txtprincipalid').value;
@@ -321,12 +366,7 @@ function listar_tareas_menu(){
   "language":idioma_espanol,
   select: true
 });
-tbl_taras_menu.on('draw.td',function(){
-var PageInfo = $("#tabla_tarea_menu").DataTable().page.info();
-tbl_taras_menu.column(0, {page: 'current'}).nodes().each(function(cell, i){
-  cell.innerHTML = i + 1 + PageInfo.start;
-});
-});
+
 }
 
 

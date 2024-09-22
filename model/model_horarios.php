@@ -131,11 +131,13 @@
             conexionBD::cerrar_conexion();
             return $resultado; // Devuelve 1 si existe, 0 si no existe
         }
-        public function Cargar_horas($id){
+        public function Cargar_horas($id,$año){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_CARGAR_SELECT_HORAS(?)";
+            $sql = "CALL SP_CARGAR_SELECT_HORAS(?,?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
+            $query->bindParam(2,$año);
+
             $query->execute();
             $resultado = $query->fetchAll();
             foreach($resultado as $resp){
@@ -144,7 +146,21 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-       
+        public function Cargar_Id_Detalle($id,$año){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_CARGAR_SELECT_ID_DETALLE_HORARIO(?,?)";
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$id);
+            $query->bindParam(2,$año);
+
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         // Registrar un nuevo componente
         public function Registrar_horarios($idhora, $idasig, $dia) {
             $c = conexionBD::conexionPDO();

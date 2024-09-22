@@ -56,6 +56,7 @@ function listar_pago_pension(){
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",
@@ -236,7 +237,7 @@ function verificarid(id){
 
 
 
-function Registrar_Detalle_asigdocente() {
+function Registrar_Pago() {
   let count = 0;
   let arreglo_id = new Array();
   let arreglo_concepto = new Array();
@@ -271,20 +272,18 @@ function Registrar_Detalle_asigdocente() {
       monto: monto
     }
   }).done(function (resp) {
-    if (resp ==1) {
-        Swal.fire("Mensaje de Confirmación","Nueva pensión registrada satisfactoriamente!!!","success").then((value)=>{
-
-        tbl_pago_pension.ajax.reload();
-        tbl_pago_pension.clear().draw();
-
-        $("#modal_registro").modal('hide');
-        document.getElementById('select_curso').value = "";
-
-        table.removeChild(tr);
-      });
-    
+    if (resp == 1) {
+      Swal.fire("Mensaje de Confirmación", "Nueva pensión registrada satisfactoriamente!!!", "success")
+        .then((value) => {
+          tbl_pago_pension.ajax.reload();
+          tbl_pago_pension.clear().draw();
+          $("#modal_registro").modal('hide');
+          document.getElementById('select_curso').value = "";
+        });
+    } else if (resp == 2) {
+      Swal.fire("Mensaje de Advertencia", "El mes que desea pagar ya existe en la base de datos, verifique por favor", "warning");
     } else {
-      Swal.fire("Mensaje de Advertencia","La pensión del estudiante que desear pagar ya se encuentra en la base de datos, revise por favor","warning");
+      Swal.fire("Mensaje de Error", "Error al registrar el pago", "error");
     }
   });
 }

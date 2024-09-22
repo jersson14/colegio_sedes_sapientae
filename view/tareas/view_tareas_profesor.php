@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="col-12 col-md-4" role="document">
                                     <label for="">&nbsp;</label><br>
-                                    <button onclick="listar_tareas_id()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar estudiantes</button>
+                                    <button onclick="listar_tareas_id()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar tareas</button>
                                 </div>
                             </div>
                         </div>

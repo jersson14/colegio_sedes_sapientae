@@ -85,7 +85,7 @@ function listar_notas_todos(){
           "data": "contar",
           "render": function(data, type, row) {
               if (data > 0) {
-                return '<button class="insert btn btn-success btn-sm" title="Insertar notas" disabled><i class="fas fa-pen"></i> Insertar notas estudiante</button>';
+                return '<button class="insert btn btn-success btn-sm" title="Insertar notas"><i class="fas fa-pen"></i> Insertar notas estudiante</button>';
 
               } else {
                 return '<button class="insert btn btn-success btn-sm" title="Insertar notas"><i class="fas fa-pen"></i> Insertar notas estudiante</button>';

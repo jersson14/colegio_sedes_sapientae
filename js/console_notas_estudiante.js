@@ -166,178 +166,7 @@ function Cargar_Año(){
 
 
 
-//ENVIANDO DATOS PARA EDITAR
-$('#tabla_notas').on('click','.insert',function(){
-  var data = tbl_notas.row($(this).parents('tr')).data();
-
-  if(tbl_notas.row(this).child.isShown()){
-      var data = tbl_notas.row(this).data();
-  }
-  $("#modal_notas").modal('show');
-  document.getElementById('id_matri').value=data.id_matricula;
-  document.getElementById('txt_estudiante').value=data.alum_dni+" - "+data.Estudiante;
-  document.getElementById('txt_nivel').value=data.Nivel_academico;
-  document.getElementById('txt_aula').value=data.Grado;
-  listar_componentes();
-
-
-})
-var tbl_tareas_enviadas;
-
-function listar_componentes() {
-  let nivel = document.getElementById('txt_nivel').value;
-  let aula = document.getElementById('txt_aula').value;
-  let id = document.getElementById('txtprincipalid').value;
-
-  tbl_tareas_enviadas = $("#tabla_vistacomp").DataTable({
-      "ordering": false,
-      "bLengthChange": true,
-      "searching": true,
-      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-      "pageLength": 3,
-      "destroy": true,
-      "pagingType": 'full_numbers',
-      "scrollCollapse": true,
-      "responsive": true,
-      "processing": true,
-      "serverSide": false,
-      "ajax": {
-          "url": "../controller/notas/controlador_listar_criterios_notas_profesor.php",
-          type: 'POST',
-          data: { nivel: nivel, aula: aula, id: id },
-      },
-      "columns": [
-          { "data": "nombre_asig", "visible": false },
-          {
-              "data": "id_criterio",
-              "title": "ID",
-              "render": function(data, type, row) {
-                  if (type === 'display') {
-                      return '<input class="form-control criterio" type="text" value="' + (data || '') + '" readonly />';
-                  }
-                  return data;
-              }
-          },
-          { "data": "competencias", "title": "Competencias" },
-          {
-              "data": null,  // No asociada a ningún dato
-              "render": function(data, type, row, meta){
-                  if (type === 'display') {
-                      return '<input class="form-control txt_nota" type="text" min="0" step="1"/>';
-                  }
-                  return data;
-              }
-          },
-          {
-              "data": null,  // No asociada a ningún dato
-              "render": function(data, type, row, meta){
-                  if (type === 'display') {
-                      return '<input class="form-control txt_conclusion" type="text" />';
-                  }
-                  return data;
-              }
-          }
-      ],
-      "drawCallback": function(settings) {
-          var api = this.api();
-          var rows = api.rows({page: 'current'}).nodes();
-          var last = null;
-
-          api.column(0, {page: 'current'}).data().each(function(group, i) {
-              if (last !== group) {
-                  $(rows).eq(i).before(
-                      '<tr class="group"><td colspan="4"><strong>Área: ' + group + '</strong></td></tr>'
-                  );
-                  last = group;
-              }
-          });
-      },
-      "language": {
-          "emptyTable": "No se encontraron datos",
-          "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"  // Incluye la traducción al español para otros elementos si es necesario
-      },
-      "select": true
-  });
-}
-
-
-
-//MOSTRAR
-
-// Maneja el clic en el botón de mostrar
-
-
-//ABRIENDO MODAL REGISTRO
-function AbrirRegistro(){
-  $("#modal_registro").modal({backdrop:'static',keyboard:false})
-  $("#modal_registro").modal('show');
-}
-
 //REGISTRANDO ROLES
-function Registrar_notas() {
-  let table = $('#tabla_vistacomp').DataTable();
-  let registros = [];
-
-  // Obtener los valores de los inputs que están fuera de la tabla
-  let id_matri = $('#id_matri').val();
-  let perio = $('#select_bimestre').val();
-
-  // Validar que los campos fuera de la tabla no estén vacíos
-  if (!id_matri || !perio) {
-      return Swal.fire("Mensaje de Advertencia", "Por favor complete todos los campos antes de enviar.", "warning");
-  }
-
-  // Recorrer todas las filas de la tabla para obtener los datos de cada input
-  table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-      let cri = $(this.node()).find('.criterio').val();
-      let nota = $(this.node()).find('.txt_nota').val();
-      let conclu = $(this.node()).find('.txt_conclusion').val();
-
-      // Verificar si los campos dentro de la tabla no están vacíos
-      if (cri && nota) {
-          // Agregar el registro a la lista de registros
-          registros.push({
-              id_matri: id_matri,
-              perio: perio,
-              cri: cri,
-              nota: nota,
-              conclu: conclu || ''  // Asegurarse de que 'conclu' no sea undefined
-          });
-      }
-  });
-
-  // Verificar si hay registros para enviar
-  if (registros.length === 0) {
-      return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
-  }
-
-  // Enviar los registros al servidor mediante AJAX
-  $.ajax({
-      url: "../controller/notas/controlador_registro_notas.php",
-      type: 'POST',
-      data: {
-          registros: JSON.stringify(registros)  // Convertir el array de objetos a JSON
-      },
-      success: function(resp) {
-          try {
-              const response = JSON.parse(resp);
-              if (response.status === 1) {
-                Swal.fire("Mensaje de Confirmación", `Notas de alumno registradas satisfactoriamente!!!.`, "success").then(() => {
-                });
-                tbl_notas.ajax.reload();
-                $("#modal_notas").modal('hide');
-              } else {
-                Swal.fire("Mensaje de Advertencia", "Este alumno ya tiene notas registradas en el periodo que intentas ingresar", "warning");
-              }
-          } catch (e) {
-              Swal.fire("Mensaje de Error", "Error al procesar la respuesta del servidor.", "error");
-          }
-      },
-      error: function(xhr, status, error) {
-          Swal.fire("Mensaje de Error", "Error en la solicitud AJAX: " + error, "error");
-      }
-  });
-}
 
 
 
@@ -391,6 +220,7 @@ function inicializar_modal_notas() {
 }
 
 function listar_notas_ver() {
+  listar_notas_ver_padres();
 
   let matri = document.getElementById('id_matri_ver').value;
   let bime = document.getElementById('select_bimestre_ver').value;
@@ -476,5 +306,77 @@ $('#modal_notas_ver').on('show.bs.modal', function (e) {
 
 
 
+function listar_notas_ver_padres() {
+  let matri = document.getElementById('id_matri_ver').value;
+  let bime = document.getElementById('select_bimestre_ver').value;
+
+  tbl_notas_ver_padres = $("#tabla_vistacomp_padre_ver").DataTable({
+      "ordering": false,
+      "bLengthChange": true,
+      "searching": true,
+      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+      "pageLength": 3,
+      "destroy": true,
+      "pagingType": 'full_numbers',
+      "scrollCollapse": true,
+      "responsive": true,
+      "processing": true,
+      "serverSide": false,
+      "ajax": {
+          "url": "../controller/notas/controlador_listar_criterios_notas_mostrar_padres.php",
+          type: 'POST',
+          data: function(d) {
+              d.matri = matri;
+              d.bime = bime;
+          }
+      },
+      "columns": [
+          { 
+              "data": "criterio", 
+              "title": "Competencias",
+              "width": "70%"
+          },
+          { 
+              "data": "nota", 
+              "title": "Nota",
+              "width": "30%"
+          }
+      ],
+      "drawCallback": function(settings) {
+        $('#tabla_vistacomp_padre_ver tbody td').css({
+            'white-space': 'normal',
+            'word-wrap': 'break-word',
+            'padding': '12px'
+        });
+        
+        // Asegurar que el color de fondo del título se mantenga y ajustar espaciado
+        $('#tabla_vistacomp_padre_ver thead tr:first-child th').css({
+            'background-color': '#0A5D86',
+            'color': '#FFFFFF',
+            'padding-bottom': '30px'
+        });
+
+        // Añadir línea separadora y ajustar espaciado para las cabeceras de columna
+        $('#tabla_vistacomp_padre_ver thead tr:nth-child(2) th').css({
+            'border-top': '20px solid #FFFFFF',
+            'padding-top': '15px'
+        });
+    },
+    // ... (resto del código permanece igual)
+});
+
+tablaCargadaPadres = true;
+}
+
+
+// Evento para el botón que lista las notas
+
+// Evento para cuando se abre el modal
+$('#modal_notas_ver_padres').on('show.bs.modal', function (e) {
+    // Solo listar las notas si la tabla no ha sido cargada
+    if (!tablaCargada) {
+        listar_notas_ver_padres();
+    }
+});
 
 

@@ -109,7 +109,7 @@ function Modificar_Estatus_examen(id,estatus,temita){
       }
     }).done(function(resp){
       if(resp>0){
-          Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con exito el examen con el tema: "+temita,"success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito el examen con el tema: "+temita,"success").then((value)=>{
             tbl_examen.ajax.reload();
           });
       }else{

@@ -56,6 +56,7 @@ function listar_matriculados(){
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",

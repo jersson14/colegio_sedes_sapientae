@@ -87,9 +87,9 @@ function listar_tareas(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                  return "<button  class='agregar btn btn-secondary btn-sm' style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button  class='agregar btn btn-secondary btn-sm' style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
               }else if(data=='FINALIZADO'){
-                  return "<button  class='informe btn btn-dark btn-sm' hidden style='margin-right: 10px;' title='Imprimir informe'><i class='fa fa-file'></i> Informe</button><br><button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Agregar diploma'><i class='fa fa-file'></i> Agregar diploma</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' hidden class='delete btn btn-danger btn-sm' title='Eliminar datos' hidden><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button  class='informe btn btn-dark btn-sm' hidden style='margin-right: 10px;' title='Imprimir informe'><i class='fa fa-file'></i> Informe</button><br><button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Agregar diploma'><i class='fa fa-file'></i> Agregar diploma</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' hidden class='delete btn btn-danger btn-sm' title='Eliminar datos' hidden><i class='fa fa-trash'></i> Eliminar</button>";             
               }
             }
           },        
@@ -105,6 +105,52 @@ tbl_tareas.on('draw.td',function(){
   });
 });
 }
+
+
+function Modificar_Estatus_tarea(id,estatus,temita){
+  let esta=estatus;
+  $.ajax({
+    "url":"../controller/tareas/controlador_modificar_estado_tarea.php",
+    type:'POST',
+    data:{
+      id:id,
+      estatus:estatus
+    }
+  }).done(function(resp){
+    if(resp>0){
+        Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito la tarea con el tema: "+temita,"success").then((value)=>{
+          tbl_examen.ajax.reload();
+        });
+    }else{
+      return Swal.fire("Mensaje de Error","No se completo el cambio","error");
+
+    }
+  })
+}
+
+$('#tabla_tarea').on('click','.activar',function(){
+  var data = tbl_tareas.row($(this).parents('tr')).data();
+
+  if(tbl_tareas.row(this).child.isShown()){
+      var data = tbl_tareas.row(this).data();
+  }
+    Swal.fire({
+      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+data.tema+'</b>?',
+      text: "Una vez finalizado ningún estudiante podra subir su tarea.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, dar como Finalizado'
+      
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Modificar_Estatus_tarea(data.id_tarea,'FINALIZADO',data.tema);
+      }
+    })
+
+})
+
 //TRAENDO DATOS DE LA SECCION
 function Cargar_Select_docente() {
   $.ajax({

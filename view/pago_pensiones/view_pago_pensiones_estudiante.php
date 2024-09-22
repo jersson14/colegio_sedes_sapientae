@@ -54,6 +54,7 @@
                         <thead style="background-color:#0A5D86;color:#FFFFFF;">
                             <tr>
                                 <th style="text-align:center">Nro.</th>
+                                <th style="text-align:center">DNI</th>
                                 <th style="text-align:center">Estudiante</th>
                                 <th style="text-align:center">Aula o Grado</th>
                                 <th style="text-align:center">Nivel Académico</th>

@@ -74,7 +74,7 @@
           </div>
           <div class="col-4 form-group">
             <label for="">Año académico<b style="color:red">(*)</b>:</label>
-            <select class="form-control" id="select_año" style="width:100%" disabled>
+            <select class="form-control" id="select_año" style="width:100%">
             </select>              
           </div>
           <div class="col-4 form-group">
