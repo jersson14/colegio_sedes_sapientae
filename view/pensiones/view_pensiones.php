@@ -35,7 +35,6 @@
               <thead style="background-color:#0A5D86;color:#FFFFFF;">
                   <tr>
                       <th style="text-align:center">Nro.</th>
-                      <th style="text-align:center">Año Escolar</th>
                       <th style="text-align:center">Nivel Académico</th>
                       <th style="text-align:center">Mes</th>
                       <th style="text-align:center">Fecha de Vencimiento</th>

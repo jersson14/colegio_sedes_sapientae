@@ -56,7 +56,6 @@ function listar_pensiones(){
     }],
       "columns":[
         {"data":"id_pensiones"},
-        {"data":"año_escolar"},
         {"data":"Nivel_academico",
             render: function(data,type,row){
                 if(data=='INICIAL'){

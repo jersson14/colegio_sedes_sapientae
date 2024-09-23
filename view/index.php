@@ -4,6 +4,18 @@ if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
 }
 ?>
+<?php
+if (isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO'])) {
+    // Verificar si la ruta es 'controller/alumnos/fotos/'
+    if ($_SESSION['S_FOTO'] === 'controller/alumnos/fotos/') {
+        $rutaFoto = '../img/blanco1.jpg';
+    } else {
+        $rutaFoto = '../' . $_SESSION['S_FOTO'];
+    }
+} else {
+    $rutaFoto = '../img/blanco1.jpg';
+}
+?>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -58,7 +70,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
             </a>
@@ -94,7 +106,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
 
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
@@ -128,7 +140,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-1 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
+            <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
 
           </div>
           <div class="info">
@@ -1069,7 +1081,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
                 <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco.png'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
                   <div style="text-align: center; margin-top: 10px;">
                     <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">
@@ -1148,6 +1160,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 }
 
 ?>
+
 <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
 
   <!-- Main content -->
@@ -1173,7 +1186,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Contenedor de la imagen y el botón -->
                 <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco.png'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
+                  <img src="<?php echo $rutaFoto; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
                   <div style="text-align: center; margin-top: 10px;">
                     <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">

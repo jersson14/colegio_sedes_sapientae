@@ -40,7 +40,6 @@
                       <th style="text-align:center">Aula o Grado</th>
                       <th style="text-align:center">Sección</th>
                       <th style="text-align:center">Nivel Académico</th>
-                      <th style="text-align:center">Año escolar</th>
                       <th style="text-align:center">Asignatura</th>
                       <th style="text-align:center">Componentes</th>
                       <th style="text-align:center">Estado</th>

@@ -119,7 +119,7 @@ function Modificar_Estatus_tarea(id,estatus,temita){
   }).done(function(resp){
     if(resp>0){
         Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito la tarea con el tema: "+temita,"success").then((value)=>{
-          tbl_examen.ajax.reload();
+          tbl_tareas.ajax.reload();
         });
     }else{
       return Swal.fire("Mensaje de Error","No se completo el cambio","error");

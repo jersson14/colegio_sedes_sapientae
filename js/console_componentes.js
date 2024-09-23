@@ -59,7 +59,6 @@ function listar_componentes(){
         {"data":"Grado"},
         {"data":"seccion_nombre"},
         {"data":"Nivel_academico"},
-        {"data":"año_escolar"},
         {"data":"nombre_asig"},
         {           
              "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver componentes o criterios'><i class='fa fa-check'></i> Componentes de curso</button>"
