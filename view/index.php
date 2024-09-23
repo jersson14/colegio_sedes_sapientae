@@ -1079,16 +1079,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="card-body" style="display: block;">
               <div style="background-image: url('../img//fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
-                <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
+                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
                     <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
-                  <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">
-                      <i class="fas fa-upload"></i>
-                      Cambiar foto
-                    </button>
-                  </div>
+ 
 
                 </div>
                 <div style="flex: 1; min-width: 300px; position: relative; z-index: 1;padding: 15px;">
@@ -1184,16 +1179,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
 
                 <!-- Contenedor de la imagen y el botón -->
-                <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
+                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
                   <img src="<?php echo $rutaFoto; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
-                  <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">
-                      <i class="fas fa-upload"></i>
-                      Cambiar foto
-                    </button>
-                  </div>
+    
 
                 </div>
 

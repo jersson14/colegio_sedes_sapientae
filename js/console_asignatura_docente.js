@@ -76,6 +76,28 @@ tbl_asigdocente.on('draw.td',function(){
   });
 });
 }
+
+function Cargar_Anio(){
+  $.ajax({
+    "url":"../controller/matricula/controlador_cargar_select_año.php",
+    type:'POST',
+  }).done(function(resp){
+    let data=JSON.parse(resp);
+    if(data.length>0){
+      let cadena ="";
+      for (let i = 0; i < data.length; i++) {
+        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+      }
+        document.getElementById('select_año').innerHTML=cadena;
+        document.getElementById('select_año_editar').innerHTML=cadena;
+    }else{
+      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      document.getElementById('select_año').innerHTML=cadena;
+      document.getElementById('select_año_editar').innerHTML=cadena;
+    }
+  })
+}
+
 //TRAENDO DATOS DEL DOCENTE
 function Cargar_Select_docente(){
     $.ajax({
@@ -188,6 +210,8 @@ function Cargar_Select_docente(){
       $('#select_curso_editar').html("<option value=''>Seleccione un grado</option>");
     }
   });
+
+
   $('#tabla_asigdocente').on('click', '.editar', function() {
     var data = tbl_asigdocente.row($(this).parents('tr')).data();
     if (tbl_asigdocente.row(this).child.isShown()) {
@@ -198,9 +222,12 @@ function Cargar_Select_docente(){
   
     // Rellenar los campos del modal
     document.getElementById('txt_id_asig').value = data.Id_asigdocente;
-    $("#select_docente2_editar").select2().val(data.Id_docente).trigger('change.select2');
+
+    document.getElementById('select_año_editar').value = data.año_escolar;
+    document.getElementById('select_docente2_editar').value = data.Docente;
+
     $("#select_grado_editar").select2().val(data.Id_grado).trigger('change.select2');
-  
+
     listar_cursos_docente2(data.Id_asigdocente);
   
   });
@@ -259,44 +286,7 @@ function Registrar_aula(){
   })
 }
 //EDITANDO ROL
-function Modificar_Rol(){
-  let id = document.getElementById('txt_id_grado').value;
-  let grado = document.getElementById('txt_grado_editar').value;
-  let seccion = document.getElementById('select_seccion_editar').value;
-  let nivel = document.getElementById('select_nivel_aca_editar').value;
-  let descrip = document.getElementById('txt_descripcion_editar').value;
-  let estatus = document.getElementById('txt_estatus').value;
 
-  if(grado.length==0 || id.length==0){
-      return Swal.fire("Mensaje de Advertencia","Tiene campos vacios.","warning");
-  }
-  $.ajax({
-    "url":"../controller/aulas/controlador_modificar_aula.php",
-    type:'POST',
-    data:{
-      id:id,
-      grado:grado,
-      seccion:seccion,
-      nivel:nivel,
-      descrip:descrip,
-      estatus:estatus
-    }
-  }).done(function(resp){
-    if(resp>0){
-      if(resp==1){
-        Swal.fire("Mensaje de Confirmación","Datos actualizados correctamente","success").then((value)=>{
-            tbl_asigdocente.ajax.reload();
-            $("#modal_editar").modal('hide');
-        });
-      }else{
-        Swal.fire("Mensaje de Advertencia","El grado académico que intentas actualizar ya se encuentra en la base de datos, revise por favor.","warning");
-      }
-    }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
-
-    }
-  })
-}
 //ELIMINANDO ROL
 function Eliminar_Asigdocente(id){
     $.ajax({
@@ -402,19 +392,21 @@ $('#tabla_asigdocente').on('click','.delete',function(){
     if(count == 0){
         return Swal.fire("Mensaje de Advertencia","La tabla de asignación debe tener al menos un registro","warning");
     }
-   
+    var año = $("#select_año").val();
     var docen = $("#select_docente2").val();
     var curso = $("#select_curso").val();
-    if(docen.length == 0 || curso.length == 0){
+    if(docen.length == 0 || curso.length == 0|| año.length == 0){
         return Swal.fire("Mensaje De Advertencia","Debe llenar los datos de la consulta primero para guardar","warning");
     }
 
+    let añoaca = document.getElementById('select_año').value;
     let id_docente = document.getElementById('select_docente2').value;
 
     $.ajax({
         url: "../controller/asignatura_docente/controlador_asig_docente.php",
         type: 'POST',
         data: {
+            añoaca:añoaca,
             id_docente: id_docente
         }
     }).done(function(resp){

@@ -43,11 +43,13 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_asignatura_docente($id_docente){
+        public function Registrar_asignatura_docente($añoaca,$id_docente){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_ASIGNATURA_DOCENTE(?)";
+            $sql = "CALL SP_REGISTRAR_ASIGNATURA_DOCENTE(?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$id_docente);
+            $query ->bindParam(2,$añoaca);
+
             $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;

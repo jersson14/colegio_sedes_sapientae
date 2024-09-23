@@ -81,6 +81,8 @@ function listar_comunicado(){
                     }
             }   
         },
+        {"data":"fecha_formateada"},
+
         {"data":"estado",
           render: function(data,type,row){
                   if(data=='ACTIVO'){

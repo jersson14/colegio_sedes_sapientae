@@ -59,7 +59,7 @@
 
     <!-- Modal -->
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
         <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>ASIGNAR CURSO A DOCENTE</b></h5>
@@ -72,7 +72,12 @@
           <div class="col-12 form-group" style="color:red">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
-          <div class="col-12 form-group">
+          <div class="col-6 form-group">
+            <label for="">Año Académico<b style="color:red">(*)</b>:</label>
+            <select class="form-control" id="select_año" style="width:100%">
+            </select>              
+          </div>
+          <div class="col-6 form-group">
             <label for="">Docente<b style="color:red">(*)</b>:</label>
             <select class="form-control" id="select_docente2" style="width:100%">
             </select>              
@@ -117,10 +122,10 @@
 </div>
 
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL ROL</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR ASIGNATURAS DEL DOCENTE</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -130,11 +135,17 @@
           <div class="col-12 form-group" style="color:red">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
-          <div class="col-12 form-group">
+          <div class="col-6 form-group">
+            <label for="">Año Académico<b style="color:red">(*)</b>:</label>
+            <input type="text" class="form-control" id="select_año_editar" disabled>
+       
+          </div>
+          <div class="col-6 form-group">
             <label for="">Docente<b style="color:red">(*)</b>:</label>
             <input type="text" id="txt_id_asig" hidden>
-            <select class="form-control" id="select_docente2_editar" style="width:100%" disabled>
-            </select>              
+
+            <input type="text" class="form-control" id="select_docente2_editar" disabled>
+              
           </div>
           <div class="col-12 form-group">
             <label for="">Grado<b style="color:red">(*)</b>:</label>
@@ -216,9 +227,10 @@
 <script>
     listar_asignatura_docente();
     $(document).ready(function(){
-  $('.js-example-basic-single').select2();
-  Cargar_Select_docente();
-  Cargar_Select_aulas();
+    $('.js-example-basic-single').select2();
+    Cargar_Select_docente();
+    Cargar_Select_aulas();
+    Cargar_Anio();
 
 });
   $("#select_grado").change(function() {

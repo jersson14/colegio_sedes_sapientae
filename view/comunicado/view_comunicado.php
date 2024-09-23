@@ -41,6 +41,8 @@
                           <th style="text-align:center">Descripción</th>
                           <th style="text-align:center">Vista</th>
                           <th style="text-align:center">Estado</th>
+                          <th style="text-align:center">Fecha de registro</th>
+
                           <th style="text-align:center">Acción</th>
                       </tr>
                   </thead>
