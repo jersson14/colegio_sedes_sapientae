@@ -84,7 +84,7 @@ $html.='
 <h2 style="text-align: center;margin: 0;text-decoration: underline;">BOLETA DE PAGO</h2>
 <div style="text-align:center">
 <br><b>DNI: </b><b>'.utf8_encode($row1['alum_dni']).'</b>
-<br><b>Paciente: </b>'.utf8_encode($row1['Estudiante']).'<hr>
+<br><b>Estudiante: </b>'.utf8_encode($row1['Estudiante']).'<hr>
 
 <table width="100%" style="margin: 0;border-bottom:1px solid;border-left:0px;border-right:0px;border-top:0px;">
 <thead>
@@ -163,10 +163,10 @@ while($row2=$resultado2->fetch_assoc()){
     $fecha_formateada_minusculas = mb_strtolower($fecha_formateada, 'UTF-8');
     $html.="
     <tr>
-    <td  style='text-align:center;font-size:15px'>".utf8_encode($row2['concepto'])."</td>
-    <td  style='text-align:center;font-size:15px'>".utf8_encode($row2['mes'])."</td>
-    <td  style='text-align:center;font-size:15px'>".$fecha_formateada_minusculas."</td>
-    <td  style='text-align:center;font-size:15px'>S/. ".utf8_encode($row2['sub_total'])."</td>
+    <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['concepto'])."</td>
+    <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['mes'])."</td>
+    <td  style='text-align:center;font-size:14px'>".$fecha_formateada_minusculas."</td>
+    <td  style='text-align:center;font-size:14px'>S/. ".utf8_encode($row2['sub_total'])."</td>
 
    
 ";
