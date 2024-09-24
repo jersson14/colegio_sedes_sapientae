@@ -1121,6 +1121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="card-body">
                   <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
                     <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                    
                       <tr>
                         <th style="text-align:center">Nro.</th>
                         <th style="text-align:center">Grado</th>

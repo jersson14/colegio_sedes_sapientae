@@ -66,6 +66,8 @@
         public function Cargar_Año(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_AÑO()";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->execute();
             $resultado = $query->fetchAll();
@@ -78,6 +80,8 @@
         public function Cargar_Pension($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_PENSION(?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->execute();
@@ -91,6 +95,7 @@
         public function TraerMonto($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_TRAE_MONTO(?)";
+            
             $arreglo = array();
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
@@ -140,25 +145,15 @@
             $query->bindParam(1, $id);
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-        
             $total_sub_total = 0;
-        
             foreach ($resultado as $resp) {
                 $total_sub_total += $resp['sub_total'];
                 $arreglo["data"][] = $resp;
             }
-        
             // Añadimos el total de sub_total al arreglo
             $arreglo["total_sub_total"] = $total_sub_total;
-        
             conexionBD::cerrar_conexion();
-        
             return $arreglo;
         }
-        
     }
-
-
-
-
 ?>

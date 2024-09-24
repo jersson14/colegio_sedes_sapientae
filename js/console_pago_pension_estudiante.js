@@ -321,55 +321,60 @@ function Cargar_Año(){
 //EDITANDO ROL
 var tbl_pagos;
 function listar_pagos(id) {
-  tbl_pagos = $("#tabla_pagos2").DataTable({
-      "ordering": false,
-      "bLengthChange": true,
-      "searching": { "regex": false },
-      "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
-      "pageLength": 10,
-      "destroy": true,
-      pagingType: 'full_numbers',
-      scrollCollapse: true,
-      responsive: true,
-      "async": false,
-      "processing": true,
-      "ajax": {
-          "url": "../controller/pago_pension/controlador_listar_tabla_pagos.php",
-          type: 'POST',
-          data: {
-              id: id
-          },
-          dataSrc: function(json) {
-              console.log(json);  // Imprime la respuesta JSON para depuración
+    tbl_pagos = $("#tabla_pagos2").DataTable({
+        "ordering": false,
+        "bLengthChange": true,
+        "searching": { "regex": false },
+        "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+        "pageLength": 10,
+        "destroy": true,
+        pagingType: 'full_numbers',
+        scrollCollapse: true,
+        responsive: true,
+        "async": false,
+        "processing": true,
+        "ajax": {
+            "url": "../controller/pago_pension/controlador_listar_tabla_pagos.php",
+            type: 'POST',
+            data: {
+                id: id
+            },
+            dataSrc: function(json) {
+                console.log(json);  // Imprime la respuesta JSON para depuración
 
-              if (json.total_sub_total !== undefined) {
-                  $('#total_sub_total').text(json.total_sub_total.toFixed(2));
-              } else {
-                  $('#total_sub_total').text('0.00');  // Valor por defecto si no está definido
-              }
-              return json.data;
-          }
-      },
-      "columns": [
-          { "data": "id_pago_pension" },
-          { "data": "concepto" },
-          { "data": "mes" },
-          { "data": "fecha_formateada2" },
-          { "data": "sub_total" }
-      ],
-      "language": idioma_espanol,
-      select: true
-  });
+                if (json.total_sub_total !== undefined) {
+                    $('#total_sub_total').text(json.total_sub_total.toFixed(2));
+                } else {
+                    $('#total_sub_total').text('0.00');  // Valor por defecto si no está definido
+                }
+                return json.data;
+            }
+        },
+        "columns": [
+            { "data": "id_pago_pension" },
+            { "data": "concepto" },
+            { "data": "mes" },
+            { "data": "fecha_formateada2" },
+            { "data": "sub_total" },
+            {
+                "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir boleta'><i class='fa fa-print'></i> Boleta</button>",
+                "orderable": false // Evita la ordenación en esta columna
+            }
+        ],
+        "language": idioma_espanol,
+        select: true
+    });
 
-  tbl_pagos.on('draw.td', function() {
-      var PageInfo = $("#tabla_pagos2").DataTable().page.info();
-      tbl_pagos.column(0, { page: 'current' }).nodes().each(function(cell, i) {
-          cell.innerHTML = i + 1 + PageInfo.start;
-      });
-  });
+    // Cambiar el evento a 'draw.dt' para corregir el error
+    tbl_pagos.on('draw.dt', function() {
+        var PageInfo = tbl_pagos.page.info();
+        tbl_pagos.column(0, { page: 'current' }).nodes().each(function(cell, i) {
+            if (cell) {  // Verifica que cell no sea nulo
+                cell.innerHTML = i + 1 + PageInfo.start;
+            }
+        });
+    });
 }
-
-
 
 $('#tabla_pago_pension').on('click','.mostrar',function(){
   var data = tbl_pago_pension.row($(this).parents('tr')).data();
@@ -383,3 +388,21 @@ $("#modal_ver_pagos").modal('show');
 
 })
 
+$('#tabla_pagos2').on('click','.imprimir',function(){
+  var data = tbl_pagos.row($(this).parents('tr')).data();
+
+  if(tbl_pagos.row(this).child.isShown()){
+      var data = tbl_pagos.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/boleta_pago.php?codigo=" + encodeURIComponent(data.id_matri) + "&idpagopen=" + encodeURIComponent(data.id_pago_pension)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "BOLETA DE PAGO", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})

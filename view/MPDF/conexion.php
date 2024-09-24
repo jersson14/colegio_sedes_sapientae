@@ -1,3 +1,3 @@
 <?php
-$mysqli = new mysqli("localhost","root","","sistema_tramite");
+$mysqli = new mysqli("localhost","root","","colegio");
 ?>
