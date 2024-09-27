@@ -1,5 +1,5 @@
 //LISTADO DE ROLES
-var tbl_horarios;
+var tbl_horario;
 function listar_horarios(){
     tbl_horario = $("#tabla_horario").DataTable({
       "ordering":false,   
@@ -74,7 +74,7 @@ function listar_horarios(){
             }   
         },
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp; <button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
 
     ],
 
@@ -690,4 +690,23 @@ $("#modal_ver_horario").modal('show');
 })
 
 
+
+$('#tabla_horario').on('click','.print',function(){
+  var data = tbl_horario.row($(this).parents('tr')).data();
+
+  if(tbl_horario.row(this).child.isShown()){
+      var data = tbl_horario.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/horario.php?codigo=" + encodeURIComponent(data.id_aula)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "HORARIOS POR AULA", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})
 

@@ -74,7 +74,7 @@ function listar_pago_pension(){
         {"data":"FECHA_pago"},
 
 
-        {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+        {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='kardex btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
         
     ],
 
@@ -244,6 +244,10 @@ function Registrar_Pago() {
   let arreglo_pension = new Array();
   let arreglo_subtotal = new Array();
 
+  let matricula = document.getElementById('txt_id_matricula').value;
+  let fecha = document.getElementById('fecha_pago').value;
+
+
   $("#tabla_pago tbody#tbody_tabla_pago tr").each(function () {
     arreglo_id.push($(this).find('td').eq(0).text());
     arreglo_concepto.push($(this).find('td').eq(1).text());
@@ -272,14 +276,39 @@ function Registrar_Pago() {
       monto: monto
     }
   }).done(function (resp) {
-    if (resp == 1) {
-      Swal.fire("Mensaje de Confirmación", "Nueva pensión registrada satisfactoriamente!!!", "success")
-        .then((value) => {
+    if(resp==1){
+      Swal.fire({
+        title: 'Se registro el pago correctamente<b>',
+        text: "Datos de Confirmación",
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Imprimir Boleta!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var url = "../view/MPDF/REPORTE/pago.php?codigo="+ encodeURIComponent(matricula) + "&fecha=" + encodeURIComponent(fecha) + "#zoom=100%";;
+
+          // Abrir una nueva ventana con la URL construida
+          var newWindow = window.open(url, "PAGO", "scrollbars=NO");
+          
+          // Asegurarse de que la ventana se abre en tamaño máximo
+          if (newWindow) {
+              newWindow.moveTo(0, 0);
+              newWindow.resizeTo(screen.width, screen.height);
+          }           
+           $("#modal_registro").modal('hide');
+           tbl_pago_pension.ajax.reload();
+           tbl_pago_pension.clear().draw();
+
+
+        }else{
+          $("#modal_registro").modal('hide');
           tbl_pago_pension.ajax.reload();
           tbl_pago_pension.clear().draw();
-          $("#modal_registro").modal('hide');
-          document.getElementById('select_curso').value = "";
-        });
+
+        }
+      })
     } else if (resp == 2) {
       Swal.fire("Mensaje de Advertencia", "El mes que desea pagar ya existe en la base de datos, verifique por favor", "warning");
     } else {
@@ -360,6 +389,10 @@ $("#modal_ver_pagos").modal('show');
   listar_pagos(data.id_matri);
 
 })
+
+
+
+
 $('#tabla_pagos2').on('click','.imprimir',function(){
   var data = tbl_pagos.row($(this).parents('tr')).data();
 
@@ -378,4 +411,24 @@ $('#tabla_pagos2').on('click','.imprimir',function(){
   }
 
 })
+
+$('#tabla_pago_pension').on('click','.kardex',function(){
+  var data = tbl_pago_pension.row($(this).parents('tr')).data();
+
+  if(tbl_pago_pension.row(this).child.isShown()){
+      var data = tbl_pago_pension.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/kardex.php?codigo=" + encodeURIComponent(data.id_matri)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "KARDEX DE PAGO", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})
+
 

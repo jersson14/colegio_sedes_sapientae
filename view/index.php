@@ -414,7 +414,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','boletas/view_boletas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Boletas
@@ -948,7 +948,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div><!-- /.container-fluid -->
           </div>
         </div>
+        <div class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- /.col-md-6 -->
+              <div class="col-lg-12">
+                <div class="card-primary">
+                  <div class="card-header">
+                    <h5 class="m-0" style="font-family:Arial;text-align:center"><i class="fas fa-school"></i><b> DATOS INSTITUCIÓN</b< /h5>
+                  </div>
+                  <div class="table-responsive" style="text-align:center">
+                    <div class="card-body">
+                      <table id="tabla_empresa" class="table table-striped table-bordered" style="width:100%">
+                        <thead style="background-color:#023D77;color:white;">
+                          <tr>
+                            <th style="text-align:center">Nro.</th>
+                            <th style="text-align:center">Logo</th>
+                            <th style="text-align:center">Nombre</th>
+                            <th style="text-align:center">Email</th>
+                            <th style="text-align:center">Código</th>
+                            <th style="text-align:center">Teléfono</th>
+                            <th style="text-align:center">Dirección</th>
+                            <th style="text-align:center">Acciones</th>
 
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.col-md-6 -->
+              </div>
+              <!-- /.row -->
+            </div><!-- /.container-fluid -->
+          </div>
+        </div>
         <!-- /.content -->
     </div>
     <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -978,7 +1012,82 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE LA INSTITUCIÒN</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12 form-group" style="color:red">
+                <h6><b>Campos Obligatorios (*)</b></h6>
+              </div><br>
+              <div class="col-6 form-group">
+                <input type="text" id="txt_id_empresa" hidden>
+                <label for="">Nombre(*):</label>
+                <input type="text" class="form-control" id="txt_nombre" maxlenght="8">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Email(*):</label>
+                <input type="text" class="form-control" id="txt_email">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Código(*):</label>
+                <input type="text" class="form-control" id="txt_codigo">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Teléfono / Celular(*):</label>
+                <input type="text" class="form-control" id="txt_telefono" maxlenght="9" onkeypress="return soloNumeros(event)">
+              </div>
+              <div class="col-12 form-group">
+                <label for="">Dirección(*):</label>
+                <input type="text" class="form-control" id="txt_direccion">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Empleado()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="modal fade" id="modal_editar_foto" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DE LA INSTITUCIÓN: </b><label for="" id="lb_empresa"></label></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <input type="text" id="fotoactual" hidden>
+                <input type="text" id="txt_idempresa_foto" hidden>
+                <label for="checkboxSuccess2" style="align:justify;color:red">
+                  OJO: Una vez cambiado el logo, tambien se cambiara el logo en los reportes y ticket.
+                </label>
+                <label for="">Subir Foto:</label>
+                <input class="form-control" type="file" id="txt_foto">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Foto_Empresa()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
     <!-- /.content-wrapper -->
   <?php
       }
@@ -1425,6 +1534,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
 
 
 
@@ -1432,7 +1542,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script>
   $(document).ready(function() {
     Traer_Datos();
-
+    listar_empresa();
     listar_comunicado_dash();
     listar_tareas_menu();
     listar_tareas_menu_estudiante();

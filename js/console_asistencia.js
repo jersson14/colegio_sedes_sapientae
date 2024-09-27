@@ -66,7 +66,7 @@ function listar_asistencia(){
                 }else if(data=='PRIMARIA'){
                 return '<span class="badge bg-success">PRIMARIA</span>';
                 }else if(data=='SECUNDARIA'){
-                  return '<span class="badge bg-success">PRIMARIA</span>';
+                  return '<span class="badge bg-success">SECUNDARIA</span>';
                   }else{
                 return '<span class="badge bg-dark">TODOS</span>';
                 }
@@ -163,8 +163,8 @@ function listar_asistencia_fechas(){
               }else if(data=='PRIMARIA'){
               return '<span class="badge bg-success">PRIMARIA</span>';
               }else if(data=='SECUNDARIA'){
-                return '<span class="badge bg-success">PRIMARIA</span>';
-                }else{
+                return '<span class="badge bg-success">SECUNDARIA</span>';
+              }else{
               return '<span class="badge bg-dark">TODOS</span>';
               }
       }

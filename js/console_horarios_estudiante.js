@@ -417,3 +417,22 @@ $("#modal_ver_horario").modal('show');
 
 
 
+$('#tabla_horario').on('click','.print',function(){
+  var data = tbl_horario.row($(this).parents('tr')).data();
+
+  if(tbl_horario.row(this).child.isShown()){
+      var data = tbl_horario.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/horario.php?codigo=" + encodeURIComponent(data.id_aula)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "HORARIOS POR AULA", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})
+

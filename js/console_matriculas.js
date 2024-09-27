@@ -81,7 +81,7 @@ function listar_matriculados(){
         {"data":"provincia"},
         {"data":"departamento"},
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;"},
         
     ],
 
@@ -413,3 +413,25 @@ $('#tabla_matricula').on('click','.delete',function(){
       }
     })
   })
+
+
+  $('#tabla_matricula').on('click','.cedula',function(){
+    var data = tbl_matricula.row($(this).parents('tr')).data();
+  
+    if(tbl_matricula.row(this).child.isShown()){
+        var data = tbl_matricula.row(this).data();
+    }
+    var url = "../view/MPDF/REPORTE/cedula.php?codigo=" + encodeURIComponent(data.id_matricula)+ "#zoom=100%";
+  
+    // Abrir una nueva ventana con la URL construida
+    var newWindow = window.open(url, "CEDULA DE MATRICULA", "scrollbars=NO");
+    
+    // Asegurarse de que la ventana se abre en tamaño máximo
+    if (newWindow) {
+        newWindow.moveTo(0, 0);
+        newWindow.resizeTo(screen.width, screen.height);
+    }
+  
+  })
+  
+  

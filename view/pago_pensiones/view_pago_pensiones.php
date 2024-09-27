@@ -73,6 +73,7 @@
             </div>
             <div class="col-6 form-group">
               <label for="">Concepto<b style="color:red">(*)</b>:</label>
+              <input type="date" id="fecha_pago" hidden>
               <input type="text" class="form-control" id="txt_id_matricula" hidden>
               <select class="form-control" id="select_concepto" style="width:100%">
                 <option value="PENSION">PENSION</option>
@@ -207,6 +208,21 @@
     $('#modal_registro').on('shown.bs.modal', function() {
       $('#txt_matricula').trigger('focus')
     })
+    var n = new Date();
+var y = n.getFullYear();
+var m = n.getMonth() + 1;  // Los meses empiezan desde 0, por eso se suma 1
+var d = n.getDate();
+
+// Si el día o el mes es menor a 10, se le agrega un '0' al inicio
+if (d < 10) {
+    d = '0' + d;
+}
+if (m < 10) {
+    m = '0' + m;
+}
+
+// Establece el valor del campo de fecha con el formato YYYY-MM-DD
+document.getElementById('fecha_pago').value = y + "-" + m + "-" + d;
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -251,4 +267,7 @@
         }
       });
     }
+
+
+
   </script>

@@ -8,9 +8,7 @@ $html = '';
 $codigo = $mysqli->real_escape_string($_GET['codigo']);
 $idpagopen = $mysqli->real_escape_string($_GET['idpagopen']);
 
-
-
-$query="    SELECT
+	$query="SELECT
 	pensiones.id_nivel_academico, 
 	pensiones.mes, 
 	pago_pensiones.id_pago_pension, 
@@ -28,7 +26,11 @@ $query="    SELECT
 	alumnos.alum_apemat, 
 	CONCAT_WS(' ',alumnos.alum_nombre,alumnos.alum_apepat,alumnos.alum_apemat) AS Estudiante, 
 	empresa.emp_razon, 
-	empresa.emp_logo
+	empresa.emp_logo, 
+	aulas.Grado, 
+	nivel_academico.Nivel_academico, 
+	seccion.seccion_nombre,
+  CONCAT_WS(' - ',Grado,seccion_nombre) AS grado
 FROM
 	pago_pensiones
 	LEFT JOIN
@@ -51,8 +53,20 @@ FROM
 	empresa
 	ON 
 		usuario.empresa_id = empresa.empresa_id
-WHERE
-	pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
+	INNER JOIN
+	aulas
+	ON 
+		matricula.id_aula = aulas.Id_aula
+	INNER JOIN
+	nivel_academico
+	ON 
+		aulas.id_nivel_academico = nivel_academico.Id_nivel
+	INNER JOIN
+	seccion
+	ON 
+		aulas.id_seccion = seccion.seccion_id
+	WHERE
+		pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
 //CONVERSIÓN DE FECHA
 
 
@@ -75,7 +89,7 @@ $html.='
 <table>
     <tr>
         <td align="center">
-         <img style="border: 1.5px solid black; padding: 10px;border-radius: 25px;" width="100%" align="center" src="../../../'.$row1['emp_logo'].'">
+         <img style="border: 1.5px solid black; padding: 10px;border-radius: 25px;" width="auto" align="center" src="../../../'.$row1['emp_logo'].'">
         </td>
     </tr>
 </table>
@@ -84,7 +98,9 @@ $html.='
 <h2 style="text-align: center;margin: 0;text-decoration: underline;">BOLETA DE PAGO</h2>
 <div style="text-align:center">
 <br><b>DNI: </b><b>'.utf8_encode($row1['alum_dni']).'</b>
-<br><b>Estudiante: </b>'.utf8_encode($row1['Estudiante']).'<hr>
+<br><b>Estudiante: </b>'.utf8_encode($row1['Estudiante']).'
+<br><b>Nivel académico: </b>'.utf8_decode($row1['Nivel_academico']).'
+<br><b>Grado - Sección: </b>'.$row1['grado'].'<hr>
 
 <table width="100%" style="margin: 0;border-bottom:1px solid;border-left:0px;border-right:0px;border-top:0px;">
 <thead>
@@ -184,7 +200,7 @@ $html.="</tr><tbody>
 <b style='text-align: center;'>Dirección: </b>".utf8_encode($row2['emp_direccion'])."<br>
    <br> <b style='text-align: center;'>Abancay-Apurímac-Perú</b></div>
 </div>
-<br><br><br><br>
+<br><br>
 <p style='text-align:center'>(Esta boleta de pago puede ser remplazada por una original en el colegio)</p>
 ";
 }
@@ -192,7 +208,7 @@ $html.="</tr><tbody>
 
 
 $mpdf = new \Mpdf\Mpdf(
-    ['mode' => 'UTF-8','format' => [130,200]]
+    ['mode' => 'UTF-8','format' => [130,210]]
 );
 $mpdf->WriteHTML($html);
 $mpdf->Output();
