@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"><b>MANTENIMIENTO DE NOTAS POR AULAS</b></h1>
+                <h1 class="m-0"><b>MANTENIMIENTO DE BOLETA DE NOTAS POR AULAS</b></h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -27,7 +27,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de alumnos por aulas</b></h3>
+                        <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de boletas por aulas</b></h3>
                     </div>
                     <div class="table-responsive" style="text-align:left">
                         <div class="card-body">

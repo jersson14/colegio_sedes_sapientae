@@ -137,16 +137,16 @@ $asistencia = $resultado_asistencia->fetch_assoc();
 
 // Generar HTML para el PDF
 $html = '
-<style>
-    body { font-family: Arial, sans-serif; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header img { max-width: 150px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    th, td { border: 1px solid black; padding: 5px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    .competencia { font-weight: bold; }
-    .nota { text-align: center; }
-</style>
+ <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 150px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10px; } /* Cambia el tamaño de fuente aquí */
+        th, td { border: 1px solid black; padding: 8px; text-align: left; line-height: 1.5; } /* Aumentar el espaciado */
+        th { background-color: #f2f2f2; }
+        .curso { font-weight: bold; }
+        .nota { text-align: center; }
+    </style>
 <div class="header">
     <img src="../../../' . $datos_estudiante['emp_logo'] . '" alt="Logo">
     <h3><u>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE '.$datos_estudiante['año_escolar'].'</u></h3>
@@ -192,10 +192,10 @@ $html = '
         </td>
     </tr>
     <tr>
-        <th>Área</th>
-        <th>Competencia</th>
-        <th>Nota</th>
-        <th>Conclusión Descriptiva</th>
+        <th style="text-align:center;">Área</th>
+        <th style="text-align:center;">Competencia</th>
+        <th style="text-align:center;">Nota</th>
+        <th style="text-align:center;">Conclusión Descriptiva</th>
     </tr>';
 
     $current_area = '';
@@ -236,8 +236,8 @@ $html .= '
 <h3>Evaluación de Padres de Familia</h3>
 <table>
     <tr>
-        <th>Criterio</th>
-        <th>Nota</th>
+        <th style="text-align:center;">Criterio</th>
+        <th style="text-align:center;">Nota</th>
     </tr>';
 
 while ($row = $resultado_notas_padres->fetch_assoc()) {
@@ -254,10 +254,10 @@ $html .= '
 <h3>Asistencia y Puntualidad</h3>
 <table>
     <tr>
-        <th>Presentes</th>
-        <th>Tardanzas</th>
-        <th>Faltas</th>
-        <th>Justificadas</th>
+        <th style="text-align:center;">Presentes</th>
+        <th style="text-align:center;">Tardanzas</th>
+        <th style="text-align:center;">Faltas</th>
+        <th style="text-align:center;">Justificadas</th>
     </tr>
     <tr>
         <td class="nota">' . $asistencia['total_asistencia_presente'] . '</td>

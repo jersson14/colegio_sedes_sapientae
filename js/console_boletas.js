@@ -236,3 +236,23 @@ $('#tabla_notas').on('click','.print_bimestre',function(){
     window.open(url, "Boleta de notas por bimestre", "scrollbars=NO,width=" + width + ",height=" + height + ",top=0,left=0");
   
   }
+
+
+  $('#tabla_notas').on('click','.print_total',function(){
+    var data = tbl_notas.row($(this).parents('tr')).data();
+  
+    if(tbl_notas.row(this).child.isShown()){
+        var data = tbl_notas.row(this).data();
+    }
+    var url = "../view/MPDF/REPORTE/notas_general.php?id_matricula=" + encodeURIComponent(data.id_matricula)+ "#zoom=100%";
+  
+    // Abrir una nueva ventana con la URL construida
+    var newWindow = window.open(url, "BOLETA GENERAL", "scrollbars=NO");
+    
+    // Asegurarse de que la ventana se abre en tamaño máximo
+    if (newWindow) {
+        newWindow.moveTo(0, 0);
+        newWindow.resizeTo(screen.width, screen.height);
+    }
+  
+  })
