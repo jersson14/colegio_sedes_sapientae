@@ -14,11 +14,13 @@ function listar_empresa(){
      
       "columns":[
         {"defaultContent":""},
-        {"data":"emp_logo",
-            render: function(data,type,row){
-                return '<img src="../'+data+'" class="img img-responsive" style="width: 80px">';
-            }   
-         },
+        {
+          "data": "emp_logo",
+          render: function(data, type, row) {
+              return '<img src="../' + data + '" class="img img-responsive" style="width: 120px; height: auto;">';
+          }
+      },
+      
         {"data":"emp_razon"},
         {"data":"emp_email"},
         {"data":"emp_cod",

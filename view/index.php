@@ -966,7 +966,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <th style="text-align:center">Logo</th>
                             <th style="text-align:center">Nombre</th>
                             <th style="text-align:center">Email</th>
-                            <th style="text-align:center">Código</th>
+                            <th style="text-align:center">Código Modular</th>
                             <th style="text-align:center">Teléfono</th>
                             <th style="text-align:center">Dirección</th>
                             <th style="text-align:center">Acciones</th>
