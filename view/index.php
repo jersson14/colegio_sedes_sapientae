@@ -491,42 +491,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </li>
                 </ul>
               </li>
-              <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>REPORTE DE TRÁMITES</b></li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-file-signature"></i>
-                  <p>
-                    Reporte de Trámites
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_area.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>Reporte por Fechas y Área
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>
-                        Reporte por Fechas y Estado
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_tipodoc.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>
-                        Reporte por Fechas y Tipo de Documento
-                      </p>
-                    </a>
-                  </li>
-
-                </ul>
-              </li>
+            
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
@@ -564,9 +529,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
-                  <i class="nav-icon fas fa-file-pdf"></i>
+                  <i class="nav-icon fas fa-film"></i>
                   <p>
-                    Manual de usuario
+                    Video tutorial
                   </p>
                 </a>
               </li>
