@@ -167,6 +167,58 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function listar_total_estudiantes(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_ESTUDIANTES()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_docentes(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_DOCENTES()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_administrativos(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_ADMINISTRATIVOS()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_usuarios(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_USUARIOS()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
     }
 
 

@@ -134,6 +134,8 @@
         public function Cargar_horas($id,$año){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_HORAS(?,?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->bindParam(2,$año);
@@ -149,6 +151,8 @@
         public function Cargar_Id_Detalle($id,$año){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_ID_DETALLE_HORARIO(?,?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->bindParam(2,$año);

@@ -183,26 +183,28 @@ function Cargar_Select_Nivelaca(){
   //TRAENDO DATOS DE LA AULAS
   function Cargar_Select_Aula(id){
     $.ajax({
-      "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
-      type:'POST',
-      data:{
-        id:id
-      }
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-      if(data.length>0){
-        let cadena ="";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][1]+"'>"+data[i][2]+"</option>";    
+        "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
+        type:'POST',
+        data: {
+            id: id  // Ensure this matches the parameter name expected by the PHP script
+        },
+        dataType: 'json',  // Expect JSON response
+        success: function(data){
+            if(data.length > 0){
+                let cadena = "";
+                for (let i = 0; i < data.length; i++) {
+                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                }
+                $('#select_aula').html(cadena);
+            } else {
+                $('#select_aula').html("<option value=''>No hay secciones en la base de datos</option>");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + status + " - " + error);
+            $('#select_aula').html("<option value=''>Error al cargar las secciones</option>");
         }
-          document.getElementById('select_aula').innerHTML=cadena;
-      }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
-        document.getElementById('select_aula').innerHTML=cadena;
-
-     }
-})
-
+    });
 }
 
 

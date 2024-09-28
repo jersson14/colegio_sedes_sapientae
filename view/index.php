@@ -126,7 +126,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     }
     ?>
     <!-- /.navbar -->
-    <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>">
+    <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>" hidden>
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -158,7 +158,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
             <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
+                <a href="index.php" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
                     Dashboard
@@ -848,14 +848,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- small box -->
                         <div class="small-box bg-info">
                           <div class="inner">
-                            <b>Total de Agentes</b>
-                            <h3 id="total_empleados"><sup style="font-size: 20px"></sup></h3>
+                            <b>Total de Estudiantes</b>
+                            <h3 id="total_estudiantes"><sup style="font-size: 20px"></sup></h3>
 
                           </div>
                           <div class="icon">
                             <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','empleado/view_empleado.php')" class="small-box-footer"><b>Ver Empleados</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','alumnos/view_alumnos.php')" class="small-box-footer"><b>Ver estudiantes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
@@ -863,14 +863,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- small box -->
                         <div class="small-box bg-success">
                           <div class="inner">
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocpendientes"><sup style="font-size: 20px"></sup></h3>
+                          <b>Total de Docentes</b>
+                          <h3 id="total_docentes"><sup style="font-size: 20px"></sup></h3>
 
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                          <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Pendientes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','docentes/view_docentes.php')" class="small-box-footer"><b>Ver docentes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
@@ -879,14 +879,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="small-box bg-warning">
                           <div class="inner">
 
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocpaceptados"><sup style="font-size: 20px"></sup></h3>
+                            <b>Total de Administrativos</b>
+                            <h3 id="total_administrativos"><sup style="font-size: 20px"></sup></h3>
 
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                          <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Aceptados</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','personal_admin/view_personal_admin.php')" class="small-box-footer"><b>Ver administrativos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
@@ -894,14 +894,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- small box -->
                         <div class="small-box bg-danger">
                           <div class="inner">
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocfinalizado"><sup style="font-size: 20px"></sup></h3>
+                            <b>Total de Usuarios</b>
+                            <h3 id="total_usuarios"><sup style="font-size: 20px"></sup></h3>
 
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                          <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Finalizados</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="small-box-footer"><b>Ver usuarios</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                     </div>
@@ -1526,11 +1526,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../plantilla/dist/js/adminlte.min.js"></script>
-<script src="../js/console_comunicados.js?rev=<?php echo time(); ?>"></script>
 
 <script src="../utilitario/DataTables/datatables.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="../js/console_comunicados.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
@@ -1546,6 +1547,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     listar_comunicado_dash();
     listar_tareas_menu();
     listar_tareas_menu_estudiante();
+    Total_estudiantes();
+    Total_docentes();
+    Total_administrativos();
+    Total_usuarios();
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {
       mostrarSiguienteModal();

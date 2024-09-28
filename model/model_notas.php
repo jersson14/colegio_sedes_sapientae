@@ -157,13 +157,13 @@
         public function Cargar_bimestres_profesor($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_BIMESTRE_DOCENTE(?)";
+            $arreglo = [];
             $query  = $c->prepare($sql);
             $query->bindParam(1, $id);
             $query->execute();
             $resultado = $query->fetchAll();
         
-            // Inicializa la variable $arreglo como un array vacío
-            $arreglo = [];
+     
         
             // Si hay resultados, se agregan al arreglo
             foreach($resultado as $resp){
@@ -248,6 +248,23 @@
         public function Listar_criterios_nota_mostrar_estudiante($matri,$bime,$id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_ESTUDIANTE(?,?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$matri);
+            $query->bindParam(2,$bime);
+            $query->bindParam(3,$id);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_criterios_nota_mostrar_profesor($matri,$bime,$id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PROFESOR(?,?,?)";
             $arreglo = array();
             $query  = $c->prepare($sql);
             $query->bindParam(1,$matri);

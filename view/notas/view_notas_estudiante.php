@@ -1,4 +1,4 @@
-V<script src="../js/console_notas_estudiante.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_notas_estudiante.js?rev=<?php echo time(); ?>"></script>
 <link rel="stylesheet" href="../plantilla/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
 <!-- Content Header (Page header) -->
@@ -203,7 +203,6 @@ V<script src="../js/console_notas_estudiante.js?rev=<?php echo time(); ?>"></scr
             $('.js-example-basic-single').select2();
             Cargar_Select_Grado();
             Cargar_Año();
-            Cargar_Bimestre_cargados();
         });
         $("#select_nivel").change(function() {
             var id = $("#select_nivel").val();

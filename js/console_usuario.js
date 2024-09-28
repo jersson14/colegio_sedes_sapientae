@@ -466,3 +466,68 @@ function Traer_Datos() {
 
 
 
+function Total_estudiantes(){
+  $.ajax({
+      "url":"../controller/usuario/controlador_total_estudiantes.php",
+      type:'POST'
+      }).done(function(resp){
+      var data = JSON.parse(resp);
+      var cadena="";
+      if(data.length>0){
+        $("#total_estudiantes").html(data[0][0]);
+      }
+      else{
+          return Swal.fire("Mensaje de Error","No se pudo traer los resultados","error");
+      }
+  })
+}
+
+function Total_docentes(){
+  $.ajax({
+      "url":"../controller/usuario/controlador_total_docentes.php",
+      type:'POST'
+      }).done(function(resp){
+      var data = JSON.parse(resp);
+      var cadena="";
+      if(data.length>0){
+        $("#total_docentes").html(data[0][0]);
+      }
+      else{
+          return Swal.fire("Mensaje de Error","No se pudo traer los resultados","error");
+      }
+  })
+}
+
+
+function Total_administrativos(){
+  $.ajax({
+      "url":"../controller/usuario/controlador_total_administrativos.php",
+      type:'POST'
+      }).done(function(resp){
+      var data = JSON.parse(resp);
+      var cadena="";
+      if(data.length>0){
+        $("#total_administrativos").html(data[0][0]);
+      }
+      else{
+          return Swal.fire("Mensaje de Error","No se pudo traer los resultados","error");
+      }
+  })
+}
+
+
+function Total_usuarios(){
+  $.ajax({
+      "url":"../controller/usuario/controlador_total_usuarios.php",
+      type:'POST'
+      }).done(function(resp){
+      var data = JSON.parse(resp);
+      var cadena="";
+      if(data.length>0){
+        $("#total_usuarios").html(data[0][0]);
+      }
+      else{
+          return Swal.fire("Mensaje de Error","No se pudo traer los resultados","error");
+      }
+  })
+}

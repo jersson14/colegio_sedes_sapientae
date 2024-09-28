@@ -35,6 +35,8 @@
         public function Cargar_Select_Nivel(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_NIVELACA()";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->execute();
             $resultado = $query->fetchAll();
@@ -47,6 +49,7 @@
         public function Cargar_Aula($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_AULA_ID(?)";
+            $arreglo = array();
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->execute();

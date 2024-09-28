@@ -85,7 +85,7 @@ function listar_notas_todos(){
 
 
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar notas'><i class='fa fa-eye'></i> Visualizar notas por bimestre</button>&nbsp;<button style='margin-right: 10px;' class='print btn btn-warning btn-sm' title='Imprimir libretas'><i class='fa fa-print'></i> Imprimir Libreta</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar notas'><i class='fa fa-eye'></i> Visualizar notas por bimestre</button>"},
         
     ],
 
@@ -138,30 +138,34 @@ function Cargar_Año(){
 
 
 
-  function Cargar_Bimestre_cargados(id){
-    $.ajax({
-      "url":"../controller/notas/controlador_cargar_periodos_cargados_profesor.php",
-      type:'POST',
-      data:{
-        id:id
-      }
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-
-      if(data.length>0){
-        let cadena ="";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][2]+"</option>";    
-        }
-          document.getElementById('select_bimestre_ver').innerHTML=cadena;
-
-      }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
-        document.getElementById('select_bimestre_ver').innerHTML=cadena;
-
-      }
-    })
+function Cargar_Bimestre_cargados(id) {
+  if (id === undefined || id === null) {
+      console.error("El id es indefinido o nulo.");
+      return; // Salir de la función si el id no es válido
   }
+
+  $.ajax({
+      "url": "../controller/notas/controlador_cargar_periodos_cargados_estudiante.php",
+      type: 'POST',
+      data: {
+          id: id
+      }
+  }).done(function(resp) {
+      let data = JSON.parse(resp);
+      let cadena = "";
+
+      if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+              cadena += "<option value='" + data[i][0] + "'>" + data[i][2] + "</option>";
+          }
+          document.getElementById('select_bimestre_ver').innerHTML = cadena;
+      } else {
+          cadena += "<option value=''>No hay secciones en la base de datos</option>";
+          document.getElementById('select_bimestre_ver').innerHTML = cadena;
+      }
+  });
+}
+
 //TRAENDO DATOS DE LA NIVEL ACADEMICO
 
 
@@ -372,11 +376,4 @@ tablaCargadaPadres = true;
 // Evento para el botón que lista las notas
 
 // Evento para cuando se abre el modal
-$('#modal_notas_ver_padres').on('show.bs.modal', function (e) {
-    // Solo listar las notas si la tabla no ha sido cargada
-    if (!tablaCargada) {
-        listar_notas_ver_padres();
-    }
-});
-
 

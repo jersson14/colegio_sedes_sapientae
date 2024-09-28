@@ -112,8 +112,8 @@ function Cargar_Select_Grado(){
         var id =$("#select_aula").val();
         Traernivel(id);
 
-        var id =$("#select_aula_editar").val();
-        Traernivel(id);
+        var id2 =$("#select_aula_editar").val();
+        Traernivel(id2);
       }else{
         cadena+="<option value=''>No se encontraron regitros</option>";
         $('#select_aula').html(cadena);

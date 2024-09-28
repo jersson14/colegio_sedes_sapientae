@@ -406,3 +406,24 @@ $('#tabla_pagos2').on('click','.imprimir',function(){
   }
 
 })
+
+
+
+$('#tabla_pago_pension').on('click','.imprimir',function(){
+  var data = tbl_pago_pension.row($(this).parents('tr')).data();
+
+  if(tbl_pago_pension.row(this).child.isShown()){
+      var data = tbl_pago_pension.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/kardex.php?codigo=" + encodeURIComponent(data.id_matri)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "KARDEX DE PAGO", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})

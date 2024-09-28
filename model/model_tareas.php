@@ -103,6 +103,8 @@
         public function Cargar_Id_Detalle_profesor($id,$idpro){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_ID_DETALLE_PROFESOR(?,?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->bindParam(2,$idpro);
@@ -119,6 +121,8 @@
         public function Cargar_Id_Detalle_estudiante($id,$idestu){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_ID_DETALLE_ESTUDIANTE(?,?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->bindParam(2,$idestu);
@@ -134,6 +138,8 @@
         public function Cargar_aulas_por_estudiante($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_AULAS_POR_ESTUDIANTE(?)";
+            $arreglo = array();
+
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
             $query->execute();

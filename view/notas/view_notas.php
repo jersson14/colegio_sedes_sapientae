@@ -418,10 +418,16 @@
             Cargar_Bimestre();
             Cargar_Bimestre_cargados();
         });
-        $("#select_nivel").change(function() {
-            var id = $("#select_nivel").val();
-            Cargar_Select_Aula(id);
-        });
+       
+    $("#select_nivel").change(function() {
+      var id = $("#select_nivel").val();
+      Cargar_Select_Aula(id);
+    });
+
+    $("#select_nivel_editar").change(function() {
+      var id = $("#select_nivel_editar").val();
+      Cargar_Select_Aula(id);
+    });
 
         $('#modal_registro').on('shown.bs.modal', function() {
             $('#txt_matricula').trigger('focus')
