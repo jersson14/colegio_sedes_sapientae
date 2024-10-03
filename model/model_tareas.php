@@ -17,7 +17,22 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_tareas_filtros($aula,$fecha){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TAREAS_FILTRO(?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$aula);
+            $query->bindParam(2,$fecha);
 
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
 
         public function Listar_alumnos_tareas($año,$grado,$id){
             $c = conexionBD::conexionPDO();
@@ -135,6 +150,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+       
         public function Cargar_aulas_por_estudiante($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_AULAS_POR_ESTUDIANTE(?)";

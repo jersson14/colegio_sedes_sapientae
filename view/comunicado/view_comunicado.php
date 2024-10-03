@@ -29,6 +29,30 @@
                 <h3 class="card-title"><i class="nav-icon fas fa-bullhorn"></i>&nbsp;&nbsp;<b>Listado de Comunicados</b></h3>
                 <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
               </div>
+              <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3 form-group">
+                                    <label for="">Fecha inicio</label><b style="color:red">(*)</b>:</label>
+                                    <input type="date" class="form-control" id="txtfechainicio">
+
+                                </div>
+                                <div class="col-3 form-group">
+                                    <label for="">Fecha final<b style="color:red">(*)</b>:</label>
+                                    <input type="date" class="form-control" id="txtfechafin">
+
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_comunicado_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar comunicados</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_comunicado()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
               <div class="table-responsive" style="text-align:center">
               <div class="card-body">
               <table id="tabla_comunicados" class="table table-striped table-bordered" style="width:100%">
@@ -299,6 +323,19 @@
             $('#select_grado').select2(); // Reaplicar Select2 para reflejar el estado deshabilitado
         }
     });
+    var n = new Date();
+var y= n.getFullYear();
+var m= n.getMonth()+1;
+var d= n.getDate();
+if(d<10){
+    d='0' + d;
+}
+if(m<10){
+    m='0' + m;
+
+}
+document.getElementById('txtfechainicio').value = y + "-" + m + "-" + d;
+document.getElementById('txtfechafin').value = y + "-" + m + "-" + d;
 </script>
 
 <script>

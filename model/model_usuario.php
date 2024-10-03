@@ -219,6 +219,22 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_usuarios_filtro($idrol){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_USUARIOS_FILTRO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$idrol);
+
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
     }
 
 

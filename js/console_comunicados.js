@@ -105,6 +105,120 @@ tbl_comunicados.on('draw.td',function(){
   });
 });
 }
+
+function listar_comunicado_filtro(){
+  let fechaini = document.getElementById('txtfechainicio').value;
+  let fechafin = document.getElementById('txtfechafin').value;
+  tbl_comunicados = $("#tabla_comunicados").DataTable({
+      "ordering":false,   
+      "bLengthChange":true,
+      "searching": { "regex": false },
+      "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+      "pageLength": 10,
+      pagingType: 'full_numbers',
+      scrollCollapse: true,
+      responsive: true,
+      "destroy":true,
+      "async": false ,
+      "processing": true,
+      "ajax":{
+          "url":"../controller/comunicados/controlador_listar_comunicados_filtro.php",
+          type:'POST',
+          data:{
+            fechaini:fechaini,
+            fechafin:fechafin
+          }
+      },
+      dom: 'Bfrtip', 
+     
+      buttons:[ 
+        
+    {
+      extend:    'excelHtml5',
+      text:      '<i class="fas fa-file-excel"></i> ',
+      titleAttr: 'Exportar a Excel',
+      
+      filename: function() {
+        return  "LISTA DE COMUNICADOS"
+      },
+        title: function() {
+          return  "LISTA DE COMUNICADOS" }
+  
+    },
+    {
+      extend:    'pdfHtml5',
+      text:      '<i class="fas fa-file-pdf"></i> ',
+      orientation: 'landscape',
+      pageSize: 'LEGAL',
+      titleAttr: 'Exportar a PDF',
+      filename: function() {
+        return  "LISTA DE COMUNICADOS"
+      },
+    title: function() {
+      return  "LISTA DE COMUNICADOS"
+    }
+  },
+    {
+      extend:    'print',
+      text:      '<i class="fa fa-print"></i> ',
+      titleAttr: 'Imprimir',
+      
+    title: function() {
+      return  "LISTA DE COMUNICADOS"
+  
+    }
+    }],
+      "columns":[
+        {"defaultContent":""},
+        {"data":"tipo",
+          render: function(data,type,row){
+            if(data=='GENERAL'){
+            return '<span class="badge bg-success">GENERAL</span>';
+            }else{
+            return '<span class="badge bg-warning">POR GRADO</span>';
+            }
+    }   
+        },
+        {"data":"Grado"},
+
+        {"data":"titulo"},
+        {"data":"descripcion"},
+        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button>"},
+
+        {"data":"estado",
+            render: function(data,type,row){
+                    if(data=='ACTIVO'){
+                    return '<span class="badge bg-success">ACTIVO</span>';
+                    }else{
+                    return '<span class="badge bg-danger">INACTIVO</span>';
+                    }
+            }   
+        },
+        {"data":"fecha_formateada"},
+
+        {"data":"estado",
+          render: function(data,type,row){
+                  if(data=='ACTIVO'){
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger disabled btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  }else{
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  }
+          }   
+      },
+        
+    ],
+
+    "language":idioma_espanol,
+    select: true
+});
+tbl_comunicados.on('draw.td',function(){
+  var PageInfo = $("#tabla_comunicados").DataTable().page.info();
+  tbl_comunicados.column(0, {page: 'current'}).nodes().each(function(cell, i){
+    cell.innerHTML = i + 1 + PageInfo.start;
+  });
+});
+}
+
 $('#tabla_comunicados').on('click','.editar',function(){
   var data = tbl_comunicados.row($(this).parents('tr')).data();
 

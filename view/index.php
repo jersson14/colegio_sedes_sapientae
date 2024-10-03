@@ -127,6 +127,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     ?>
     <!-- /.navbar -->
     <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>" hidden>
+    <input type="text" id="txtprincipalfoto" value="<?php echo $_SESSION['S_FOTO']; ?>" hidden>
+    <input type="text" id="txtprincipalcompleto" value="<?php echo $_SESSION['S_COMPLETO']; ?>" hidden>
+    <input type="text" id="txtprincipaldni" value="<?php echo $_SESSION['S_DNI']; ?>" hidden>
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -457,7 +460,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </li>
                 </ul>
               </li>
-              <li class="nav-item" hidden>
+              <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-coins"></i>
                   <p>
@@ -485,7 +488,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Prestamos
+                        Indicadores
                       </p>
                     </a>
                   </li>
@@ -1157,7 +1160,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
                     <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
- 
+                  <div style="text-align: center; margin-top: 10px;">
+                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_docente()">
+                      <i class="fas fa-upload"></i>
+                      Cambiar foto
+                    </button>
+                  </div>
 
                 </div>
                 <div style="flex: 1; min-width: 300px; position: relative; z-index: 1;padding: 15px;">
@@ -1224,7 +1232,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- /.content -->
   </div>
 
-
+  <div class="modal fade" id="modal_editar_foto_docente" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL DOCENTE: </b><label for="" id="lb_docente"></label></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <input type="text" id="fotoactualdocente" hidden>
+                <input type="text" id="txt_iddocente_foto" hidden>
+                <label for="checkboxSuccess2" style="align:justify;color:red">
+                  OJO: Usted puede cambiar su foto de perfil las veces que desee.
+                </label>
+                <label for="">Subir Foto:</label>
+                <input class="form-control" type="file" id="txt_foto_docente">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Foto_Docente()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   <!-- /.content-wrapper -->
 <?php
 }
@@ -1258,10 +1294,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
                   <img src="<?php echo $rutaFoto; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
-    
+                  <div style="text-align: center; margin-top: 10px;">
+                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_Estudiante()">
+                      <i class="fas fa-upload"></i>
+                      Cambiar foto
+                    </button>
+                  </div>
 
                 </div>
-
+                
                 <!-- Contenido principal -->
                 <div style="flex: 1; min-width: 300px; position: relative; z-index: 1; padding: 15px;">
                   <h2 style="margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-size: 36px; color: white;"><b><?php echo $_SESSION['S_COMPLETO']; ?></b></h2>
@@ -1381,7 +1422,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- /.content -->
   </div>
 
-
+  <div class="modal fade" id="modal_editar_foto_estudiante" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL ESTUDIANTE: </b><label for="" id="lb_estudiante"></label></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <input type="text" id="fotoactualestudiante" hidden>
+                <input type="text" id="txt_idestudiante_foto" hidden>
+                <label for="checkboxSuccess2" style="align:justify;color:red">
+                  OJO: Usted puede cambiar su foto de perfil las veces que desee.
+                </label>
+                <label for="">Subir Foto:</label>
+                <input class="form-control" type="file" id="txt_foto_estudiante">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Foto_Estudiante()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   <!-- /.content-wrapper -->
 <?php
 }

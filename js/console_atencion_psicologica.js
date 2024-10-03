@@ -96,6 +96,113 @@ tbl_atencion_psicologica.on('draw.td',function(){
   });
 });
 }
+
+
+function listar_atencion_psicologica_filtro(){
+    let grado = document.getElementById('select_aula').value;
+    let fechaini = document.getElementById('txtfechainicio').value;
+    let fechafin = document.getElementById('txtfechafin').value;
+
+  tbl_atencion_psicologica = $("#tabla_psicologia").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/atencion_psicologica/controlador_listar_atención_psicologica_filtros.php",
+        type:'POST',
+        data:{
+          grado:grado,
+          fechaini:fechaini,
+          fechafin:fechafin
+      }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+      title: function() {
+        return  "LISTA DE AULAS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+  title: function() {
+    return  "LISTA DE AULAS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE AULAS"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_atencion"},
+      {"data":"alum_dni"},
+      {"data":"Estudiante"},
+      {"data":"alum_sexo",
+          render: function(data,type,row){
+              if(data=='FEMENINO'){
+              return '<span class="badge bg-success">FEMENINO</span>';
+              }else{
+              return '<span class="badge bg-primary">MASCULINO</span>';
+              }
+      }
+      },
+      {"data":"Grado"},
+      {"data":"Nivel_academico",
+          render: function(data,type,row){
+              if(data=='INICIAL'){
+              return '<span class="badge bg-warning">INICIAL</span>';
+              }else if(data=='PRIMARIA'){
+              return '<span class="badge bg-success">PRIMARIA</span>';
+              }else{
+              return '<span class="badge bg-primary">SECUNDARIA</span>';
+              }
+      }
+      },
+      {"data":"motivo_consulta"},
+      {"data":"fecha_formateada2"},
+      
+      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"},
+      
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_atencion_psicologica.on('draw.td',function(){
+var PageInfo = $("#tabla_psicologia").DataTable().page.info();
+tbl_atencion_psicologica.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
 //TRAENDO DATOS DEL MATRICULADO
 function Cargar_Select_Matriculados(){
     $.ajax({
@@ -117,7 +224,58 @@ function Cargar_Select_Matriculados(){
       }
     })
   }
+  function Cargar_Select_Nivelaca(){
+    $.ajax({
+      "url":"../controller/aulas/controlador_cargar_select_nivel.php",
+      type:'POST',
+    }).done(function(resp){
+      let data=JSON.parse(resp);
+      if(data.length>0){
+        let cadena ="";
+        for (let i = 0; i < data.length; i++) {
+          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        }
+        $('#select_nivel').html(cadena);
+        $('#select_nivel_editar').html(cadena);
+
+        var id =$("#select_nivel").val();
+        Cargar_Select_Aula(id);
+        var id =$("#select_nivel_editar").val();
+        Cargar_Select_Aula(id);
+      }else{
+        cadena+="<option value=''>No se encontraron regitros</option>";
+        $('#select_nivel_editar').html(cadena);
   
+      }
+    })
+  }
+  
+  //TRAENDO DATOS DE LA AULAS
+  function Cargar_Select_Aula(id){
+    $.ajax({
+        "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
+        type:'POST',
+        data: {
+            id: id  // Ensure this matches the parameter name expected by the PHP script
+        },
+        dataType: 'json',  // Expect JSON response
+        success: function(data){
+            if(data.length > 0){
+                let cadena = "";
+                for (let i = 0; i < data.length; i++) {
+                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                }
+                $('#select_aula').html(cadena);
+            } else {
+                $('#select_aula').html("<option value=''>No hay secciones en la base de datos</option>");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + status + " - " + error);
+            $('#select_aula').html("<option value=''>Error al cargar las secciones</option>");
+        }
+    });
+}
 //ENVIANDO DATOS PARA EDITAR
 $('#tabla_psicologia').on('click','.editar',function(){
   var data = tbl_atencion_psicologica.row($(this).parents('tr')).data();

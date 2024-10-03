@@ -28,6 +28,25 @@
               <div class="card-header">
               <h3 class="card-title"><i class="fas fa-user"></i>&nbsp;&nbsp;<b>Listado de Usuarios</b></h3>
               </div>
+              <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4 form-group">
+                                    <label for="">Tipo de usuario o rol<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_rol" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-4" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_usuario_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar usuarios</button>
+                                </div>
+                                <div class="col-12 col-md-4" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_usuario()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <div class="table-responsive" style="text-align:center">
                   <div class="card-body">
                     <table id="tabla_usuario" class="table table-striped table-bordered" style="width:100%">
@@ -173,7 +192,7 @@
       listar_usuario();
 
       $('.js-example-basic-single').select2();
-      Cargar_Select_Rol();
+      Cargar_Select_roles();
 
     });
     $('#modal_registro').on('shown.bs.modal', function () {

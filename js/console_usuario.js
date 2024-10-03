@@ -188,6 +188,106 @@ tbl_usuario.on('draw.td',function(){
   });
 });
 }
+
+//FILTRO
+function listar_usuario_filtro(){
+  let idrol = document.getElementById('select_rol').value;
+
+  tbl_usuario = $("#tabla_usuario").DataTable({
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+      "ordering":false,   
+      "bLengthChange":true,
+      "searching": { "regex": false },
+      "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+      "pageLength": 10,
+      "destroy":true,
+      pagingType: 'full_numbers',
+      scrollCollapse: true,
+      responsive: true,
+      "async": false ,
+      "processing": true,
+      "ajax":{
+          "url":"../controller/usuario/controlador_listar_usuario_filtro.php",
+          type:'POST',
+          data:{
+            idrol:idrol
+          }
+      },
+      dom: 'Bfrtip',       
+    buttons:[ 
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE USUARIOS"
+    },
+      title: function() {
+        return  "LISTA DE USUARIOS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE USUARIOS"
+    },
+  title: function() {
+    return  "LISTA DE USUARIOS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE USUARIOS"
+
+  }
+  }],
+      "columns":[
+        {"defaultContent":""},
+        {"data":"usu_usuario"},
+        {"data":"tipo_rol"},
+        {"data":"nombre_completo"},
+        {"data":"usu_email"},
+        {"data":"fecha_formateada"},
+
+        {"data":"usu_estatus",
+            render: function(data,type,row){
+                    if(data=='ACTIVO'){
+                    return '<span class="badge bg-success">ACTIVO</span>';
+                    }else{
+                    return '<span class="badge bg-danger">INACTIVO</span>';
+                    }
+            }   
+        },
+        {"data":"usu_estatus",
+            render: function(data,type,row){
+                    if(data=='ACTIVO'){
+                    return "<button class='editar btn btn-primary btn-sm' title='Editar datos de usuario'><i class='fa fa-edit'></i></button>&nbsp;<button class='contra btn btn-warning btn-sm' title='Cambiar contraseña de usuario'><i class='fas fa-key'></i></button>&nbsp;<button class='btn btn-success btn-sm' disabled title='Activar usuario'><i class='fa fa-check-circle'></i></button>&nbsp;<button class='desactivar btn btn-danger btn-sm' title='Desactivar usuario'><i class='fa fa-times-circle'></i></button>";
+                    }else{
+                    return "<button class='editar btn btn-primary btn-sm' title='Editar datos de usuario'><i class='fa fa-edit'></i></button>&nbsp;<button class='contra btn btn-warning btn-sm' title='Cambiar contraseña de usuario'><i class='fas fa-key'></i></button>&nbsp;<button class='activar btn btn-success btn-sm' title='Activar usuario'><i class='fa fa-check-circle'></i></button>&nbsp;<button class='btn btn-danger btn-sm' disabled title='Desactivar usuario'><i class='fa fa-times-circle'></i></button>";
+                    }
+            }   
+        }
+    ],
+
+    "language":idioma_espanol,
+    select: true
+});
+tbl_usuario.on('draw.td',function(){
+  var PageInfo = $("#tabla_usuario").DataTable().page.info();
+  tbl_usuario.column(0, {page: 'current'}).nodes().each(function(cell, i){
+    cell.innerHTML = i + 1 + PageInfo.start;
+  });
+});
+}
 function AbrirRegistro(){
   $("#modal_registro").modal({backdrop:'static',keyboard:false})
   $("#modal_registro").modal('show');
@@ -531,3 +631,127 @@ function Total_usuarios(){
       }
   })
 }
+
+
+
+//MODIFICAR FOTO DE DOCENTE
+function editar_foto_docente(){
+
+  $("#modal_editar_foto_docente").modal('show');
+  document.getElementById('txt_iddocente_foto').value=document.getElementById('txtprincipaldni').value;
+  document.getElementById('lb_docente').innerHTML=document.getElementById('txtprincipalcompleto').value;
+  document.getElementById('fotoactualdocente').value=document.getElementById('txtprincipalfoto').value;
+
+}
+function Modificar_Foto_Docente(){
+  let id = document.getElementById("txt_iddocente_foto").value
+  let foto = document.getElementById("txt_foto_docente").value
+  let fotoactual = document.getElementById("fotoactualdocente").value
+
+  if(id.length==0 || foto.length==0){
+    return Swal.fire("Mensaje de Advertencia","Tiene campos vacios","warning");
+  }
+
+    let extension = foto.split('.').pop();
+    let nombrefoto="";
+    let f = new Date();
+    if(foto.length>0){
+      nombrefoto="IMG"+f.getDate()+"-"+(f.getMonth()+1)+"-"+f.getFullYear()+"-"+f.getHours()+"-"+f.getMilliseconds()+"."+extension;
+    }
+    let formData = new FormData();
+    let fotoobj = $("#txt_foto_docente")[0].files[0];
+
+    formData.append("id",id);
+    formData.append("nombrefoto",nombrefoto);
+    formData.append("fotoactual",fotoactual);
+    formData.append("foto",fotoobj);
+    $.ajax({
+      url:"../controller/docentes/controlador_empresa_modificar_foto_docente.php",
+      type:'POST',
+      data:formData,
+      contentType:false,
+      processData:false,
+      success:function(resp){
+        if(resp.length>0){
+          Swal.fire("Mensaje de Confirmación","Foto actualizada correctamente, para que se aplique debe reiniciar sesión","success").then((value)=>{
+            $("#modal_editar_foto_docente").modal('hide');
+            document.getElementById('txt_foto_docente').value="";
+
+          });
+        }else{
+          Swal.fire("Mensaje de Advertencia","No se pudo actualizar la foto","warning");
+        }
+      }
+    });
+}
+
+
+//MODIFICAR FOTO DE ESTUDIANTE
+function editar_foto_Estudiante(){
+  $("#modal_editar_foto_estudiante").modal('show');
+  document.getElementById('txt_idestudiante_foto').value=document.getElementById('txtprincipaldni').value;
+  document.getElementById('lb_estudiante').innerHTML=document.getElementById('txtprincipalcompleto').value;
+  document.getElementById('fotoactualestudiante').value=document.getElementById('txtprincipalfoto').value;
+
+}
+function Modificar_Foto_Estudiante(){
+  let id = document.getElementById("txt_idestudiante_foto").value
+  let foto = document.getElementById("txt_foto_estudiante").value
+  let fotoactual = document.getElementById("fotoactualestudiante").value
+
+  if(id.length==0 || foto.length==0){
+    return Swal.fire("Mensaje de Advertencia","Tiene campos vacios","warning");
+  }
+
+    let extension = foto.split('.').pop();
+    let nombrefoto="";
+    let f = new Date();
+    if(foto.length>0){
+      nombrefoto="IMG"+f.getDate()+"-"+(f.getMonth()+1)+"-"+f.getFullYear()+"-"+f.getHours()+"-"+f.getMilliseconds()+"."+extension;
+    }
+    let formData = new FormData();
+    let fotoobj = $("#txt_foto_estudiante")[0].files[0];
+
+    formData.append("id",id);
+    formData.append("nombrefoto",nombrefoto);
+    formData.append("fotoactual",fotoactual);
+    formData.append("foto",fotoobj);
+    $.ajax({
+      url:"../controller/alumnos/controlador_modificar_foto_estudiante.php",
+      type:'POST',
+      data:formData,
+      contentType:false,
+      processData:false,
+      success:function(resp){
+        if(resp.length>0){
+          Swal.fire("Mensaje de Confirmación","Foto actualizada correctamente, para que se aplique debe reiniciar sesión","success").then((value)=>{
+            $("#modal_editar_foto_estudiante").modal('hide');
+            document.getElementById('txt_foto_estudiante').value="";
+
+          });
+        }else{
+          Swal.fire("Mensaje de Advertencia","No se pudo actualizar la foto","warning");
+        }
+      }
+    });
+}
+
+function Cargar_Select_roles(){
+  $.ajax({
+    "url":"../controller/roles/controlador_cargar_roles.php",
+    type:'POST',
+  }).done(function(resp){
+    let data=JSON.parse(resp);
+    if(data.length>0){
+      let cadena ="";
+      for (let i = 0; i < data.length; i++) {
+        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+      }
+        document.getElementById('select_rol').innerHTML=cadena;
+    }else{
+      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      document.getElementById('select_rol').innerHTML=cadena;
+    }
+  })
+}
+
