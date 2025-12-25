@@ -21,6 +21,12 @@
   <link rel="stylesheet" href="plantilla/dist/css/adminlte.min.css">
   <link rel="icon" href="img/icono.jpeg" type="image/jpeg">
 
+  <style>
+    .input-group-text {
+      cursor: pointer;
+    }
+  </style>
+
 </head>
 <body class="hold-transition login-page" style="background-image: url('img/fondo.jpeg'); background-size: 25px 50px; background-size: 100% 100%;"  >
 <div class="login-box">
@@ -43,8 +49,8 @@
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Ingrese su contraseña" id="txt_contra">
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+            <div class="input-group-text" onclick="togglePassword()" title="Mostrar/Ocultar contraseña">
+              <span class="fas fa-eye" id="toggleIcon"></span>
             </div>
           </div>
         </div>
@@ -80,6 +86,25 @@
 <script src="plantilla/dist/js/adminlte.min.js"></script>
 <script src="js/console_usuario.js?rev=<?php echo time();?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // Función para mostrar/ocultar contraseña
+  function togglePassword() {
+    const passInput = document.getElementById('txt_contra');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      toggleIcon.classList.remove('fa-eye');
+      toggleIcon.classList.add('fa-eye-slash');
+    } else {
+      passInput.type = 'password';
+      toggleIcon.classList.remove('fa-eye-slash');
+      toggleIcon.classList.add('fa-eye');
+    }
+  }
+</script>
+
 <script>
   const rmcheck       = document.getElementById('remember'),
         usuarioInput  = document.getElementById('txt_usuario'),
