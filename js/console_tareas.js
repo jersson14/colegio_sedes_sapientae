@@ -87,9 +87,9 @@ function listar_tareas(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                  return "<button  class='agregar btn btn-secondary btn-sm' style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar tarea'><i class='fa fa-thumbs-up'></i> Finalizar</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
               }else if(data=='FINALIZADO'){
-                  return "<button  class='informe btn btn-dark btn-sm' hidden style='margin-right: 10px;' title='Imprimir informe'><i class='fa fa-file'></i> Informe</button><br><button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Agregar diploma'><i class='fa fa-file'></i> Agregar diploma</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' hidden class='delete btn btn-danger btn-sm' title='Eliminar datos' hidden><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden  title='Finalizar tarea'><i class='fa fa-thumbs-up'></i> Finalizar</button><button  class='informe btn btn-dark btn-sm' hidden style='margin-right: 10px;' title='Imprimir informe'><i class='fa fa-file'></i> Informe</button><br><button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Agregar diploma'><i class='fa fa-file'></i> Agregar diploma</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' hidden class='delete btn btn-danger btn-sm' title='Eliminar datos' hidden><i class='fa fa-trash'></i> Eliminar</button>";             
               }
             }
           },        
@@ -105,6 +105,238 @@ tbl_tareas.on('draw.td',function(){
   });
 });
 }
+
+
+function listar_tareas_filtro(){
+  let aula = document.getElementById('select_aula').value;
+  let fechainicio = document.getElementById('txtfechainicio').value;
+  let fechafin = document.getElementById('txtfechafin').value;
+
+  tbl_tareas = $("#tabla_tarea").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/tareas/controlador_listar_tareas_filtro.php",
+        type:'POST',
+        data:{
+          aula:aula,
+          fechainicio:fechainicio,
+          fechafin:fechafin
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE TAREAS"
+    },
+      title: function() {
+        return  "LISTA DE TAREAS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE TAREAS"
+    },
+  title: function() {
+    return  "LISTA DE TAREAS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE TAREAS"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_tarea"},
+      {"data":"Grado"},
+      {"data":"Docente"},
+      {"data":"tema"},
+      {"data":"descripcion"},
+      {"data":"fecha_publicacion"},
+      {"data":"fecha_entrega2"},
+      {"data":"archivo_tarea",
+        render: function(data,type,row){
+                if(data==''){
+                    return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                }else{
+                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/"+data+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                }
+            }   
+        },    
+      {
+          "defaultContent": "<button class='mostrar btn btn-primary btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Calificar tarea</button>"
+      },
+
+      {"data":"ESTADO",
+          render: function(data,type,row){
+                  if(data=='PENDIENTE'){
+                  return '<span class="badge bg-warning">PENDIENTE</span>';
+                  }else{
+                  return '<span class="badge bg-success">FINALIZADO</span>';
+                  }
+          }   
+      },
+      {"data":"ESTADO",
+          render: function (data, type, row ) {
+            if(data=='PENDIENTE'){
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar tarea'><i class='fa fa-thumbs-up'></i> Finalizar</button><button  class='agregar btn btn-secondary btn-sm' style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+            }else if(data=='FINALIZADO'){
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden  title='Finalizar tarea'><i class='fa fa-thumbs-up'></i> Finalizar</button><button  class='informe btn btn-dark btn-sm' hidden style='margin-right: 10px;' title='Imprimir informe'><i class='fa fa-file'></i> Informe</button><br><button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Agregar diploma'><i class='fa fa-file'></i> Agregar diploma</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' hidden class='delete btn btn-danger btn-sm' title='Eliminar datos' hidden><i class='fa fa-trash'></i> Eliminar</button>";             
+            }
+          }
+        },        
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_tareas.on('draw.td',function(){
+var PageInfo = $("#tabla_tarea").DataTable().page.info();
+tbl_tareas.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
+
+function Modificar_Estatus_tarea(id,estatus,temita){
+  let esta=estatus;
+  $.ajax({
+    "url":"../controller/tareas/controlador_modificar_estado_tarea.php",
+    type:'POST',
+    data:{
+      id:id,
+      estatus:estatus
+    }
+  }).done(function(resp){
+    if(resp>0){
+        Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito la tarea con el tema: "+temita,"success").then((value)=>{
+          tbl_tareas.ajax.reload();
+        });
+    }else{
+      return Swal.fire("Mensaje de Error","No se completo el cambio","error");
+
+    }
+  })
+}
+
+$('#tabla_tarea').on('click','.activar',function(){
+  var data = tbl_tareas.row($(this).parents('tr')).data();
+
+  if(tbl_tareas.row(this).child.isShown()){
+      var data = tbl_tareas.row(this).data();
+  }
+    Swal.fire({
+      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+data.tema+'</b>?',
+      text: "Una vez finalizado ningún estudiante podra subir su tarea.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, dar como Finalizado'
+      
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Modificar_Estatus_tarea(data.id_tarea,'FINALIZADO',data.tema);
+      }
+    })
+
+})
+function Cargar_Select_Nivelaca(){
+  $.ajax({
+    url: "../controller/aulas/controlador_cargar_select_nivel.php",
+    type: 'POST',
+  }).done(function(resp) {
+    let data = JSON.parse(resp);
+    let cadena = "<option value=''>Seleccionar Nivel Académico</option>";  // Agregar una opción por defecto
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        cadena += `<option value='${data[i][0]}'>${data[i][1]}</option>`;    
+      }
+      $('#select_nivel, #select_nivel_editar').html(cadena);
+
+      // Cargar automáticamente los grados correspondientes al nivel académico seleccionado inicialmente
+      let id = $("#select_nivel").val();
+      Cargar_Select_Aula(id);
+
+      let id2 = $("#select_nivel_editar").val();
+      Cargar_Select_Aula(id2);
+    } else {
+      cadena = "<option value=''>No se encontraron registros</option>";
+      $('#select_nivel, #select_nivel_editar').html(cadena);
+    }
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+    console.error("Error en la petición AJAX de niveles académicos:", textStatus, errorThrown);
+  });
+
+  // Detectar cambio en el select de nivel académico y cargar los grados correspondientes
+  $('#select_nivel').change(function() {
+    var id = $(this).val();
+    if (id) {
+      Cargar_Select_Aula(id);  // Llamar a la función que carga los grados
+    } else {
+      $('#select_aula').html("<option value=''>Seleccionar Aula</option>");  // Si no hay nivel seleccionado
+    }
+  });
+
+  $('#select_nivel_editar').change(function() {
+    var id2 = $(this).val();
+    if (id2) {
+      Cargar_Select_Aula(id2);
+    } else {
+      $('#select_aula').html("<option value=''>Seleccionar Aula</option>");
+    }
+  });
+}
+
+// Función para cargar las aulas basadas en el nivel académico
+function Cargar_Select_Aula(id) {
+  $.ajax({
+    url: "../controller/asistencias/controlador_cargar_select_aula_id.php",
+    type: 'POST',
+    data: { id: id },  // Envía el ID del nivel académico
+    dataType: 'json',  // Espera una respuesta en formato JSON
+    success: function(data) {
+      if (data.length > 0) {
+        let cadena = "<option value=''>Seleccionar Aula</option>";  // Opción por defecto
+        for (let i = 0; i < data.length; i++) {
+          cadena += `<option value='${data[i][1]}'>${data[i][2]}</option>`;    
+        }
+        $('#select_aula').html(cadena);
+      } else {
+        $('#select_aula').html("<option value=''>No hay secciones en la base de datos</option>");
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("AJAX Error: " + status + " - " + error);
+      $('#select_aula').html("<option value=''>Error al cargar las secciones</option>");
+    }
+  });
+}
+
 //TRAENDO DATOS DE LA SECCION
 function Cargar_Select_docente() {
   $.ajax({

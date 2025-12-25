@@ -180,7 +180,7 @@ function Cargar_Año(){
 
   function Cargar_Bimestre_cargados(id){
     $.ajax({
-      "url":"../controller/notas/controlador_cargar_periodos_cargados_profesor.php",
+      "url":"../controller/notas/controlador_cargar_periodos_cargados_estudiante.php",
       type:'POST',
       data:{
         id:id

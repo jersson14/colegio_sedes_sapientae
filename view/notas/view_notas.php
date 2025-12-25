@@ -27,7 +27,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de alumnos por aulas</b></h3>
+                        <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de notas por aulas</b></h3>
                     </div>
                     <div class="table-responsive" style="text-align:left">
                         <div class="card-body">
@@ -418,10 +418,16 @@
             Cargar_Bimestre();
             Cargar_Bimestre_cargados();
         });
-        $("#select_nivel").change(function() {
-            var id = $("#select_nivel").val();
-            Cargar_Select_Aula(id);
-        });
+       
+    $("#select_nivel").change(function() {
+      var id = $("#select_nivel").val();
+      Cargar_Select_Aula(id);
+    });
+
+    $("#select_nivel_editar").change(function() {
+      var id = $("#select_nivel_editar").val();
+      Cargar_Select_Aula(id);
+    });
 
         $('#modal_registro').on('shown.bs.modal', function() {
             $('#txt_matricula').trigger('focus')

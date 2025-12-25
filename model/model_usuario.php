@@ -153,6 +153,140 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+
+        public function Cargar_datos_usuario($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_CARGAR_DATOS_USUARIO(?)";
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$id);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_estudiantes(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_ESTUDIANTES()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_docentes(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_DOCENTES()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_administrativos(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_ADMINISTRATIVOS()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_usuarios(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_USUARIOS()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_usuarios_filtro($idrol){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_USUARIOS_FILTRO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$idrol);
+
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_ingresos_hoy(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_INGRESOS_HOY()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_egresos_hoy(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_EGRESOS_HOY()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_psicologia(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_PSICOLOGIA()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function listar_total_enfermeria(){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_TOTAL_ENFERMERIA()";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->execute();
+            $resultado = $query->fetchAll();
+            foreach($resultado as $resp){
+                $arreglo[]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
     }
 
 

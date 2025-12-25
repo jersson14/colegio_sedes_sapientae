@@ -1,5 +1,5 @@
 //LISTADO DE ROLES
-var tbl_horarios;
+var tbl_horario;
 function listar_horarios(){
     tbl_horario = $("#tabla_horario").DataTable({
       "ordering":false,   
@@ -59,8 +59,17 @@ function listar_horarios(){
         {"data":"id_año_academico"},
         {"data":"año_escolar"},
         {"data":"GRADO"},
-        {"data":"Nivel_academico"},
-        
+ {"data":"Nivel_academico",
+            render: function(data,type,row){
+                if(data=='INICIAL'){
+                return '<span class="badge bg-warning">INICIAL</span>';
+                }else if(data=='PRIMARIA'){
+                return '<span class="badge bg-success">PRIMARIA</span>';
+                }else{
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+                }
+        }
+        },        
         {           
              "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
         },
@@ -74,7 +83,7 @@ function listar_horarios(){
             }   
         },
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp; <button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
 
     ],
 
@@ -88,7 +97,110 @@ tbl_horario.on('draw.td',function(){
   });
 });
 }
+function listar_horarios_filtro(){
+  let año = document.getElementById('select_año_buscar').value;
+  let grado = document.getElementById('select_aula_buscar').value;
 
+  tbl_horario = $("#tabla_horario").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/horarios/controlador_listar_horarios_filtro.php",
+        type:'POST',
+        data:{
+          año:año,
+          grado:grado
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE HORARIOS"
+    },
+      title: function() {
+          return  "LISTA DE HORARIOS"
+      }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE HORARIOS"
+    },
+  title: function() {
+      return  "LISTA DE HORARIOS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+      return  "LISTA DE HORARIOS"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_año_academico"},
+      {"data":"año_escolar"},
+      {"data":"GRADO"},
+ {"data":"Nivel_academico",
+            render: function(data,type,row){
+                if(data=='INICIAL'){
+                return '<span class="badge bg-warning">INICIAL</span>';
+                }else if(data=='PRIMARIA'){
+                return '<span class="badge bg-success">PRIMARIA</span>';
+                }else{
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+                }
+        }
+        },      
+      {           
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+      },
+      {"data":"HORARIO",
+          render: function(data,type,row){
+                  if(data=='ACTIVO'){
+                  return '<span class="badge bg-success">ACTIVO</span>';
+                  }else{
+                  return '<span class="badge bg-danger">INACTIVO</span>';
+                  }
+          }   
+      },
+
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_horario.on('draw.td',function(){
+var PageInfo = $("#tabla_horario").DataTable().page.info();
+tbl_horario.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
 
 // Función para cargar las aulas en el selector
 // Función para cargar las aulas en el selector
@@ -102,6 +214,8 @@ function Cargar_Select_Grado() {
       let cadena = ""; // Inicializa la cadena vacía
       
       if (data.length > 0) {
+        cadena += "<option value='' disabled selected>--SELECCIONE--</option>";
+
         for (let i = 0; i < data.length; i++) {
           cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][2] + "</option>";
         }
@@ -126,14 +240,18 @@ function Cargar_Select_Grado() {
   
   // Función para cargar cursos basados en el aula seleccionada
   function Cargar_Select_curso(id, select_id) {
+
+    let año = document.getElementById('select_año').value;
+
     // Limpia el selector antes de cargar nuevos datos
     $('#' + select_id).empty().append("<option value='' disabled selected>Sin datos disponibles</option>");
   
     $.ajax({
-      url: "../controller/componentes/controlador_cargar_curso_id_detalle.php",
+      url: "../controller/horarios/controlador_cargar_curso_id_detalle.php",
       type: 'POST',
       data: {
-        id: id
+        id: id,
+        año:año
       }
     }).done(function(resp) {
       let data = JSON.parse(resp);
@@ -155,16 +273,22 @@ function Cargar_Select_Grado() {
   
   // Función para cargar los horarios de la aula seleccionada
   function Cargar_Select_horas(id) {
+    let año = document.getElementById('select_año').value;
+
     $.ajax({
       url: "../controller/horarios/controlador_cargar_select_horas.php",
       type: 'POST',
       data: {
-        id: id
+        id: id,
+        año: año
       }
     }).done(function(resp) {
+      console.log(resp);  // Esto te permitirá ver la respuesta en la consola del navegador
       let data = JSON.parse(resp);
+      console.log(data);  // Esto mostrará los datos después de parsearlos
+   
       let cadena = "<option value='' disabled selected>--SELECCIONE UN RANGO DE HORA--</option>";
-  
+   
       if (data.length > 0) {
         for (let i = 0; i < data.length; i++) {
           cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
@@ -172,10 +296,9 @@ function Cargar_Select_Grado() {
       } else {
         cadena += "<option value='' disabled>No se encontraron registros</option>";
       }
-  
-      $('#select_horas').html(cadena); // Actualizar el contenido del selector
-      $('#select_horas_editar').html(cadena); // Actualizar el contenido del selector
-
+   
+      $('#select_horas').html(cadena);
+      $('#select_horas_editar').html(cadena);
     });
   }
   
@@ -183,7 +306,7 @@ function Cargar_Select_Grado() {
   $('#select_aula').on('change', function() {
     var id = $(this).val();
     Cargar_Select_curso(id, 'select_curso');
-    Cargar_Select_horas(id);
+    Cargar_Select_horas(id, 'select_horas');
   });
   
   $('#select_aula_editar').on('change', function() {
@@ -192,7 +315,56 @@ function Cargar_Select_Grado() {
     Cargar_Select_horas(id, 'select_horas_editar');
   });
   
-
+  function Cargar_Select_Nivelaca(){
+    $.ajax({
+      "url":"../controller/aulas/controlador_cargar_select_nivel.php",
+      type:'POST',
+    }).done(function(resp){
+      let data=JSON.parse(resp);
+      if(data.length>0){
+        let cadena ="";
+        for (let i = 0; i < data.length; i++) {
+          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        }
+        $('#select_nivel_buscar').html(cadena);
+  
+        var id =$("#select_nivel_buscar").val();
+        Cargar_Select_Aula(id);
+  
+      }else{
+        cadena+="<option value=''>No se encontraron regitros</option>";
+        $('#select_nivel_buscar').html(cadena);
+  
+      }
+    })
+  }
+  
+  //TRAENDO DATOS DE LA AULAS
+  function Cargar_Select_Aula(id){
+    $.ajax({
+        "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
+        type:'POST',
+        data: {
+            id: id  // Ensure this matches the parameter name expected by the PHP script
+        },
+        dataType: 'json',  // Expect JSON response
+        success: function(data){
+            if(data.length > 0){
+                let cadena = "";
+                for (let i = 0; i < data.length; i++) {
+                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                }
+                $('#select_aula_buscar').html(cadena);
+            } else {
+                $('#select_aula_buscar').html("<option value=''>No hay secciones en la base de datos</option>");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + status + " - " + error);
+            $('#select_aula_buscar').html("<option value=''>Error al cargar las secciones</option>");
+        }
+    });
+  }
 //TRAENDO DATOS DE LA SECCION
 function Cargar_Año(){
     $.ajax({
@@ -207,10 +379,14 @@ function Cargar_Año(){
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
+          document.getElementById('select_año_buscar').innerHTML=cadena;
+
       }else{
         cadena+="<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
+        document.getElementById('select_año_buscar').innerHTML=cadena;
+
       }
     })
   }
@@ -470,7 +646,6 @@ function Registrar_horario_aula() {
         if (resp > 0) {
             if (resp == 1) {
                 Swal.fire("Mensaje de Confirmación", "Horario registrado satisfactoriamente!!!", "success").then(() => {
-                    $("#tabla_horario_aula").empty(); // Limpia la tabla después de registrar
                     tbl_horario.ajax.reload(); // Recarga la tabla de datos
                     $("#modal_registro").modal('hide'); // Cierra el modal de registro
                 });
@@ -519,7 +694,6 @@ function Modificar_horarios_aula() {
     console.log("Respuesta del servidor:", resp);  // Verificar la respuesta del servidor
     if (resp == 1) {
       Swal.fire("Mensaje de Confirmación", "Componentes modificados satisfactoriamente!!!", "success").then(() => {
-        $("#tabla_horario_aula_editar").empty();  // Vaciar la tabla después de la confirmación
         tbl_horario.ajax.reload();  // Recargar la tabla original (si es necesario)
         $("#modal_editar").modal('hide');  // Ocultar el modal de edición
       });
@@ -681,4 +855,23 @@ $("#modal_ver_horario").modal('show');
 })
 
 
+
+$('#tabla_horario').on('click','.print',function(){
+  var data = tbl_horario.row($(this).parents('tr')).data();
+
+  if(tbl_horario.row(this).child.isShown()){
+      var data = tbl_horario.row(this).data();
+  }
+  var url = "../view/MPDF/REPORTE/horario.php?codigo=" + encodeURIComponent(data.id_aula)+ "#zoom=100%";
+
+  // Abrir una nueva ventana con la URL construida
+  var newWindow = window.open(url, "HORARIOS POR AULA", "scrollbars=NO");
+  
+  // Asegurarse de que la ventana se abre en tamaño máximo
+  if (newWindow) {
+      newWindow.moveTo(0, 0);
+      newWindow.resizeTo(screen.width, screen.height);
+  }
+
+})
 

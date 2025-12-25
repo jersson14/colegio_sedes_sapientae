@@ -56,6 +56,17 @@ function listar_examenes(){
     }],
       "columns":[
         {"data":"id_examen"},
+        {"data":"Nivel_academico",
+            render: function(data,type,row){
+                if(data=='INICIAL'){
+                return '<span class="badge bg-warning">INICIAL</span>';
+                }else if(data=='PRIMARIA'){
+                return '<span class="badge bg-success">PRIMARIA</span>';
+                }else{
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+                }
+        }
+        },
         {"data":"Grado"},
         {"data":"Docente"},
         {"data":"tema_examen"},
@@ -66,25 +77,24 @@ function listar_examenes(){
         {
             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Alumnos para examen</button>"
         },
-
         {"data":"ESTADO",
-            render: function(data,type,row){
-                    if(data=='PENDIENTE'){
-                    return '<span class="badge bg-danger">PENDIENTE</span>';
-                    }else{
-                    return '<span class="badge bg-success">REALIZADO</span>';
-                    }
-            }   
-        },
-        {"data":"ESTADO",
-            render: function (data, type, row ) {
-              if(data=='PENDIENTE'){
-                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
-              }else if(data=='REALIZADO'){
-                    return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
-            }
-            }
-          },        
+          render: function(data,type,row){
+                  if(data=='PENDIENTE'){
+                  return '<span class="badge bg-danger">PENDIENTE</span>';
+                  }else{
+                  return '<span class="badge bg-success">REALIZADO</span>';
+                  }
+          }   
+      },
+      {"data":"ESTADO",
+          render: function (data, type, row ) {
+            if(data=='PENDIENTE'){
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+            }else if(data=='REALIZADO'){
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+          }
+          }
+        },       
     ],
 
     "language":idioma_espanol,
@@ -97,6 +107,169 @@ tbl_examen.on('draw.td',function(){
   });
 });
 }
+function listar_examenes_filtro(){
+  let grado = document.getElementById('select_aula_buscar').value;
+
+  tbl_examen = $("#tabla_examen").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/examenes/controlador_listar_examenes_filtro.php",
+        type:'POST',
+        data:{
+          grado:grado
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE EXAMENES"
+    },
+      title: function() {
+        return  "LISTA DE EXAMENES" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE EXAMENES"
+    },
+  title: function() {
+    return  "LISTA DE EXAMENES"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE EXAMENES"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_examen"},
+ {"data":"Nivel_academico",
+            render: function(data,type,row){
+                if(data=='INICIAL'){
+                return '<span class="badge bg-warning">INICIAL</span>';
+                }else if(data=='PRIMARIA'){
+                return '<span class="badge bg-success">PRIMARIA</span>';
+                }else{
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+                }
+        }
+        },      {"data":"Grado"},
+      {"data":"Docente"},
+      {"data":"tema_examen"},
+      {"data":"descripcion"},
+      {"data":"fecha_publicacion"},
+      {"data":"FECHA_EXAMEN"},
+       
+      {
+          "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Alumnos para examen</button>"
+      },
+
+      {"data":"ESTADO",
+          render: function(data,type,row){
+                  if(data=='PENDIENTE'){
+                  return '<span class="badge bg-danger">PENDIENTE</span>';
+                  }else{
+                  return '<span class="badge bg-success">REALIZADO</span>';
+                  }
+          }   
+      },
+      {"data":"ESTADO",
+          render: function (data, type, row ) {
+            if(data=='PENDIENTE'){
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+            }else if(data=='REALIZADO'){
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+          }
+          }
+        },        
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_examen.on('draw.td',function(){
+var PageInfo = $("#tabla_examen").DataTable().page.info();
+tbl_examen.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
+function Cargar_Select_Nivelaca(){
+  $.ajax({
+    "url":"../controller/aulas/controlador_cargar_select_nivel.php",
+    type:'POST',
+  }).done(function(resp){
+    let data=JSON.parse(resp);
+    if(data.length>0){
+      let cadena ="";
+      for (let i = 0; i < data.length; i++) {
+        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+      }
+      $('#select_nivel_buscar').html(cadena);
+
+      var id =$("#select_nivel_buscar").val();
+      Cargar_Select_Aula(id);
+
+    }else{
+      cadena+="<option value=''>No se encontraron regitros</option>";
+      $('#select_nivel_buscar').html(cadena);
+
+    }
+  })
+}
+
+//TRAENDO DATOS DE LA AULAS
+function Cargar_Select_Aula(id){
+  $.ajax({
+      "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
+      type:'POST',
+      data: {
+          id: id  // Ensure this matches the parameter name expected by the PHP script
+      },
+      dataType: 'json',  // Expect JSON response
+      success: function(data){
+          if(data.length > 0){
+              let cadena = "";
+              for (let i = 0; i < data.length; i++) {
+                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+              }
+              $('#select_aula_buscar').html(cadena);
+          } else {
+              $('#select_aula_buscar').html("<option value=''>No hay secciones en la base de datos</option>");
+          }
+      },
+      error: function(xhr, status, error) {
+          console.error("AJAX Error: " + status + " - " + error);
+          $('#select_aula_buscar').html("<option value=''>Error al cargar las secciones</option>");
+      }
+  });
+}
+
 
 function Modificar_Estatus_examen(id,estatus,temita){
     let esta=estatus;
@@ -109,7 +282,7 @@ function Modificar_Estatus_examen(id,estatus,temita){
       }
     }).done(function(resp){
       if(resp>0){
-          Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con exito el examen con el tema: "+temita,"success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se ah "+esta+" con éxito el examen con el tema: "+temita,"success").then((value)=>{
             tbl_examen.ajax.reload();
           });
       }else{

@@ -4,6 +4,18 @@ if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
 }
 ?>
+<?php
+if (isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO'])) {
+  // Verificar si la ruta es 'controller/alumnos/fotos/'
+  if ($_SESSION['S_FOTO'] === 'controller/alumnos/fotos/') {
+    $rutaFoto = '../img/blanco1.jpg';
+  } else {
+    $rutaFoto = '../' . $_SESSION['S_FOTO'];
+  }
+} else {
+  $rutaFoto = '../img/blanco1.jpg';
+}
+?>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -28,7 +40,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="">
   <div class="wrapper">
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
       <!-- Navbar -->
@@ -43,10 +55,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <ul class="navbar-nav ml-auto">
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown" style="text-align:justify;">
-            <a class="nav-link" data-toggle="dropdown" href="#" style="text-align:justify;">
-              <i class="far fa-comments" title="Comunicados"></i>
-              <span class="badge badge-danger navbar-badge" id="lbl_contador" style="text-align:justify"></span>
-            </a>
+
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="text-align:justify">
               <div id="div_cuerpo" style="text-align:justify; border: 1px solid #333333;width: 100%;font-size: 100%;overflow-x: scroll;">
               </div>
@@ -58,7 +67,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
             </a>
@@ -89,12 +98,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
           <!-- Notifications Dropdown Menu -->
+          <li class="nav-item dropdown" style="text-align:justify;">
 
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="text-align:justify">
+              <div id="div_cuerpo" style="text-align:justify; border: 1px solid #333333;width: 100%;font-size: 100%;overflow-x: scroll;">
+              </div>
+
+
+              <div class="dropdown-divider"></div>
+              <a href="" class="dropdown-item dropdown-footer" onclick="listar_comunicado_dash()"><b><u>Ver Comunicados</u></b></a>
+            </div>
+          </li>
 
 
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
 
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
@@ -115,6 +134,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     ?>
     <!-- /.navbar -->
     <input type="text" id="txtprincipalid" value="<?php echo $_SESSION['S_ID']; ?>" hidden>
+    <input type="text" id="txtprincipalfoto" value="<?php echo $_SESSION['S_FOTO']; ?>" hidden>
+    <input type="text" id="txtprincipalcompleto" value="<?php echo $_SESSION['S_COMPLETO']; ?>" hidden>
+    <input type="text" id="txtprincipaldni" value="<?php echo $_SESSION['S_DNI']; ?>" hidden>
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -128,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-1 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="../<?php echo $_SESSION['S_FOTO']; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
+            <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
 
           </div>
           <div class="info">
@@ -146,10 +168,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
             <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
+                <a href="index.php" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
-                    Dashboard
+                    Menú principal
                   </p>
                 </a>
               </li>
@@ -158,7 +180,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-calendar-check"></i>
                   <p>
-                    Gestión Escolar
+                    Gestión escolar
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -175,7 +197,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','año/view_año_escolar.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Periodo Escolar
+                      <p>Años escolares
                       </p>
                     </a>
                   </li>
@@ -185,7 +207,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-list-ol"></i>
                   <p>
-                    Sección y Grado
+                    Sección y grado
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -209,7 +231,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','nivel_academico/view_nivel_academico.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Nivel Académico
+                        Nivel académico
                       </p>
                     </a>
                   </li>
@@ -219,7 +241,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
-                    Gestión usuarios
+                    Gestión de usuarios
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -270,7 +292,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Pago de Pensiones
+                        Pago de pensiones
                       </p>
                     </a>
                   </li>
@@ -288,7 +310,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-file"></i>
                   <p>
-                    Asignaturas y Examen
+                    Asignaturas y examen
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -322,7 +344,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clock "></i>
                   <p>
-                    Horario y Asistencia
+                    Horario y asistencia
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -337,7 +359,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Reporte de Asistencias
+                      <p>Reporte de asistencias
                       </p>
                     </a>
                   </li>
@@ -389,7 +411,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-copy"></i>
                   <p>
-                    Comunicados y Boletas
+                    Comunicados y boletas
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -402,7 +424,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','boletas/view_boletas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Boletas
@@ -423,7 +445,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-folder-plus"></i>
                   <p>
-                    Atenciones de Salud
+                    Atenciones de salud
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -431,7 +453,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Psicologia
+                      <p>Psicología
                       </p>
                     </a>
                   </li>
@@ -439,13 +461,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Enfermeria
+                        Enfermería
                       </p>
                     </a>
                   </li>
                 </ul>
               </li>
-              <li class="nav-item" hidden>
+              <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-coins"></i>
                   <p>
@@ -455,68 +477,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_area.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Ingresos
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Egresos
+                        Egresos o gastos
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_indicadores.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Prestamos
+                        Indicadores
                       </p>
                     </a>
                   </li>
                 </ul>
               </li>
-              <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>REPORTE DE TRÁMITES</b></li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-file-signature"></i>
-                  <p>
-                    Reporte de Trámites
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_area.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>Reporte por Fechas y Área
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_estado.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>
-                        Reporte por Fechas y Estado
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tramite/view_reporte_fecha_tipodoc.php')" class="nav-link">
-                      <i class="nav-icon fas fa-file"></i>
-                      <p>
-                        Reporte por Fechas y Tipo de Documento
-                      </p>
-                    </a>
-                  </li>
 
-                </ul>
-              </li>
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
-              <li class="nav-item">
+              <li class="nav-item" >
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
@@ -528,7 +515,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-sitemap"></i>
                   <p>
-                    Roles y Especialidades
+                    Roles y especialidades
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -551,10 +538,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
-                  <i class="nav-icon fas fa-file-pdf"></i>
+                <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" class="nav-link">
+                  <i class="nav-icon fas fa-film"></i>
                   <p>
-                    Manual de usuario
+                    Video tutorial
                   </p>
                 </a>
               </li>
@@ -566,7 +553,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-folder-plus"></i>
                   <p>
-                    Atenciones de Salud
+                    Atenciones de salud
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -591,7 +578,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-folder-plus"></i>
                   <p>
-                    Atenciones de Salud
+                    Atenciones de salud
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -616,7 +603,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clock "></i>
                   <p>
-                    Horario y Asistencia
+                    Horario y asistencia
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -631,7 +618,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Reporte de Asistencias
+                      <p>Reporte de asistencias
                       </p>
                     </a>
                   </li>
@@ -657,7 +644,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clipboard"></i>
                   <p>
-                    Revisar Tareas
+                    Revisar tareas
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -702,6 +689,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </li>
                 </ul>
               </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-file"></i>
+                  <p>
+                    Exámenes
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>
+                        Programar examen
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
             <?php
             }
             ?>
@@ -716,14 +722,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Notas
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Tareas
@@ -736,21 +742,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clock "></i>
                   <p>
-                    Horario y Asistencia
+                    Horario y asistencia
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reporte_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Reporte de Asistencias
+                      <p>Reporte de asistencia
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario_edtudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Horario
@@ -770,10 +776,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Pago de Pensiones
+                        Ver pago de pensiones
                       </p>
                     </a>
                   </li>
@@ -828,68 +834,135 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="col-lg-12">
                 <div class="card-primary">
                   <div class="card-header">
-                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-list-ol"></i> DATOS IMPORTANTES</b></h5>
+                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-list-ol"></i><b> DATOS IMPORTANTES</b></h5>
+
                   </div>
                   <div class="card-body" style="background-color:white">
                     <div class="row">
                       <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-info">
-                          <div class="inner">
-                            <b>Total de Agentes</b>
-                            <h3 id="total_empleados"><sup style="font-size: 20px"></sup></h3>
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Estudiantes</b>
+                            <h3 id="total_estudiantes" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
 
                           </div>
                           <div class="icon">
                             <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','empleado/view_empleado.php')" class="small-box-footer"><b>Ver Empleados</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','alumnos/view_alumnos.php')" class="small-box-footer"><b>Ver estudiantes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
                       <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-success">
-                          <div class="inner">
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocpendientes"><sup style="font-size: 20px"></sup></h3>
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Docentes</b>
+                            <h3 id="total_docentes" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
 
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                            <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Pendientes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','docentes/view_docentes.php')" class="small-box-footer"><b>Ver docentes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
                       <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-warning">
-                          <div class="inner">
+                          <div class="inner" style="text-align: center;">
 
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocpaceptados"><sup style="font-size: 20px"></sup></h3>
-
+                            <b>Total de Administrativos</b>
+                            <h3 id="total_administrativos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                            <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Aceptados</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','personal_admin/view_personal_admin.php')" class="small-box-footer"><b>Ver administrativos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                       <!-- ./col -->
                       <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-danger">
-                          <div class="inner">
-                            <b>Nº De Documentos</b>
-                            <h3 id="totaldocfinalizado"><sup style="font-size: 20px"></sup></h3>
-
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Usuarios</b>
+                            <h3 id="total_usuarios" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
                           </div>
                           <div class="icon">
-                            <i class="fas fa-file"></i>
+                            <i class="fas fa-users"></i>
                           </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','tramite/view_movimiento.php')" class="small-box-footer"><b>Documentos Finalizados</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="small-box-footer"><b>Ver usuarios</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                      </div>
+                      <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Ingresos Hoy día</b>
+                            <h3 id="total_ingresos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
+                          </div>
+                          <div class="icon">
+                            <i class="fas fa-dollar-sign"></i>
+                          </div>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="small-box-footer"><b>Ver ingresos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                      </div>
+                      <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-danger">
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Gastos Hoy día</b>
+                            <h3 id="total_gastos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
+                          </div>
+                          <div class="icon">
+                            <i class="fas fa-dollar-sign"></i>
+                          </div>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="small-box-footer"><b>Ver egresos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                      </div>
+                      <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-primary">
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Atenciones Psicológicas</b>
+                            <h3 id="total_psicologia" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
+                          </div>
+                          <div class="icon">
+                            <i class="fas fa-notes-medical"></i>
+                          </div>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="small-box-footer"><b>Ver atenciones psicología</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                      </div>
+                      <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-dark">
+                          <div class="inner" style="text-align: center;">
+                            <b>Total de Atenciones Enfermería</b>
+                            <h3 id="total_enfermeria" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
+                              <sup style="font-size: 45px"></sup>
+                            </h3>
+                          </div>
+                          <div class="icon">
+                            <i class="fas fa-notes-medical"></i>
+                          </div>
+                          <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="small-box-footer"><b>Ver atenciones enfermería</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                       </div>
                     </div>
@@ -913,8 +986,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-bullhorn"></i><b> COMUNICADOS</b></h5>
                   </div>
                   <div class="table-responsive" style="text-align:center">
-                    <div class="card-body">
-                      <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
+                    <div class="card-body" style="overflow: hidden; border-radius: 20px;">
+                      <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%; border-radius: 20px; overflow: hidden;">
                         <thead style="background-color:#023D77;color:white;">
                           <tr>
                             <th style="text-align:center">Nro.</th>
@@ -936,9 +1009,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div><!-- /.container-fluid -->
           </div>
         </div>
+        <div class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- /.col-md-6 -->
+              <div class="col-lg-12">
+                <div class="card-primary">
+                  <div class="card-header">
+                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-school"></i><b> DATOS DE LA INSTITUCIÓN EDUCATIVA</b< /h5>
+                  </div>
+                  <div class="table-responsive" style="text-align:center">
+                    <div class="card-body" style="overflow: hidden; border-radius: 20px;">
+                      <table id="tabla_empresa" class="table table-striped table-bordered" style="width:100%; border-radius: 20px; overflow: hidden;">
+                        <thead style="background-color:#023D77;color:white;">
+                          <tr>
+                            <th style="text-align:center">Nro.</th>
+                            <th style="text-align:center">Logo</th>
+                            <th style="text-align:center">Nombre</th>
+                            <th style="text-align:center">Email</th>
+                            <th style="text-align:center">Código Modular</th>
+                            <th style="text-align:center">Teléfono</th>
+                            <th style="text-align:center">Dirección</th>
+                            <th style="text-align:center">Acciones</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
 
+                </div>
+                <!-- /.col-md-6 -->
+              </div>
+              <!-- /.row -->
+            </div><!-- /.container-fluid -->
+          </div>
+        </div>
         <!-- /.content -->
     </div>
+
     <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -961,11 +1069,86 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-
           </div>
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE LA INSTITUCIÒN</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12 form-group" style="color:red">
+                <h6><b>Campos Obligatorios (*)</b></h6>
+              </div><br>
+              <div class="col-6 form-group">
+                <input type="text" id="txt_id_empresa" hidden>
+                <label for="">Nombre(*):</label>
+                <input type="text" class="form-control" id="txt_nombre" maxlenght="8">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Email(*):</label>
+                <input type="text" class="form-control" id="txt_email">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Código(*):</label>
+                <input type="text" class="form-control" id="txt_codigo">
+              </div>
+              <div class="col-6 form-group">
+                <label for="">Teléfono / Celular(*):</label>
+                <input type="text" class="form-control" id="txt_telefono" maxlenght="9" onkeypress="return soloNumeros(event)">
+              </div>
+              <div class="col-12 form-group">
+                <label for="">Dirección(*):</label>
+                <input type="text" class="form-control" id="txt_direccion">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Empleado()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal_editar_foto" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DE LA INSTITUCIÓN: </b><label for="" id="lb_empresa"></label></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <input type="text" id="fotoactual" hidden>
+                <input type="text" id="txt_idempresa_foto" hidden>
+                <label for="checkboxSuccess2" style="align:justify;color:red">
+                  OJO: Una vez cambiado el logo, tambien se cambiara el logo en los reportes y ticket.
+                </label>
+                <label for="">Subir Foto:</label>
+                <input class="form-control" type="file" id="txt_foto">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Modificar_Foto_Empresa()"><i class="fas fa-check"></i> Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- /.content-wrapper -->
   <?php
@@ -1042,6 +1225,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>
     </div>
   </div>
+
   <!-- /.content-wrapper -->
 <?php
   }
@@ -1067,12 +1251,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="card-body" style="display: block;">
               <div style="background-image: url('../img//fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
-                <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
+                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco.png'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
                   <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">
+                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_docente()">
                       <i class="fas fa-upload"></i>
                       Cambiar foto
                     </button>
@@ -1114,6 +1298,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="card-body">
                   <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
                     <thead style="background-color:#0A5D86;color:#FFFFFF;">
+
                       <tr>
                         <th style="text-align:center">Nro.</th>
                         <th style="text-align:center">Grado</th>
@@ -1134,28 +1319,165 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div>
         </div>
 
+        <div class="col-md-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> EXÁMENES PENDIENTES</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="text-align:center">
+                <div class="card-body">
+                  <table id="tabla_examenes_menu" class="table table-striped table-bordered" style="width:100%">
+                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
+
+                      <tr>
+                        <th style="text-align:center">Nro.</th>
+                        <th style="text-align:center">Nivel Academico</th>
+                        <th style="text-align:center">Grado</th>
+                        <th style="text-align:center">Curso - Docente</th>
+                        <th style="text-align:center">Tema de Examen</th>
+                        <th style="text-align:center">Descripción / Observación</th>
+                        <th style="text-align:center">Fecha de publicación</th>
+                        <th style="text-align:center">Fecha de examen</th>
+                        <th style="text-align:center">Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
   </div>
 
-  <!-- /.content -->
+  <div class="content" hidden>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- /.col-md-6 -->
+        <div class="col-lg-12">
+          <div class="card-primary"><br>
+            <div class="card-header">
+              <h5 class="m-0" style="font-family:cooper;text-align:center">
+                <i class="fas fa-bullhorn"></i><b> COMUNICADOS</b>
+              </h5>
+            </div>
+            <div class="table-responsive" style="text-align:center">
+              <div class="card-body">
+                <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
+                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                    <tr>
+                      <th style="text-align:center">Nro.</th>
+                      <th style="text-align:center">Tipo</th>
+                      <th style="text-align:center">Grado</th>
+                      <th style="text-align:center">Título</th>
+                      <th style="text-align:center">Descripción</th>
+                      <th style="text-align:center">Vista</th>
+                      <th style="text-align:center">Estado</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- Imagen centrada -->
+          <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
   </div>
 
 
+  <!-- /.content -->
+  <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
+          <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 form-group">
+              <label for="">Descripción<b style="color:red">(*)</b>:</label>
+              <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
+            </div>
+            <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
+              <img id="preview4" src="#" alt="Vista previa" style="max-width: 100%; height: auto; display: block;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.content -->
+  </div>
+
+  <div class="modal fade" id="modal_editar_foto_docente" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:#1FA0E0;">
+          <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL DOCENTE: </b><label for="" id="lb_docente"></label></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <input type="text" id="fotoactualdocente" hidden>
+              <input type="text" id="txt_iddocente_foto" hidden>
+              <label for="checkboxSuccess2" style="align:justify;color:red">
+                OJO: Usted puede cambiar su foto de perfil las veces que desee.
+              </label>
+              <label for="">Subir Foto:</label>
+              <input class="form-control" type="file" id="txt_foto_docente">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+          <button type="button" class="btn btn-success" onclick="Modificar_Foto_Docente()"><i class="fas fa-check"></i> Modificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- /.content-wrapper -->
 <?php
 }
 
 ?>
+
 <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
 
   <!-- Main content -->
+
+
 
   <div class="content">
     <div class="container-fluid">
       <div class="row">
         <!-- /.col-md-6 -->
+
 
         <div class="col-md-12">
           <div class="card card-danger">
@@ -1171,12 +1493,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
 
                 <!-- Contenedor de la imagen y el botón -->
-                <div style="width: 280px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
+                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco.png'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="<?php echo $rutaFoto; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
                   </div>
                   <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;">
+                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_Estudiante()">
                       <i class="fas fa-upload"></i>
                       Cambiar foto
                     </button>
@@ -1190,12 +1512,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p style="margin: 0 0 15px 0; font-size:25px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); color: white;"><u><b>Estudiante</b></u></p>
                   <hr style="color:#fff">
                   <ul style="list-style-type: none; padding: 0; margin: 0; color: white;">
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-id-card" style="margin-right: 10px; color: #ffd700;"></i> DNI: <?php echo $_SESSION['S_DNI']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-calendar" style="margin-right: 10px; color: #ffd700;"></i> Fecha de nacimiento: <?php echo $_SESSION['S_FECHANACIMIENTO']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-phone" style="margin-right: 10px; color: #ffd700;"></i> Teléfono Celular: <?php echo $_SESSION['S_MOVIL']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-envelope" style="margin-right: 10px; color: #ffd700;"></i> Correo: <?php echo $_SESSION['S_EMAIL']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-home" style="margin-right: 10px; color: #ffd700;"></i> Dirección: <?php echo $_SESSION['S_DIRECCION']; ?></li>
+                    <li style="margin-bottom: 12px; font-size: 25px;">
+                      <i class="fas fa-id-card" style="margin-right: 10px; color: #ffd700;"></i>
+                      <strong>DNI:</strong> <?php echo $_SESSION['S_DNI']; ?>
+                    </li>
+                    <li style="margin-bottom: 12px; font-size: 25px;">
+                      <i class="fas fa-calendar" style="margin-right: 10px; color: #ffd700;"></i>
+                      <strong>Fecha de nacimiento:</strong> <?php echo $_SESSION['S_FECHANACIMIENTO']; ?>
+                    </li>
+                    <li style="margin-bottom: 12px; font-size: 25px;">
+                      <i class="fas fa-phone" style="margin-right: 10px; color: #ffd700;"></i>
+                      <strong>Teléfono Celular:</strong> <?php echo $_SESSION['S_MOVIL']; ?>
+                    </li>
+                    <li style="margin-bottom: 12px; font-size: 25px;">
+                      <i class="fas fa-envelope" style="margin-right: 10px; color: #ffd700;"></i>
+                      <strong>Correo:</strong> <?php echo $_SESSION['S_EMAIL']; ?>
+                    </li>
+                    <li style="margin-bottom: 12px; font-size: 25px;">
+                      <i class="fas fa-home" style="margin-right: 10px; color: #ffd700;"></i>
+                      <strong>Dirección:</strong> <?php echo $_SESSION['S_DIRECCION']; ?>
+                    </li>
                   </ul>
+
                   <hr>
                 </div>
 
@@ -1213,26 +1551,140 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-md-12">
           <div class="card card-success">
             <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-id-card""></i><b> DATOS DE MATRICULA</b></h3>
-              <div class=" card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                  </button>
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-id-card"></i><b> DATOS DE MATRICULA</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="overflow-x: hidden;"> <!-- Evita desbordamiento horizontal -->
+                <div class="row">
+                  <div class="col-md-3 form-group">
+                    <label for="">Año académico (matriculado):</label>
+                    <input type="text" class="form-control" id="txt_añoaca" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Nivel académico:</label>
+                    <input type="text" class="form-control" id="txt_nivelaca" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Grado:</label>
+                    <input type="text" class="form-control" id="txt_grado" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Sección:</label>
+                    <input type="text" class="form-control" id="txt_seccion" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Tipo de alumno:</label>
+                    <input type="text" class="form-control" id="txttipo_alum" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Procedencia:</label>
+                    <input type="text" class="form-control" id="txt_proceden" style="font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Último Pago de Pensión:</label>
+                    <input type="text" class="form-control" id="txt_ultimo_pago" style="color: green; font-weight: bold;" disabled>
+                  </div>
+                  <div class="col-md-3 form-group">
+                    <label for="">Mes siguiente de pago:</label>
+                    <input type="text" class="form-control" id="txt_mes_siguiente" style="color: red; font-weight: bold;" disabled>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="card-body" style="display: block;">
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="card card-warning">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="text-align:center">
+                <div class="card-body">
+                  <table id="tabla_tarea_menu_estudiante" class="table table-striped table-bordered" style="width:100%">
+                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                      <tr>
+                        <th style="text-align:center">Curso - Docente</th>
+                        <th style="text-align:center">Tema o Tarea</th>
+                        <th style="text-align:center">Descripción</th>
+                        <th style="text-align:center">Fecha de entrega</th>
+                        <th style="text-align:center">Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> EXÁMENES PENDIENTES</b></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: block;">
+              <div class="table-responsive" style="text-align:center">
+                <div class="card-body">
+                  <table id="tabla_examenes_menu_estudiante" class="table table-striped table-bordered" style="width:100%">
+                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                      <tr>
+                        <th style="text-align:center">Curso - Docente</th>
+                        <th style="text-align:center">Tema</th>
+                        <th style="text-align:center">Descripción</th>
+                        <th style="text-align:center">Fecha</th>
+                        <th style="text-align:center">Estado</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+  </div>
+
+  <div class="content" hidden>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- /.col-md-6 -->
+        <div class="col-lg-12">
+          <div class="card-primary"><br>
+            <div class="card-header">
+              <h5 class="m-0" style="font-family:cooper;text-align:center">
+                <i class="fas fa-bullhorn"></i><b> COMUNICADOS</b>
+              </h5>
+            </div>
             <div class="table-responsive" style="text-align:center">
               <div class="card-body">
-                <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
+                <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
                   <thead style="background-color:#0A5D86;color:#FFFFFF;">
                     <tr>
                       <th style="text-align:center">Nro.</th>
+                      <th style="text-align:center">Tipo</th>
                       <th style="text-align:center">Grado</th>
-                      <th style="text-align:center">Curso - Docente</th>
-                      <th style="text-align:center">Tema o Tarea</th>
+                      <th style="text-align:center">Título</th>
                       <th style="text-align:center">Descripción</th>
-                      <th style="text-align:center">Fecha de publicación</th>
-                      <th style="text-align:center">Fecha de entrega</th>
-                      <th style="text-align:center">Archivo de Tarea</th>
+                      <th style="text-align:center">Vista</th>
                       <th style="text-align:center">Estado</th>
                     </tr>
                   </thead>
@@ -1240,52 +1692,75 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
           </div>
+          <!-- Imagen centrada -->
+          <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
         </div>
-      </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+  </div>
 
 
-      <div class="col-md-12">
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-              </button>
+  <!-- /.content -->
+  <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
+          <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 form-group">
+              <label for="">Descripción<b style="color:red">(*)</b>:</label>
+              <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
             </div>
-          </div>
-          <div class="card-body" style="display: block;">
-            <div class="table-responsive" style="text-align:center">
-              <div class="card-body">
-                <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                    <tr>
-                      <th style="text-align:center">Nro.</th>
-                      <th style="text-align:center">Grado</th>
-                      <th style="text-align:center">Curso - Docente</th>
-                      <th style="text-align:center">Tema o Tarea</th>
-                      <th style="text-align:center">Descripción</th>
-                      <th style="text-align:center">Fecha de publicación</th>
-                      <th style="text-align:center">Fecha de entrega</th>
-                      <th style="text-align:center">Archivo de Tarea</th>
-                      <th style="text-align:center">Estado</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
+            <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
+              <img id="preview4" src="#" alt="Vista previa" style="max-width: 100%; height: auto; display: block;">
             </div>
           </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+        </div>
       </div>
-
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
   </div>
-  </div>
-
   <!-- /.content -->
   </div>
 
-
+  <div class="modal fade" id="modal_editar_foto_estudiante" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:#1FA0E0;">
+          <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL ESTUDIANTE: </b><label for="" id="lb_estudiante"></label></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <input type="text" id="fotoactualestudiante" hidden>
+              <input type="text" id="txt_idestudiante_foto" hidden>
+              <label for="checkboxSuccess2" style="align:justify;color:red">
+                OJO: Usted puede cambiar su foto de perfil las veces que desee.
+              </label>
+              <label for="">Subir Foto:</label>
+              <input class="form-control" type="file" id="txt_foto_estudiante">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+          <button type="button" class="btn btn-success" onclick="Modificar_Foto_Estudiante()"><i class="fas fa-check"></i> Modificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- /.content-wrapper -->
 <?php
 }
@@ -1308,12 +1783,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <em>Versión 1.0.0</em>
   </div>
   <!-- Default to the left -->
-  <strong>Copyright &copy; 2024 - <a href="https://web.facebook.com/profile.php?id=100046028187266" target="_blank"><em>SEDES SAPIENTIAE</em></a></strong>
+  <strong>Copyright &copy; 2024 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
 </footer>
 </div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED SCRIPTS -->
+
+
+
 <script>
   function cargar_contenido(id, vista) {
     $("#" + id).load(vista);
@@ -1395,23 +1873,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../plantilla/dist/js/adminlte.min.js"></script>
-<script src="../js/console_comunicados.js?rev=<?php echo time(); ?>"></script>
-<script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 
+
+
+<script src="../js/console_comunicados.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_matriculas.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/console_examen_profesor.js?rev=<?php echo time(); ?>"></script>
 <script src="../utilitario/DataTables/datatables.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
-<script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
 
 
+</body>
 
+</html>
 <!-- Incluye tu JavaScript personalizado -->
 <script>
   $(document).ready(function() {
+    Traer_Datos();
+    listar_empresa();
     listar_comunicado_dash();
     listar_tareas_menu();
-
+    listar_tareas_menu_estudiante();
+    listar_examenes_menu();
+    listar_examenes_menu_estudiante();
+    Total_estudiantes();
+    Total_docentes();
+    Total_administrativos();
+    Total_usuarios();
+    Total_ingresos();
+    Total_egresos();
+    Total_atención_psicologica();
+    Total_atención_enefermeria();
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {
       mostrarSiguienteModal();
@@ -1434,145 +1933,3 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
   });
 </script>
-
-</body>
-
-</html>
-<!-- <script>
-    $(document).ready(function () {
-      
-      
-      // Total_documentos_pendientes();
-      // Total_documentos_aceptados();
-      // Total_documentos_finalizado();
-      // Total_documentos_pendientes_area();
-    });
-
-    <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
-      
-  //     function TraerNotificacionComunicado(){
-  // $.ajax({
-  //   "url":"../controller/usuario/controlador_traer_notificacion_comunicado.php",
-  //   type:'POST',
-  // }).done(function(resp){
-
-    let data=JSON.parse(resp);
-    document.getElementById('lbl_contador').innerHTML=data.length;
-    let llenardata="";
-    if(data.length>0){
-      let cadena ="";
-      for (let i = 0; i < data.length; i++) {
-        llenardata+='<a href="#" class="dropdown-item">'+
-          '<div class="media">'+
-              '<div class="media-body">'+
-                '<h3 class="dropdown-item-title" >'+
-                '<b>Título: </b>'+data[i][1]+''+
-                '<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>'+
-                '</h3>'+
-                '<p class="text-sm"><b>Descripción: </b>'+data[i][2]+'</p>'+
-                '<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i><b>Fecha: </b>'+data[i][4]+'</p>'+
-             '</div>'+
-          '</div>'+
-        '</a>';  
-      }
-      document.getElementById('div_cuerpo').innerHTML=llenardata;
-
-    }else{
-      cadena+="<option value=''>No hay empleado en la base de datos</option>";
-      document.getElementById('select_empleado').innerHTML=llenardata;
-      document.getElementById('select_empleado_editar').innerHTML=llenardata;
-
-    }
-  })
-  }
-  <?php
-    }
-  ?>
-<?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA") { ?>
-  TraerNotificacionComunicado();
-      
-      function TraerNotificacionComunicado(){
-  $.ajax({
-    "url":"../controller/usuario/controlador_traer_notificacion_comunicado.php",
-    type:'POST',
-  }).done(function(resp){
-
-    let data=JSON.parse(resp);
-    document.getElementById('lbl_contador').innerHTML=data.length;
-    let llenardata="";
-    if(data.length>0){
-      let cadena ="";
-      for (let i = 0; i < data.length; i++) {
-        llenardata+='<a href="#" class="dropdown-item">'+
-          '<div class="media">'+
-              '<div class="media-body">'+
-                '<h3 class="dropdown-item-title" >'+
-                '<b>Título: </b>'+data[i][1]+''+
-                '<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>'+
-                '</h3>'+
-                '<p class="text-sm"><b>Descripción: </b>'+data[i][2]+'</p>'+
-                '<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i><b>Fecha: </b>'+data[i][4]+'</p>'+
-             '</div>'+
-          '</div>'+
-        '</a>';  
-      }
-      document.getElementById('div_cuerpo').innerHTML=llenardata;
-
-    }else{
-      cadena+="<option value=''>No hay empleado en la base de datos</option>";
-      document.getElementById('select_empleado').innerHTML=llenardata;
-      document.getElementById('select_empleado_editar').innerHTML=llenardata;
-
-    }
-  })
-}
-
-    
-    
-// TraerNotificacionDocumentos();
-// function TraerNotificacionDocumentos(){
-//   let idarea= document.getElementById('txtidprincipalarea').value;
-//   $.ajax({
-//     "url":"../controller/usuario/controlador_traer_notificacion_tramite.php",
-//     type:'POST',
-//     data:{
-//       idarea:idarea
-//     }
-//   }).done(function(resp){
-//     let data=JSON.parse(resp);
-//     document.getElementById('lbl_contador_pendientes').innerHTML=data.length;
-//     let llenardata="";
-//     if(data.length>0){
-//       let cadena ="";
-//       for (let i = 0; i < data.length; i++) {
-//         llenardata+='<a href="#" class="dropdown-item">'+
-//           '<div class="media">'+
-//               '<div class="media-body">'+
-//                 '<h3 class="dropdown-item-title" >'+
-//                 '<b>DNI: </b>'+data[i][1]+''+
-//                 '<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>'+
-//                 '</h3>'+
-//                 '<p class="text-sm"><b>Remitente: </b>'+data[i][2]+'</p>'+
-//                 '<p class="text-sm"><b>Area Origén: </b>'+data[i][24]+'</p>'+
-//                 '<p class="text-sm"><b>Asunto: </b>'+data[i][18]+'</p>'+
-//                 '<p class="text-sm"><b>Estado: </b>'+data[i][8]+'</p>'+
-
-//                 '<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i><b>Fecha: </b>'+data[i][20]+'</p>'+
-//              '</div>'+
-//           '</div>'+
-//         '</a>';  
-//       }
-//       document.getElementById('div_cuerpo_tramite').innerHTML=llenardata;
-
-//     }else{
-//       cadena+="<option value=''>No hay empleado en la base de datos</option>";
-//       document.getElementById('select_empleado').innerHTML=llenardata;
-//       document.getElementById('select_empleado_editar').innerHTML=llenardata;
-
-//     }
-//   });
-// }
-<?php
-}
-?>
-    </script> -->

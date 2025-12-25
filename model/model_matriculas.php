@@ -42,6 +42,22 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_matriculados_filtro($año,$grado){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_MATRICULADOS_FILTRO(?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$año);
+            $query->bindParam(2,$grado);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         public function TraerNivel($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_TRAE_NIVEL(?)";
@@ -124,6 +140,19 @@
                 return 1;
             }else{
                 return 0;
+            }
+            conexionBD::cerrar_conexion();
+        }
+        public function Eliminar_matricula($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_ELIMINAR_MATRICULA(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query ->bindParam(1,$id);
+    
+            $resultado = $query->execute();
+            if($row = $query->fetchColumn()){
+                return $row;
             }
             conexionBD::cerrar_conexion();
         }

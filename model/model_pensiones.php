@@ -17,7 +17,20 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-
+        public function Listar_pensiones_filtros($nivel){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_PENSIONES_FILTRO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$nivel);
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         public function Cargar_Select_Nivel(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_NIVELACA()";

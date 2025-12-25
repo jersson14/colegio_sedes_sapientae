@@ -29,6 +29,26 @@
             <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Pensiones</b></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
           </div>
+          <div class="table-responsive" style="text-align:left">
+            <div class="card-body">
+                <div class="row">
+                    
+                    <div class="col-4 form-group">
+                        <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                        <select class="form-control" id="select_nivel_buscar" style="width:100%">
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4" role="document">
+                        <label for="">&nbsp;</label><br>
+                        <button onclick="listar_pensiones_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar pensiones</button>
+                    </div>
+                    <div class="col-12 col-md-4" role="document">
+                        <label for="">&nbsp;</label><br>
+                        <button onclick="listar_pensiones()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_pensiones" class="table table-striped table-bordered" style="width:100%">
@@ -60,7 +80,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE AULA O GRADO ACADÉMICO</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE PENSIONES</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -119,7 +139,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL ROL</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE PENSIÓN</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

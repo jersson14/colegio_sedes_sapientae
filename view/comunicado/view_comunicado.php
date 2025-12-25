@@ -29,6 +29,30 @@
                 <h3 class="card-title"><i class="nav-icon fas fa-bullhorn"></i>&nbsp;&nbsp;<b>Listado de Comunicados</b></h3>
                 <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
               </div>
+              <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3 form-group">
+                                    <label for="">Fecha inicio</label><b style="color:red">(*)</b>:</label>
+                                    <input type="date" class="form-control" id="txtfechainicio">
+
+                                </div>
+                                <div class="col-3 form-group">
+                                    <label for="">Fecha final<b style="color:red">(*)</b>:</label>
+                                    <input type="date" class="form-control" id="txtfechafin">
+
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_comunicado_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar comunicados</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_comunicado()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
               <div class="table-responsive" style="text-align:center">
               <div class="card-body">
               <table id="tabla_comunicados" class="table table-striped table-bordered" style="width:100%">
@@ -41,6 +65,8 @@
                           <th style="text-align:center">Descripción</th>
                           <th style="text-align:center">Vista</th>
                           <th style="text-align:center">Estado</th>
+                          <th style="text-align:center">Fecha de registro</th>
+
                           <th style="text-align:center">Acción</th>
                       </tr>
                   </thead>
@@ -73,8 +99,8 @@
           <div class="col-12 form-group">
               <label for="">Tipo comunicado<b style="color:red">(*)</b>:</label>
               <select class="form-control" id="select_tipo" style="width:100%">
-                  <option value="GENERAL">GENERAL</option>
                   <option value="POR GRADO">POR GRADO</option>
+                  <option value="GENERAL">GENERAL</option>
               </select>          
           </div>
           <div class="col-12 form-group" id="grado_container" >
@@ -115,7 +141,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE COMUNICADOS</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE COMUNICADO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -129,8 +155,8 @@
               <label for="">Tipo comunicado<b style="color:red">(*)</b>:</label>
               <input type="text" id="txt_id_comu" hidden>
               <select class="form-control" id="select_tipo_editar" style="width:100%">
-                  <option value="GENERAL">GENERAL</option>
                   <option value="POR GRADO">POR GRADO</option>
+                  <option value="GENERAL">GENERAL</option>
               </select>          
           </div>
           <div class="col-12 form-group" id="grado_container" >
@@ -280,16 +306,19 @@
         // Inicializa Select2
         $('#select_grado').select2();
 
-        // Maneja el cambio de select_tipo
         $('#select_tipo').on('change', function() {
-            if (this.value === 'POR GRADO') {
-                $('#select_grado').prop('disabled', false);
-            } else {
-                $('#select_grado').prop('disabled', true);
-                // Reset Select2 to apply the disabled state correctly
-                $('#select_grado').select2();
-            }
-        });
+    if (this.value === 'POR GRADO') {
+        $('#select_grado').prop('disabled', false);
+    } else {
+        // Establecer el valor "TODOS" y deshabilitar el select
+        $('#select_grado').val('4').trigger('change');  // Selecciona el valor "TODOS"
+        $('#select_grado').prop('disabled', true);
+
+        // Reset Select2 para que aplique el estado deshabilitado correctamente
+        $('#select_grado').select2();
+    }
+});
+
 
         // Inicializa el select_grado como deshabilitado si está en "GENERAL"
         if ($('#select_tipo').val() === 'GENERAL') {
@@ -297,6 +326,19 @@
             $('#select_grado').select2(); // Reaplicar Select2 para reflejar el estado deshabilitado
         }
     });
+    var n = new Date();
+var y= n.getFullYear();
+var m= n.getMonth()+1;
+var d= n.getDate();
+if(d<10){
+    d='0' + d;
+}
+if(m<10){
+    m='0' + m;
+
+}
+document.getElementById('txtfechainicio').value = y + "-" + m + "-" + d;
+document.getElementById('txtfechafin').value = y + "-" + m + "-" + d;
 </script>
 
 <script>

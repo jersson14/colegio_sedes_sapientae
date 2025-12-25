@@ -31,19 +31,23 @@
                     <div class="table-responsive" style="text-align:left">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-4 form-group">
+                                <div class="col-3 form-group">
                                     <label for="">Año académico<b style="color:red">(*)</b>:</label>
                                     <select class="form-control" id="select_año" style="width:100%" disabled>
                                     </select>
                                 </div>
-                                <div class="col-4 form-group">
+                                <div class="col-3 form-group">
                                     <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
                                     <select class="form-control" id="select_aula" style="width:100%">
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-4" role="document">
+                                <div class="col-12 col-md-3" role="document">
                                     <label for="">&nbsp;</label><br>
-                                    <button onclick="listar_tareas_id()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar estudiantes</button>
+                                    <button onclick="listar_tareas()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar tareas pendientes</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_examenes_id()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +141,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="background-color:#1FA0E0;">
-                    <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL ROL</b></h5>
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE TAREA</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

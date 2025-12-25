@@ -391,7 +391,6 @@ function Registrar_Periodos() {
     if (resp > 0) {
       if (resp == 1) {
         Swal.fire("Mensaje de Confirmación", "Periodos registrados satisfactoriamente!!!", "success").then(() => {
-          $("#tabla_perio").empty();  // Limpiar la tabla después del registro
           tbl_periodo.ajax.reload(); // Recargar la tabla si estás usando DataTables
           $("#modal_registro").modal('hide');
         });
@@ -442,7 +441,6 @@ function Modificar_Periodos() {
     }).done(function(resp) {
         if (resp == 1) {
             Swal.fire("Mensaje de Confirmación", "Períodos registrados satisfactoriamente!!!", "success").then(() => {
-                $("#tabla_perio_editar").empty();
                 tbl_periodo.ajax.reload();
                 $("#modal_editar").modal('hide');
             });

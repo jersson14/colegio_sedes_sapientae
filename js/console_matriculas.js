@@ -1,4 +1,4 @@
-//LISTADO DE ROLES
+//LISTADO DE MATRICULAS
 var tbl_matricula;
 function listar_matriculados(){
     tbl_matricula = $("#tabla_matricula").DataTable({
@@ -27,10 +27,10 @@ function listar_matriculados(){
       titleAttr: 'Exportar a Excel',
       
       filename: function() {
-        return  "LISTA DE AULAS"
+        return  "LISTA DE MATRICULADOS"
       },
         title: function() {
-          return  "LISTA DE AULAS" }
+          return  "LISTA DE MATRICULADOS" }
   
     },
     {
@@ -38,10 +38,10 @@ function listar_matriculados(){
       text:      '<i class="fas fa-file-pdf"></i> ',
       titleAttr: 'Exportar a PDF',
       filename: function() {
-        return  "LISTA DE AULAS"
+        return  "LISTA DE MATRICULADOS"
       },
     title: function() {
-      return  "LISTA DE AULAS"
+      return  "LISTA DE MATRICULADOS"
     }
   },
     {
@@ -50,12 +50,13 @@ function listar_matriculados(){
       titleAttr: 'Imprimir',
       
     title: function() {
-      return  "LISTA DE AULAS"
+      return  "LISTA DE MATRICULADOS"
   
     }
     }],
       "columns":[
         {"data":"id_matricula"},
+        {"data":"alum_dni"},
         {"data":"Estudiante"},
         {"data":"Grado"},
         {"data":"Nivel_academico",
@@ -80,7 +81,7 @@ function listar_matriculados(){
         {"data":"provincia"},
         {"data":"departamento"},
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
         
     ],
 
@@ -94,6 +95,147 @@ tbl_matricula.on('draw.td',function(){
   });
 });
 }
+
+
+function listar_matriculados_filtro(){
+  let año = document.getElementById('select_año_buscar').value;
+    let grado = document.getElementById('select_aula_buscar').value;
+  tbl_matricula = $("#tabla_matricula").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/matricula/controlador_listar_matriculas_filtro.php",
+        type:'POST',
+        data:{
+          año:año,
+          grado:grado
+      }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE MATRICULADOS"
+    },
+      title: function() {
+        return  "LISTA DE MATRICULADOS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE MATRICULADOS"
+    },
+  title: function() {
+    return  "LISTA DE MATRICULADOS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE MATRICULADOS"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_matricula"},
+      {"data":"alum_dni"},
+      {"data":"Estudiante"},
+      {"data":"Grado"},
+      {"data":"Nivel_academico",
+          render: function(data,type,row){
+              if(data=='INICIAL'){
+              return '<span class="badge bg-warning">INICIAL</span>';
+              }else if(data=='PRIMARIA'){
+              return '<span class="badge bg-success">PRIMARIA</span>';
+              }else{
+              return '<span class="badge bg-primary">SECUNDARIA</span>';
+              }
+      }
+      },
+      {"data":"año_escolar"},
+      {"data":"MATRICULA",
+          render: function(data,type,row){
+                  if(data==data){
+                  return '<span class="badge bg-success">'+data+'</span>';
+                  }
+          }   
+      },        {"data":"procedencia_colegio"},
+      {"data":"provincia"},
+      {"data":"departamento"},
+
+      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
+      
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_matricula.on('draw.td',function(){
+var PageInfo = $("#tabla_matricula").DataTable().page.info();
+tbl_matricula.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
+function Cargar_Select_estudiante() {
+  $.ajax({
+    url: "../controller/matricula/controlador_cargar_select_estudiante.php",
+    type: 'POST',
+    dataType: 'json'
+  }).done(function(data) {
+    console.log("Datos recibidos:", data);
+    let cadena = "<option value=''>Seleccionar Estudiante</option>";
+    if (Array.isArray(data) && data.length > 0) {
+      data.forEach(function(item) {
+        cadena += `<option value='${item[0]}'>DNI: ${item[1]} - ${item[2]}</option>`;
+      });
+    } else {
+      cadena = "<option value=''>No se encontraron registros</option>";
+    }
+    $('#select_estudiante').html(cadena);
+
+    // Inicializa Select2 para el select de estudiante
+    $('#select_estudiante').select2({
+      dropdownParent: $('#modal_registro') // Si aplicas esto en un modal, puedes personalizarlo según el caso
+    });
+
+    // Recuperar el valor seleccionado (id del estudiante) y llamar a la función Traertipo si es necesario
+    var id = $("#select_estudiante").val();
+    if (id) {
+      Traertipo(id); // Asegúrate de que esta función existe y está bien implementada
+    }
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+    console.error("Error en la petición AJAX de estudiantes:", textStatus, errorThrown);
+    console.log("Respuesta del servidor:", jqXHR.responseText);
+  });
+}
+
+
+function debugSelect2() {
+  console.log("Select2 para estudiantes:", $('#select_estudiante').select2('data'));
+  console.log("¿Select2 está abierto?", $('.select2-container--open').length > 0);
+}
 function Cargar_Select_Grado(){
     $.ajax({
       "url":"../controller/asignaturas/controlador_cargar_select_grado.php",
@@ -103,7 +245,7 @@ function Cargar_Select_Grado(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+data[i][2]+"</option>";    
         }
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
@@ -111,8 +253,8 @@ function Cargar_Select_Grado(){
         var id =$("#select_aula").val();
         Traernivel(id);
 
-        var id =$("#select_aula_editar").val();
-        Traernivel(id);
+        var id2 =$("#select_aula_editar").val();
+        Traernivel(id2);
       }else{
         cadena+="<option value=''>No se encontraron regitros</option>";
         $('#select_aula').html(cadena);
@@ -145,6 +287,59 @@ function Cargar_Select_Grado(){
       }
     })
   }
+
+
+  
+function Cargar_Select_Nivelaca(){
+  $.ajax({
+    "url":"../controller/aulas/controlador_cargar_select_nivel.php",
+    type:'POST',
+  }).done(function(resp){
+    let data=JSON.parse(resp);
+    if(data.length>0){
+      let cadena ="";
+      for (let i = 0; i < data.length; i++) {
+        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+      }
+      $('#select_nivel_buscar').html(cadena);
+
+      var id =$("#select_nivel_buscar").val();
+      Cargar_Select_Aula(id);
+
+    }else{
+      cadena+="<option value=''>No se encontraron regitros</option>";
+      $('#select_nivel_buscar').html(cadena);
+
+    }
+  })
+}
+
+//TRAENDO DATOS DE LA AULAS
+function Cargar_Select_Aula(id){
+  $.ajax({
+      "url":"../controller/asistencias/controlador_cargar_select_aula_id.php",
+      type:'POST',
+      data: {
+          id: id  // Ensure this matches the parameter name expected by the PHP script
+      },
+      dataType: 'json',  // Expect JSON response
+      success: function(data){
+          if(data.length > 0){
+              let cadena = "";
+              for (let i = 0; i < data.length; i++) {
+                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+              }
+              $('#select_aula_buscar').html(cadena);
+          } else {
+              $('#select_aula_buscar').html("<option value=''>No hay secciones en la base de datos</option>");
+          }
+      },
+      error: function(xhr, status, error) {
+          console.error("AJAX Error: " + status + " - " + error);
+          $('#select_aula_buscar').html("<option value=''>Error al cargar las secciones</option>");
+      }
+  });
+}
 //TRAENDO DATOS DE LA SECCION
 function Cargar_Año(){
     $.ajax({
@@ -159,37 +354,20 @@ function Cargar_Año(){
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
+          document.getElementById('select_año_buscar').innerHTML=cadena;
+
       }else{
         cadena+="<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
+        document.getElementById('select_año_buscar').innerHTML=cadena;
+
       }
     })
   }
 //TRAENDO DATOS DE LA NIVEL ACADEMICO
 
-  function Cargar_Select_estudiante(){
-    $.ajax({
-      "url":"../controller/matricula/controlador_cargar_select_estudiante.php",
-      type:'POST',
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-      if(data.length>0){
-        let cadena ="<option value=''>Seleccionar Estudiante</option>";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>DNI: "+data[i][1]+" - "+data[i][2]+"</option>";    
-        }
-      $('#select_estudiante').html(cadena);
 
-      var id =$("#select_estudiante").val();
-      Traertipo(id);
-    }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
-      $('#select_estudiante').html(cadena);
-
-    }
-    })
-  }
   function Traertipo(id){
     $.ajax({
       "url":"../controller/matricula/controlador_traertipo.php",
@@ -248,7 +426,7 @@ $('#tabla_matricula').on('click','.mostrar',function(){
       var data = tbl_matricula.row(this).data();
   }
   $("#modal_mas").modal('show');
-  document.getElementById('select_estudiante_mas').value=data.alum_dni+' - '+data.Estudiante;
+  document.getElementById('estudiante').value=data.alum_dni+' - '+data.Estudiante;
   document.getElementById('txt_tipo_mas').value=data.tipo_alum;
   document.getElementById('select_año_mas').value=data.año_escolar;
   document.getElementById('select_aula_mas').value=data.Grado;
@@ -312,7 +490,7 @@ function Registrar_matriculado(){
           document.getElementById('txt_usu').value="";
           document.getElementById('txt_contra').value="";
           document.getElementById('txt_correo').value="";
-
+          Cargar_Select_estudiante();
         $("#modal_registro").modal('hide');
         });
       }else{
@@ -412,3 +590,73 @@ $('#tabla_matricula').on('click','.delete',function(){
       }
     })
   })
+
+
+  $('#tabla_matricula').on('click','.cedula',function(){
+    var data = tbl_matricula.row($(this).parents('tr')).data();
+  
+    if(tbl_matricula.row(this).child.isShown()){
+        var data = tbl_matricula.row(this).data();
+    }
+    var url = "../view/MPDF/REPORTE/cedula.php?codigo=" + encodeURIComponent(data.id_matricula)+ "#zoom=100%";
+  
+    // Abrir una nueva ventana con la URL construida
+    var newWindow = window.open(url, "CEDULA DE MATRICULA", "scrollbars=NO");
+    
+    // Asegurarse de que la ventana se abre en tamaño máximo
+    if (newWindow) {
+        newWindow.moveTo(0, 0);
+        newWindow.resizeTo(screen.width, screen.height);
+    }
+  
+  })
+  
+  
+
+
+
+  
+function eliminar_matricula(id){
+  $.ajax({
+    "url":"../controller/matricula/controlador_eliminar_matricula.php",
+    type:'POST',
+    data:{
+      id:id
+    }
+  }).done(function(resp){
+    if(resp>0){
+      if(resp==1){
+        Swal.fire("Mensaje de Confirmación","Se anulo el pago satisfactoriamente","success").then((value)=>{
+          tbl_matricula.ajax.reload();
+        });
+      }else{
+        Swal.fire("Mensaje de Advertencia","La matricula del alumno no podra ser eliminada ya que cuenta con pagos de pensión y tiene registros en otros formularios, revise por favor","warning");
+      }
+    }else{
+      return Swal.fire("Mensaje de Error","No se pudo completar el proceso","error");
+
+    }
+  })
+}
+
+//ENVIANDO AL BOTON DELETE
+$('#tabla_matricula').on('click','.delete',function(){
+  var data = tbl_matricula.row($(this).parents('tr')).data();
+
+  if(tbl_matricula.row(this).child.isShown()){
+      var data = tbl_matricula.row(this).data();
+  }
+  Swal.fire({
+    title: 'Desea eliminar la matricula del alumno: '+data.Estudiante+'?',
+    text: "Una vez aceptado la matricula del alumno sera eliminada de esta lista!!!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Eliminar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      eliminar_matricula(data.id_matricula);
+    }
+  })
+})

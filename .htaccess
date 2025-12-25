@@ -1,0 +1,14 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /colegio_sedes_sapientae/
+  
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^controller/tareas/controller/tareas/documentos/([0-9]+)/?$ controller/tareas/ver_documento.php?id=$1 [L,QSA]
+</IfModule>
+
+<FilesMatch "\.(pdf|doc|docx)$">
+  ForceType application/octet-stream
+  Header set Content-Disposition attachment
+</FilesMatch>

@@ -29,6 +29,30 @@
             <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Asignaturas</b></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
           </div>
+          <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3 form-group">
+                                    <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_nivel_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-3 form-group">
+                                    <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_aula_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_asignaturas_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar asignatura</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_asignaturas()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_asignaturas" class="table table-striped table-bordered" style="width:100%">
@@ -162,7 +186,10 @@ $(document).ready(function () {
       var id = $("#select_nivel_editar").val();
       Cargar_Select_Aula(id);
     });
-
+    $("#select_nivel_buscar").change(function() {
+      var id = $("#select_nivel_buscar").val();
+      Cargar_Select_Aula(id);
+    });
 $('#modal_registro').on('shown.bs.modal', function () {
   $('#txt_rol').trigger('focus')
 })

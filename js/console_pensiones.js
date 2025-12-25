@@ -92,6 +92,102 @@ tbl_pensiones.on('draw.td',function(){
 });
 }
 
+function listar_pensiones_filtro(){
+  let nivel = document.getElementById('select_nivel_buscar').value;
+
+  tbl_pensiones = $("#tabla_pensiones").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/pensiones/controlador_listar_pensiones_filtro.php",
+        type:'POST',
+        data:{
+          nivel:nivel
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE PENSIONES"
+    },
+      title: function() {
+        return  "LISTA DE PENSIONES" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE PENSIONES"
+    },
+  title: function() {
+    return  "LISTA DE PENSIONES"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE PENSIONES"
+
+  }
+  }],
+    "columns":[
+      {"data":"id_pensiones"},
+      {"data":"Nivel_academico",
+          render: function(data,type,row){
+              if(data=='INICIAL'){
+              return '<span class="badge bg-warning">INICIAL</span>';
+              }else if(data=='PRIMARIA'){
+              return '<span class="badge bg-success">PRIMARIA</span>';
+              }else{
+              return '<span class="badge bg-primary">SECUNDARIA</span>';
+              }
+      }
+      },
+      {"data":"mes"},
+      {"data":"fecha_formateada"},
+      {"data":"PRECIO"},
+      {"data":"MORA",
+          render: function(data,type,row){
+                  if(data==data){
+                  return '<span class="badge bg-danger">'+data+'</span>';
+                  }
+          }   
+      },
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"},
+      
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_pensiones.on('draw.td',function(){
+var PageInfo = $("#tabla_pensiones").DataTable().page.info();
+tbl_pensiones.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
 //TRAENDO DATOS DE LA NIVEL ACADEMICO
 
   function Cargar_Select_Nivelaca(){
@@ -107,11 +203,13 @@ tbl_pensiones.on('draw.td',function(){
         }
             document.getElementById('select_nivel').innerHTML=cadena;
             document.getElementById('select_nivel_editar').innerHTML=cadena;
+            document.getElementById('select_nivel_buscar').innerHTML=cadena;
 
       }else{
         cadena+="<option value=''>No hay secciones en la base de datos</option>";
             document.getElementById('select_nivel').innerHTML=cadena;
             document.getElementById('select_nivel_editar').innerHTML=cadena;
+            document.getElementById('select_nivel_buscar').innerHTML=cadena;
 
           }
     })
@@ -166,8 +264,7 @@ function Registrar_pensiones(){
       if(resp==1){
         Swal.fire("Mensaje de Confirmación","Nueva pensión registrada satisfactoriamente!!!","success").then((value)=>{
           tbl_pensiones.ajax.reload();
-          document.getElementById('txt_precio').value="";
-          document.getElementById('txt_mora').value="";
+
         $("#modal_registro").modal('hide');
         });
       }else{

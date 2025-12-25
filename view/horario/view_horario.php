@@ -31,6 +31,35 @@
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
 
           </div>
+          <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-2 form-group">
+                                    <label for="">Año académico<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_año_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_nivel_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_aula_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_horarios_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar horario</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_horarios()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_horario" class="table table-striped table-bordered" style="width:100%">
@@ -74,7 +103,7 @@
           </div>
           <div class="col-4 form-group">
             <label for="">Año académico<b style="color:red">(*)</b>:</label>
-            <select class="form-control" id="select_año" style="width:100%" disabled>
+            <select class="form-control" id="select_año" style="width:100%">
             </select>              
           </div>
           <div class="col-4 form-group">
@@ -271,28 +300,25 @@ $(document).ready(function () {
   $('.js-example-basic-single').select2();
   Cargar_Select_Grado();
   Cargar_Año();
+  Cargar_Select_Nivelaca();
 });
+
+
 
 $("#select_aula").change(function(){
 var id=$("#select_aula").val();
-Cargar_Select_curso(id);
+Cargar_Select_horas(id);
 });
 
 $("#select_aula_editar").change(function(){
 var id=$("#select_aula_editar").val();
-Cargar_Select_curso(id);
-});
-
-$("#select_horas").change(function(){
-var id=$("#select_horas").val();
 Cargar_Select_horas(id);
 });
-
-$("#select_horas_editar").change(function(){
-var id=$("#select_horas_editar").val();
-Cargar_Select_horas(id);
-});
-
+      
+$("#select_nivel_buscar").change(function() {
+      var id = $("#select_nivel_buscar").val();
+      Cargar_Select_Aula(id);
+    });
 
 $('#modal_registro').on('shown.bs.modal', function () {
   $('#txt_matricula').trigger('focus')

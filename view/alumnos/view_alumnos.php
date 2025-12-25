@@ -121,12 +121,14 @@
                                 <input type="text" class="form-control" id="txt_apema" placeholder="Ingrese el Apellido materno" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Sexo<b style="color:red">(*)</b>:</label>
-                                <select name="" id="txt_sexo" class="form-control">
-                                    <option value="FEMENINO">FEMENINO</option>
-                                    <option value="MASCULINO">MASCULINO</option>
-                                </select>
-                            </div>
+                              <label for="">Sexo<b style="color:red">(*)</b>:</label>
+                              <select name="" id="txt_sexo" class="form-control">
+                                  <option value="">Seleccione</option>
+                                  <option value="FEMENINO">FEMENINO</option>
+                                  <option value="MASCULINO">MASCULINO</option>
+                              </select>
+                          </div>
+
                             <div class="col-4 form-group">
                                 <label for="">Fecha de nacimiento<b style="color:red">(*)</b>:</label>
                                 <input type="date" class="form-control" id="txt_fecha_na">

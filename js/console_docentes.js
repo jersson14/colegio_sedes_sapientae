@@ -135,30 +135,26 @@ tb_docentes.on('draw.td',function(){
 
 //TRAENDO DATOS DE LA NIVEL ACADEMICO
 
-  function Cargar_Select_Especialidad(){
-    $.ajax({
-      "url":"../controller/docentes/controlador_cargar_select_especialidad.php",
-      type:'POST',
-    }).done(function(resp){
-      let data=JSON.parse(resp);
-      if(data.length>0){
-        let cadena ="";
-        for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
-        }
-          document.getElementById('txt_especialidad').innerHTML=cadena;
-          document.getElementById('txt_especialidad_mas').innerHTML=cadena;
-          document.getElementById('txt_especialidad_editar').innerHTML=cadena;
-
-      }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
-        document.getElementById('txt_especialidad').innerHTML=cadena;
-        document.getElementById('txt_especialidad_mas').innerHTML=cadena;
-        document.getElementById('txt_especialidad_editar').innerHTML=cadena;
-
+function Cargar_Select_Especialidad(){
+  $.ajax({
+    "url":"../controller/docentes/controlador_cargar_select_especialidad.php",
+    type:'POST',
+  }).done(function(resp){
+    let data = JSON.parse(resp);
+    let cadena = "<option value=''>Seleccione</option>"; // Agregar opción 'Seleccione'
+    if(data.length > 0){
+      for (let i = 0; i < data.length; i++) {
+        cadena += "<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
       }
-    })
-  }
+    } else {
+      cadena += "<option value=''>No hay secciones en la base de datos</option>";
+    }
+    document.getElementById('txt_especialidad').innerHTML = cadena;
+    document.getElementById('txt_especialidad_mas').innerHTML = cadena;
+    document.getElementById('txt_especialidad_editar').innerHTML = cadena;
+  })
+}
+
   
 
 
@@ -258,7 +254,7 @@ function AbrirRegistro(){
 //REGISTRANDO AULMONOS
 function Registrar_Docente(){
 
-  //DATOS DEL ALUMNO
+  //DATOS DEL DOCENTE
   let dni = document.getElementById('txt_dni').value;
   let nombre = document.getElementById('txt_nomb').value;
   let apelli = document.getElementById('txt_apelli').value;
@@ -322,20 +318,27 @@ function Registrar_Docente(){
         if(resp.length>0){
         if(resp==1){
           Swal.fire("Mensaje de Confirmación","Se registro correctamente al Docente con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+            // Limpiar todos los campos
+            document.getElementById('txt_dni').value = "";
+            document.getElementById('txt_nomb').value = "";
+            document.getElementById('txt_apelli').value = "";
+            document.getElementById('txt_fecha_na').value = "";
+            document.getElementById('txt_tele').value = "";
+            document.getElementById('txt_tele_alte').value = "";
+            document.getElementById('txt_direc').value = "";
+            document.getElementById('txt_foto').value = '';  // Limpiar el valor del input de archivo
+
+            // Limpiar la vista previa de la imagen
+            document.getElementById('preview').src = '#';
+            document.getElementById('preview').alt = 'Vista previa';
+
+            document.getElementById('txt_usu').value = "";
+            document.getElementById('txt_contra').value = "";
+            document.getElementById('txt_correo').value = "";
+
+            // Cerrar el modal
             $("#modal_registro").modal('hide');
             tb_docentes.ajax.reload();
-            document.getElementById('txt_dni').value="";
-            document.getElementById('txt_nomb').value="";
-            document.getElementById('txt_apelli').value="";
-            document.getElementById('txt_fecha_na').value="";
-            document.getElementById('txt_tele').value="";
-            document.getElementById('txt_tele_alte').value="";
-            document.getElementById('txt_direc').value="";
-            document.getElementById('txt_foto').value="";
-
-            document.getElementById('txt_usu').value="";
-            document.getElementById('txt_contra').value="";
-            document.getElementById('txt_correo').value="";
 
           });
             }else{

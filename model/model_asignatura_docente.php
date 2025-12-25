@@ -17,6 +17,21 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_asignatura_docente_filtro($grado){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_ADIGNDOCENTE_FILTRO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$grado);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         public function Cargar_Select_Docente(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_DOCENTE()";
@@ -43,11 +58,13 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_asignatura_docente($id_docente){
+        public function Registrar_asignatura_docente($añoaca,$id_docente){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_ASIGNATURA_DOCENTE(?)";
+            $sql = "CALL SP_REGISTRAR_ASIGNATURA_DOCENTE(?,?)";
             $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id_docente);
+            $query ->bindParam(1,$añoaca);
+            $query ->bindParam(2,$id_docente);
+
             $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;

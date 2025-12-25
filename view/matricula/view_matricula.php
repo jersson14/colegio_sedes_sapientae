@@ -30,12 +30,42 @@
             <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Matriculados</b></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
           </div>
+          <div class="table-responsive" style="text-align:left">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-2 form-group">
+                                    <label for="">Año académico<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_año_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_nivel_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-2 form-group">
+                                    <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                                    <select class="form-control" id="select_aula_buscar" style="width:100%">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_matriculados_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar matriculados</button>
+                                </div>
+                                <div class="col-12 col-md-3" role="document">
+                                    <label for="">&nbsp;</label><br>
+                                    <button onclick="listar_matriculados()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_matricula" class="table table-striped table-bordered" style="width:100%">
               <thead style="background-color:#0A5D86;color:#FFFFFF;">
                   <tr>
                       <th style="text-align:center">Nro.</th>
+                      <th style="text-align:center">DNI</th>
                       <th style="text-align:center">Estudiante</th>
                       <th style="text-align:center">Aula o Grado</th>
                       <th style="text-align:center">Nivel Académico</th>
@@ -86,12 +116,12 @@
             </div>
             <div class="col-2 form-group">
                 <label for="">Año Acad.<b style="color:red">(*)</b>:</label>
-                <select class="js-example-basic-single" id="select_año" style="width:100%">
+                <select class="form-control" id="select_año" style="width:100%">
                 </select>             
             </div>
             <div class="col-3 form-group">
                 <label for="">Aula o Grado:</label>
-                <select class="js-example-basic-single" id="select_aula" style="width:100%">
+                <select class="form-control" id="select_aula" style="width:100%">
                 </select>                
             </div>
             <div class="col-12">
@@ -133,7 +163,7 @@
             <label for="txt_foto">Departamento:</label>
                 <input type="text" class="form-control" id="txt_departamento" placeholder="Ingrese el Departamento" onkeypress="return sololetras(event)">
             </div>
-          
+
             <div class="col-4 form-group hidden" id="campo_usu">
             <label for="">Usuario<b style="color:red">(*)</b>:</label>
                 <input type="text" class="form-control" id="txt_usu"  placeholder="Ingrese el usuario">
@@ -169,7 +199,7 @@
         <div class="row">
             <div class="col-5 form-group">
                 <label for="">DNI - Estudiante<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="select_estudiante_mas" disabled>
+                <input type="text" class="form-control" id="estudiante" disabled>
             </div>
             <div class="col-2 form-group">
                 <label for="">Tipo:</label>
@@ -232,7 +262,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE MATRICULA</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE MATRICULA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -256,7 +286,7 @@
             </div>
             <div class="col-2 form-group">
                 <label for="">Año Académico:</label>
-                <select class="form-control" id="select_año_editar" style="width:100%" disabled>
+                <select class="form-control" id="select_año_editar" style="width:100%">
                 </select>             
             </div>
             <div class="col-3 form-group">
@@ -300,24 +330,64 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-        <button type="button" class="btn btn-success" onclick="Modificar_Matricula()"><i class="fas fa-save"></i> Registrar</button>
+        <button type="button" class="btn btn-success" onclick="Modificar_Matricula()"><i class="fas fa-edit"></i> Modificar</button>
       </div>
     </div>
   </div>
 </div>
-<style>
-    .hidden {
-        display: none;
-    }
-</style>
+
 
 <script>
+  // Inicialización de Select2 con la función personalizada
+function initializeSelect2(selector) {
+  $(selector).select2({
+    dropdownParent: $('#modal_registro'),
+    width: '100%',
+    language: {
+      noResults: function() {
+        return "No se encontraron resultados";
+      },
+      searching: function() {
+        return "Buscando...";
+      }
+    },
+    debug: true, // Habilita el modo de depuración de Select2
+    matcher: function(params, data) {
+      // Implementa tu propia lógica de búsqueda si es necesario
+      if ($.trim(params.term) === '') {
+        return data;
+      }
+
+      if (typeof data.text === 'undefined') {
+        return null;
+      }
+
+      if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+        return data;
+      }
+
+      return null;
+    }
+  }).on('select2:open', function(e) {
+    console.log('Select2 abierto:', e.target.id);
+  }).on('select2:closing', function(e) {
+    console.log('Select2 cerrándose:', e.target.id);
+  }).on('select2:select', function(e) {
+    console.log('Opción seleccionada:', e.params.data);
+  });
+}
+
 $(document).ready(function () {
-    listar_matriculados();
+  listar_matriculados();
+  
+  // Inicializa Select2 para los selects con la clase 'js-example-basic-single'
   $('.js-example-basic-single').select2();
+
+  // Cargar los selectores necesarios
   Cargar_Select_estudiante();
   Cargar_Select_Grado();
   Cargar_Año();
+  Cargar_Select_Nivelaca();
 });
 
 $("#select_aula").change(function(){
@@ -336,11 +406,14 @@ var id=$("#select_estudiante").val();
 Traertipo(id);
 });
 
+$("#select_nivel_buscar").change(function() {
+      var id = $("#select_nivel_buscar").val();
+      Cargar_Select_Aula(id);
+    });
 $('#modal_registro').on('shown.bs.modal', function () {
   $('#txt_matricula').trigger('focus')
 })
-</script>
-<script>
+
     document.addEventListener('DOMContentLoaded', function() {
         var camposAdicionales = [
             'txt_procedencia',
@@ -384,3 +457,8 @@ $('#modal_registro').on('shown.bs.modal', function () {
         });
     }
 </script>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>

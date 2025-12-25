@@ -71,7 +71,7 @@
           </div>
           <div class="col-6 form-group">
             <label for="">Año escolar<b style="color:red">(*)</b>:</label>
-                <select class="form-control" id="select_año" style="width:100%" disabled>
+                <select class="form-control" id="select_año" style="width:100%">
                 </select>           
             </div>
             <div class="col-6 form-group">
@@ -135,7 +135,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR PERIODOS ACADÉMICO</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR PERIODO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -92,6 +92,21 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Modificar_foto_docente($id,$ruta){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_MODIFICAR_DOCENTE_FOTO(?,?)";
+            $query  = $c->prepare($sql);
+            $query ->bindParam(1,$id);
+            $query ->bindParam(2,$ruta);
+
+            $resul = $query->execute();
+            if($resul){
+                return 1;
+            }else{
+                return 0;
+            }
+            conexionBD::cerrar_conexion();
+        }
     }
 
 

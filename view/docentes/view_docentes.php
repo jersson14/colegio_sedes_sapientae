@@ -104,6 +104,8 @@
             <div class="col-4 form-group">
                 <label for="">Sexo<b style="color:red">(*)</b>:</label>
                 <select name="" id="txt_sexo" class="form-control">
+                <option value="">Seleccione</option> <!-- Opción 'Seleccione' añadida -->
+
                     <option value="FEMENINO">FEMENINO</option>
                     <option value="MASCULINO">MASCULINO</option>
                 </select>
@@ -194,11 +196,13 @@
             </div>
             <div class="col-4 form-group">
                 <label for="">Sexo<b style="color:red">(*)</b>:</label>
-                <select name="" id="txt_sexo_mas" class="form-control" readonly>
+                <select name="" id="txt_sexo_mas" class="form-control">
+                    <option value="">Seleccione</option> <!-- Opción 'Seleccione' añadida -->
                     <option value="FEMENINO">FEMENINO</option>
                     <option value="MASCULINO">MASCULINO</option>
                 </select>
             </div>
+
             <div class="col-4 form-group">
                 <label for="">Fecha de nacimiento<b style="color:red">(*)</b>:</label>
                 <input type="date" class="form-control" id="txt_fecha_na_mas" readonly>
@@ -245,7 +249,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE DOCENTES</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL DOCENTE</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -276,6 +280,8 @@
             <div class="col-4 form-group">
                 <label for="">Sexo<b style="color:red">(*)</b>:</label>
                 <select name="" id="txt_sexo_editar" class="form-control">
+                <option value="">Seleccione</option> <!-- Opción 'Seleccione' añadida -->
+
                     <option value="FEMENINO">FEMENINO</option>
                     <option value="MASCULINO">MASCULINO</option>
                 </select>

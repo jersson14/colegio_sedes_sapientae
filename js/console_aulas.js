@@ -1,6 +1,6 @@
 //LISTADO DE ROLES
 var tbl_aulas;
-function listar_roles(){
+function listar_aulas(){
     tbl_aulas = $("#tabla_aulas").DataTable({
       "ordering":false,   
       "bLengthChange":true,
@@ -65,7 +65,7 @@ function listar_roles(){
                 }else if(data=='PRIMARIA'){
                 return '<span class="badge bg-success">PRIMARIA</span>';
                 }else if(data=='SECUNDARIA'){
-                  return '<span class="badge bg-success">PRIMARIA</span>';
+                  return '<span class="badge bg-primary">SECUNDARIA</span>';
                   }else{
                 return '<span class="badge bg-dark">TODOS</span>';
                 }
@@ -94,6 +94,108 @@ tbl_aulas.on('draw.td',function(){
   tbl_aulas.column(0, {page: 'current'}).nodes().each(function(cell, i){
     cell.innerHTML = i + 1 + PageInfo.start;
   });
+});
+}
+
+function listar_aulas_filtro(){
+  let nivel = document.getElementById('select_nivel_buscar').value;
+
+  tbl_aulas = $("#tabla_aulas").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/aulas/controlador_listar_aulas_filtro.php",
+        type:'POST',
+        data:{
+          nivel:nivel
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+      title: function() {
+        return  "LISTA DE AULAS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+  title: function() {
+    return  "LISTA DE AULAS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE AULAS"
+
+  }
+  }],
+    "columns":[
+      {"data":"Id_aula"},
+      {"data":"Grado"},
+      {"data":"seccion_nombre"},
+      {"data":"Nivel_academico",
+          render: function(data,type,row){
+              if(data=='INICIAL'){
+              return '<span class="badge bg-warning">INICIAL</span>';
+              }else if(data=='PRIMARIA'){
+              return '<span class="badge bg-success">PRIMARIA</span>';
+              }else if(data=='SECUNDARIA'){
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+                }else{
+              return '<span class="badge bg-dark">TODOS</span>';
+              }
+      }
+      },
+      {"data":"descripcion"},
+      {"data":"fecha_formateada"},
+      {"data":"estado",
+          render: function(data,type,row){
+                  if(data=='ACTIVO'){
+                  return '<span class="badge bg-success">ACTIVO</span>';
+                  }else{
+                  return '<span class="badge bg-danger">INACTIVO</span>';
+                  }
+          }   
+      },
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"},
+      
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_aulas.on('draw.td',function(){
+var PageInfo = $("#tabla_aulas").DataTable().page.info();
+tbl_aulas.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
 });
 }
 //TRAENDO DATOS DE LA SECCION
@@ -132,10 +234,14 @@ function Cargar_Select_Seccion(){
         }
           document.getElementById('select_nivel_aca').innerHTML=cadena;
           document.getElementById('select_nivel_aca_editar').innerHTML=cadena;
+          document.getElementById('select_nivel_buscar').innerHTML=cadena;
+
       }else{
         cadena+="<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_nivel_aca').innerHTML=cadena;
         document.getElementById('select_nivel_aca_editar').innerHTML=cadena;
+        document.getElementById('select_nivel_buscar').innerHTML=cadena;
+
       }
     })
   }

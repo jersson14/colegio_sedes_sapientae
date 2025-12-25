@@ -328,8 +328,12 @@ function Registrar_alumno(){
             document.getElementById('txt_fecha_na').value="";
             document.getElementById('txt_tele').value="";
             document.getElementById('txt_direc').value="";
-            document.getElementById('txt_foto').value="";
+            document.getElementById('txt_direc').value = "";
+            document.getElementById('txt_foto').value = '';  // Limpiar el valor del input de archivo
 
+            // Limpiar la vista previa de la imagen
+            document.getElementById('preview').src = '#';
+            document.getElementById('preview').alt = 'Vista previa';
             document.getElementById('txt_dni_pa').value="";
             document.getElementById('txt_nom_pa').value="";
             document.getElementById('txt_cel_pa').value="";

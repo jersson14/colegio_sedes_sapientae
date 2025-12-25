@@ -27,10 +27,36 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Pago de Pensiones</b></h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Criterios de calificación</b></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
 
           </div>
+          <div class="table-responsive" style="text-align:left">
+            <div class="card-body">
+                <div class="row">
+                    
+                    <div class="col-3 form-group">
+                        <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                        <select class="form-control" id="select_nivel" style="width:100%">
+                        </select>
+                    </div>
+                    <div class="col-3 form-group">
+                        <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                        <select class="form-control" id="select_aula_buscar" style="width:100%">
+                        </select>
+                    </div>
+      
+                    <div class="col-12 col-md-3" role="document">
+                        <label for="">&nbsp;</label><br>
+                        <button onclick="listar_componentes_filtro()" class="btn btn-danger mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Buscar aulas</button>
+                    </div>
+                    <div class="col-12 col-md-3" role="document">
+                        <label for="">&nbsp;</label><br>
+                        <button onclick="listar_componentes()" class="btn btn-success mr-2" style="width:100%" onclick><i class="fas fa-search mr-1"></i>Listar todo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_componentes" class="table table-striped table-bordered" style="width:100%">
@@ -40,7 +66,6 @@
                       <th style="text-align:center">Aula o Grado</th>
                       <th style="text-align:center">Sección</th>
                       <th style="text-align:center">Nivel Académico</th>
-                      <th style="text-align:center">Año escolar</th>
                       <th style="text-align:center">Asignatura</th>
                       <th style="text-align:center">Componentes</th>
                       <th style="text-align:center">Estado</th>
@@ -239,10 +264,14 @@
 $(document).ready(function () {
   $('.js-example-basic-single').select2();
   Cargar_Select_Grado();
+  Cargar_Select_Nivelaca();
 
 });
 
-
+$("#select_nivel").change(function() {
+      var id = $("#select_nivel").val();
+      Cargar_Select_Aula(id);
+    });
 $("#select_aula").change(function(){
 var id=$("#select_aula").val();
 Cargar_Select_curso(id);

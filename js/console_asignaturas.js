@@ -102,6 +102,113 @@ tbl_asignaturas.on('draw.td',function(){
   });
 });
 }
+function listar_asignaturas_filtro(){
+  let grado = document.getElementById('select_aula_buscar').value;
+
+  tbl_asignaturas = $("#tabla_asignaturas").DataTable({
+    "ordering":false,   
+    "bLengthChange":true,
+    "searching": { "regex": false },
+    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+    "pageLength": 10,
+    "destroy":true,
+    pagingType: 'full_numbers',
+    scrollCollapse: true,
+    responsive: true,
+    "async": false ,
+    "processing": true,
+    "ajax":{
+        "url":"../controller/asignaturas/controlador_listar_asignaturas_filtro.php",
+        type:'POST',
+        data:{
+          grado:grado
+        }
+    },
+    dom: 'Bfrtip', 
+   
+    buttons:[ 
+      
+  {
+    extend:    'excelHtml5',
+    text:      '<i class="fas fa-file-excel"></i> ',
+    titleAttr: 'Exportar a Excel',
+    
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+      title: function() {
+        return  "LISTA DE AULAS" }
+
+  },
+  {
+    extend:    'pdfHtml5',
+    text:      '<i class="fas fa-file-pdf"></i> ',
+    titleAttr: 'Exportar a PDF',
+    filename: function() {
+      return  "LISTA DE AULAS"
+    },
+  title: function() {
+    return  "LISTA DE AULAS"
+  }
+},
+  {
+    extend:    'print',
+    text:      '<i class="fa fa-print"></i> ',
+    titleAttr: 'Imprimir',
+    
+  title: function() {
+    return  "LISTA DE AULAS"
+
+  }
+  }],
+    "columns":[
+      {"data":"Id_asignatura"},
+      {"data":"nombre_asig"},
+      {"data":"GradoSECCION"},
+      {"data":"Nivel_academico",
+          render: function(data,type,row){
+              if(data=='INICIAL'){
+              return '<span class="badge bg-warning">INICIAL</span>';
+              }else if(data=='PRIMARIA'){
+              return '<span class="badge bg-success">PRIMARIA</span>';
+              }else{
+              return '<span class="badge bg-primary">SECUNDARIA</span>';
+              }
+      }
+      },
+      {"data":"observaciones"},
+      {"data":"fecha_formateada"},
+      {"data":"estado",
+          render: function(data,type,row){
+                  if(data=='CON DOCENTE'){
+                  return '<span class="badge bg-success">CON DOCENTE</span>';
+                  }else{
+                  return '<span class="badge bg-danger">SIN DOCENTE</span>';
+                  }
+          }   
+      },
+      {"data":"estado",
+          render: function(data,type,row){
+                  if(data=='CON DOCENTE'){
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                  }else{
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                  }
+          }   
+      },
+      
+  ],
+
+  "language":idioma_espanol,
+  select: true
+});
+tbl_asignaturas.on('draw.td',function(){
+var PageInfo = $("#tabla_asignaturas").DataTable().page.info();
+tbl_asignaturas.column(0, {page: 'current'}).nodes().each(function(cell, i){
+  cell.innerHTML = i + 1 + PageInfo.start;
+});
+});
+}
 //TRAENDO DATOS DE LA SECCION
 // Función para cargar los niveles en los selectores
 function Cargar_Select_Nivelaca() {
@@ -118,6 +225,7 @@ function Cargar_Select_Nivelaca() {
       }
       $('#select_nivel').html(cadena);
       $('#select_nivel_editar').html(cadena);
+      $('#select_nivel_buscar').html(cadena);
 
       // Cargar secciones basadas en el nivel seleccionado al iniciar
       var id = $("#select_nivel").val();
@@ -126,6 +234,9 @@ function Cargar_Select_Nivelaca() {
       // Verificar si se necesita cargar las secciones para la edición
       var idEditar = $("#select_nivel_editar").val();
       Cargar_Select_Aula(idEditar);
+
+      var idEditar2 = $("#select_nivel_buscar").val();
+      Cargar_Select_Aula(idEditar2);
     } else {
       cadena += "<option value=''>No se encontraron registros</option>";
       $('#select_nivel_editar').html(cadena);
@@ -149,10 +260,14 @@ function Cargar_Select_Aula(id) {
       }
       document.getElementById('select_grado').innerHTML = cadena;
       document.getElementById('select_grado_editar').innerHTML = cadena;
+      document.getElementById('select_aula_buscar').innerHTML = cadena;
+
     } else {
       cadena += "<option value=''>No hay secciones en la base de datos</option>";
       document.getElementById('select_grado').innerHTML = cadena;
       document.getElementById('select_grado_editar').innerHTML = cadena;
+      document.getElementById('select_aula_buscar').innerHTML = cadena;
+
     }
   });
 }

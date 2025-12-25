@@ -66,7 +66,7 @@ function listar_asistencia(){
                 }else if(data=='PRIMARIA'){
                 return '<span class="badge bg-success">PRIMARIA</span>';
                 }else if(data=='SECUNDARIA'){
-                  return '<span class="badge bg-success">PRIMARIA</span>';
+                  return '<span class="badge bg-primary">SECUNDARIA</span>';
                   }else{
                 return '<span class="badge bg-dark">TODOS</span>';
                 }
@@ -163,8 +163,8 @@ function listar_asistencia_fechas(){
               }else if(data=='PRIMARIA'){
               return '<span class="badge bg-success">PRIMARIA</span>';
               }else if(data=='SECUNDARIA'){
-                return '<span class="badge bg-success">PRIMARIA</span>';
-                }else{
+                return '<span class="badge bg-primary">SECUNDARIA</span>';
+              }else{
               return '<span class="badge bg-dark">TODOS</span>';
               }
       }
@@ -416,6 +416,8 @@ function listar_alumnos_editar(){
 
 
 function listar_alumnos_totales() {
+  let año = document.getElementById('select_año2').value;
+
   let mes = document.getElementById('select_meses').value;
   let aula = document.getElementById('select_aula_buscar').value;
   console.log(mes, aula); // Verifica los valores
@@ -435,7 +437,7 @@ function listar_alumnos_totales() {
     "ajax": {
       "url": "../controller/asistencias/controlador_listar_alumnos_totales.php",
       "type": 'POST',
-      "data": { mes: mes, aula: aula },
+      "data": { año:año,mes: mes, aula: aula },
       "dataSrc": function (json) {
         console.log(json); // Verifica la estructura de la respuesta
         // Asegúrate de que 'data' es la clave correcta
@@ -506,6 +508,7 @@ function listar_alumnos_totales() {
 
 
 function listar_alumnos_totales_dia() {
+  let año = document.getElementById('select_año').value;
   let mes = document.getElementById('select_meses_buscar').value;
   let aula = document.getElementById('select_aula_buscar_2').value;
   console.log(mes, aula); // Verifica los valores
@@ -525,7 +528,7 @@ function listar_alumnos_totales_dia() {
     "ajax": {
       "url": "../controller/asistencias/controlador_listar_alumnos_totales_dia.php",
       "type": 'POST',
-      "data": { mes: mes, aula: aula },
+      "data": { año:año,mes: mes, aula: aula },
       "dataSrc": function (json) {
         console.log(json); // Verifica la estructura de la respuesta
         // Asegúrate de que 'data' es la clave correcta
@@ -1127,6 +1130,27 @@ function Cargar_Select_Grado_buscar(){
     }
   })
 }
+
+function Cargar_Año(){
+  $.ajax({
+    "url":"../controller/matricula/controlador_cargar_select_año.php",
+    type:'POST',
+  }).done(function(resp){
+    let data=JSON.parse(resp);
+    if(data.length>0){
+      let cadena ="";
+      for (let i = 0; i < data.length; i++) {
+        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+      }
+        document.getElementById('select_año').innerHTML=cadena;
+        document.getElementById('select_año2').innerHTML=cadena;
+    }else{
+      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      document.getElementById('select_año').innerHTML=cadena;
+      document.getElementById('select_año2').innerHTML=cadena;
+    }
+  })
+}
 //ENVIANDO DATOS PARA EDITAR
 $('#tabla_asistencia').on('click', '.editar', function() {
   var data = tbl_asistencia.row($(this).parents('tr')).data();
@@ -1267,7 +1291,7 @@ function Eliminar_Asistencia(fecha,aula){
       }
     }).done(function(resp){
       if(resp>0){
-          Swal.fire("Mensaje de Confirmación","Se elimino la asistencia con fecha"+fecha+"con éxito","success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se elimino la asistencia con fecha "+fecha+" con éxito","success").then((value)=>{
             tbl_asistencia.ajax.reload();
           });
       }else{

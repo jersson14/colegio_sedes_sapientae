@@ -17,6 +17,36 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        public function Listar_examenes_filtro($grado){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_EXAMENES_FILTRO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$grado);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_alumnos_examenes_id_solo_pendiente($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_EXAMENES_ESTUDIANTES_ID_PENDIENTE(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$id);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
         public function Cargar_CursoDocente($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_CARGAR_SELECT_CURSO_DOCENTE(?)";
@@ -121,6 +151,39 @@
             }else{
                 return 0;
             }
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_examenes_profesor($año,$grado,$id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_EXAMENES_PROFESOR(?,?,?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+            $query->bindParam(1,$año);
+            $query->bindParam(2,$grado);
+            $query->bindParam(3,$id);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
+            conexionBD::cerrar_conexion();
+        }
+        public function Listar_examenes_profesor_solo($id){
+            $c = conexionBD::conexionPDO();
+            $sql = "CALL SP_LISTAR_EXAMENES_PROFESOR_SOLO(?)";
+            $arreglo = array();
+            $query  = $c->prepare($sql);
+
+            $query->bindParam(1,$id);
+
+            $query->execute();
+            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($resultado as $resp){
+                $arreglo["data"][]=$resp;
+            }
+            return $arreglo;
             conexionBD::cerrar_conexion();
         }
     }

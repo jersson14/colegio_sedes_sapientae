@@ -64,14 +64,7 @@
           <!-- /.col -->
         </div>
         <br>
-        <div class="col-12">
-        <p class="mb-1">
-        <a href="registrar.php"><i class="fas fa-user-tie" style="color:green"></i>   <b> -> Interactuar como docente</b></a>
-        </p>
-        <p class="mb-1">
-        <a href="seguimiento.php"><i class="fas fa-users" style="color:green"></i>   <b> -> Interactuar como padre de familia</b></a>
-        </p>
-        </div>
+      
 
     </div>
     <!-- /.login-card-body -->
