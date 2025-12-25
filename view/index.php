@@ -1783,7 +1783,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <em>Versión 1.0.0</em>
   </div>
   <!-- Default to the left -->
-  <strong>Copyright &copy; 2024 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
+  <strong>Copyright &copy; 2025 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
 </footer>
 </div>
 <!-- ./wrapper -->

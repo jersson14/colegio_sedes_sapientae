@@ -7,19 +7,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
 $codigo = $mysqli->real_escape_string($_GET['codigo']);
 
-// Obtener el código de matrícula desde la URL
-
-// Consulta para obtener los datos de matrícula y pagos
-$query_pagos = "SELECT
-	pensiones.id_nivel_academico, 
-	pensiones.mes, 
-	pago_pensiones.id_pago_pension, 
-	pago_pensiones.id_matri, 
-	pago_pensiones.concepto, 
-	pago_pensiones.id_pension, 
-	pago_pensiones.fecha_pago, 
-	pago_pensiones.sub_total, 
-	pago_pensiones.created_at, 
+// Consulta principal para obtener datos de matrícula (sin filtro de concepto)
+$query_matricula = "SELECT
+	matricula.id_matricula,
 	matricula.id_alumno, 
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
@@ -50,15 +40,7 @@ $query_pagos = "SELECT
 	padres.Datos_mama, 
 	padres.Celular_mama
 FROM
-	pago_pensiones
-	LEFT JOIN
-	pensiones
-	ON 
-		pensiones.id_pensiones = pago_pensiones.id_pension
-	INNER JOIN
 	matricula
-	ON 
-		pago_pensiones.id_matri = matricula.id_matricula
 	INNER JOIN
 	alumnos
 	ON 
@@ -92,11 +74,27 @@ FROM
 	ON 
 		alumnos.Id_alumno = padres.id_alu
 WHERE
-	matricula.id_matricula = '$codigo' AND
-	concepto IN ('ADMISION','ALUMNO NUEVO','MATRICULA')";
+	matricula.id_matricula = '$codigo'";
+
+$stmt_matricula = $mysqli->prepare($query_matricula);
+$stmt_matricula->execute();
+$resultado_matricula = $stmt_matricula->get_result();
+
+// Consulta separada para obtener los pagos
+$query_pagos = "SELECT
+	pago_pensiones.id_pago_pension, 
+	pago_pensiones.concepto, 
+	pago_pensiones.fecha_pago, 
+	pago_pensiones.sub_total
+FROM
+	pago_pensiones
+WHERE
+	pago_pensiones.id_matri = '$codigo' AND
+	pago_pensiones.concepto IN ('ADMISION','ALUMNO NUEVO','MATRICULA')
+ORDER BY
+	pago_pensiones.fecha_pago ASC";
 
 $stmt_pagos = $mysqli->prepare($query_pagos);
-
 $stmt_pagos->execute();
 $resultado_pagos = $stmt_pagos->get_result();
 
@@ -163,42 +161,43 @@ $resultado_horario = $stmt_horario->get_result();
 // Generar HTML para el PDF
 $html = '';
 
-if ($row1 = $resultado_pagos->fetch_assoc()) {
+if ($row_matricula = $resultado_matricula->fetch_assoc()) {
     $html .= '
     <style>
         body { font-family: Arial, sans-serif; }
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 150px; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         th, td { border: 1px solid black; padding: 5px; text-align: left; }
         th { background-color: #f2f2f2; }
+        .no-data { text-align: center; font-style: italic; color: #666; }
     </style>
     <div class="header">
-        <img src="../../../'. $row1['emp_logo'].'" alt="Logo">
+        <img src="../../../'. $row_matricula['emp_logo'].'" alt="Logo">
         <h2><u>CÉDULA DE MATRICULA</u></h2>
     </div>
     <h3>Datos de Matricula</h3>
     <table>
-        <tr><th>DNI:</th><td>' . $row1['alum_dni'] . '</td></tr>
-        <tr><th>Estudiante:</th><td>' . $row1['Estudiante'] . '</td></tr>
-        <tr><th>Nivel Académico:</th><td>' . $row1['Nivel_academico'] . '</td></tr>
-        <tr><th>Grado - Sección:</th><td>' . $row1['grado'] . '</td></tr>
-        <tr><th>Año Escolar (Matriculado):</th><td>' . $row1['año_escolar'] . '</td></tr>
-        <tr><th>Procedencia de colegio:</th><td>' . $row1['procedencia_colegio'] . '</td></tr>
-        <tr><th>Provincia:</th><td>' . $row1['provincia'] . '</td></tr>
-        <tr><th>Departamento:</th><td>' . $row1['departamento'] . '</td></tr>
-
+        <tr><th>DNI:</th><td>' . $row_matricula['alum_dni'] . '</td></tr>
+        <tr><th>Estudiante:</th><td>' . $row_matricula['Estudiante'] . '</td></tr>
+        <tr><th>Nivel Académico:</th><td>' . $row_matricula['Nivel_academico'] . '</td></tr>
+        <tr><th>Grado - Sección:</th><td>' . $row_matricula['grado'] . '</td></tr>
+        <tr><th>Año Escolar (Matriculado):</th><td>' . $row_matricula['año_escolar'] . '</td></tr>
+        <tr><th>Procedencia de colegio:</th><td>' . $row_matricula['procedencia_colegio'] . '</td></tr>
+        <tr><th>Provincia:</th><td>' . $row_matricula['provincia'] . '</td></tr>
+        <tr><th>Departamento:</th><td>' . $row_matricula['departamento'] . '</td></tr>
     </table>
     <h3>Datos de los Padres</h3>
     <table>
-        <tr><th>DNI Papá:</th><td>' . $row1['Dni_papa'] . '</td></tr>
-        <tr><th>Datos Papá:</th><td>' . $row1['Datos_papa'] . '</td></tr>
-        <tr><th>Celular Papá:</th><td>' . $row1['Celular_papa'] . '</td></tr>
-        <tr><th>DNI Mamá:</th><td>' . $row1['Dni_mama'] . '</td></tr>
-        <tr><th>Datos Mamá:</th><td>' . $row1['Datos_mama'] . '</td></tr>
-        <tr><th>Celular Mamá:</th><td>' . $row1['Celular_mama'] . '</td></tr>
+        <tr><th>DNI Papá:</th><td>' . $row_matricula['Dni_papa'] . '</td></tr>
+        <tr><th>Datos Papá:</th><td>' . $row_matricula['Datos_papa'] . '</td></tr>
+        <tr><th>Celular Papá:</th><td>' . $row_matricula['Celular_papa'] . '</td></tr>
+        <tr><th>DNI Mamá:</th><td>' . $row_matricula['Dni_mama'] . '</td></tr>
+        <tr><th>Datos Mamá:</th><td>' . $row_matricula['Datos_mama'] . '</td></tr>
+        <tr><th>Celular Mamá:</th><td>' . $row_matricula['Celular_mama'] . '</td></tr>
     </table>';
 
+    // Sección de pagos
     $html .= '<h3>Detalle de Pagos</h3>
     <table>
         <tr>
@@ -208,33 +207,43 @@ if ($row1 = $resultado_pagos->fetch_assoc()) {
         </tr>';
 
     $total = 0;
+    $hay_pagos = false;
 
-    $stmt_pagos->execute();
-    $resultado_pagos = $stmt_pagos->get_result();
-    while ($row2 = $resultado_pagos->fetch_assoc()) {
-        $fecha_pago = new DateTime($row2['fecha_pago'], new DateTimeZone('America/Lima'));
+    while ($row_pago = $resultado_pagos->fetch_assoc()) {
+        $hay_pagos = true;
+        $fecha_pago = new DateTime($row_pago['fecha_pago'], new DateTimeZone('America/Lima'));
         $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'America/Lima', IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
         $fecha_formateada = $formatter->format($fecha_pago);
 
         $html .= '
         <tr>
-            <td>' . $row2['concepto'] . '</td>
+            <td>' . $row_pago['concepto'] . '</td>
             <td>' . $fecha_formateada . '</td>
-            <td>S/. ' . number_format($row2['sub_total'], 2) . '</td>
+            <td>S/. ' . number_format($row_pago['sub_total'], 2) . '</td>
         </tr>';
 
-        $total += $row2['sub_total'];
+        $total += $row_pago['sub_total'];
     }
 
-    $html .= '
+    if (!$hay_pagos) {
+        $html .= '
+        <tr>
+            <td colspan="3" class="no-data">No se registraron pagos de matrícula</td>
+        </tr>';
+    } else {
+        $html .= '
         <tr>
             <td colspan="2" style="text-align: right;"><b>Total:</b></td>
             <td><b>S/. ' . number_format($total, 2) . '</b></td>
-        </tr>
-    </table>';
+        </tr>';
+    }
+
+    $html .= '</table>';
+} else {
+    $html .= '<p style="text-align: center; color: red;">No se encontró información de la matrícula.</p>';
 }
 
-// Agregar el horario del alumno
+// Función para estilo de asignatura
 function estiloAsignatura($asignatura) {
     return ($asignatura == 'RECREO') ? 'background-color: yellow;' : '';
 }
@@ -251,7 +260,9 @@ $html .= '<h3>Horario</h3>
         <th style="color:black;margin: 0 auto; text-align: center;">Viernes</th>
     </tr>';
 
+$hay_horario = false;
 while ($row_horario = $resultado_horario->fetch_assoc()) {
+    $hay_horario = true;
     $html .= '
     <tr>
         <td style="font-size: 11px;margin: 0 auto; text-align: center;">' . $row_horario['hora'] . '</td>
@@ -260,6 +271,13 @@ while ($row_horario = $resultado_horario->fetch_assoc()) {
         <td style="font-size: 11px;margin: 0 auto; text-align: center;' . estiloAsignatura($row_horario['Miercoles']) . '">' . $row_horario['Miercoles'] . '</td>
         <td style="font-size: 11px;margin: 0 auto; text-align: center;' . estiloAsignatura($row_horario['Jueves']) . '">' . $row_horario['Jueves'] . '</td>
         <td style="font-size: 11px;margin: 0 auto; text-align: center;' . estiloAsignatura($row_horario['Viernes']) . '">' . $row_horario['Viernes'] . '</td>
+    </tr>';
+}
+
+if (!$hay_horario) {
+    $html .= '
+    <tr>
+        <td colspan="6" class="no-data">No se encontró horario asignado</td>
     </tr>';
 }
 
@@ -282,7 +300,7 @@ try {
 
     $mpdf->SetTitle('Cédula de matricula');
     $mpdf->WriteHTML($html);
-    $mpdf->Output('Cedula_matricula.pdf', 'I'); // Salida en el navegador
+    $mpdf->Output('Cedula_matricula.pdf', 'I');
 } catch (\Mpdf\MpdfException $e) {
     echo $e->getMessage();
 }
