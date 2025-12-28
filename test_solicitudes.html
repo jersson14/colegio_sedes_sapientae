@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Controlador</title>
+</head>
+
+<body>
+    <h1>Test de Controlador de Solicitudes</h1>
+    <button onclick="testController()">Probar Controlador</button>
+    <pre id="result"></pre>
+
+    <script>
+        function testController() {
+            fetch('controller/controlador_listar_solicitudes.php', {
+                method: 'POST'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('result').textContent = data;
+                    console.log('Response:', data);
+                })
+                .catch(error => {
+                    document.getElementById('result').textContent = 'Error: ' + error;
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

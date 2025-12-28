@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 25-12-2025 a las 18:06:30
+-- Tiempo de generación: 28-12-2025 a las 19:13:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -25,10 +25,10 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ELIMINAR_ASIGNATURA` (IN `ID` INT)   DELETE FROM asignaturas
+CREATE PROCEDURE `ELIMINAR_ASIGNATURA` (IN `ID` INT)   DELETE FROM asignaturas
 WHERE Id_asignatura=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LISTAR_ASIGNATURA_DOCENTE` ()   SELECT DISTINCT
+CREATE PROCEDURE `LISTAR_ASIGNATURA_DOCENTE` ()   SELECT DISTINCT
 	asignatura_docente.Id_asigdocente, 
 	asignatura_docente.Id_docente, 
 	asignatura_docente.Total_cursos, 
@@ -72,7 +72,7 @@ FROM
 	ON 
 		asignatura_docente.`id_año` = `año_escolar`.`Id_año_escolar`$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ACTUALIZAR_ASISTENCIA` (IN `ID_ASIS` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   UPDATE asistencia
+CREATE PROCEDURE `SP_ACTUALIZAR_ASISTENCIA` (IN `ID_ASIS` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   UPDATE asistencia
 SET 
     fecha = FECHA,
     estado = ESTA,
@@ -81,7 +81,7 @@ SET
 WHERE 
     id_asistencia = ID_ASIS$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ANULAR_EGRESOS` (IN `ID` INT, IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_ANULAR_EGRESOS` (IN `ID` INT, IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     UPDATE egresos
     SET
     motivo_anulacion=OBSERVA,
@@ -91,7 +91,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ANULAR_EGRESOS` (IN `ID` INT, IN
     WHERE egresos.id_egresos=ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ANULAR_INGRESOS` (IN `ID` INT, IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_ANULAR_INGRESOS` (IN `ID` INT, IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     UPDATE ingresos
     SET
     motivo_anulacion=OBSERVA,
@@ -101,14 +101,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ANULAR_INGRESOS` (IN `ID` INT, I
     WHERE ingresos.id_ingreso=ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_AÑO` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_AÑO` ()   SELECT
 `año_escolar`.`Id_año_escolar`,
 `año_escolar`.`año_escolar`
 FROM
 `año_escolar` 
 ORDER BY `año_escolar` desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_AÑO_POR_ESTUDIANTE` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_AÑO_POR_ESTUDIANTE` (IN `ID` INT)   SELECT
 	`año_escolar`.`Id_año_escolar`, 
 	`año_escolar`.`año_escolar`, 
 	matricula.usu_id, 
@@ -137,7 +137,7 @@ FROM
 ORDER BY
 	`año_escolar`.`año_escolar` DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_AULAS_POR_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_AULAS_POR_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
 	aulas.Id_aula, 
 	aulas.Grado, 
 	nivel_academico.Nivel_academico, 
@@ -171,7 +171,7 @@ WHERE
 	usuario.usu_id = ID AND
 	aulas.estado = 'ACTIVO'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_AULAS_POR_ESTUDIANTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_AULAS_POR_ESTUDIANTE` (IN `ID` INT)   SELECT DISTINCT
 	aulas.Id_aula, 
 	aulas.Grado, 
 	nivel_academico.Nivel_academico, 
@@ -204,19 +204,20 @@ WHERE
 	usuario.usu_id = ID AND
 	aulas.estado = 'ACTIVO'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_DATOS_USUARIO` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_CARGAR_DATOS_USUARIO` (IN `ID` INT)   BEGIN
     DECLARE ultimo_mes VARCHAR(20);
     DECLARE siguiente_mes VARCHAR(20);
 
     -- Obtener el último mes pagado
-    SELECT max(pensiones.mes)as maximo
- INTO ultimo_mes
-    FROM pago_pensiones
-    INNER JOIN pensiones ON pensiones.id_pensiones = pago_pensiones.id_pension
-    INNER JOIN matricula ON pago_pensiones.id_matri = matricula.id_matricula
-    WHERE matricula.usu_id  = ID
-    ORDER BY pago_pensiones.fecha_pago DESC
-    LIMIT 1;
+SELECT pensiones.mes
+INTO ultimo_mes
+FROM pago_pensiones
+INNER JOIN pensiones ON pensiones.id_pensiones = pago_pensiones.id_pension
+INNER JOIN matricula ON pago_pensiones.id_matri = matricula.id_matricula
+WHERE matricula.usu_id = ID
+  AND pensiones.mes IS NOT NULL
+ORDER BY pago_pensiones.fecha_pago DESC, pago_pensiones.id_pago_pension DESC
+LIMIT 1;
 
     -- Determinar el siguiente mes a pagar
     SET siguiente_mes = CASE 
@@ -284,7 +285,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_DATOS_USUARIO` (IN `ID` I
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA` (IN `ID` INT)   SELECT
 
     CONCAT_WS(' - ',hora_inicio,hora_fin)as hora,
     MAX(CASE WHEN horarios.dia = 'Lunes' THEN asignaturas.nombre_asig ELSE '' END) AS Lunes,
@@ -310,7 +311,7 @@ GROUP BY
 ORDER BY
     horas_aula.hora_inicio$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE` (IN `ID` INT)   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -357,7 +358,7 @@ FROM
 WHERE
 	matricula.usu_id=ID AND `año_escolar` = (SELECT(YEAR(NOW())))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_AÑO` (IN `ID` INT, IN `AÑO` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_AÑO` (IN `ID` INT, IN `AÑO` INT)   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -404,7 +405,7 @@ FROM
 WHERE
 	matricula.usu_id=ID AND `año_escolar`.`Id_año_escolar` = AÑO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_TODO` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_TODO` (IN `ID` INT)   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -451,7 +452,7 @@ FROM
 WHERE
 	matricula.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_HORA_ID_AULA` (IN `ID` INT, IN `AÑO` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_HORA_ID_AULA` (IN `ID` INT, IN `AÑO` INT)   SELECT
 	horas_aula.id_hora, 
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
@@ -469,7 +470,7 @@ FROM
 		horas_aula.`id_año_academico` = `año_escolar`.`Id_año_escolar`
 WHERE horas_aula.id_aula =ID and `año_escolar`=AÑO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_PERIODO` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_PERIODO` ()   SELECT
 periodos.id_periodo,
 periodos.periodos,
 periodos.`id_año_escolar`,
@@ -489,7 +490,7 @@ FROM
 INNER JOIN periodos ON periodos.`id_año_escolar` = `año_escolar`.`Id_año_escolar`
 WHERE `año_escolar`.`año_escolar`=(SELECT(YEAR(NOW()))) AND NOW() BETWEEN periodos.fecha_inicio and periodos.fecha_fin$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_PERIODO2` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_PERIODO2` ()   SELECT
 periodos.id_periodo,
 periodos.periodos,
 periodos.`id_año_escolar`,
@@ -508,7 +509,7 @@ FROM
 `año_escolar`
 INNER JOIN periodos ON periodos.`id_año_escolar` = `año_escolar`.`Id_año_escolar`$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_PERIODO_CARGADOS` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_PERIODO_CARGADOS` ()   SELECT DISTINCT
 	notas.id_bimestre, 
   periodos.id_periodo,
 	periodos.periodos
@@ -520,7 +521,7 @@ FROM
 		notas.id_bimestre = periodos.id_periodo
       order by periodos desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SEGUIMIENTO_TRAMITE` (IN `NUMERO` VARCHAR(12), IN `DNI` VARCHAR(8))   SELECT
+CREATE PROCEDURE `SP_CARGAR_SEGUIMIENTO_TRAMITE` (IN `NUMERO` VARCHAR(12), IN `DNI` VARCHAR(8))   SELECT
 	documento.documento_id, 
 	documento.doc_dniremitente, 
 	CONCAT_WS(' ',documento.doc_nombreremitente,documento.doc_apepatremitente,documento.doc_apematremitente),
@@ -530,7 +531,7 @@ FROM
 	documento
 WHERE documento.documento_id=NUMERO AND documento.doc_dniremitente=DNI$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SEGUIMIENTO_TRAMITE_DETALLE` (IN `NUMERO` VARCHAR(12))   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_SEGUIMIENTO_TRAMITE_DETALLE` (IN `NUMERO` VARCHAR(12))   SELECT DISTINCT
 	movimiento.movimiento_id, 
 	movimiento.documento_id,
 	area.area_cod, 
@@ -548,7 +549,7 @@ FROM
 
 	WHERE movimiento.documento_id=NUMERO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_AREA` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_AREA` ()   SELECT
 	area.area_cod, 
 	area.area_nombre, 
 	empleado.emple_nombre, 
@@ -568,7 +569,7 @@ FROM
 		usuario.empleado_id = empleado.empleado_id
 WHERE area.area_estado="ACTIVO"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ASIGNATURA` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ASIGNATURA` (IN `ID` INT)   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	asignaturas.Id_grado,
@@ -598,7 +599,7 @@ FROM
 		
  WHERE asignaturas.estado='SIN DOCENTE' AND asignaturas.Id_grado=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_AULA_ID` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_AULA_ID` (IN `ID` INT)   SELECT
 nivel_academico.Id_nivel,
 aulas.Id_aula,
 aulas.Grado
@@ -607,7 +608,7 @@ nivel_academico
 INNER JOIN aulas ON aulas.id_nivel_academico = nivel_academico.Id_nivel
 WHERE id_nivel_academico=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_BIMESTRE_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_SELECT_BIMESTRE_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
 	notas.id_bimestre, 
 	periodos.id_periodo, 
 	periodos.periodos, 
@@ -635,7 +636,7 @@ WHERE
 ORDER BY
 	periodos.periodos DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_BIMESTRE_ESTUDIANTE` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_CARGAR_SELECT_BIMESTRE_ESTUDIANTE` (IN `ID` INT)   BEGIN
     SELECT DISTINCT
         notas.id_bimestre, 
         periodos.id_periodo, 
@@ -660,7 +661,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_BIMESTRE_ESTUDIANT
         periodos.periodos DESC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_CURSO_DOCENTE` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_CURSO_DOCENTE` (IN `ID` INT)   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	detalle_asignatura_docente.Id_detalle_asig_docente, 
@@ -681,7 +682,7 @@ FROM
 		asignatura_docente.Id_docente = docentes.Id_docente
 where docentes.Id_docente=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_DNI` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_DNI` ()   SELECT
 	empleado.empleado_id, 
 	empleado.emple_nrodocumento, 
 	empleado.emple_nombre, 
@@ -708,7 +709,7 @@ FROM
 		empleado.empleado_id = usuario.empleado_id
 	WHERE empleado.emple_estatus="ACTIVO" and area.area_estado="ACTIVO"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_DOCENTE` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_DOCENTE` ()   SELECT
 	docentes.Id_docente,
 	docentes.docente_dni, 
 	docentes.docente_nombre, 
@@ -736,7 +737,7 @@ FROM
 		docentes.especialidad_id = especialidad.Id_especilidad
 	WHERE roles.tipo_rol='DOCENTE'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_EMPLEADO` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_EMPLEADO` ()   SELECT
 	empleado.empleado_id, 
 	empleado.emple_nombre, 
 	empleado.emple_apepat, 
@@ -746,13 +747,13 @@ FROM
 	empleado
 	WHERE empleado.emple_estatus="ACTIVO"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ESPECIALIDAD` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ESPECIALIDAD` ()   SELECT
 	especialidad.Id_especilidad, 
 	especialidad.Especialidad
 FROM
 	especialidad$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ESTUDIANTE` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ESTUDIANTE` ()   SELECT
 alumnos.Id_alumno,
 alumnos.alum_dni,
 		CONCAT_WS(' ',alumnos.alum_nombre,alumnos.alum_apepat,alumnos.alum_apemat) AS Estudiante, 
@@ -763,7 +764,7 @@ FROM
 alumnos
 WHERE alumnos.alum_estatus='NO'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_GRADO` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_GRADO` ()   SELECT
 	aulas.Id_aula, 
 	aulas.Grado, 
 	nivel_academico.Nivel_academico
@@ -774,7 +775,7 @@ FROM
 	ON 
 		aulas.id_nivel_academico = nivel_academico.Id_nivel$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_HORAS` (IN `ID` INT, IN `AÑO` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_HORAS` (IN `ID` INT, IN `AÑO` INT)   SELECT
 	horas_aula.id_hora, 
 	CONCAT_WS(' - ',hora_inicio,hora_fin) AS HORAS, 
 	horas_aula.hora_inicio, 
@@ -791,7 +792,7 @@ FROM
 WHERE
 	horas_aula.id_aula=ID AND horas_aula.`id_año_academico`=AÑO AND horas_aula.estado='ACTIVO'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE` (IN `ID` INT)   SELECT
 asignaturas.Id_asignatura,
 asignaturas.nombre_asig,
 detalle_asignatura_docente.Id_detalle_asig_docente,
@@ -804,7 +805,7 @@ INNER JOIN asignatura_docente ON detalle_asignatura_docente.Id_asig_docente = as
 INNER JOIN aulas ON asignaturas.Id_grado = aulas.Id_aula
 where Id_aula=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_ESTUDIANTE` (IN `ID` INT, IN `IDESTU` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_ESTUDIANTE` (IN `ID` INT, IN `IDESTU` INT)   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	detalle_asignatura_docente.Id_detalle_asig_docente, 
@@ -844,7 +845,7 @@ FROM
     WHERE
 	matricula.Id_aula = ID AND usuario.usu_id=IDESTU AND `año_escolar`.`año_escolar`=(SELECT(YEAR(NOW())))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_HORARIO` (IN `ID` INT, IN `AÑO` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_HORARIO` (IN `ID` INT, IN `AÑO` INT)   SELECT DISTINCT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	detalle_asignatura_docente.Id_detalle_asig_docente, 
@@ -874,7 +875,7 @@ WHERE
 	aulas.Id_aula = ID AND
 	`año_escolar`.`Id_año_escolar` = `AÑO`$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_PROFESOR` (IN `ID` INT, IN `IDPRO` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ID_DETALLE_PROFESOR` (IN `ID` INT, IN `IDPRO` INT)   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	detalle_asignatura_docente.Id_detalle_asig_docente, 
@@ -906,21 +907,21 @@ FROM
 WHERE
 	Id_aula = ID AND usuario.usu_id=IDPRO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_INDICADORES` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_INDICADORES` ()   SELECT
 	indicadores.id_indicadores, 
 	indicadores.nombre
 FROM
 	indicadores
 WHERE indicadores.tipo_indicador='INGRESOS'AND NOT indicadores.id_indicadores=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_INDICADORES_GASTOS` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_INDICADORES_GASTOS` ()   SELECT
 	indicadores.id_indicadores, 
 	indicadores.nombre
 FROM
 	indicadores
 WHERE indicadores.tipo_indicador='GASTOS'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_MATRICULADOS` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_MATRICULADOS` ()   SELECT
 	matricula.id_matricula,
 	CONCAT_WS(' ',alumnos.alum_nombre,alumnos.alum_apepat,alumnos.alum_apemat) AS Estudiante,   
 	matricula.id_alumno, 
@@ -943,13 +944,13 @@ FROM
 		matricula.`id_año` = `año_escolar`.`Id_año_escolar`
 	WHERE `año_escolar`= (SELECT YEAR(NOW()))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_NIVELACA` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_NIVELACA` ()   SELECT
 	nivel_academico.Id_nivel, 
 	nivel_academico.Nivel_academico
 FROM
 	nivel_academico$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_PENSION` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_PENSION` (IN `ID` INT)   SELECT
 pensiones.id_pensiones,
 pensiones.mes,
 pensiones.fecha_vencimiento,
@@ -960,33 +961,33 @@ pensiones
 INNER JOIN nivel_academico ON pensiones.id_nivel_academico = nivel_academico.Id_nivel
 WHERE nivel_academico.Id_nivel = ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ROL` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ROL` ()   SELECT
 	roles.Id_rol, 
 	roles.tipo_rol
 FROM
 	roles$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ROLES_UNICO` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ROLES_UNICO` ()   SELECT
 	roles.Id_rol, 
 	roles.tipo_rol
 FROM
 	roles$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_ROL_PERSONAL` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_ROL_PERSONAL` ()   SELECT
 	roles.Id_rol, 
 	roles.tipo_rol
 FROM
 	roles
 WHERE NOT tipo_rol = 'ESTUDIANTE' AND NOT tipo_rol='DOCENTE'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CARGAR_SELECT_SECCION` ()   SELECT
+CREATE PROCEDURE `SP_CARGAR_SELECT_SECCION` ()   SELECT
 	seccion.seccion_id, 
 	seccion.seccion_nombre
 FROM
 	seccion
 ORDER BY seccion_nombre desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_COMPROBAR_COMPONENTE` (IN `ID_DETALLE` INT)   BEGIN
+CREATE PROCEDURE `SP_COMPROBAR_COMPONENTE` (IN `ID_DETALLE` INT)   BEGIN
     DECLARE existencia INT;
     
     SELECT COUNT(*) INTO existencia
@@ -1000,7 +1001,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_COMPROBAR_COMPONENTE` (IN `ID_DE
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_ASISTENCIA` (IN `ID_ASIS` INT, IN `ID_MATRI` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   BEGIN
+CREATE PROCEDURE `SP_EDITAR_ASISTENCIA` (IN `ID_ASIS` INT, IN `ID_MATRI` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   BEGIN
     DECLARE CANTIDAD INT;
 
     -- Verifica si existe un registro con el mismo id_matricula y fecha (excluyendo el registro actual)
@@ -1021,7 +1022,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_ASISTENCIA` (IN `ID_ASIS`
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_NOTAS` (IN `p_ID_NOTA` INT, IN `p_NOTA` CHAR(5), IN `p_CONCLUSIONES` VARCHAR(1000))   BEGIN
+CREATE PROCEDURE `SP_EDITAR_NOTAS` (IN `p_ID_NOTA` INT, IN `p_NOTA` CHAR(5), IN `p_CONCLUSIONES` VARCHAR(1000))   BEGIN
     DECLARE v_COUNT INT;
     DECLARE v_EXIT_CODE INT DEFAULT 0;
     DECLARE v_EXIT_MESSAGE VARCHAR(100);
@@ -1056,7 +1057,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_NOTAS` (IN `p_ID_NOTA` IN
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_NOTAS_PAPAS` (IN `p_ID_NOTA` INT, IN `p_CRITERIOS` VARCHAR(2555), IN `p_NOTA` CHAR(5))   BEGIN
+CREATE PROCEDURE `SP_EDITAR_NOTAS_PAPAS` (IN `p_ID_NOTA` INT, IN `p_CRITERIOS` VARCHAR(2555), IN `p_NOTA` CHAR(5))   BEGIN
     DECLARE v_COUNT INT;
     DECLARE v_EXIT_CODE INT DEFAULT 0;
     DECLARE v_EXIT_MESSAGE VARCHAR(100);
@@ -1091,12 +1092,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_EDITAR_NOTAS_PAPAS` (IN `p_ID_NO
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ALUMNO` (IN `ID` INT)   DELETE FROM alumnos 
+CREATE PROCEDURE `SP_ELIMINAR_ALUMNO` (IN `ID` INT)   DELETE FROM alumnos 
 WHERE alumnos.alum_dni=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_AÑO` (IN `ID` INT)   DELETE FROM año_escolar where Id_año_escolar=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_AÑO` (IN `ID` INT)   DELETE FROM año_escolar where Id_año_escolar=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE` (IN `ID` INT)   BEGIN
     DECLARE done INT DEFAULT 0;
     DECLARE asignatura_id INT;
 
@@ -1134,7 +1135,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE` (IN
     WHERE asignatura_docente.Id_asigdocente = ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE_UNICO` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE_UNICO` (IN `ID` INT)   BEGIN
     DECLARE asignatura_id INT;
     DECLARE id_asigdocente INT;    
     DECLARE TOTALCURSOS INT;
@@ -1173,7 +1174,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASIGNACION_DOCENTE_UNIC
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASISTENCIA_POR_FECHA_Y_AULA` (IN `FECHA` DATE, IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_ASISTENCIA_POR_FECHA_Y_AULA` (IN `FECHA` DATE, IN `ID_AULA` INT)   BEGIN
     DELETE asistencia
     FROM asistencia
     INNER JOIN matricula ON asistencia.id_matricula = matricula.id_matricula
@@ -1181,28 +1182,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ASISTENCIA_POR_FECHA_Y_
     AND matricula.id_aula = ID_AULA;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_AULA` (IN `ID` INT)   DELETE FROM aulas WHERE Id_aula =ID$$
+CREATE PROCEDURE `SP_ELIMINAR_AULA` (IN `ID` INT)   DELETE FROM aulas WHERE Id_aula =ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_COMPONENTES` (IN `ID` INT)   DELETE FROM criterios WHERE criterios.id_detalle_asignatura=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_COMPONENTES` (IN `ID` INT)   DELETE FROM criterios WHERE criterios.id_detalle_asignatura=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_COMPONENTES_UNICO` (IN `ID_CRI` INT)   DELETE FROM criterios WHERE criterios.id_criterio=ID_CRI$$
+CREATE PROCEDURE `SP_ELIMINAR_COMPONENTES_UNICO` (IN `ID_CRI` INT)   DELETE FROM criterios WHERE criterios.id_criterio=ID_CRI$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_COMUNICADO` (IN `ID` INT)   DELETE FROM comunicados WHERE id_comunicado=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_COMUNICADO` (IN `ID` INT)   DELETE FROM comunicados WHERE id_comunicado=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_DOCENTE` (IN `ID` INT)   DELETE FROM usuario WHERE usuario.usu_id=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_DOCENTE` (IN `ID` INT)   DELETE FROM usuario WHERE usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ESPECIALIDAD` (IN `ID` INT)   DELETE FROM especialidad WHERE Id_especilidad=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_ESPECIALIDAD` (IN `ID` INT)   DELETE FROM especialidad WHERE Id_especilidad=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_EXAMEN` (IN `ID` CHAR(12))   DELETE FROM examen WHERE examen.id_examen=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_EXAMEN` (IN `ID` CHAR(12))   DELETE FROM examen WHERE examen.id_examen=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_HORARIO` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_HORARIO` (IN `ID` INT)   BEGIN
     DELETE FROM horarios
     WHERE id_hora_aula IN (SELECT id_hora FROM horas_aula WHERE id_aula = ID);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_HORARIO_UNICO` (IN `ID` INT)   DELETE FROM horarios WHERE horarios.id_horario =ID$$
+CREATE PROCEDURE `SP_ELIMINAR_HORARIO_UNICO` (IN `ID` INT)   DELETE FROM horarios WHERE horarios.id_horario =ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_HORAS_AULA` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_HORAS_AULA` (IN `ID` INT)   BEGIN
     DELETE FROM horas_aula
     WHERE id_aula = ID
       AND id_año_academico = (
@@ -1212,11 +1213,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_HORAS_AULA` (IN `ID` IN
       );
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_HORAS_UNICO` (IN `ID_HORA` INT)   DELETE FROM horas_aula WHERE horas_aula.id_hora=ID_HORA$$
+CREATE PROCEDURE `SP_ELIMINAR_HORAS_UNICO` (IN `ID_HORA` INT)   DELETE FROM horas_aula WHERE horas_aula.id_hora=ID_HORA$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_INDICADOR` (IN `ID` INT)   DELETE FROM indicadores WHERE indicadores.id_indicadores=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_INDICADOR` (IN `ID` INT)   DELETE FROM indicadores WHERE indicadores.id_indicadores=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_MATRICULA` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_MATRICULA` (IN `ID` INT)   BEGIN
 
     DECLARE CONTAR INT;  -- Declaramos la variable local
     
@@ -1234,9 +1235,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_MATRICULA` (IN `ID` INT
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_NIVEL_ACADEMICO` (IN `ID` INT)   DELETE FROM nivel_academico WHERE Id_nivel=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_NIVEL_ACADEMICO` (IN `ID` INT)   DELETE FROM nivel_academico WHERE Id_nivel=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PAGO_PENSION` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_ELIMINAR_PAGO_PENSION` (IN `ID` INT)   BEGIN
     -- Elimina primero los registros de ingresos que dependen del pago
     DELETE FROM ingresos WHERE ingresos.id_pago_pension = ID;
 
@@ -1244,27 +1245,27 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PAGO_PENSION` (IN `ID` 
     DELETE FROM pago_pensiones WHERE pago_pensiones.id_pago_pension = ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PENSION` (IN `ID` INT)   DELETE FROM pensiones WHERE pensiones.id_pensiones=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_PENSION` (IN `ID` INT)   DELETE FROM pensiones WHERE pensiones.id_pensiones=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PERIODO` (IN `ID` INT)   DELETE FROM periodos WHERE periodos.`id_año_escolar`=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_PERIODO` (IN `ID` INT)   DELETE FROM periodos WHERE periodos.`id_año_escolar`=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PERIODO_UNICO` (IN `ID` INT)   DELETE FROM periodos WHERE periodos.id_periodo=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_PERIODO_UNICO` (IN `ID` INT)   DELETE FROM periodos WHERE periodos.id_periodo=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_PERSONAL` (IN `ID` INT)   DELETE FROM usuario WHERE usuario.usu_id=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_PERSONAL` (IN `ID` INT)   DELETE FROM usuario WHERE usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_ROL` (IN `ID` INT)   DELETE FROM roles WHERE Id_rol=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_ROL` (IN `ID` INT)   DELETE FROM roles WHERE Id_rol=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_SECCION` (IN `ID` INT)   DELETE FROM seccion WHERE seccion_id=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_SECCION` (IN `ID` INT)   DELETE FROM seccion WHERE seccion_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ELIMINAR_TAREA` (IN `ID` CHAR(12))   DELETE FROM tareas where id_tarea=ID$$
+CREATE PROCEDURE `SP_ELIMINAR_TAREA` (IN `ID` CHAR(12))   DELETE FROM tareas where id_tarea=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ENVIAR_TAREA` (IN `ID` CHAR(12), IN `RUTA` VARCHAR(255))   UPDATE detalle_tarea SET
+CREATE PROCEDURE `SP_ENVIAR_TAREA` (IN `ID` CHAR(12), IN `RUTA` VARCHAR(255))   UPDATE detalle_tarea SET
 	detalle_tarea.archivo_evnio_tarea=RUTA,
   detalle_tarea.estado='ENVIADO',
 	detalle_tarea.fecha_envio=NOW()
 	WHERE detalle_tarea.id_detalle_tarea=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_INSERTAR_Y_ACTUALIZAR_COMPONENTES` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
+CREATE PROCEDURE `SP_INSERTAR_Y_ACTUALIZAR_COMPONENTES` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
     -- Verificar si el componente ya existe
     DECLARE componente_existente INT;
 
@@ -1286,7 +1287,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_INSERTAR_Y_ACTUALIZAR_COMPONENTE
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ADIGNDOCENTE_FILTRO` (IN `GRADO` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_ADIGNDOCENTE_FILTRO` (IN `GRADO` INT)   SELECT DISTINCT
 	asignatura_docente.Id_asigdocente, 
 	asignatura_docente.Id_docente, 
 	asignatura_docente.Total_cursos, 
@@ -1331,7 +1332,7 @@ FROM
 		asignatura_docente.`id_año` = `año_escolar`.`Id_año_escolar`
   WHERE aulas.Id_aula=GRADO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS` ()   SELECT
 alumnos.Id_alumno,
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -1368,7 +1369,7 @@ FROM
 	ON 
 		alumnos.Id_alumno = padres.Id_alu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_EXAMEN` (IN `IDDETA` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_EXAMEN` (IN `IDDETA` INT)   SELECT
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -1412,7 +1413,7 @@ FROM
 WHERE
 	Id_detalle_asig_docente = IDDETA and `año_escolar`=(SELECT YEAR(NOW()))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_FECHA` (IN `FECHA` DATE, IN `ID_AULA` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_FECHA` (IN `FECHA` DATE, IN `ID_AULA` INT)   SELECT
 aulas.Grado,
 seccion.seccion_nombre,
 nivel_academico.Nivel_academico,
@@ -1448,7 +1449,7 @@ INNER JOIN asistencia ON asistencia.id_matricula = matricula.id_matricula
 WHERE aulas.Id_aula=ID_AULA AND
 asistencia.fecha=FECHA$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_GRADO_ANIO` (IN `ID_AULA` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_GRADO_ANIO` (IN `ID_AULA` INT)   SELECT
 aulas.Grado,
 seccion.seccion_nombre,
 nivel_academico.Nivel_academico,
@@ -1475,7 +1476,7 @@ WHERE
 aulas.Id_aula = ID_AULA AND
 `año_escolar`.`año_escolar` = (SELECT YEAR(NOW()))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_MES` (IN `MES` INT, IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_MES` (IN `MES` INT, IN `ID_AULA` INT)   BEGIN
     SELECT
 				alumnos.Id_alumno,
         alumnos.alum_dni AS DNI,
@@ -1501,7 +1502,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_MES` (IN `MES` IN
         Estudiante;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES` (IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES` (IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
     SELECT
         alumnos.Id_alumno,
         alumnos.alum_dni AS DNI,
@@ -1535,7 +1536,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES` (IN `AÑ
         Estudiante;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA` (IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA` (IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
     SELECT
         alumnos.Id_alumno,
         alumnos.alum_dni AS DNI,
@@ -1591,7 +1592,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA` (IN 
         Estudiante;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA_ESTUDIANTE` (IN `ID` INT, IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA_ESTUDIANTE` (IN `ID` INT, IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
     SELECT
         alumnos.Id_alumno,
         alumnos.alum_dni AS DNI,
@@ -1647,7 +1648,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_DIA_ESTUD
         Estudiante;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_ESTUDIANTE` (IN `ID` INT, IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_ESTUDIANTE` (IN `ID` INT, IN `AÑO` INT, IN `MES` VARCHAR(18), IN `ID_AULA` INT)   BEGIN
     SELECT
         alumnos.Id_alumno,
         alumnos.alum_dni AS DNI,
@@ -1682,7 +1683,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ALUMNOS_TOTALES_ESTUDIANT
         Estudiante;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AÑOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_AÑOS` ()   SELECT
 	`año_escolar`.`Id_año_escolar`, 
 	`año_escolar`.`año_escolar`, 
 	`año_escolar`.`Nombre_año`, 
@@ -1697,7 +1698,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AÑOS` ()   SELECT
 FROM
 	`año_escolar`$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AREA` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_AREA` ()   SELECT
 	area.area_cod, 
 	area.area_nombre,
 	date_format(area_fecha_registro, "%d-%m-%Y - %H:%i:%s") as fecha_formateada,
@@ -1707,7 +1708,7 @@ FROM
 	area
 	ORDER BY area_nombre asc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ASIGNATURAS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ASIGNATURAS` ()   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	asignaturas.Id_grado, 
@@ -1736,7 +1737,7 @@ FROM
 	ON 
 		aulas.id_nivel_academico = nivel_academico.Id_nivel$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ASIGNATURA_FILTRO` (IN `GRADO` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ASIGNATURA_FILTRO` (IN `GRADO` INT)   SELECT
 	asignaturas.Id_asignatura, 
 	asignaturas.nombre_asig, 
 	asignaturas.Id_grado, 
@@ -1766,7 +1767,7 @@ FROM
 		aulas.id_nivel_academico = nivel_academico.Id_nivel
   WHERE aulas.Id_aula=GRADO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ASISTENCIA` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_ASISTENCIA` ()   SELECT DISTINCT
 aulas.Id_aula,
 aulas.Grado,
 seccion.seccion_nombre,
@@ -1786,7 +1787,7 @@ INNER JOIN seccion ON aulas.id_seccion = seccion.seccion_id
 INNER JOIN `año_escolar` ON matricula.`id_año` = `año_escolar`.`Id_año_escolar`
 ORDER BY fecha DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ASISTENCIAS_FECHAS` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_ASISTENCIAS_FECHAS` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT DISTINCT
 aulas.Id_aula,
 aulas.Grado,
 seccion.seccion_nombre,
@@ -1807,7 +1808,7 @@ INNER JOIN `año_escolar` ON matricula.`id_año` = `año_escolar`.`Id_año_escol
 WHERE asistencia.fecha BETWEEN FECHAINI AND FECHAFIN
 ORDER BY fecha DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ATENCIONES_ENFERMERIA_FILTRO` (IN `IDGRADO` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ATENCIONES_ENFERMERIA_FILTRO` (IN `IDGRADO` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -1869,7 +1870,7 @@ FROM
 		usuario.usu_id = personal_admi.id_ausuario
 	WHERE atencion_salud.tipo_atencion='ENFERMERIA' AND matricula.id_aula=IDGRADO AND atencion_salud.created_at BETWEEN FECHAINI AND FECHAFIN$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ATENCIONES_PSDICOLOGICAS_FILTRO` (IN `IDGRADO` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_ATENCIONES_PSDICOLOGICAS_FILTRO` (IN `IDGRADO` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -1931,7 +1932,7 @@ FROM
 		usuario.usu_id = personal_admi.id_ausuario
 	WHERE atencion_salud.tipo_atencion='PSICOLOGIA' AND matricula.id_aula=IDGRADO AND atencion_salud.created_at BETWEEN FECHAINI AND FECHAFIN$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ATENCION_ENFERME` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ATENCION_ENFERME` ()   SELECT
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -1993,7 +1994,7 @@ FROM
 		usuario.usu_id = personal_admi.id_ausuario
 	WHERE atencion_salud.tipo_atencion='ENFERMERIA'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ATENCION_PSICO` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ATENCION_PSICO` ()   SELECT
 	alumnos.Id_alumno, 
 	alumnos.alum_dni, 
 	alumnos.alum_nombre, 
@@ -2055,7 +2056,7 @@ FROM
 		usuario.usu_id = personal_admi.id_ausuario
 	WHERE atencion_salud.tipo_atencion='PSICOLOGIA'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AULAS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_AULAS` ()   SELECT
 	aulas.Id_aula, 
 	aulas.Grado, 
 	aulas.id_nivel_academico, 
@@ -2078,7 +2079,7 @@ FROM
 	ON 
 		aulas.id_nivel_academico = nivel_academico.Id_nivel$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AULAS_FILTRO` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_AULAS_FILTRO` (IN `ID` INT)   SELECT
 	aulas.Id_aula, 
 	aulas.Grado, 
 	aulas.id_nivel_academico, 
@@ -2102,7 +2103,7 @@ FROM
 		aulas.id_nivel_academico = nivel_academico.Id_nivel
   WHERE aulas.id_nivel_academico=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AULAS_HORAS` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_AULAS_HORAS` ()   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -2127,7 +2128,7 @@ FROM
 		aulas.id_nivel_academico = nivel_academico.Id_nivel
     order by Grado,`año_escolar` desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_AULAS_HORAS_FILTRO` (IN `AÑO` INT, IN `GRADO` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_AULAS_HORAS_FILTRO` (IN `AÑO` INT, IN `GRADO` INT)   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -2153,7 +2154,7 @@ FROM
   WHERE `año_escolar`.`Id_año_escolar`=AÑO AND aulas.Id_aula=GRADO
     order by Grado,`año_escolar` desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMPONENTES` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_COMPONENTES` ()   SELECT DISTINCT
     seccion.seccion_nombre,
     aulas.Grado,
     aulas.Id_aula,
@@ -2175,7 +2176,7 @@ INNER JOIN detalle_asignatura_docente ON detalle_asignatura_docente.Id_asignatur
 INNER JOIN criterios ON criterios.id_detalle_asignatura = detalle_asignatura_docente.Id_detalle_asig_docente
 ORDER BY criterios.created_at asc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMPONENTES_CURSO` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_COMPONENTES_CURSO` (IN `ID` INT)   BEGIN
     SELECT
         criterios.id_criterio,
         criterios.id_detalle_asignatura,
@@ -2197,7 +2198,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMPONENTES_CURSO` (IN `I
         criterios.id_detalle_asignatura = ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMPONENTES_FILTRO` (IN `AULA` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_COMPONENTES_FILTRO` (IN `AULA` INT)   SELECT DISTINCT
     seccion.seccion_nombre,
     aulas.Grado,
     aulas.Id_aula,
@@ -2220,7 +2221,7 @@ INNER JOIN criterios ON criterios.id_detalle_asignatura = detalle_asignatura_doc
 WHERE Id_aula= AULA
 ORDER BY criterios.created_at asc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMUNICADOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_COMUNICADOS` ()   SELECT
 	comunicados.id_comunicado, 
 	comunicados.tipo, 
 	comunicados.id_aula, 
@@ -2242,7 +2243,7 @@ FROM
 ORDER BY
 	comunicados.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMUNICADOS2` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_COMUNICADOS2` ()   SELECT
 	comunicados.id_comunicado, 
 	comunicados.tipo, 
 	comunicados.id_aula, 
@@ -2264,7 +2265,7 @@ FROM
 ORDER BY
 	comunicados.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_COMUNICADOS_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_COMUNICADOS_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	comunicados.id_comunicado, 
 	comunicados.tipo, 
 	comunicados.id_aula, 
@@ -2287,7 +2288,7 @@ FROM
 ORDER BY
 	comunicados.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA` (IN `NIVEL` VARCHAR(255), IN `AULA` VARCHAR(22))   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA` (IN `NIVEL` VARCHAR(255), IN `AULA` VARCHAR(22))   SELECT
 	criterios.id_criterio, 
 	criterios.id_detalle_asignatura, 
 	criterios.competencias, 
@@ -2320,7 +2321,7 @@ FROM
 WHERE
 	aulas.Grado = AULA AND Nivel_academico=NIVEL$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_DOCENTE` (IN `NIVEL` VARCHAR(255), IN `AULA` VARCHAR(22), IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_DOCENTE` (IN `NIVEL` VARCHAR(255), IN `AULA` VARCHAR(22), IN `ID` INT)   SELECT
 	criterios.id_criterio, 
 	criterios.id_detalle_asignatura, 
 	criterios.competencias, 
@@ -2366,7 +2367,7 @@ FROM
 WHERE
 	aulas.Grado = AULA AND Nivel_academico=NIVEL AND usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR` (IN `MATRI` INT, IN `PERIODO` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR` (IN `MATRI` INT, IN `PERIODO` INT)   SELECT
 	criterios.id_criterio, 
 	criterios.id_detalle_asignatura, 
 	criterios.competencias, 
@@ -2408,7 +2409,7 @@ FROM
 		criterios.id_criterio = notas.id_criterio
   WHERE notas.id_matricula=MATRI AND notas.id_bimestre = PERIODO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_ESTUDIANTE` (IN `MATRI` INT, IN `PERIODO` INT, IN `IDUSU` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_ESTUDIANTE` (IN `MATRI` INT, IN `PERIODO` INT, IN `IDUSU` INT)   SELECT
 	criterios.id_criterio, 
 	criterios.id_detalle_asignatura, 
 	criterios.competencias, 
@@ -2463,7 +2464,7 @@ FROM
 		matricula.usu_id = usuario.usu_id
   WHERE notas.id_matricula=MATRI AND notas.id_bimestre = PERIODO AND notas.id_bimestre=PERIODO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PADRES` (IN `MATRI` INT, IN `PERIODO` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PADRES` (IN `MATRI` INT, IN `PERIODO` INT)   SELECT
 	notas_padre.id_nota_papa, 
 	notas_padre.id_matricula, 
 	notas_padre.id_bimestre, 
@@ -2475,7 +2476,7 @@ FROM
 	notas_padre
     WHERE notas_padre.id_matricula=MATRI AND notas_padre.id_bimestre = PERIODO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PROFESOR` (IN `MATRI` INT, IN `PERIODO` INT, IN `IDPRO` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_CRITERIOS_NOTA_MOSTRAR_PROFESOR` (IN `MATRI` INT, IN `PERIODO` INT, IN `IDPRO` INT)   SELECT
 	criterios.id_criterio, 
 	criterios.id_detalle_asignatura, 
 	criterios.competencias, 
@@ -2530,7 +2531,7 @@ FROM
 		docentes.id_asusuario = usuario.usu_id
   WHERE notas.id_matricula=MATRI AND notas.id_bimestre = PERIODO AND usuario.usu_id=IDPRO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_CURSOS_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_CURSOS_DOCENTE` (IN `ID` INT)   SELECT DISTINCT
     asignatura_docente.Id_asigdocente,
     asignatura_docente.Id_docente,
     asignatura_docente.Total_cursos,
@@ -2561,7 +2562,7 @@ FROM
 WHERE
     detalle_asignatura_docente.Id_asig_docente = ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_DIFERENCIA` ()   BEGIN
+CREATE PROCEDURE `SP_LISTAR_DIFERENCIA` ()   BEGIN
     DECLARE fecha_inicio DATE;
     DECLARE fecha_fin DATE;
     DECLARE totalgasto DECIMAL(10,2);
@@ -2598,7 +2599,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_DIFERENCIA` ()   BEGIN
         CONCAT_WS(' ', 'S/.', @total) AS Diferencia;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_DIFERENCIA_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_DIFERENCIA_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
     DECLARE totalgasto DECIMAL(10,2);
     DECLARE totalingresos DECIMAL(10,2);
     DECLARE total DECIMAL(10,2);
@@ -2629,7 +2630,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_DIFERENCIA_FILTRO` (IN `F
         CONCAT_WS(' ', 'S/.', total) AS Diferencia;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_DOCENTES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_DOCENTES` ()   SELECT
 docentes.Id_docente,
 	docentes.docente_dni, 
 	docentes.docente_nombre, 
@@ -2676,7 +2677,7 @@ FROM
 	ON 
 		docentes.especialidad_id = especialidad.Id_especilidad$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EGRESOS_DIVERSOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_EGRESOS_DIVERSOS` ()   SELECT
 	egresos.id_egresos, 
 	egresos.id_indicador, 
 	egresos.id_user, 
@@ -2700,7 +2701,7 @@ FROM
 WHERE
 	egresos.created_at = CURDATE()$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EGRESOS_DIVERSOS_FILTRO` (IN `INDI` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_EGRESOS_DIVERSOS_FILTRO` (IN `INDI` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	egresos.id_egresos, 
 	egresos.id_indicador, 
 	egresos.id_user, 
@@ -2724,7 +2725,7 @@ FROM
 WHERE
 	egresos.id_indicador=INDI OR egresos.created_at BETWEEN FECHAINI AND FECHAFIN$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EMPLEADO` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_EMPLEADO` ()   SELECT
 	empleado.empleado_id, 
 	empleado.emple_nombre, 
 	empleado.emple_apepat, 
@@ -2740,10 +2741,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EMPLEADO` ()   SELECT
 FROM
 	empleado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EMPRESA` ()   SELECT empresa_id,emp_razon,emp_email,emp_cod,emp_telefono,emp_direccion,emp_logo
+CREATE PROCEDURE `SP_LISTAR_EMPRESA` ()   SELECT empresa_id,emp_razon,emp_email,emp_cod,emp_telefono,emp_direccion,emp_logo
 FROM empresa$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ESPECIALIDAD` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ESPECIALIDAD` ()   SELECT
 	especialidad.Id_especilidad, 
 	especialidad.Especialidad, 
 	especialidad.Descripcion, 
@@ -2754,7 +2755,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ESPECIALIDAD` ()   SELECT
 FROM
 	especialidad$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EXAMENES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_EXAMENES` ()   SELECT
 	examen.id_examen, 
 	examen.id_detalle_asignatura, 
 	examen.tema_examen, 
@@ -2814,7 +2815,7 @@ FROM
 ORDER BY
 	examen.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EXAMENES_ESTUDIANTES_ID_PENDIENTE` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_EXAMENES_ESTUDIANTES_ID_PENDIENTE` (IN `ID` INT)   SELECT
 	examen.id_examen, 
 	examen.id_detalle_asignatura, 
 	examen.tema_examen, 
@@ -2889,7 +2890,7 @@ FROM
 ORDER BY
 	examen.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EXAMENES_FILTRO` (IN `GRADO` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_EXAMENES_FILTRO` (IN `GRADO` INT)   SELECT
 	examen.id_examen, 
 	examen.id_detalle_asignatura, 
 	examen.tema_examen, 
@@ -2950,7 +2951,7 @@ FROM
 ORDER BY
 	examen.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EXAMENES_PROFESOR` (IN `AÑO` INT, IN `GRADO` INT, IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_EXAMENES_PROFESOR` (IN `AÑO` INT, IN `GRADO` INT, IN `ID` INT)   SELECT
 	examen.id_examen, 
 	examen.id_detalle_asignatura, 
 	examen.tema_examen, 
@@ -3022,7 +3023,7 @@ FROM
 ORDER BY
 	examen.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_EXAMENES_PROFESOR_SOLO` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_EXAMENES_PROFESOR_SOLO` (IN `ID` INT)   SELECT
 	examen.id_examen, 
 	examen.id_detalle_asignatura, 
 	examen.tema_examen, 
@@ -3094,7 +3095,7 @@ WHERE `año_escolar`.`año_escolar` = (SELECT(YEAR(NOW()))) AND usuario.usu_id =
 ORDER BY
 	examen.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_HORARIOS` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_HORARIOS` ()   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -3131,7 +3132,7 @@ FROM
 WHERE
 	`año_escolar` = (SELECT(YEAR(NOW())))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_HORARIOS_FILTRO` (IN `AÑO` INT, IN `GRADO` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_HORARIOS_FILTRO` (IN `AÑO` INT, IN `GRADO` INT)   SELECT DISTINCT
 	horas_aula.`id_año_academico`, 
 	horas_aula.id_aula, 
 	horas_aula.turno, 
@@ -3168,7 +3169,7 @@ FROM
 WHERE
 	`año_escolar`.`Id_año_escolar`=AÑO AND aulas.Id_aula=GRADO$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INDICADORES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_INDICADORES` ()   SELECT
 	indicadores.id_indicadores, 
 	indicadores.tipo_indicador, 
 	indicadores.nombre, 
@@ -3181,7 +3182,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INDICADORES` ()   SELECT
 FROM
 	indicadores$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INGRESOS_DIVERSOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_INGRESOS_DIVERSOS` ()   SELECT
 	ingresos.id_ingreso, 
 	ingresos.id_pago_pension, 
 	ingresos.id_indicador, 
@@ -3205,7 +3206,7 @@ FROM
 		ingresos.id_indicador = indicadores.id_indicadores
 WHERE ingresos.created_at=CURDATE()$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INGRESOS_DIVERSOS_FILTRO` (IN `INDI` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_INGRESOS_DIVERSOS_FILTRO` (IN `INDI` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
     SELECT
         ingresos.id_ingreso, 
         ingresos.id_pago_pension, 
@@ -3232,7 +3233,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INGRESOS_DIVERSOS_FILTRO`
         OR (FECHAINI IS NOT NULL AND FECHAFIN IS NOT NULL AND ingresos.created_at BETWEEN FECHAINI AND FECHAFIN);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INGRESOS_PENSIONES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_INGRESOS_PENSIONES` ()   SELECT
 	ingresos.id_ingreso, 
 	ingresos.id_pago_pension, 
 	ingresos.id_indicador, 
@@ -3279,7 +3280,7 @@ WHERE
 	ingresos.created_at = CURDATE() AND
 	ingresos.id_indicador = 1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_INGRESOS_PENSIONES_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_INGRESOS_PENSIONES_FILTRO` (IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	ingresos.id_ingreso, 
 	ingresos.id_pago_pension, 
 	ingresos.id_indicador, 
@@ -3326,7 +3327,7 @@ WHERE
 	ingresos.created_at BETWEEN FECHAINI AND FECHAFIN AND
 	ingresos.id_indicador = 1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_MATRICULADOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_MATRICULADOS` ()   SELECT
 matricula.id_matricula,
 matricula.id_alumno,
 matricula.id_aula,
@@ -3362,7 +3363,7 @@ INNER JOIN aulas ON matricula.id_aula = aulas.Id_aula
 INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nivel
 ORDER BY matricula.created_at desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_MATRICULADOS_FILTRO` (IN `AÑO` INT, IN `AULA` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_MATRICULADOS_FILTRO` (IN `AÑO` INT, IN `AULA` INT)   SELECT
 matricula.id_matricula,
 matricula.id_alumno,
 matricula.id_aula,
@@ -3398,7 +3399,7 @@ INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nive
 WHERE matricula.`id_año`=AÑO AND matricula.id_aula=AULA
 ORDER BY matricula.created_at desc$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NIVEL_ACADEMICO` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_NIVEL_ACADEMICO` ()   SELECT
 	nivel_academico.Id_nivel, 
 	nivel_academico.descripcion, 
 	nivel_academico.Nivel_academico, 
@@ -3409,7 +3410,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NIVEL_ACADEMICO` ()   SEL
 FROM
 	nivel_academico$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO` (IN `IDAÑO` INT, IN `AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO` (IN `IDAÑO` INT, IN `AULA` INT)   BEGIN
     -- Usar una variable de sesión para contar el número de notas por matrícula
     DECLARE CONTADOR INT;
 
@@ -3474,7 +3475,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO` (IN `IDA
         `año_escolar`.`año_escolar` DESC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO_ALUMNOS` (IN `IDAÑO` INT, IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO_ALUMNOS` (IN `IDAÑO` INT, IN `ID` INT)   BEGIN
     -- Usar una variable de sesión para contar el número de notas por matrícula
     DECLARE CONTADOR INT;
 
@@ -3544,7 +3545,7 @@ FROM
         `año_escolar`.`año_escolar` DESC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO_PROFESOR` (IN `IDAÑO` INT, IN `AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO_PROFESOR` (IN `IDAÑO` INT, IN `AULA` INT)   BEGIN
     -- Usar una variable de sesión para contar el número de notas por matrícula
     DECLARE CONTADOR INT;
 
@@ -3609,7 +3610,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTAS_AULA_AÑO_PROFESOR`
         `año_escolar`.`año_escolar` DESC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTIFICACION_COMUNICADO` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_NOTIFICACION_COMUNICADO` ()   SELECT
 	comunicados.id_comunicado, 
 	comunicados.titulo, 
 	comunicados.descripcion, 
@@ -3622,7 +3623,7 @@ FROM
 	comunicados
 	where estado='NUEVO' and fecha_registro=CURDATE()$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_NOTIFICACION_TRAMITE` (IN `IDAREA` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_NOTIFICACION_TRAMITE` (IN `IDAREA` INT)   SELECT
 	documento.documento_id, 
 	documento.doc_dniremitente, 
 	CONCAT_WS(' ',documento.doc_nombreremitente,documento.doc_apepatremitente,documento.doc_apematremitente) AS REMITENTE, 
@@ -3667,7 +3668,7 @@ FROM
 
 		WHERE area_destino=IDAREA AND doc_estatus="PENDIENTE"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGOS` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGOS` (IN `ID` INT)   BEGIN
     SELECT
 	pensiones.id_nivel_academico, 
 	pensiones.mes, 
@@ -3706,7 +3707,7 @@ WHERE
 	pago_pensiones.id_matri = ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGOS_FILTRO` (IN `AÑO` INT, IN `AULA` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGOS_FILTRO` (IN `AÑO` INT, IN `AULA` INT)   BEGIN
     SELECT
         matricula.id_matricula,
         matricula.id_alumno,
@@ -3754,7 +3755,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGOS_FILTRO` (IN `AÑO` 
 		
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION` ()   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGO_PENSION` ()   BEGIN
     SELECT
         matricula.id_matricula,
         matricula.id_alumno,
@@ -3801,7 +3802,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION` ()   BEGIN
 		
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_ID` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGO_PENSION_ID` (IN `ID` INT)   BEGIN
     SELECT
         matricula.id_matricula,
         matricula.id_alumno,
@@ -3847,7 +3848,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_ID` (IN `ID`
 		
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_ID_AÑO` (IN `ID` INT, IN `AÑO` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGO_PENSION_ID_AÑO` (IN `ID` INT, IN `AÑO` INT)   BEGIN
     SELECT
         matricula.id_matricula,
         matricula.id_alumno,
@@ -3893,7 +3894,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_ID_AÑO` (IN
 		
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_TODO` (IN `ID` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_PAGO_PENSION_TODO` (IN `ID` INT)   BEGIN
     SELECT
         matricula.id_matricula,
         matricula.id_alumno,
@@ -3939,7 +3940,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PAGO_PENSION_TODO` (IN `I
 		
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PENSIONES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_PENSIONES` ()   SELECT
 pensiones.id_pensiones,
 pensiones.id_nivel_academico,
 pensiones.mes,
@@ -3956,7 +3957,7 @@ FROM
 pensiones
 INNER JOIN nivel_academico ON pensiones.id_nivel_academico = nivel_academico.Id_nivel and NOT nivel_academico="TODOS"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PENSIONES_FILTRO` (IN `IDNIVEL` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_PENSIONES_FILTRO` (IN `IDNIVEL` INT)   SELECT
 pensiones.id_pensiones,
 pensiones.id_nivel_academico,
 pensiones.mes,
@@ -3974,7 +3975,7 @@ pensiones
 INNER JOIN nivel_academico ON pensiones.id_nivel_academico = nivel_academico.Id_nivel and NOT nivel_academico="TODOS"
 WHERE pensiones.id_nivel_academico=IDNIVEL$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PERIODOS` ()   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_PERIODOS` ()   SELECT DISTINCT
 `año_escolar`.`año_escolar`,
 periodos.tipo_perido,
 periodos.`id_año_escolar`
@@ -3982,7 +3983,7 @@ FROM
 `año_escolar`
 INNER JOIN periodos ON periodos.`id_año_escolar` = `año_escolar`.`Id_año_escolar`$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PERIODOS_POR_AÑO` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_PERIODOS_POR_AÑO` (IN `ID` INT)   SELECT
 `año_escolar`.`año_escolar`,
 periodos.id_periodo,
 periodos.`id_año_escolar`,
@@ -4002,7 +4003,7 @@ FROM
 INNER JOIN periodos ON periodos.`id_año_escolar` = `año_escolar`.`Id_año_escolar`
 WHERE `año_escolar`.`Id_año_escolar`=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_PERSONAL_ADMIN` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_PERSONAL_ADMIN` ()   SELECT
 	personal_admi.personal_adm_id, 
 	personal_admi.personal_adm_dni, 
 	personal_admi.personal_adm_nombre, 
@@ -4041,7 +4042,7 @@ FROM
 	ON 
 		usuario.rol_id = roles.Id_rol$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ROLES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_ROLES` ()   SELECT
 	roles.Id_rol, 
 	roles.tipo_rol, 
 	roles.descripcion, 
@@ -4052,7 +4053,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_ROLES` ()   SELECT
 FROM
 	roles$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_SECCIONES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_SECCIONES` ()   SELECT
 	seccion.seccion_id, 
 	seccion.seccion_nombre, 
 	seccion.seccion_descripcion, 
@@ -4064,7 +4065,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_SECCIONES` ()   SELECT
 FROM
 	seccion$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TAREAS` ()   SELECT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4118,7 +4119,7 @@ FROM
 ORDER BY
 	tareas.created_at DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_ENVIADAS` (IN `ID` CHAR(12))   SELECT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_ENVIADAS` (IN `ID` CHAR(12))   SELECT
 	detalle_tarea.id_detalle_tarea, 
 	detalle_tarea.id_tarea, 
 	detalle_tarea.id_matriculado, 
@@ -4152,7 +4153,7 @@ FROM
 		matricula.id_alumno = alumnos.Id_alumno
 	WHERE detalle_tarea.id_tarea=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES` (IN `AÑO` INT, IN `GRADO` INT, IN `IDCURSO` INT, IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES` (IN `AÑO` INT, IN `GRADO` INT, IN `IDCURSO` INT, IN `ID` INT)   SELECT DISTINCT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4233,7 +4234,7 @@ FROM
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES_ID_PENDIENTE` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES_ID_PENDIENTE` (IN `ID` INT)   SELECT DISTINCT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4314,7 +4315,7 @@ FROM
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES_SOLO` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_ESTUDIANTES_SOLO` (IN `ID` INT)   SELECT DISTINCT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4394,7 +4395,7 @@ FROM
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_FILTRO` (IN `AULA` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_FILTRO` (IN `AULA` INT, IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   SELECT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4450,7 +4451,7 @@ FROM
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_PROFESOR` (IN `AÑO` INT, IN `GRADO` INT, IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_PROFESOR` (IN `AÑO` INT, IN `GRADO` INT, IN `ID` INT)   SELECT DISTINCT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4520,7 +4521,7 @@ FROM
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TAREAS_PROFESOR_ID` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTAR_TAREAS_PROFESOR_ID` (IN `ID` INT)   SELECT DISTINCT
 	tareas.id_tarea, 
 	tareas.id_detalle_asignatura, 
 	tareas.tema, 
@@ -4590,40 +4591,40 @@ WHERE `año_escolar`.`año_escolar` = (SELECT(YEAR(NOW()))) AND usuario.usu_id =
 ORDER BY
 	tareas.created_at ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TIPO` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_TIPO` (IN `ID` INT)   SELECT
 alumnos.Id_alumno,
 alumnos.tipo_alum
 FROM
 alumnos
 WHERE Id_alumno=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_ADMINISTRATIVOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_ADMINISTRATIVOS` ()   SELECT
 	COUNT(personal_admi.personal_adm_id)AS TOTAL
 FROM
 	personal_admi$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_DOCENTES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_DOCENTES` ()   SELECT
 	COUNT(docentes.Id_docente)AS TOTAL
 FROM
 	docentes$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_DOC_PENDIENTE` ()   SELECT count(documento_id)as totaldocpen FROM documento where doc_estatus="PENDIENTE"$$
+CREATE PROCEDURE `SP_LISTAR_TOTAL_DOC_PENDIENTE` ()   SELECT count(documento_id)as totaldocpen FROM documento where doc_estatus="PENDIENTE"$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_EGRESOS_HOY` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_EGRESOS_HOY` ()   SELECT
 	SUM(egresos.monto)AS TOTAL_GASTO2
 FROM
 	egresos
 WHERE egresos.created_at=CURDATE()$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_EMPLEADO` ()   select count(empleado_id) as total from empleado$$
+CREATE PROCEDURE `SP_LISTAR_TOTAL_EMPLEADO` ()   select count(empleado_id) as total from empleado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_ENFERMERIA` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_ENFERMERIA` ()   SELECT
 	COUNT(atencion_salud.id_atencion)AS TOTAL_PSICO
 FROM
 	atencion_salud
 WHERE atencion_salud.tipo_atencion='ENFERMERIA'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_ESTUDIANTES` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_ESTUDIANTES` ()   SELECT
 	COUNT(alumnos.Id_alumno) AS TOTAL
 FROM
 	alumnos
@@ -4632,24 +4633,24 @@ FROM
 	ON 
 		alumnos.Id_alumno = padres.id_alu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_INGRESOS_HOY` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_INGRESOS_HOY` ()   SELECT
 	SUM(ingresos.monto)AS TOTAL_GASTO
 FROM
 	ingresos
 WHERE ingresos.created_at=CURDATE()$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_PSICOLOGIA` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_PSICOLOGIA` ()   SELECT
 	COUNT(atencion_salud.id_atencion)AS TOTAL_PSICO
 FROM
 	atencion_salud
 WHERE atencion_salud.tipo_atencion='PSICOLOGIA'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TOTAL_USUARIOS` ()   SELECT
+CREATE PROCEDURE `SP_LISTAR_TOTAL_USUARIOS` ()   SELECT
 	COUNT(usuario.usu_id)AS TOTAL
 FROM
 	usuario$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TRAE_MONTO` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_TRAE_MONTO` (IN `ID` INT)   SELECT
 pensiones.id_pensiones,
 pensiones.precio,
 pensiones.fecha_vencimiento
@@ -4658,7 +4659,7 @@ pensiones
 
 WHERE id_pensiones=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_TRAE_NIVEL` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTAR_TRAE_NIVEL` (IN `ID` INT)   SELECT
 aulas.Id_aula,
 nivel_academico.Nivel_academico
 FROM
@@ -4666,7 +4667,7 @@ aulas
 INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nivel
 WHERE Id_aula=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_USUARIO` ()   BEGIN
+CREATE PROCEDURE `SP_LISTAR_USUARIO` ()   BEGIN
   SELECT DISTINCT
     -- DNI y nombres de docentes, personal administrativo y alumnos
     COALESCE(docentes.docente_dni, personal_admi.personal_adm_dni, alumnos.alum_dni) AS dni,
@@ -4708,7 +4709,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_USUARIO` ()   BEGIN
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_USUARIOS_FILTRO` (IN `IDROL` INT)   BEGIN
+CREATE PROCEDURE `SP_LISTAR_USUARIOS_FILTRO` (IN `IDROL` INT)   BEGIN
   SELECT DISTINCT
     -- DNI y nombres de docentes, personal administrativo y alumnos
     COALESCE(docentes.docente_dni, personal_admi.personal_adm_dni, alumnos.alum_dni) AS dni,
@@ -4751,7 +4752,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTAR_USUARIOS_FILTRO` (IN `IDR
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTA_COMPO_CURSO_EDITAR` (IN `ID` INT)   SELECT DISTINCT
+CREATE PROCEDURE `SP_LISTA_COMPO_CURSO_EDITAR` (IN `ID` INT)   SELECT DISTINCT
 criterios.id_criterio,
 criterios.id_detalle_asignatura,
 criterios.competencias,
@@ -4768,7 +4769,7 @@ INNER JOIN asignatura_docente ON detalle_asignatura_docente.Id_asig_docente = as
 
 WHERE detalle_asignatura_docente.Id_detalle_asig_docente=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_LISTA_HORARIOS_EDITAR` (IN `ID` INT)   SELECT
+CREATE PROCEDURE `SP_LISTA_HORARIOS_EDITAR` (IN `ID` INT)   SELECT
 	horas_aula.id_hora, 
 	horas_aula.hora_inicio, 
 	horas_aula.hora_fin,
@@ -4799,7 +4800,7 @@ FROM
 WHERE
 	horas_aula.id_aula=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ALUMNOS` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APEPA` VARCHAR(255), IN `APEMATE` VARCHAR(255), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `IDPA` INT, IN `DNIPA` CHAR(8), IN `DATOSPA` VARCHAR(255), IN `CELPA` VARCHAR(255), IN `DNIMA` CHAR(8), IN `DATOSMA` VARCHAR(255), IN `CELMA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_ALUMNOS` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APEPA` VARCHAR(255), IN `APEMATE` VARCHAR(255), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `IDPA` INT, IN `DNIPA` CHAR(8), IN `DATOSPA` VARCHAR(255), IN `CELPA` VARCHAR(255), IN `DNIMA` CHAR(8), IN `DATOSMA` VARCHAR(255), IN `CELMA` VARCHAR(255))   BEGIN
     DECLARE EDAD INT;
     DECLARE NDOCUMENTOACTUAL CHAR(8);
     DECLARE EXISTE_DNI_OTRO INT;
@@ -4879,7 +4880,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ALUMNOS` (IN `ID` INT,
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_AÑO` (IN `ID` INT, IN `AÑO` INT, IN `NOMBRE` VARCHAR(255), IN `FECHAINI` DATE, IN `FECHAFIN` DATE, IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_AÑO` (IN `ID` INT, IN `AÑO` INT, IN `NOMBRE` VARCHAR(255), IN `FECHAINI` DATE, IN `FECHAFIN` DATE, IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE AÑOACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @AÑOACTUAL:=(SELECT año_escolar FROM año_escolar WHERE Id_año_escolar=ID);
@@ -4914,7 +4915,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_AREA` (IN `ID` INT, IN `NAREA` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_AREA` (IN `ID` INT, IN `NAREA` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE AREAACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @AREAACTUAL:=(SELECT area_nombre FROM area WHERE area_cod=ID);
@@ -4939,7 +4940,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ASIGNATURA` (IN `ID` INT, IN `ASIGNA` VARCHAR(255), IN `GRADO` INT, IN `OBSERVA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_ASIGNATURA` (IN `ID` INT, IN `ASIGNA` VARCHAR(255), IN `GRADO` INT, IN `OBSERVA` VARCHAR(255))   BEGIN
 DECLARE ASIGACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @ASIGACTUAL:=(SELECT nombre_asig FROM asignaturas WHERE asignaturas.Id_asignatura=ID);
@@ -4968,7 +4969,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ASIG_DOCENTE_UNICO` (IN `IDASIG_DOCENTE` INT, IN `IDS_ASIGNATURAS` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_ASIG_DOCENTE_UNICO` (IN `IDASIG_DOCENTE` INT, IN `IDS_ASIGNATURAS` VARCHAR(255))   BEGIN
     DECLARE CANTIDAD INT;
     DECLARE TOTALCURSOS INT;
     DECLARE ASIG_ID VARCHAR(10);
@@ -5020,7 +5021,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ASIG_DOCENTE_UNICO` (I
     SELECT 1 AS resultado;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ATENCION_ENFERMERIA` (IN `ID` INT, IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   UPDATE atencion_salud
+CREATE PROCEDURE `SP_MODIFICAR_ATENCION_ENFERMERIA` (IN `ID` INT, IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   UPDATE atencion_salud
 SET
 id_matricula=IDESTU,
 id_usuario=IDUSU,
@@ -5030,7 +5031,7 @@ observaciones=OBSERVA,
 updated_at=NOW()
 WHERE id_atencion=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ATENCION_PSICOLOGICA` (IN `ID` INT, IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   UPDATE atencion_salud
+CREATE PROCEDURE `SP_MODIFICAR_ATENCION_PSICOLOGICA` (IN `ID` INT, IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   UPDATE atencion_salud
 SET
 id_matricula=IDESTU,
 id_usuario=IDUSU,
@@ -5040,7 +5041,7 @@ observaciones=OBSERVA,
 updated_at=NOW()
 WHERE id_atencion=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_AULAS` (IN `ID` INT, IN `GRADO1` VARCHAR(255), IN `SECCION` INT, IN `NIVEL` INT, IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_AULAS` (IN `ID` INT, IN `GRADO1` VARCHAR(255), IN `SECCION` INT, IN `NIVEL` INT, IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE GRADOACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @GRADOACTUAL:=(SELECT Grado FROM aulas WHERE Id_aula=ID);
@@ -5073,7 +5074,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
     -- Verificar si el componente ya existe
     DECLARE componente_existente INT;
 
@@ -5096,7 +5097,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_COMPONENTE` (IN `ID_AS
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_COMUNICADO` (IN `ID` INT, IN `TIPO` VARCHAR(255), IN `GRADO` INT, IN `TITU` VARCHAR(255), IN `DESCRI` VARCHAR(255), IN `ESTA` VARCHAR(20), IN `RUTA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_COMUNICADO` (IN `ID` INT, IN `TIPO` VARCHAR(255), IN `GRADO` INT, IN `TITU` VARCHAR(255), IN `DESCRI` VARCHAR(255), IN `ESTA` VARCHAR(20), IN `RUTA` VARCHAR(255), IN `USU` INT)   BEGIN
     DECLARE ID_ACTUAL INT;
     DECLARE EXISTE_COMU_OTRO INT;
 
@@ -5144,7 +5145,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_COMUNICADO` (IN `ID` I
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_DOCENTES` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `ESPE` INT, IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `ESTADO` VARCHAR(20), IN `FOTO` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_DOCENTES` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `ESPE` INT, IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `ESTADO` VARCHAR(20), IN `FOTO` VARCHAR(255))   BEGIN
     DECLARE DNI_ACTUAL CHAR(8);
     DECLARE EXISTE_DNI_OTRO INT;
 
@@ -5200,11 +5201,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_DOCENTES` (IN `ID` INT
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_DOCENTE_FOTO` (IN `DNI` CHAR(8), IN `RUTA` VARCHAR(255))   UPDATE docentes SET
+CREATE PROCEDURE `SP_MODIFICAR_DOCENTE_FOTO` (IN `DNI` CHAR(8), IN `RUTA` VARCHAR(255))   UPDATE docentes SET
 docentes.docente_fotoperfil=RUTA
 WHERE docentes.docente_dni=DNI$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EGRESOS` (IN `ID` INT, IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_EGRESOS` (IN `ID` INT, IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     UPDATE egresos
     SET
     id_indicador=INDI,
@@ -5216,7 +5217,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EGRESOS` (IN `ID` INT,
     WHERE egresos.id_egresos=ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EMPLEADO` (IN `ID` INT, IN `NDOCUMENTO` CHAR(12), IN `NOMBRE` VARCHAR(150), IN `APEPAT` VARCHAR(100), IN `APEMAT` VARCHAR(100), IN `FECHA` DATE, IN `MOVIL` CHAR(9), IN `DIRECCION` VARCHAR(255), IN `EMAIL` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_EMPLEADO` (IN `ID` INT, IN `NDOCUMENTO` CHAR(12), IN `NOMBRE` VARCHAR(150), IN `APEPAT` VARCHAR(100), IN `APEMAT` VARCHAR(100), IN `FECHA` DATE, IN `MOVIL` CHAR(9), IN `DIRECCION` VARCHAR(255), IN `EMAIL` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE NDOCUMENTOACTUAL CHAR(12);
 DECLARE CANTIDAD INT;
 SET @NDOCUMENTOACTUAL:=(SELECT emple_nrodocumento FROM empleado WHERE empleado_id=ID);
@@ -5259,11 +5260,11 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EMPLEADO_FOTO` (IN `ID` INT, IN `RUTA` VARCHAR(255))   UPDATE empleado SET
+CREATE PROCEDURE `SP_MODIFICAR_EMPLEADO_FOTO` (IN `ID` INT, IN `RUTA` VARCHAR(255))   UPDATE empleado SET
 empl_fotoperfil=RUTA
 WHERE empleado_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EMPRESA` (IN `ID` INT, IN `NOMBRE` VARCHAR(250), IN `EMAIL` VARCHAR(250), IN `COD` VARCHAR(10), IN `TELEFONO` VARCHAR(20), IN `DIRECCION` VARCHAR(250))   UPDATE empresa SET
+CREATE PROCEDURE `SP_MODIFICAR_EMPRESA` (IN `ID` INT, IN `NOMBRE` VARCHAR(250), IN `EMAIL` VARCHAR(250), IN `COD` VARCHAR(10), IN `TELEFONO` VARCHAR(20), IN `DIRECCION` VARCHAR(250))   UPDATE empresa SET
 	emp_razon=NOMBRE,
 	emp_email=EMAIL,
 	emp_cod=COD,
@@ -5271,16 +5272,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EMPRESA` (IN `ID` INT,
 	emp_direccion=DIRECCION
 	WHERE empresa_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EMPRESA_FOTO` (IN `ID` INT, IN `RUTA` VARCHAR(255))   UPDATE empresa SET
+CREATE PROCEDURE `SP_MODIFICAR_EMPRESA_FOTO` (IN `ID` INT, IN `RUTA` VARCHAR(255))   UPDATE empresa SET
 emp_logo=RUTA
 WHERE empresa_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ENVIAR_TAREA` (IN `ID` CHAR(12), IN `RUTA` VARCHAR(255))   UPDATE detalle_tarea SET
+CREATE PROCEDURE `SP_MODIFICAR_ENVIAR_TAREA` (IN `ID` CHAR(12), IN `RUTA` VARCHAR(255))   UPDATE detalle_tarea SET
 	detalle_tarea.archivo_evnio_tarea=RUTA,
 	detalle_tarea.updated_at=NOW()
 	WHERE detalle_tarea.id_detalle_tarea=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ESPECIALIDAD` (IN `ID` INT, IN `ESPE` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_ESPECIALIDAD` (IN `ID` INT, IN `ESPE` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE ESPEACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @ESPEACTUAL:=(SELECT Especialidad FROM especialidad WHERE Id_especilidad=ID);
@@ -5309,11 +5310,11 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ESTUDIANTE_FOTO` (IN `DNI` CHAR(8), IN `RUTA` VARCHAR(255))   UPDATE alumnos SET
+CREATE PROCEDURE `SP_MODIFICAR_ESTUDIANTE_FOTO` (IN `DNI` CHAR(8), IN `RUTA` VARCHAR(255))   UPDATE alumnos SET
 alumnos.alum_fotoperfil=RUTA
 WHERE alumnos.alum_dni=DNI$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EXAMENES` (IN `ID` CHAR(12), IN `IDDETA` INT, IN `TEMA` VARCHAR(255), IN `FECHA` DATETIME, IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_EXAMENES` (IN `ID` CHAR(12), IN `IDDETA` INT, IN `TEMA` VARCHAR(255), IN `FECHA` DATETIME, IN `DESCRIP` VARCHAR(255))   BEGIN
     DECLARE IDDETALLE VARCHAR(255);
     DECLARE FECHA1 DATE;
     DECLARE CANTIDAD INT;
@@ -5356,11 +5357,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EXAMENES` (IN `ID` CHA
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_EXAMEN_ESTATUS` (IN `ID` CHAR(12), IN `ESTA` VARCHAR(20))   UPDATE examen
+CREATE PROCEDURE `SP_MODIFICAR_EXAMEN_ESTATUS` (IN `ID` CHAR(12), IN `ESTA` VARCHAR(20))   UPDATE examen
 SET examen.estado=ESTA
 WHERE examen.id_examen=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_INDICADOR` (IN `ID` INT, IN `TIPO` VARCHAR(20), IN `NOMBRE` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_INDICADOR` (IN `ID` INT, IN `TIPO` VARCHAR(20), IN `NOMBRE` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE INDIACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @INDIACTUALL:=(SELECT indicadores.id_indicadores FROM indicadores WHERE indicadores.id_indicadores=ID);
@@ -5392,7 +5393,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_INGRESOS` (IN `ID` INT, IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_INGRESOS` (IN `ID` INT, IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     UPDATE ingresos
     SET
     id_indicador=INDI,
@@ -5404,7 +5405,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_INGRESOS` (IN `ID` INT
     WHERE ingresos.id_ingreso=ID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_MATRICULA` (IN `ID` INT, IN `IDESTU` INT, IN `AÑO` INT, IN `AULA` INT, IN `ADMIN` DECIMAL(5,2), IN `NUEVO` DECIMAL(5,2), IN `MATRI` DECIMAL(5,2), IN `PROCEDEN` VARCHAR(100), IN `PROVI` VARCHAR(50), IN `DEPAR` VARCHAR(50))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_MATRICULA` (IN `ID` INT, IN `IDESTU` INT, IN `AÑO` INT, IN `AULA` INT, IN `ADMIN` DECIMAL(5,2), IN `NUEVO` DECIMAL(5,2), IN `MATRI` DECIMAL(5,2), IN `PROCEDEN` VARCHAR(100), IN `PROVI` VARCHAR(50), IN `DEPAR` VARCHAR(50))   BEGIN
     DECLARE NDOCUMENTOACTUAL CHAR(12);
     DECLARE CANTIDAD INT;
     
@@ -5451,7 +5452,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_MATRICULA` (IN `ID` IN
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_NIVEL_ACADEMICO` (IN `ID` INT, IN `NIVEL_ACA` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_NIVEL_ACADEMICO` (IN `ID` INT, IN `NIVEL_ACA` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE NIVACACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @NIVACACTUAL:=(SELECT Nivel_academico FROM nivel_academico WHERE Id_nivel=ID);
@@ -5481,7 +5482,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_O_REGISTRAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_O_REGISTRAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(255), IN `OBSER` TEXT)   BEGIN
     -- Verificar si el componente ya existe
     DECLARE componente_existente INT;
 
@@ -5509,14 +5510,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_O_REGISTRAR_COMPONENTE
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_PAGO_PENSION` (IN `ID` INT, IN `MONTO` DECIMAL(5,2), IN `DESCRIP` VARCHAR(255))   UPDATE pago_pensiones
+CREATE PROCEDURE `SP_MODIFICAR_PAGO_PENSION` (IN `ID` INT, IN `MONTO` DECIMAL(5,2), IN `DESCRIP` VARCHAR(255))   UPDATE pago_pensiones
 SET 
 pago_pensiones.sub_total=MONTO,
 pago_pensiones.motivo_edicion=DESCRIP,
 pago_pensiones.updated_at=CURDATE()
 WHERE pago_pensiones.id_pago_pension=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_PENSIONES` (IN `ID` INT, IN `NIVEL` INT, IN `MES` VARCHAR(30), IN `FECHA_VEN` DATE, IN `PRECIO` DECIMAL(5,2), IN `MORA` DECIMAL(5,2))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_PENSIONES` (IN `ID` INT, IN `NIVEL` INT, IN `MES` VARCHAR(30), IN `FECHA_VEN` DATE, IN `PRECIO` DECIMAL(5,2), IN `MORA` DECIMAL(5,2))   BEGIN
     DECLARE MESACTUAL VARCHAR(255);
     DECLARE FECHA_VEN_ACTUAL DATE;
     DECLARE CANTIDAD INT;
@@ -5561,7 +5562,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_PENSIONES` (IN `ID` IN
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_PERSONAL` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `TIPO` VARCHAR(50), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `ESTADO` VARCHAR(20), IN `FOTO` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_PERSONAL` (IN `ID` INT, IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `TIPO` VARCHAR(50), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `ESTADO` VARCHAR(20), IN `FOTO` VARCHAR(255))   BEGIN
     DECLARE DNI_ACTUAL CHAR(8);
     DECLARE EXISTE_DNI_OTRO INT;
 
@@ -5617,7 +5618,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_PERSONAL` (IN `ID` INT
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_ROLES` (IN `ID` INT, IN `ROL` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_ROLES` (IN `ID` INT, IN `ROL` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE ROLACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @ROLACTUAL:=(SELECT tipo_rol FROM roles WHERE Id_rol=ID);
@@ -5646,7 +5647,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_SECCION` (IN `ID` INT, IN `SECCION` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_SECCION` (IN `ID` INT, IN `SECCION` VARCHAR(100), IN `DESCRIP` VARCHAR(255), IN `ESTADO` VARCHAR(20))   BEGIN
 DECLARE SECCIONACTUAL VARCHAR(255);
 DECLARE CANTIDAD INT;
 SET @SECCIONACTUAL:=(SELECT seccion_nombre FROM seccion WHERE seccion_id=ID);
@@ -5675,7 +5676,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_TAREAS` (IN `ID` CHAR(12), IN `ASIGN` INT, IN `TEMA` VARCHAR(150), IN `FECHA` DATETIME, IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_TAREAS` (IN `ID` CHAR(12), IN `ASIGN` INT, IN `TEMA` VARCHAR(150), IN `FECHA` DATETIME, IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255))   BEGIN
 DECLARE IDDETALLE INT;
 DECLARE CANTIDAD INT;
 SET @IDDETALLE:=(SELECT tareas.id_detalle_asignatura FROM tareas WHERE id_tarea=ID);
@@ -5716,7 +5717,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_TAREA_ESTATUS` (IN `ID` CHAR(12), IN `ESTATU` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_MODIFICAR_TAREA_ESTATUS` (IN `ID` CHAR(12), IN `ESTATU` VARCHAR(20))   BEGIN
 UPDATE tareas
 SET estado=ESTATU,
 updated_at=NOW()
@@ -5731,21 +5732,21 @@ updated_at=NOW()
 WHERE detalle_tarea.id_tarea=ID AND detalle_tarea.estado='PENDIENTE';
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_USUARIO` (IN `ID` INT, IN `USUARIO` VARCHAR(20), IN `ROL` INT, IN `EMAIL` VARCHAR(255))   UPDATE usuario SET
+CREATE PROCEDURE `SP_MODIFICAR_USUARIO` (IN `ID` INT, IN `USUARIO` VARCHAR(20), IN `ROL` INT, IN `EMAIL` VARCHAR(255))   UPDATE usuario SET
 usuario.usu_usuario = USUARIO,
 usuario.rol_id=ROL,
 usuario.usu_email=EMAIL
 WHERE usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_USUARIO_CONTRA` (IN `ID` INT, IN `CONTRA` VARCHAR(250))   UPDATE usuario SET
+CREATE PROCEDURE `SP_MODIFICAR_USUARIO_CONTRA` (IN `ID` INT, IN `CONTRA` VARCHAR(250))   UPDATE usuario SET
 usuario.usu_contra=CONTRA
 WHERE usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_MODIFICAR_USUARIO_ESTATUS` (IN `ID` INT, IN `ESTATUS` VARCHAR(20))   UPDATE usuario SET
+CREATE PROCEDURE `SP_MODIFICAR_USUARIO_ESTATUS` (IN `ID` INT, IN `ESTATUS` VARCHAR(20))   UPDATE usuario SET
 usuario.usu_estatus=ESTATUS
 WHERE usuario.usu_id=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ALUMNOS` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APEPA` VARCHAR(255), IN `APEMATE` VARCHAR(255), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `DNIPA` CHAR(8), IN `DATOSPA` VARCHAR(255), IN `CELPA` VARCHAR(255), IN `DNIMA` CHAR(8), IN `DATOSMA` VARCHAR(255), IN `CELMA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_ALUMNOS` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APEPA` VARCHAR(255), IN `APEMATE` VARCHAR(255), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `DNIPA` CHAR(8), IN `DATOSPA` VARCHAR(255), IN `CELPA` VARCHAR(255), IN `DNIMA` CHAR(8), IN `DATOSMA` VARCHAR(255), IN `CELMA` VARCHAR(255))   BEGIN
 DECLARE EDAD INT;
 DECLARE CANTIDAD INT;
 DECLARE ulti int;
@@ -5764,7 +5765,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_AÑOS` (IN `AÑO` INT, IN `NOMBRE` VARCHAR(255), IN `FECHAINI` DATE, IN `FECHAFIN` DATE, IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_AÑOS` (IN `AÑO` INT, IN `NOMBRE` VARCHAR(255), IN `FECHAINI` DATE, IN `FECHAFIN` DATE, IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM `año_escolar` where año_escolar=NOMBRE or fecha_inicio=FECHAINI and fecha_fin=FECHAFIN);
 IF @CANTIDAD = 0 THEN
@@ -5777,7 +5778,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_AREA` (IN `NAREA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_AREA` (IN `NAREA` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM area where area_nombre=NAREA);
 IF @CANTIDAD = 0 THEN
@@ -5790,7 +5791,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ASIGNATURAS` (IN `ASIGNATU` VARCHAR(255), IN `GRADO` INT, IN `OBSERVA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_ASIGNATURAS` (IN `ASIGNATU` VARCHAR(255), IN `GRADO` INT, IN `OBSERVA` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM asignaturas where asignaturas.nombre_asig=ASIGNATU and asignaturas.Id_grado=GRADO);
 IF @CANTIDAD = 0 THEN
@@ -5803,7 +5804,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ASIGNATURA_DOCENTE` (IN `AÑO` INT, IN `IDDOCENTE` INT)   BEGIN 
+CREATE PROCEDURE `SP_REGISTRAR_ASIGNATURA_DOCENTE` (IN `AÑO` INT, IN `IDDOCENTE` INT)   BEGIN 
 
 DECLARE ULTI INT;
 
@@ -5815,7 +5816,7 @@ select @ULTI;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ASISTENCIA` (IN `ID_MATRI` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_ASISTENCIA` (IN `ID_MATRI` INT, IN `FECHA` DATE, IN `ESTA` VARCHAR(20), IN `OBSER` VARCHAR(1000))   BEGIN
     DECLARE CANTIDAD INT;
 
     -- Verifica si ya existe una asistencia para el mismo estudiante y fecha
@@ -5843,13 +5844,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ASISTENCIA` (IN `ID_MA
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ATENCION_ENFERME` (IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   INSERT INTO atencion_salud(id_matricula,id_usuario,tipo_atencion,motivo_consulta,diagnostico,observaciones,created_at,updated_at)
+CREATE PROCEDURE `SP_REGISTRAR_ATENCION_ENFERME` (IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   INSERT INTO atencion_salud(id_matricula,id_usuario,tipo_atencion,motivo_consulta,diagnostico,observaciones,created_at,updated_at)
 VALUE(IDESTU,IDUSU,'ENFERMERIA',MOTIVO,DIAGNO,OBSERVA,NOW(),'')$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ATENCION_PSICO` (IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   INSERT INTO atencion_salud(id_matricula,id_usuario,tipo_atencion,motivo_consulta,diagnostico,observaciones,created_at,updated_at)
+CREATE PROCEDURE `SP_REGISTRAR_ATENCION_PSICO` (IN `IDESTU` INT, IN `MOTIVO` VARCHAR(255), IN `DIAGNO` VARCHAR(255), IN `OBSERVA` VARCHAR(255), IN `IDUSU` INT)   INSERT INTO atencion_salud(id_matricula,id_usuario,tipo_atencion,motivo_consulta,diagnostico,observaciones,created_at,updated_at)
 VALUE(IDESTU,IDUSU,'PSICOLOGIA',MOTIVO,DIAGNO,OBSERVA,NOW(),'')$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_AULAS` (IN `GRADO1` VARCHAR(255), IN `SECCION` INT, IN `NIVEL` INT, IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_AULAS` (IN `GRADO1` VARCHAR(255), IN `SECCION` INT, IN `NIVEL` INT, IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM aulas where Grado=GRADO1 and id_nivel_academico=NIVEL and id_seccion=SECCION);
 IF @CANTIDAD = 0 THEN
@@ -5862,7 +5863,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_AULA_HORA` (IN `AÑO` INT, IN `AULA` INT, IN `TURNO` VARCHAR(20), IN `INICIO` TIME, IN `FIN` TIME)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_AULA_HORA` (IN `AÑO` INT, IN `AULA` INT, IN `TURNO` VARCHAR(20), IN `INICIO` TIME, IN `FIN` TIME)   BEGIN
     DECLARE contador INT;
 
     -- Verificar si el componente ya existe
@@ -5881,14 +5882,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_AULA_HORA` (IN `AÑO` 
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_CALIFICACION` (IN `ID` INT, IN `NOTA` INT, IN `OBSER` VARCHAR(255))   UPDATE detalle_tarea
+CREATE PROCEDURE `SP_REGISTRAR_CALIFICACION` (IN `ID` INT, IN `NOTA` INT, IN `OBSER` VARCHAR(255))   UPDATE detalle_tarea
 SET 
 detalle_tarea.calificacion=NOTA,
 detalle_tarea.observacion=OBSER,
 detalle_tarea.estado='CALIFICADO'
 WHERE detalle_tarea.id_detalle_tarea=ID$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(100), IN `OBSER` TEXT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_COMPONENTE` (IN `ID_ASIG_DETALLE` INT, IN `COMPO` VARCHAR(100), IN `OBSER` TEXT)   BEGIN
     DECLARE contador INT;
 
     -- Verificar si el componente ya existe
@@ -5907,7 +5908,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_COMPONENTE` (IN `ID_AS
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_COMUNICADOS` (IN `TIPO` VARCHAR(255), IN `GRADO` INT, IN `TITU` VARCHAR(255), IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_COMUNICADOS` (IN `TIPO` VARCHAR(255), IN `GRADO` INT, IN `TITU` VARCHAR(255), IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255), IN `USU` INT)   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM comunicados where comunicados.tipo=TIPO AND comunicados.id_aula=GRADO AND comunicados.created_at=NOW());
 IF @CANTIDAD = 0 THEN
@@ -5921,7 +5922,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_DETALLE_ASIGNA_DOCENTE` (IN `ID` INT, IN `ASIGNATURA` INT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_DETALLE_ASIGNA_DOCENTE` (IN `ID` INT, IN `ASIGNATURA` INT)   BEGIN
 DECLARE TOTALCURSOS INT;
 INSERT INTO detalle_asignatura_docente(Id_asig_docente,Id_asignatura,created_at,updated_at)values
 (ID,ASIGNATURA,NOW(),'');
@@ -5939,7 +5940,7 @@ WHERE Id_asigdocente=ID;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_DETALLE_PENSION_PAGO` (IN `ID` INT, IN `CONCEPTO` VARCHAR(30), IN `PENSION` INT, IN `PAGO` DECIMAL(5,2))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_DETALLE_PENSION_PAGO` (IN `ID` INT, IN `CONCEPTO` VARCHAR(30), IN `PENSION` INT, IN `PAGO` DECIMAL(5,2))   BEGIN
 DECLARE VER INT;
 DECLARE ULID INT;
 
@@ -5958,7 +5959,7 @@ SELECT 2;
 END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_DOCENTES` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `ESPE` INT, IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `USU` VARCHAR(250), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_DOCENTES` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `ESPE` INT, IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `USU` VARCHAR(250), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM docentes where docentes.docente_dni=DNI);
 IF @CANTIDAD = 0 THEN
@@ -5974,14 +5975,14 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_EGRESOS` (IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_EGRESOS` (IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     INSERT INTO egresos 
     (id_indicador, id_user, cantidad, monto, observacion, estado, created_at, updated)
     VALUES
     (INDI,USU, CANTIDAD, MONTO, OBSERVA, 'VALIDO', CURDATE(), NULL);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_EMPLEADO` (IN `NDOCUMENTO` CHAR(12), IN `NOMBRE` VARCHAR(150), IN `APEPAT` VARCHAR(100), IN `APEMAT` VARCHAR(100), IN `FECHA` DATE, IN `MOVIL` CHAR(9), IN `DIRECCION` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_EMPLEADO` (IN `NDOCUMENTO` CHAR(12), IN `NOMBRE` VARCHAR(150), IN `APEPAT` VARCHAR(100), IN `APEMAT` VARCHAR(100), IN `FECHA` DATE, IN `MOVIL` CHAR(9), IN `DIRECCION` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM empleado WHERE emple_nrodocumento=NDOCUMENTO);
 IF @CANTIDAD=0 THEN
@@ -5994,7 +5995,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ESPECIALIDAD` (IN `ESPECI` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_ESPECIALIDAD` (IN `ESPECI` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM especialidad where Especialidad=ESPECI);
 IF @CANTIDAD = 0 THEN
@@ -6007,7 +6008,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_EXAMENES` (IN `IDDETA` INT, IN `TEMA` VARCHAR(255), IN `FECHA` DATETIME, IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_EXAMENES` (IN `IDDETA` INT, IN `TEMA` VARCHAR(255), IN `FECHA` DATETIME, IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE Contar int;
 DECLARE cantidad INT;
 DECLARE cod char(12);
@@ -6043,7 +6044,7 @@ IF @Contar =0 then
 	END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_HORARIO_AULA` (IN `HORA` INT, IN `CURSO` INT, IN `DIA` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_HORARIO_AULA` (IN `HORA` INT, IN `CURSO` INT, IN `DIA` VARCHAR(20))   BEGIN
     DECLARE contador INT;
 
     -- Verificar si el componente ya existe
@@ -6062,7 +6063,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_HORARIO_AULA` (IN `HOR
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_INDICADORES` (IN `TIPO` VARCHAR(20), IN `NOMBRE` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_INDICADORES` (IN `TIPO` VARCHAR(20), IN `NOMBRE` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM indicadores where indicadores.tipo_indicador=TIPO AND indicadores.nombre=NOMBRE);
 IF @CANTIDAD = 0 THEN
@@ -6075,14 +6076,14 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_INGRESOS` (IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_INGRESOS` (IN `INDI` INT, IN `CANTIDAD` INT, IN `MONTO` DECIMAL(5,2), IN `OBSERVA` VARCHAR(255), IN `USU` INT)   BEGIN
     INSERT INTO ingresos 
     (id_pago_pension,id_indicador, id_user, cantidad, monto, observacion, estado, created_at, updated)
     VALUES
     (NULL,INDI,USU, CANTIDAD, MONTO, OBSERVA, 'VALIDO', CURDATE(), NULL);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_MATRICULA` (IN `IDESTU` INT, IN `AÑO` INT, IN `AULA` INT, IN `ADMIN` DECIMAL(5,2), IN `NUEVO` DECIMAL(5,2), IN `MATRI` DECIMAL(5,2), IN `PROCEDEN` VARCHAR(100), IN `PROVI` VARCHAR(50), IN `DEPAR` VARCHAR(50), IN `USU` VARCHAR(8), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_MATRICULA` (IN `IDESTU` INT, IN `AÑO` INT, IN `AULA` INT, IN `ADMIN` DECIMAL(5,2), IN `NUEVO` DECIMAL(5,2), IN `MATRI` DECIMAL(5,2), IN `PROCEDEN` VARCHAR(100), IN `PROVI` VARCHAR(50), IN `DEPAR` VARCHAR(50), IN `USU` VARCHAR(8), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255))   BEGIN
     DECLARE ULTI INT;
     DECLARE CANTIDAD INT;
     DECLARE TIPO VARCHAR(10);
@@ -6277,7 +6278,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_MATRICULA` (IN `IDESTU
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_NIVEL_ACADEMICO` (IN `NIVEL_ACA` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_NIVEL_ACADEMICO` (IN `NIVEL_ACA` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM nivel_academico where Nivel_academico=NIVEL_ACA);
 IF @CANTIDAD = 0 THEN
@@ -6290,7 +6291,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_NOTAS` (IN `registros_json` JSON)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_NOTAS` (IN `registros_json` JSON)   BEGIN
     DECLARE idx INT DEFAULT 0;
     DECLARE total INT;
     DECLARE id_matricula INT;
@@ -6348,7 +6349,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_NOTAS` (IN `registros_
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_NOTAS_PADRES` (IN `registros_json` JSON)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_NOTAS_PADRES` (IN `registros_json` JSON)   BEGIN
     DECLARE idx INT DEFAULT 0;
     DECLARE total INT;
     DECLARE id_matricula INT;
@@ -6397,7 +6398,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_NOTAS_PADRES` (IN `reg
     SELECT processed_count AS processed_count;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_PENSIONES` (IN `NIVEL` INT, IN `MES` VARCHAR(30), IN `FECHA_VEN` DATE, IN `PRECIO` DECIMAL(5,2), IN `MORA` DECIMAL(5,2))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_PENSIONES` (IN `NIVEL` INT, IN `MES` VARCHAR(30), IN `FECHA_VEN` DATE, IN `PRECIO` DECIMAL(5,2), IN `MORA` DECIMAL(5,2))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM pensiones where pensiones.id_nivel_academico=NIVEL and pensiones.mes=MES AND pensiones.fecha_vencimiento);
 IF @CANTIDAD = 0 THEN
@@ -6410,7 +6411,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_PERIODO` (IN `ANIO` INT, IN `TIPOPERIO` VARCHAR(50), IN `PERIO` VARCHAR(50), IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_PERIODO` (IN `ANIO` INT, IN `TIPOPERIO` VARCHAR(50), IN `PERIO` VARCHAR(50), IN `FECHAINI` DATE, IN `FECHAFIN` DATE)   BEGIN
     DECLARE contador INT;
 
     -- Verificar si ya existe un registro con los mismos datos
@@ -6437,7 +6438,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_PERIODO` (IN `ANIO` IN
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_PERSONAL` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `TIPO` VARCHAR(30), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `USU` VARCHAR(8), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255), IN `ROL` INT)   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_PERSONAL` (IN `DNI` CHAR(8), IN `NOMBRES` VARCHAR(255), IN `APELLI` VARCHAR(255), IN `TIPO` VARCHAR(30), IN `SEXO` VARCHAR(20), IN `FECHANAC` DATE, IN `CEL` CHAR(9), IN `CELALT` CHAR(9), IN `DIREC` VARCHAR(255), IN `FOTO` VARCHAR(255), IN `USU` VARCHAR(8), IN `CONTRA` VARCHAR(255), IN `EMAIL` VARCHAR(255), IN `ROL` INT)   BEGIN
 DECLARE EDAD INT;
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM personal_admi where personal_admi.personal_adm_dni=DNI);
@@ -6454,7 +6455,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_ROLES` (IN `ROL` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_ROLES` (IN `ROL` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM roles where tipo_rol=ROL);
 IF @CANTIDAD = 0 THEN
@@ -6467,7 +6468,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_SECCION` (IN `SECCION` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_SECCION` (IN `SECCION` VARCHAR(100), IN `DESCRIP` VARCHAR(255))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM seccion where seccion_nombre=SECCION);
 IF @CANTIDAD = 0 THEN
@@ -6480,7 +6481,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_TAREA` (IN `ASIGN` INT, IN `TEMA` VARCHAR(150), IN `FECHA` DATETIME, IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_TAREA` (IN `ASIGN` INT, IN `TEMA` VARCHAR(150), IN `FECHA` DATETIME, IN `DESCRI` VARCHAR(255), IN `RUTA` VARCHAR(255))   BEGIN
     DECLARE Contar INT;
     DECLARE cantidad INT;
     DECLARE cod CHAR(12);
@@ -6568,7 +6569,7 @@ SET @cantidad := (SELECT IFNULL(MAX(doc_ncorrelativo), 0) FROM tareas);
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_REGISTRAR_USUARIO` (IN `USU` VARCHAR(255), IN `CONTRA` VARCHAR(255), IN `IDEMPLEADO` INT, IN `IDAREA` INT, IN `ROL` VARCHAR(25))   BEGIN
+CREATE PROCEDURE `SP_REGISTRAR_USUARIO` (IN `USU` VARCHAR(255), IN `CONTRA` VARCHAR(255), IN `IDEMPLEADO` INT, IN `IDAREA` INT, IN `ROL` VARCHAR(25))   BEGIN
 DECLARE CANTIDAD INT;
 SET @CANTIDAD:=(SELECT COUNT(*) FROM usuario WHERE usu_usuario=USU);
 IF @CANTIDAD=0 THEN
@@ -6581,7 +6582,7 @@ END IF;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_VERIFICAR_USUARIO` (IN `USU` VARCHAR(255))   BEGIN
+CREATE PROCEDURE `SP_VERIFICAR_USUARIO` (IN `USU` VARCHAR(255))   BEGIN
   SELECT
     CONVERT(docentes.docente_nombre USING utf8) AS docente_nombre,
     CONVERT(docentes.docente_apelli USING utf8) AS docente_apelli,
@@ -7933,6 +7934,38 @@ INSERT INTO `seccion` (`seccion_id`, `seccion_nombre`, `seccion_descripcion`, `s
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `solicitudes_informacion`
+--
+
+CREATE TABLE `solicitudes_informacion` (
+  `id_solicitud` int(11) NOT NULL,
+  `nombre_completo` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `telefono` varchar(20) NOT NULL,
+  `nivel_interes` enum('inicial','primaria','secundaria') NOT NULL,
+  `mensaje` text NOT NULL,
+  `fecha_registro` datetime NOT NULL DEFAULT current_timestamp(),
+  `estado` enum('PENDIENTE','CONTACTADO','ATENDIDO','CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
+  `ip_registro` varchar(45) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `fecha_atencion` datetime DEFAULT NULL,
+  `atendido_por` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Solicitudes de información desde la landing page';
+
+--
+-- Volcado de datos para la tabla `solicitudes_informacion`
+--
+
+INSERT INTO `solicitudes_informacion` (`id_solicitud`, `nombre_completo`, `email`, `telefono`, `nivel_interes`, `mensaje`, `fecha_registro`, `estado`, `ip_registro`, `observaciones`, `fecha_atencion`, `atendido_por`) VALUES
+(1, 'Maria Lopez', 'maria@test.com', '912345678', 'inicial', 'Necesito información', '2025-12-28 12:32:36', 'ATENDIDO', '::1', 'VINO PRESENCIAL', '2025-12-28 12:50:59', 9),
+(2, 'Jose Luis Camacho', 'jo12@gmail.com', '987888555', 'inicial', 'NECESITO MAS INFORMACION', '2025-12-28 12:39:41', 'ATENDIDO', '::1', '', '2025-12-28 12:50:28', 9),
+(3, 'ANABELL CHAVEZ', 'anabell12@gmail.com', '955888741', 'secundaria', 'NCESITO MAS INFO', '2025-12-28 12:53:00', 'PENDIENTE', '::1', NULL, NULL, NULL),
+(4, 'JUAN CAMACHO', 'juan21@gmail.com', '914554548', 'primaria', 'NECESITO MAS INFORMACION', '2025-12-28 13:05:35', 'ATENDIDO', '::1', 'SE LE LLAMO POR TELEFONO Y SE LE DIO LA INFORMACION', '2025-12-28 13:06:06', 9),
+(5, 'ANDRES PERALTA', 'andres21@gmail.com', '984100124', 'secundaria', 'NECESITO INFORMACION DETALLADA SOBRE LOS COSTOS DE SECUNDARIA', '2025-12-28 13:08:46', 'ATENDIDO', '::1', 'SE CONTACTO AL PADRE DE FAMILIA POR CELULAR Y SE LE ENVIO LA INFORMACIÓN A SU WHATSAPP', '2025-12-28 13:09:34', 9);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tareas`
 --
 
@@ -8004,7 +8037,7 @@ INSERT INTO `usuario` (`usu_id`, `usu_usuario`, `usu_contra`, `usu_email`, `usu_
 (54, 'JHOSEP20', '$2y$12$p9laoSBws/oUR0yPfYmDaO1XpBZV37.qfv2Uzns2iaUE3lqIh0cQq', 'JHOSEP12@GMAIL.COM', 'ACTIVO', 1, 1, '2024-10-08 12:22:35', '2024-10-08 12:22:35'),
 (55, 'DANIEL20', '$2y$12$d90vou6Pixw8BI89z2SU8.7DB7G7W5jQBVT2gxJ7tTaISrLfxGRE2', 'DANIEL12@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:09:18', '2025-12-25 10:09:18'),
 (56, 'JUAN2025', '$2y$12$XTefa9oTShr5BCBClsgXSuW7Ieth.Hms.UnI/6Fm/WD/o0zwHPC.S', 'JUAN2@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:09:45', '2025-12-25 10:09:45'),
-(57, 'JOAQUIN2', '$2y$12$yGD6WQDYkSogTiEyebgs/.jSBARYV0.23jmrSsv9.8Ss3L4KNDNRy', 'JOAQUIN21@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:11:26', '2025-12-25 10:11:26'),
+(57, 'JOAQUIN22', '$2y$12$yGD6WQDYkSogTiEyebgs/.jSBARYV0.23jmrSsv9.8Ss3L4KNDNRy', 'JOAQUIN21@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:11:26', '2025-12-25 10:11:26'),
 (58, 'PERALTA2', '$2y$12$lUhuMRZAMDdBAwmF58vRwe7NcXxXj4pABZWoM9RbM2Tl.fyWp5bkS', 'PERALTA12@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:12:12', '2025-12-25 10:12:12'),
 (59, 'PANIAGUA', '$2y$12$n6750GGqr45jGYdtx5iktu/uK4fc9tB1TYo4GkNeYrqOkpGQlz5cu', 'PANIAGUA12@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:12:57', '2025-12-25 10:12:57'),
 (60, 'DAVILA20', '$2y$12$.GhiKAeVPl3LZMzhUfan4Ot/OhlWtmGkXkQ8xS1RzP7pqlrArnYcC', 'DAVILA12@GMAIL.COM', 'ACTIVO', 1, 1, '2025-12-25 10:15:02', '2025-12-25 10:15:02'),
@@ -8262,6 +8295,15 @@ ALTER TABLE `seccion`
   ADD UNIQUE KEY `unico` (`seccion_nombre`) USING BTREE;
 
 --
+-- Indices de la tabla `solicitudes_informacion`
+--
+ALTER TABLE `solicitudes_informacion`
+  ADD PRIMARY KEY (`id_solicitud`),
+  ADD KEY `idx_estado` (`estado`),
+  ADD KEY `idx_fecha` (`fecha_registro`),
+  ADD KEY `idx_nivel` (`nivel_interes`);
+
+--
 -- Indices de la tabla `tareas`
 --
 ALTER TABLE `tareas`
@@ -8473,6 +8515,12 @@ ALTER TABLE `seccion`
   MODIFY `seccion_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Codigo auto-incrementado del movimiento del area', AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT de la tabla `solicitudes_informacion`
+--
+ALTER TABLE `solicitudes_informacion`
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
@@ -8662,18 +8710,18 @@ DELIMITER $$
 --
 -- Eventos
 --
-CREATE DEFINER=`root`@`localhost` EVENT `actualizar_estado_tareas` ON SCHEDULE EVERY 1 MINUTE STARTS '2024-10-10 16:14:14' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE tareas
+CREATE EVENT `actualizar_estado_tareas` ON SCHEDULE EVERY 1 MINUTE STARTS '2024-10-10 16:14:14' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE tareas
   SET estado = 'FINALIZADO'
   WHERE fecha_entrega <= NOW()
     AND estado != 'FINALIZADO'$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `actualizar_estado_examen` ON SCHEDULE EVERY 1 MINUTE STARTS '2024-10-10 16:05:29' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+CREATE EVENT `actualizar_estado_examen` ON SCHEDULE EVERY 1 MINUTE STARTS '2024-10-10 16:05:29' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
     UPDATE examen
     SET estado = 'REALIZADO'
     WHERE fecha_examen <= NOW() AND estado != 'REALIZADO';
 END$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `actualizar_estado_alumnos_fin_anio` ON SCHEDULE EVERY 1 YEAR STARTS '2024-12-31 23:59:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+CREATE EVENT `actualizar_estado_alumnos_fin_anio` ON SCHEDULE EVERY 1 YEAR STARTS '2024-12-31 23:59:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
     DECLARE alumnos_actualizados INT;
     DECLARE anio_actual INT;
     
@@ -8700,6 +8748,33 @@ CREATE DEFINER=`root`@`localhost` EVENT `actualizar_estado_alumnos_fin_anio` ON 
         'Actualización automática fin de año', 
         anio_actual,
         NOW(), 
+        alumnos_actualizados
+    );
+END$$
+
+CREATE EVENT `actualizar_estado_alumno` ON SCHEDULE EVERY 1 YEAR STARTS '2024-12-31 23:59:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+    DECLARE alumnos_actualizados INT;
+    DECLARE anio_actual INT;
+
+    SET anio_actual = YEAR(NOW());
+
+    UPDATE alumnos
+    SET alum_estatus = 'NO',
+        updated_at = NOW()
+    WHERE alum_estatus = 'SI';
+
+    SET alumnos_actualizados = ROW_COUNT();
+
+    INSERT INTO log_eventos_alumnos (
+        evento,
+        anio,
+        fecha_ejecucion,
+        alumnos_afectados
+    )
+    VALUES (
+        'Actualización automática fin de año',
+        anio_actual,
+        NOW(),
         alumnos_actualizados
     );
 END$$

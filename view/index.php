@@ -538,6 +538,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-envelope"></i>
+                  <p>
+                    Solicitudes de información
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" class="nav-link">
                   <i class="nav-icon fas fa-film"></i>
                   <p>
