@@ -54,7 +54,42 @@ El sistema permite administrar de forma centralizada toda la operación de una i
 
 ## 🏗 Arquitectura
 
-El proyecto sigue el patrón **MVC (Modelo - Vista - Controlador)**:
+El proyecto sigue el patrón **MVC (Modelo - Vista - Controlador)**, con un flujo de petición/respuesta vía AJAX entre el cliente y el servidor:
+
+```mermaid
+flowchart TB
+    subgraph CLIENTE["💻 Cliente (Navegador)"]
+        UI["Vistas PHP renderizadas<br/>AdminLTE + Bootstrap"]
+        JS["js/<br/>DataTables · SweetAlert2 · Choices.js<br/>Peticiones AJAX"]
+        UI --> JS
+    end
+
+    subgraph SERVIDOR["🖥️ Servidor (Apache + PHP)"]
+        direction TB
+        CTRL["controller/<br/>Lógica de negocio y endpoints<br/>(263 controladores PHP)"]
+        MODEL["model/<br/>Acceso a datos PDO / MySQLi<br/>(38 modelos)"]
+        VIEW["view/<br/>Vistas PHP por módulo<br/>(54 vistas)"]
+        PDF["view/MPDF/<br/>Generación de boletas<br/>y constancias (mPDF)"]
+    end
+
+    subgraph DATOS["🗄️ Base de datos"]
+        DB[("MySQL / MariaDB<br/>36 tablas")]
+    end
+
+    JS -- "Solicitud AJAX (JSON)" --> CTRL
+    CTRL -- "Renderiza vista inicial" --> VIEW
+    VIEW -- "HTML" --> UI
+    CTRL <--> MODEL
+    MODEL <--> DB
+    CTRL -- "Datos para reporte" --> PDF
+    PDF -- "PDF generado" --> UI
+
+    style CLIENTE fill:#e8f0fe,stroke:#4285f4
+    style SERVIDOR fill:#fef7e0,stroke:#f9ab00
+    style DATOS fill:#fce8e6,stroke:#d93025
+```
+
+**Estructura de carpetas:**
 
 ```
 ├── controller/   # Lógica de negocio y endpoints (AJAX/PHP) por módulo
