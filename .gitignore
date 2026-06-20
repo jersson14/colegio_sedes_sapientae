@@ -1,0 +1,18 @@
+# Dumps de base de datos (no se publican credenciales/datos reales)
+*.sql
+
+# Conexiones a base de datos con credenciales reales (se publican solo los .example.php)
+model/model_conexion.php
+view/MPDF/conexion.php
+
+# Dependencias
+/node_modules/
+/vendor/
+
+# Archivos de entorno local
+.env
+
+# Archivos subidos por usuarios (fotos)
+controller/*/fotos/
+controller/empleado/FOTOS/
+controller/empresa/FOTOS/

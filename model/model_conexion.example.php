@@ -1,19 +1,18 @@
 <?php
+// Renombrar este archivo a "model_conexion.php" y completar con tus credenciales reales.
+// El archivo "model_conexion.php" está ignorado por git (ver .gitignore) para no exponer credenciales.
 class conexionBD {
     private $pdo;
 
     public function conexionPDO() {
         $host       = "localhost";
-        $puerto     = 3307; // puerto personalizado
-        $usuario    = "root";
-        $contrasena = "";
+        $puerto     = 3306;
+        $usuario    = "tu_usuario";
+        $contrasena = "tu_contraseña";
         $bdName     = "colegio";
         $this->pdo = null;
 
-
         try {
-            // Asignar el objeto PDO a la propiedad de la clase
-            // Incluir el puerto en el DSN (ej. 3307)
             $this->pdo = new PDO("mysql:host=$host;port=$puerto;dbname=$bdName", $usuario, $contrasena);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("set names utf8");
@@ -24,7 +23,6 @@ class conexionBD {
     }
 
     public function cerrar_conexion() {
-        // Correcta asignación de null para cerrar la conexión
         $this->pdo = null;
     }
 }
