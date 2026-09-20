@@ -10,14 +10,22 @@
 
 | Severidad | Hallazgos |
 |---|---|
-| 🔴 Crítica | 4 |
+| 🔴 Crítica | **5** |
 | 🟠 Alta | 5 |
 | 🟡 Media | 6 |
-| 🔵 Baja | 4 |
+| 🔵 Baja | 3 |
 
-Los cuatro hallazgos críticos permiten, **sin credenciales válidas**, leer y modificar
-todos los datos del sistema y ejecutar código en el servidor. Cualquier despliegue
-público debe ir precedido de la Fase 0 del [plan de trabajo](PLAN_DE_TRABAJO.md).
+Cuatro de los hallazgos críticos (H-01 a H-04) permiten, **sin credenciales válidas**,
+leer y modificar todos los datos del sistema y ejecutar código en el servidor.
+Cualquier despliegue público debe ir precedido de la Fase 0 del
+[plan de trabajo](PLAN_DE_TRABAJO.md).
+
+> 🚨 **El quinto, [H-19](#51--h-19-reclasificado-a-crítico--datos-personales-expuestos-en-el-repositorio-público),
+> es de otra naturaleza y es el más urgente: no describe una vulnerabilidad explotable,
+> sino datos personales de menores —incluidas 43 fotografías de estudiantes— que **ya
+> están publicados** en el repositorio público de GitHub. No requiere que nadie ataque
+> nada. Remediación inmediata en
+> [RUNBOOK-LIMPIEZA-HISTORIAL.md](RUNBOOK-LIMPIEZA-HISTORIAL.md).
 
 Datos en juego: nombres, DNI, fechas de nacimiento, direcciones y teléfonos de **menores
 de edad**, registros de atención psicológica y de enfermería, y pagos. En Perú esto cae
@@ -195,11 +203,63 @@ No se configura `session.cookie_httponly`, `cookie_secure`, `cookie_samesite`, n
 | 🔵 H-16 | `htmlspecialchars` usado como validación; los datos se guardan ya escapados (`&amp;`) y se corrompen en los PDF |
 | 🔵 H-17 | Sin `Content-Type: application/json` en las respuestas; el navegador las interpreta por olfateo |
 | 🔵 H-18 | Sin política de contraseñas (longitud, complejidad, caducidad) |
-| 🔵 H-19 | `colegio.sql` con datos reales versionado en el repositorio pese a la regla `*.sql` del `.gitignore` (fue añadido antes de la regla; sigue en el historial de git) |
+---
 
-> **Sobre H-19:** quitarlo del árbol de trabajo no lo borra del historial. Si el repositorio
-> es público y el dump contiene datos reales de menores, hay que reescribir el historial
-> (`git filter-repo`) y rotar todo lo que allí aparezca.
+## 5.1 🔴 H-19 (RECLASIFICADO A CRÍTICO) — Datos personales expuestos en el repositorio público
+
+> Reclasificado el 2026-09-20. En la primera versión de este documento figuraba como
+> severidad baja, con el supuesto de que solo afectaba a un dump en el historial.
+> La verificación posterior mostró un alcance mucho mayor.
+
+**Visibilidad confirmada:** `https://github.com/jersson14/colegio_sedes_sapientae`
+responde 200 a la API de GitHub sin autenticación → **el repositorio es público**.
+
+### Rastreado ahora mismo en el repositorio
+
+| Carpeta | Archivos |
+|---|---|
+| `controller/alumnos/fotos/` | **43 fotografías de estudiantes** |
+| `controller/docentes/fotos/` | 43 fotografías de docentes |
+| `controller/personal_administrativo/fotos/` | 12 |
+| `controller/comunicados/fotos/` | 14 |
+| `controller/empleado/FOTOS/` · `controller/empresa/FOTOS/` | 11 |
+| **Total** | **122 archivos, 118 aún rastreados** |
+
+La regla `controller/*/fotos/` del `.gitignore` **no los excluye**: `.gitignore` solo
+afecta a archivos no rastreados. Lo que ya estaba en el índice sigue versionándose.
+Hace falta `git rm --cached`.
+
+### Recuperable del historial
+
+`colegio.sql`, `sistema_tramite.sql`, `tabla_solicitudes.sql`,
+`model/model_conexion.php` y `view/MPDF/conexion.php` fueron commiteados y retirados
+del rastreo en `1b87ee7`, pero permanecen en el historial de las ramas `main` **y
+`jersson`**:
+
+```bash
+git show 1b87ee7~1:colegio.sql     # ~14 alumnos con DNI, dirección, teléfono,
+                                   # fecha de nacimiento · ~5 atenciones de salud
+                                   # · ~29 usuarios con hash bcrypt
+git show 1b87ee7~1:model/model_conexion.php   # root, sin contraseña
+```
+
+### Por qué es crítico
+
+Fotografías de menores identificables, vinculadas en el mismo repositorio a sus
+nombres, DNI y domicilios, más registros de atención de salud. Bajo la **Ley 29733**
+son datos personales de menores y datos sensibles. A diferencia del resto de hallazgos
+—que describen vulnerabilidades explotables— **este no requiere explotación: los datos
+ya están publicados.**
+
+> Queda pendiente que el responsable confirme si corresponden a personas reales o a
+> datos de piloto. El procedimiento técnico de remediación es el mismo en ambos casos.
+
+### Remediación
+
+Procedimiento completo, verificado y listo para ejecutar en
+**[RUNBOOK-LIMPIEZA-HISTORIAL.md](RUNBOOK-LIMPIEZA-HISTORIAL.md)**.
+Resumen: repositorio a privado → respaldo espejo → recrear repositorio limpio →
+rotar las credenciales de los 29 usuarios → evaluar notificación legal.
 
 ---
 

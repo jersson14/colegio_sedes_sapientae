@@ -82,6 +82,12 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 4. **Credenciales de BD en claro** con `root` sin contraseña.
 5. **Sin CSRF, sin rate limiting, sin cabeceras de seguridad, sin HTTPS forzado.**
 6. **`phpinfo.php`, `prueba.php`, `test_model.php`, `test_solicitudes.html`** expuestos en raíz.
+7. 🚨 **Datos personales publicados en el repositorio público de GitHub**: 118 fotografías
+   rastreadas (43 de estudiantes, 43 de docentes) más dumps con DNI, direcciones y
+   atenciones de salud recuperables del historial. **No es una vulnerabilidad a explotar:
+   ya está público.** Remediación en
+   [docs/RUNBOOK-LIMPIEZA-HISTORIAL.md](docs/RUNBOOK-LIMPIEZA-HISTORIAL.md).
+   **No hacer push a `origin` hasta completar ese runbook.**
 
 Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 **Regla: cualquier controlador nuevo o tocado debe pasar por el guard de sesión/rol.**
@@ -93,6 +99,7 @@ Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 | [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md) | Capas, flujo de petición, modelo de datos, inventario de módulos |
 | [docs/STACK_VERSIONES.md](docs/STACK_VERSIONES.md) | Versiones exactas, EOL, rutas de actualización |
 | [docs/SEGURIDAD.md](docs/SEGURIDAD.md) | Auditoría, severidades, plan de hardening |
+| [docs/RUNBOOK-LIMPIEZA-HISTORIAL.md](docs/RUNBOOK-LIMPIEZA-HISTORIAL.md) | 🚨 Remediación de los datos personales ya publicados en GitHub |
 | [docs/MULTITENANT.md](docs/MULTITENANT.md) | Viabilidad colegios + institutos, diseño multi-tenant |
 | [docs/PLAN_DE_TRABAJO.md](docs/PLAN_DE_TRABAJO.md) | Fases, SOLID/Clean Code, estrategia de testing, empaquetado comercial |
 | [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) | Hosting compartido vs VPS vs AWS, costos, CI/CD |
