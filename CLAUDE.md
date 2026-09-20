@@ -94,7 +94,7 @@ Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 | [docs/STACK_VERSIONES.md](docs/STACK_VERSIONES.md) | Versiones exactas, EOL, rutas de actualización |
 | [docs/SEGURIDAD.md](docs/SEGURIDAD.md) | Auditoría, severidades, plan de hardening |
 | [docs/MULTITENANT.md](docs/MULTITENANT.md) | Viabilidad colegios + institutos, diseño multi-tenant |
-| [docs/PLAN_DE_TRABAJO.md](docs/PLAN_DE_TRABAJO.md) | Fases, SOLID/Clean Code, estrategia de testing |
+| [docs/PLAN_DE_TRABAJO.md](docs/PLAN_DE_TRABAJO.md) | Fases, SOLID/Clean Code, estrategia de testing, empaquetado comercial |
 | [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) | Hosting compartido vs VPS vs AWS, costos, CI/CD |
 
 ## Cómo trabajar aquí

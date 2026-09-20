@@ -386,6 +386,102 @@ Diseño completo en [MULTITENANT.md](MULTITENANT.md). Resumen de hitos:
 
 ---
 
+## Fase 4B — Empaquetado comercial
+
+**Duración: 4–6 semanas · Puede solaparse con el final de la Fase 4**
+
+La Fase 4 deja el sistema técnicamente multi-tenant. Esta fase lo convierte en algo
+**vendible**. Sin ella se puede dar de alta instituciones pero no cobrarles, ni limitar
+lo que consumen, ni saber quién está al día.
+
+### Modelo de distribución: un código, tres paquetes
+
+| Paquete | Qué recibe la institución | Infraestructura | Prioridad |
+|---|---|---|---|
+| **P1 · SaaS compartido** | `suinstitucion.tudominio.pe` | Tu VPS, junto a otros tenants | 🟢 Producto principal |
+| **P2 · Instancia dedicada** | Su propia base y su propio VPS, gestionado por ti | Un VPS por cliente | 🟢 Mismo código, N=1 |
+| **P3 · Licencia on-premise** | Instalación en su local | Del cliente | 🔴 Excepción, ver §4B.5 |
+
+> **P1 y P2 son el mismo binario.** Con el modelo de base por tenant, una instancia
+> dedicada es simplemente un despliegue con un solo tenant registrado. No requiere
+> ninguna bifurcación del código ni hito adicional de desarrollo: es una decisión de
+> **infraestructura y contrato**, no de producto.
+>
+> **Regla que no se rompe:** nunca se bifurca el repositorio por paquete comercial.
+> Dos ramas significan parchear la seguridad dos veces, y con el historial de
+> vulnerabilidades de este sistema eso duplica el riesgo real.
+
+### Hitos
+
+| Hito | Entregable |
+|---|---|
+| 4B.1 | Tablas `planes`, `suscripciones`, `facturas` en la BD maestra |
+| 4B.2 | Límites por plan (alumnos, usuarios, almacenamiento) aplicados en tiempo de ejecución, no solo declarados |
+| 4B.3 | Estados del tenant: `PRUEBA`, `ACTIVO`, `MOROSO`, `SUSPENDIDO`, `CANCELADO` — con el comportamiento de la aplicación en cada uno |
+| 4B.4 | Medición de consumo por tenant (alumnos matriculados, espacio en disco) |
+| 4B.5 | Facturación: emisión, registro de pagos y aviso de vencimiento |
+| 4B.6 | Flujo de alta comercial: demo con datos de ejemplo → conversión a cliente |
+| 4B.7 | Exportación completa de los datos de un tenant (portabilidad; exigible por Ley 29733) |
+| 4B.8 | Baja de tenant: exportación, retención pactada y borrado verificable |
+| 4B.9 | Runbook de provisión de instancia dedicada (P2): VPS, despliegue, DNS, TLS, backup |
+| 4B.10 | Documentación de operación y manual de la institución |
+
+### Sobre el estado `MOROSO` (4B.3)
+
+Decisión de producto que conviene tomar temprano: **nunca cortar el acceso a los datos
+académicos de golpe**. Un colegio que no puede imprimir boletas en semana de entrega de
+notas por una factura vencida es un cliente perdido y un problema para las familias.
+Degradación recomendada:
+
+```
+PRUEBA      → funcional, con marca de agua y límite de alumnos
+ACTIVO      → sin restricciones
+MOROSO      → aviso visible; lectura y reportes SÍ, altas y matrícula NO
+SUSPENDIDO  → solo exportación de datos, 30 días
+CANCELADO   → exportación entregada, datos borrados según lo pactado
+```
+
+### 4B.5 — Sobre la licencia on-premise (P3)
+
+**No está contemplada como línea de producto, y es deliberado.** Si se decide venderla,
+requiere trabajo adicional que hoy no existe en ninguna fase:
+
+| Falta | Esfuerzo |
+|---|---|
+| Instalador reproducible (Docker Compose o script guiado) | 2–3 semanas |
+| Mecanismo de actualización remota o asistida | 3–4 semanas |
+| Control de licencia y vigencia | 2 semanas |
+| Telemetría mínima de versión instalada (con consentimiento) | 1 semana |
+| Soporte de N entornos heterogéneos | Coste **permanente**, no un proyecto |
+
+Riesgos que asume el negocio al venderla, más allá del desarrollo:
+
+- **Se pierde el control de los parches.** Una institución que nunca actualiza queda con
+  vulnerabilidades conocidas. Si hay una filtración de datos de menores, el daño
+  reputacional recae sobre el producto, no sobre quien no actualizó.
+- **El código PHP es legible y copiable.** No hay protección práctica contra la
+  redistribución entre instituciones.
+- **El soporte deja de ser escalable**: cada instalación tiene su PHP, su MySQL y su
+  servidor.
+
+**Condiciones mínimas si se vende de todas formas:** precio sustancialmente mayor,
+contrato de soporte anual obligatorio, y cláusula de aceptación de actualizaciones de
+seguridad. Tratarla como excepción negociada, nunca como opción de catálogo.
+
+> **Recomendación:** ofrecer P2 (instancia dedicada) como respuesta a la objeción
+> "queremos el sistema en nuestro servidor". Cubre la necesidad real —aislamiento de
+> datos y sensación de propiedad— conservando el control de las actualizaciones.
+
+### Lo que esta fase NO cubre
+
+Fijación de precios y segmentación de mercado. Requiere investigación con instituciones
+reales (entrevistas a 5–10 colegios e institutos sobre presupuesto, ciclo de compra y
+quién decide), no una decisión técnica. Debe hacerse **antes** de cerrar 4B.1, porque la
+estructura de planes depende de cómo esté dispuesto a pagar el mercado (pago único
+vs. suscripción, tarifa plana vs. por alumno matriculado).
+
+---
+
 ## Fase 5 — Soporte para institutos
 
 **Duración: 8–12 semanas**
@@ -444,10 +540,14 @@ gantt
     Fase 3 Refactor SOLID           :f3, after f2, 84d
     section Escalado
     Fase 4 Multi-tenant             :f4, after f3, 56d
+    Fase 4B Empaquetado comercial   :f4b, after f4, 35d
     Fase 5 Institutos               :f5, after f4, 84d
     section Continuo
     Fase 6 Mejoras funcionales      :f6, after f4, 180d
 ```
+
+> Fase 4B y Fase 5 pueden correr en paralelo: una es comercial y la otra académica,
+> y tocan partes distintas del sistema.
 
 **Total hasta SaaS multi-tenant operativo con institutos: ~12 meses** a dedicación
 constante de una persona. Con dos desarrolladores, las fases 3 y 5 se paralelizan
@@ -466,3 +566,5 @@ parcialmente → ~8 meses.
 | Nivel de PHPStan | — | 5 | 8 |
 | Tenants soportados | 1 | 1 | N |
 | Tiempo de alta de una institución | manual, días | manual | automatizado, minutos |
+| Paquetes comerciales operativos | 0 | 0 | P1 y P2 tras Fase 4B |
+| Instituciones facturables sin intervención manual | 0 | 0 | N tras Fase 4B |
