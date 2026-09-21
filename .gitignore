@@ -38,3 +38,8 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+
+# Excepción: VACIO.png es la imagen por defecto de la aplicación
+# (referenciada en controller/*/controlador_modificar_foto_*.php y js/console_alumnos.js),
+# no es una subida de usuario. Debe versionarse.
+!controller/*/fotos/VACIO.png
