@@ -1,10 +1,19 @@
-# Runbook: limpieza del historial y remediación de la exposición
+# Runbook: higiene del repositorio
 
-> **Estado: PREPARADO, NO EJECUTADO.** Ningún comando de este documento se ha corrido.
-> Redactado el 2026-09-20. Requiere revisión y ejecución manual por Jersson.
+> **ALCANCE REDUCIDO — 2026-09-20.** Jersson confirmó que **todos los datos del
+> repositorio son de piloto**, no de personas reales. En consecuencia:
 >
-> Repositorio afectado: `https://github.com/jersson14/colegio_sedes_sapientae`
-> Visibilidad verificada: **PÚBLICO** (API de GitHub responde 200 sin autenticación).
+> - ❌ **No hay incidente de protección de datos.** La sección 8 (Ley 29733) queda
+>   anulada: no hay notificación que hacer.
+> - ❌ **Poner el repositorio en privado deja de ser urgente.** Es una decisión
+>   comercial, no de seguridad (ver §11).
+> - ❌ **La reescritura del historial pasa a ser opcional** (§6). Con datos de piloto
+>   no justifica el riesgo ni el esfuerzo.
+> - ✅ **Lo que sí se mantiene:** corregir el `.gitignore` y dejar de rastrear las
+>   fotografías (§5.1 y §5.2). Es la parte que evita que esto se repita con datos
+>   reales, y es la única que se ha ejecutado.
+>
+> Repositorio: `https://github.com/jersson14/colegio_sedes_sapientae` — público.
 
 ---
 

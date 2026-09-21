@@ -1,18 +1,40 @@
-# Dumps de base de datos (no se publican credenciales/datos reales)
+# === Archivos subidos por usuarios ===
+# NUNCA versionar fotografías ni adjuntos de personas.
+# Cubre mayúsculas/minúsculas y cualquier nivel de anidamiento.
+controller/*/fotos/
+controller/*/FOTOS/
+controller/**/fotos/
+controller/**/FOTOS/
+controller/tareas/documentos/
+storage/
+
+# === Dumps de base de datos ===
+# No se publican credenciales ni datos, ni de piloto ni reales.
 *.sql
 
-# Conexiones a base de datos con credenciales reales (se publican solo los .example.php)
+# === Conexiones con credenciales ===
+# Se publican solo los .example.php
 model/model_conexion.php
 view/MPDF/conexion.php
+.env
+.env.*
+!.env.example
 
-# Dependencias
+# === Dependencias ===
 /node_modules/
 /vendor/
+view/MPDF/vendor/
 
-# Archivos de entorno local
-.env
+# === Archivos de diagnóstico y prueba (hallazgo H-09) ===
+phpinfo.php
+prueba.php
+test_*.php
+test_*.html
 
-# Archivos subidos por usuarios (fotos)
-controller/*/fotos/
-controller/empleado/FOTOS/
-controller/empresa/FOTOS/
+# === Sistema operativo y editores ===
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.log

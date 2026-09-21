@@ -10,22 +10,20 @@
 
 | Severidad | Hallazgos |
 |---|---|
-| 🔴 Crítica | **5** |
+| 🔴 Crítica | 4 |
 | 🟠 Alta | 5 |
-| 🟡 Media | 6 |
+| 🟡 Media | 7 |
 | 🔵 Baja | 3 |
 
-Cuatro de los hallazgos críticos (H-01 a H-04) permiten, **sin credenciales válidas**,
-leer y modificar todos los datos del sistema y ejecutar código en el servidor.
-Cualquier despliegue público debe ir precedido de la Fase 0 del
-[plan de trabajo](PLAN_DE_TRABAJO.md).
+Los cuatro hallazgos críticos permiten, **sin credenciales válidas**, leer y modificar
+todos los datos del sistema y ejecutar código en el servidor. Cualquier despliegue
+público debe ir precedido de la Fase 0 del [plan de trabajo](PLAN_DE_TRABAJO.md).
 
-> 🚨 **El quinto, [H-19](#51--h-19-reclasificado-a-crítico--datos-personales-expuestos-en-el-repositorio-público),
-> es de otra naturaleza y es el más urgente: no describe una vulnerabilidad explotable,
-> sino datos personales de menores —incluidas 43 fotografías de estudiantes— que **ya
-> están publicados** en el repositorio público de GitHub. No requiere que nadie ataque
-> nada. Remediación inmediata en
-> [RUNBOOK-LIMPIEZA-HISTORIAL.md](RUNBOOK-LIMPIEZA-HISTORIAL.md).
+Datos en juego **cuando el sistema opere con datos reales**: nombres, DNI, fechas de
+nacimiento, direcciones y teléfonos de menores de edad, registros de atención
+psicológica y de enfermería, y pagos. En Perú esto cae bajo la **Ley 29733 de
+Protección de Datos Personales** (datos sensibles: salud, menores), lo que convierte
+estos hallazgos en un riesgo legal además de técnico.
 
 Datos en juego: nombres, DNI, fechas de nacimiento, direcciones y teléfonos de **menores
 de edad**, registros de atención psicológica y de enfermería, y pagos. En Perú esto cae
@@ -205,11 +203,14 @@ No se configura `session.cookie_httponly`, `cookie_secure`, `cookie_samesite`, n
 | 🔵 H-18 | Sin política de contraseñas (longitud, complejidad, caducidad) |
 ---
 
-## 5.1 🔴 H-19 (RECLASIFICADO A CRÍTICO) — Datos personales expuestos en el repositorio público
+## 5.1 🟡 H-19 — Datos de piloto y archivos binarios versionados en repositorio público
 
-> Reclasificado el 2026-09-20. En la primera versión de este documento figuraba como
-> severidad baja, con el supuesto de que solo afectaba a un dump en el historial.
-> La verificación posterior mostró un alcance mucho mayor.
+> **Historial de clasificación.** Figuró primero como severidad baja (se creía que solo
+> afectaba a un dump en el historial), luego se elevó a crítica al descubrirse 122
+> fotografías y el alcance real del dump. El responsable del proyecto **confirmó el
+> 2026-09-20 que todos los datos del repositorio son de piloto, no de personas reales**.
+> Queda en **media**: deja de ser un incidente de protección de datos y pasa a ser un
+> problema de higiene del repositorio y de riesgo futuro.
 
 **Visibilidad confirmada:** `https://github.com/jersson14/colegio_sedes_sapientae`
 responde 200 a la API de GitHub sin autenticación → **el repositorio es público**.
@@ -243,23 +244,28 @@ git show 1b87ee7~1:colegio.sql     # ~14 alumnos con DNI, dirección, teléfono,
 git show 1b87ee7~1:model/model_conexion.php   # root, sin contraseña
 ```
 
-### Por qué es crítico
+### Por qué sigue importando, aunque sean datos de piloto
 
-Fotografías de menores identificables, vinculadas en el mismo repositorio a sus
-nombres, DNI y domicilios, más registros de atención de salud. Bajo la **Ley 29733**
-son datos personales de menores y datos sensibles. A diferencia del resto de hallazgos
-—que describen vulnerabilidades explotables— **este no requiere explotación: los datos
-ya están publicados.**
+No hay incidente de protección de datos: sin personas reales, no hay obligación de
+notificar ni bajo la Ley 29733. Pero el problema estructural sigue en pie:
 
-> Queda pendiente que el responsable confirme si corresponden a personas reales o a
-> datos de piloto. El procedimiento técnico de remediación es el mismo en ambos casos.
+1. **La regla del `.gitignore` está rota y nadie lo había notado.** El día que el
+   sistema opere con alumnos reales, sus fotografías se versionarán exactamente igual
+   —la configuración no distingue entre piloto y producción— y entonces sí será un
+   incidente notificable. Este hallazgo es la advertencia gratuita.
+2. **Las subidas de usuarios nunca deben vivir en el repositorio.** Deben ir a
+   `storage/` fuera del docroot (hito 4.6 del plan y hallazgo H-03). Que hoy estén
+   dentro es el mismo defecto de diseño que permite la ejecución remota de código.
+3. **122 binarios inflan el repositorio** sin aportar nada al código.
+4. **Credenciales `root` sin contraseña en el historial** — trivialmente conocidas y
+   que hay que cambiar igualmente por H-04, pero conviene no dejarlas escritas.
 
 ### Remediación
 
-Procedimiento completo, verificado y listo para ejecutar en
-**[RUNBOOK-LIMPIEZA-HISTORIAL.md](RUNBOOK-LIMPIEZA-HISTORIAL.md)**.
-Resumen: repositorio a privado → respaldo espejo → recrear repositorio limpio →
-rotar las credenciales de los 29 usuarios → evaluar notificación legal.
+Procedimiento en **[RUNBOOK-LIMPIEZA-HISTORIAL.md](RUNBOOK-LIMPIEZA-HISTORIAL.md)**,
+con el alcance ya reducido al escenario de piloto. En resumen: corregir el `.gitignore`,
+dejar de rastrear las 122 fotografías y mover las subidas a `storage/`. La reescritura
+del historial pasa a ser **opcional**.
 
 ---
 
