@@ -18,7 +18,8 @@ con solicitudes de información.
 - URL local: `http://localhost/colegio_sedes_sapientae/`
 - Login: [index.php](index.php) → `js/console_usuario.js` → `controller/usuario/controlador_iniciar_sesion.php`
 - Panel: [view/index.php](view/index.php) (SPA-like: un solo layout AdminLTE con menús por rol)
-- BD: MySQL **puerto 3307**, base `colegio`, usuario `root` sin contraseña (ver [model/model_conexion.php](model/model_conexion.php))
+- BD: MySQL **puerto 3307**, base `colegio`. Credenciales en `C:/xampp/colegio_config/colegio.env`
+  (fuera de htdocs y de git; plantilla en [config/colegio.env.example](config/colegio.env.example), lector en [core/config.php](core/config.php))
 - Dump: `colegio.sql` (36 tablas, 254 procedimientos almacenados) — ignorado por git
 
 ## Arquitectura en 30 segundos
@@ -65,8 +66,8 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 - **No hay Composer en la raíz.** Solo `view/MPDF/composer.json` y `package.json` (choices.js).
 - **`empresa_id` existe pero no se usa.** Solo en `usuario` y `empresa`; las otras 34 tablas no
   tienen discriminador de tenant. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md).
-- **`model_conexion.php` y `view/MPDF/conexion.php` están en `.gitignore`.** Hay `.example.php`
-  para ambos. Nunca commitees credenciales.
+- **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
+  versionan y leen `colegio.env` vía `config()`. Nunca pongas secretos en archivos del repo.
 - **`*.sql` está en `.gitignore`**, pero `colegio.sql` y `tabla_solicitudes.sql` ya están
   versionados desde antes (fueron añadidos antes de la regla).
 
@@ -89,7 +90,9 @@ mezclar inglés rompe la coherencia con los 254 SPs.
    `controller/tareas/controlador_descargar_tarea.php` (0.3-B); su carpeta física
    `controller/tareas/controller/tareas/documentos/` está cerrada por `.htaccess` y fuera de git.
    **Pendiente:** mover las subidas fuera del docroot (`storage/`) y verificar pertenencia (IDOR).
-4. **Credenciales de BD en claro** con `root` sin contraseña.
+4. ~~**Credenciales de BD en claro**~~ ✅ (Fase 0.4): `colegio.env` fuera de htdocs; errores de conexión
+   solo al log. Usuario mínimo en [config/usuario_bd.sql](config/usuario_bd.sql) (**pendiente de crear**:
+   requiere la BD importada; en local aún se usa `root`).
 5. **Sin CSRF, sin rate limiting, sin cabeceras de seguridad, sin HTTPS forzado.**
 6. **`phpinfo.php`, `prueba.php`, `test_model.php`, `test_solicitudes.html`** expuestos en raíz.
 7. 🚨 **Datos personales publicados en el repositorio público de GitHub**: 118 fotografías
