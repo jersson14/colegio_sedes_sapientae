@@ -74,9 +74,9 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 
 1. **260 de 263 controladores no verifican sesión.** Solo 3 llaman `session_start()`.
    Cualquiera puede invocar `controller/alumnos/controlador_listar_alumnos.php` sin login.
-2. **La sesión se construye desde el cliente.** `js/console_usuario.js` recibe el rol del
-   login y lo **reenvía por POST** a `controlador_crear_sesion.php`, que lo guarda tal cual.
-   Un POST manual con `rol=ADMINISTRADOR` otorga administrador. Escalada de privilegios total.
+2. ~~**La sesión se construye desde el cliente.**~~ ✅ Resuelto (Fase 0.1): la sesión la crea
+   `controlador_iniciar_sesion.php` con `core/sesion.php` a partir de la BD;
+   `controlador_crear_sesion.php` fue eliminado. Usa `sesion_activa()` / `sesion_crear()`.
 3. **Subida de archivos sin validación.** El nombre lo elige el cliente (`nombrefoto`) y
    `move_uploaded_file` lo escribe sin comprobar extensión ni MIME → RCE por `.php`.
 4. **Credenciales de BD en claro** con `root` sin contraseña.

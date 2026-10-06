@@ -1,7 +1,8 @@
 <?php
-  session_start();
-  if(isset($_SESSION['S_ID'])){
+  require 'core/sesion.php';
+  if(sesion_activa()){
     header('Location: view/index.php');
+    exit;
   }
 ?>
 <!DOCTYPE html>
@@ -109,10 +110,11 @@
   const rmcheck       = document.getElementById('remember'),
         usuarioInput  = document.getElementById('txt_usuario'),
         passInput     = document.getElementById('txt_contra');
+      // Borra contraseñas guardadas por versiones anteriores del "recuérdame".
+      localStorage.removeItem('pass');
       if(localStorage.checkbox && localStorage.checkbox !=""){
         rmcheck.setAttribute("checked","checked");
         usuarioInput.value = localStorage.usuario;
-        passInput.value    = localStorage.pass;
       }else{
         rmcheck.removeAttribute("checked");
         usuarioInput.value = "";

@@ -1,7 +1,8 @@
 <?php
-session_start();
-if (!isset($_SESSION['S_ID'])) {
+require '../core/sesion.php';
+if (!sesion_activa()) {
   header('Location: ../index.php');
+  exit;
 }
 ?>
 <?php

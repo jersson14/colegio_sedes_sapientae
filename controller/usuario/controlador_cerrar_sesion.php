@@ -1,6 +1,5 @@
 <?php
-    session_start();
-    session_destroy();
+    require '../../core/sesion.php';
+    sesion_destruir();
     header('Location: ../../index.php');
-
 ?>

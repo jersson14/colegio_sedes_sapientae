@@ -1,0 +1,2 @@
+# Los archivos de core/ solo se incluyen desde PHP; nunca se sirven por HTTP.
+Require all denied

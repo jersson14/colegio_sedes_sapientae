@@ -18,33 +18,16 @@ function Iniciar_Sesion(){
             c:con
         }
     }).done(function(resp){
-       let data = JSON.parse(resp)
-       if(data.length>0){
-            if(data[0][8]=="INACTIVO"){
-                return  Swal.fire({
-                    icon: 'warning',
-                    title: 'Mensaje de Advertencia',
-                    text: 'El usuario: '+usu+' se encuentra inactivo',
-                    heightAuto: false
-                  });  
-            }$.ajax({
-                url:'controller/usuario/controlador_crear_sesion.php',
-                type: 'POST',
-                data:{
-                    idusuario:data[0][4],
-                    usuario:data[0][5],
-                    nombres:data[0][0],
-                    solonombres:data[0][2],
-                    rol:data[0][15],   
-                    foto:data[0][3],
-                    movil:data[0][16],                     
-                    direc:data[0][17],                     
-                    fechanac:data[0][18],                     
-                    email:data[0][7],                     
-                    dni:data[0][19],                     
-
-                }
-            }).done(function(resp){
+       // La sesión ya la creó el servidor; aquí solo se interpreta el resultado.
+       if(resp==2){
+            return  Swal.fire({
+                icon: 'warning',
+                title: 'Mensaje de Advertencia',
+                text: 'El usuario: '+usu+' se encuentra inactivo',
+                heightAuto: false
+              });
+       }
+       if(resp==1){
                 let timerInterval
                 Swal.fire({
                   title: 'Bienvenido al Sistema',
@@ -68,8 +51,7 @@ function Iniciar_Sesion(){
                   if (result.dismiss === Swal.DismissReason.timer) {
                     location.reload();
                   }
-                })            
-            })
+                })
        }else{
         Swal.fire({
             icon: 'error',
@@ -83,13 +65,13 @@ function Iniciar_Sesion(){
 }
 
 function recuerdame(){
-    if(rmcheck.checked && usuarioInput.value !="" && passInput.value !=""){
+    // Solo se recuerda el usuario; la contraseña nunca se guarda en el navegador.
+    localStorage.removeItem('pass');
+    if(rmcheck.checked && usuarioInput.value !=""){
         localStorage.usuario     = usuarioInput.value;
-        localStorage.pass        = passInput.value;
         localStorage.checkbox    = rmcheck.value;
     }else{
         localStorage.usuario     = "";
-        localStorage.pass        = "";
         localStorage.checkbox    = "";
     }
 }
