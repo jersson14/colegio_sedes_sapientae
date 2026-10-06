@@ -1,4 +1,7 @@
 <?php
+// Fase 0.2: los reportes también exigen sesión y rol (antes se abrían por URL sin login).
+require_once __DIR__ . '/../../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
 require_once  __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
 $codigo = $_GET['codigo'];

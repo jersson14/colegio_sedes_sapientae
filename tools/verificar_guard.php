@@ -1,6 +1,6 @@
 <?php
 /**
- * Verifica que todo controlador incluya core/guard.php (Fase 0.2).
+ * Verifica que todo controlador y reporte MPDF incluya core/guard.php (Fase 0.2).
  * Uso:  php tools/verificar_guard.php     → código de salida 1 si falta alguno.
  *
  * Al agregar un endpoint público, decláralo en $publicos y justifícalo.
@@ -23,8 +23,11 @@ $excluir = 'controller/tareas/controller/';
 
 $fallos = [];
 $total = 0;
-$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($raiz . '/controller'));
-foreach ($it as $archivo) {
+$archivosPhp = new AppendIterator();
+foreach (['/controller', '/view/MPDF/REPORTE'] as $dir) {
+    $archivosPhp->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($raiz . $dir)));
+}
+foreach ($archivosPhp as $archivo) {
     if ($archivo->getExtension() !== 'php') {
         continue;
     }
@@ -34,7 +37,8 @@ foreach ($it as $archivo) {
     }
     $total++;
     $fuente = file_get_contents($archivo->getPathname());
-    if (!preg_match("#^(?:\xEF\xBB\xBF)?<\?php\s+require_once __DIR__ \. '([^']+)';#", $fuente, $m)) {
+    // Se admiten comentarios de una línea antes del require.
+    if (!preg_match("#^(?:\xEF\xBB\xBF)?<\?php\s+(?://[^\n]*\n\s*)*require_once __DIR__ \. '([^']+)';#", $fuente, $m)) {
         $fallos[] = "$rel: no incluye el guard como primera instrucción";
     } elseif (realpath($archivo->getPath() . $m[1]) !== $guard) {
         $fallos[] = "$rel: la ruta del guard no resuelve a core/guard.php";
@@ -44,5 +48,5 @@ foreach ($it as $archivo) {
 foreach ($fallos as $f) {
     echo "FALLA  $f\n";
 }
-echo ($total - count($fallos)) . "/$total controladores protegidos\n";
+echo ($total - count($fallos)) . "/$total endpoints protegidos (controladores + reportes MPDF)\n";
 exit($fallos ? 1 : 0);

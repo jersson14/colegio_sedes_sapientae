@@ -434,6 +434,21 @@ Leyenda: **A** administrador · **D** docente · **E** estudiante · **X** auxil
 | `controlador_traer_seguimiento.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
 | `controlador_traer_seguimiento_detalle.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
 
+## view/MPDF/REPORTE (reportes PDF, GET)
+
+| Reporte | Roles | Nota |
+|---|---|---|
+| `boleta_pago.php` | A E | |
+| `cedula.php` | A | |
+| `ficha_seguimiento.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
+| `ficha_seguimiento_automatico.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
+| `horario.php` | A E X | |
+| `kardex.php` | A E | |
+| `notas_general.php` | A | |
+| `notas_por_bimestre.php` | A | |
+| `pago.php` | A | |
+| `ticket_tramite.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
+
 ## Públicos (sin guard)
 
 - `controlador_solicitudes.php`

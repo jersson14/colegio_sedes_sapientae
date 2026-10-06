@@ -1,4 +1,7 @@
 <?php
+// Fase 0.2: los reportes también exigen sesión y rol (antes se abrían por URL sin login).
+require_once __DIR__ . '/../../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
