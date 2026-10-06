@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR');
+    require_once __DIR__ . '/../../core/subidas.php';
     require '../../model/model_docentes.php';
     $MDO = new Modelo_Docentes();//Instaciamos
     //DATOS DE DOCENTE//
@@ -17,32 +18,24 @@
     $esta = strtoupper(htmlspecialchars($_POST['esta'],ENT_QUOTES,'UTF-8'));
     $fotoactual = htmlspecialchars($_POST['fotoactual'],ENT_QUOTES,'UTF-8');
     $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
-    if (empty($nombrefoto)) {
+    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
+    // 'controller/docentes/fotos/' (sin archivo) es la marca que usa la vista para "sin foto".
+    $nueva = !empty($nombrefoto) && $nombrefoto != 'controller/docentes/fotos/';
+    if ($nueva) {
+        $nombrefoto = imagen_validada('foto');
+        $ruta = 'controller/docentes/fotos/' . $nombrefoto;
+    } elseif (empty($nombrefoto)) {
         $ruta = $fotoactual;
     } else {
-        if ($nombrefoto == 'controller/docentes/fotos/') {
-            $ruta = $nombrefoto; // Simplemente usa el nombre sin modificarlo
-        } else {
-            $ruta = 'controller/docentes/fotos/' . $nombrefoto; // Construye la ruta completa para la nueva foto
-        }
+        $ruta = $nombrefoto;
     }
-    
-    if (!empty($nombrefoto)) {
-        if ($nombrefoto != 'controller/docentes/fotos/' && move_uploaded_file($_FILES['foto']['tmp_name'], "fotos/" . $nombrefoto)) {
-            $ruta = 'controller/docentes/fotos/' . $nombrefoto;
-        } else {
-            $ruta = $fotoactual;
-        }
-    }
-    
+
     $consulta = $MDO->Modificar_Docentes($id,$dni, $nombre, $apelli, $espe, $sexo, $fechanaci, $telf, $telfal, $direc, $esta, $ruta);
     echo $consulta;
-    
-    if ($consulta == 1) {
-        if (!empty($nombrefoto) && $nombrefoto != 'controller/docentes/fotos/') {
-            if (move_uploaded_file($_FILES['foto']['tmp_name'], "fotos/" . $nombrefoto)) {
-                unlink('../../' . $fotoactual);
-            }
+
+    if ($consulta == 1 && $nueva) {
+        if (imagen_guardar('foto', 'controller/docentes/fotos', $nombrefoto)) {
+            borrar_archivo_subido($fotoactual, 'controller/docentes/fotos');
         }
     }
 ?>

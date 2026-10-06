@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
+    require_once __DIR__ . '/../../core/subidas.php';
 require '../../model/model_tareas.php';
 $MTA = new Modelo_Tareas(); // Instanciar el modelo
 
@@ -11,48 +12,34 @@ $archivoactual = htmlspecialchars($_POST['archivoactual'] ?? '', ENT_QUOTES, 'UT
 // Crear una carpeta única para este conjunto de archivos en "tarea_alumnos"
 $timestamp = time();
 $carpeta = 'controller/tareas/documentos/tarea_alumnos_' . $timestamp; // Cambiar la ruta base
-if (!is_dir($carpeta)) {
-    mkdir($carpeta, 0777, true);
-}
+// Fase 0.3: tipos y nombres validados ANTES de crear carpetas o tocar la BD.
+// (La ruta física es relativa a controller/tareas/, igual que antes.)
+$documentos = documentos_validados('archivos');
 
-// Verificar si hay archivos enviados
-if (isset($_FILES['archivos']) && !empty($_FILES['archivos']['name'][0])) {
-    $archivos = $_FILES['archivos'];
-    $nombres_archivos = $archivos['name'];
-    $archivos_temp = $archivos['tmp_name'];
-    $total_archivos = count($nombres_archivos);
-
-    // Eliminar archivos existentes en la carpeta actual
-    if (!empty($archivoactual)) {
-        $carpeta_anterior = 'controller/tareas/documentos/' . basename($archivoactual);
-
-        // Eliminar todos los archivos dentro de la carpeta anterior
+if ($documentos) {
+    // Solo se borra la carpeta anterior si tiene la forma que genera el sistema.
+    $anterior = carpeta_tarea_valida($archivoactual);
+    if ($anterior !== null) {
+        $carpeta_anterior = 'controller/tareas/documentos/' . $anterior;
         if (is_dir($carpeta_anterior)) {
-            $archivos_anteriores = glob($carpeta_anterior . '/*'); // Obtener todos los archivos en la carpeta
-
-            foreach ($archivos_anteriores as $archivo) {
+            foreach (glob($carpeta_anterior . '/*') ?: [] as $archivo) {
                 if (is_file($archivo)) {
-                    unlink($archivo); // Eliminar archivo
+                    unlink($archivo);
                 }
             }
-            rmdir($carpeta_anterior); // Eliminar la carpeta después de que esté vacía
+            @rmdir($carpeta_anterior);
         }
     }
 
-    // Mover nuevos archivos a la nueva carpeta
-    for ($i = 0; $i < $total_archivos; $i++) {
-        $nombrearchivo = strtoupper(htmlspecialchars($nombres_archivos[$i], ENT_QUOTES, 'UTF-8'));
-        if ($nombrearchivo != "") {
-            $ruta = $carpeta . '/' . $nombrearchivo;
-            if (!move_uploaded_file($archivos_temp[$i], $ruta)) {
-                // Error al mover el archivo
-                echo "Error al mover el archivo: " . $nombrearchivo;
-                exit;
-            }
+    if (!is_dir($carpeta)) {
+        mkdir($carpeta, 0755, true);
+    }
+    foreach ($documentos as $doc) {
+        if (!move_uploaded_file($doc['tmp'], $carpeta . '/' . $doc['nombre'])) {
+            echo "Error al mover el archivo: " . $doc['nombre'];
+            exit;
         }
     }
-
-    // Solo necesitamos la ruta de la carpeta, no las rutas de los archivos individuales
     $ruta_carpeta = $carpeta;
 } else {
     // Si no hay archivos, mantenemos la ruta anterior

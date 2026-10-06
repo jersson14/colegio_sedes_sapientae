@@ -82,8 +82,12 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 2. ~~**La sesión se construye desde el cliente.**~~ ✅ Resuelto (Fase 0.1): la sesión la crea
    `controlador_iniciar_sesion.php` con `core/sesion.php` a partir de la BD;
    `controlador_crear_sesion.php` fue eliminado. Usa `sesion_activa()` / `sesion_crear()`.
-3. **Subida de archivos sin validación.** El nombre lo elige el cliente (`nombrefoto`) y
-   `move_uploaded_file` lo escribe sin comprobar extensión ni MIME → RCE por `.php`.
+3. ~~**Subida de archivos sin validación.**~~ ✅ Ejecución y borrado arbitrario cerrados (Fase 0.3-A):
+   toda subida pasa por `core/subidas.php` (`imagen_validada`, `documentos_validados`,
+   `borrar_archivo_subido`); el nombre lo genera el servidor y cada carpeta de subidas
+   tiene un `.htaccess` que impide ejecutar scripts. **Pendiente (0.3-B):** las tareas se
+   descargan por listado de directorio sin autenticación y 65 subidas siguen versionadas
+   en `controller/tareas/controller/`.
 4. **Credenciales de BD en claro** con `root` sin contraseña.
 5. **Sin CSRF, sin rate limiting, sin cabeceras de seguridad, sin HTTPS forzado.**
 6. **`phpinfo.php`, `prueba.php`, `test_model.php`, `test_solicitudes.html`** expuestos en raíz.

@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'DOCENTE', 'AUXILIAR');
+    require_once __DIR__ . '/../../core/subidas.php';
 require '../../model/model_tareas.php';
 $MTA = new Modelo_Tareas(); // Instanciar el modelo
 
@@ -13,34 +14,17 @@ $descrip = strtoupper(htmlspecialchars($_POST['descrip'], ENT_QUOTES, 'UTF-8'));
 // Crear una carpeta única para este conjunto de archivos
 $timestamp = time();
 $carpeta = 'controller/tareas/documentos/tarea_alumnos_' . $timestamp; // Cambié la ruta base
+// Fase 0.3: tipos y nombres validados ANTES de crear la carpeta o tocar la BD.
+$documentos = documentos_validados('archivos');
+
 if (!is_dir($carpeta)) {
-    mkdir($carpeta, 0777, true);
+    mkdir($carpeta, 0755, true);
 }
-
-// Manejo de archivos
-if (isset($_FILES['archivos']) && !empty($_FILES['archivos']['name'][0])) {
-    $archivos = $_FILES['archivos'];
-    $total_archivos = count($archivos['name']);
-    $rutas = [];
-
-    for ($i = 0; $i < $total_archivos; $i++) {
-        $nombrearchivo = strtoupper(htmlspecialchars($archivos['name'][$i], ENT_QUOTES, 'UTF-8'));
-        if ($nombrearchivo != "") {
-            $ruta = $carpeta . '/' . $nombrearchivo;
-            if (move_uploaded_file($archivos['tmp_name'][$i], $ruta)) {
-                $rutas[] = $ruta; // Añadir ruta del archivo al array
-            } else {
-                // Error al mover el archivo
-                echo "Error al mover el archivo: " . $archivos['name'][$i];
-                exit;
-            }
-        }
+foreach ($documentos as $doc) {
+    if (!move_uploaded_file($doc['tmp'], $carpeta . '/' . $doc['nombre'])) {
+        echo "Error al mover el archivo: " . $doc['nombre'];
+        exit;
     }
-
-    // Convertir el array de rutas a una cadena separada por comas
-    $rutas_str = implode(',', $rutas);
-} else {
-    $rutas_str = ''; // Si no hay archivos, dejar como vacío o manejar como prefieras
 }
 
 // Registrar la tarea en la base de datos

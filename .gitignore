@@ -1,10 +1,10 @@
 # === Archivos subidos por usuarios ===
 # NUNCA versionar fotografías ni adjuntos de personas.
 # Cubre mayúsculas/minúsculas y cualquier nivel de anidamiento.
-controller/*/fotos/
-controller/*/FOTOS/
-controller/**/fotos/
-controller/**/FOTOS/
+# (Se ignora el CONTENIDO y no la carpeta, para que las excepciones de abajo funcionen:
+# git no puede re-incluir archivos dentro de una carpeta excluida.)
+controller/**/fotos/*
+controller/**/FOTOS/*
 controller/tareas/documentos/
 storage/
 
@@ -42,4 +42,8 @@ desktop.ini
 # Excepción: VACIO.png es la imagen por defecto de la aplicación
 # (referenciada en controller/*/controlador_modificar_foto_*.php y js/console_alumnos.js),
 # no es una subida de usuario. Debe versionarse.
-!controller/*/fotos/VACIO.png
+!controller/**/fotos/VACIO.png
+
+# Excepción: el .htaccess que impide ejecutar código en las carpetas de subidas (Fase 0.3).
+!controller/**/fotos/.htaccess
+!controller/**/FOTOS/.htaccess

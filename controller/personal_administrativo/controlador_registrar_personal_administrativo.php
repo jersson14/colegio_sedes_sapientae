@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR');
+    require_once __DIR__ . '/../../core/subidas.php';
     require '../../model/model_personal_admin.php';
     $MPAD = new Modelo_Personal_Administrativo();//Instaciamos
     //DATOS DE DOCENTE//
@@ -22,11 +23,15 @@
     $rol = htmlspecialchars($_POST['rol'],ENT_QUOTES,'UTF-8');
 
 
+    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
+    if($nombrefoto!=""){
+        $nombrefoto = imagen_validada('foto');
+    }
     $ruta='controller/personal_administrativo/fotos/'.$nombrefoto;
     $consulta = $MPAD->Registrar_Personal($dni,$nombre,$apelli,$tipo,$sexo,$fechanaci,$telf,$telfal,$direc,$ruta,$usu,$contra,$email,$rol);
     if ($consulta) {
         if($nombrefoto!=""){
-            move_uploaded_file($_FILES['foto']['tmp_name'],"fotos/".$nombrefoto);
+            imagen_guardar('foto','controller/personal_administrativo/fotos',$nombrefoto);
         }
         echo $consulta;
     }

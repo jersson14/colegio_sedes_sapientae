@@ -1917,6 +1917,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       // El token cambió (p. ej. se inició sesión en otra pestaña): recargar lo renueva.
       Swal.fire('Sesión actualizada', 'La página se recargará para continuar.', 'info')
         .then(function() { window.location.reload(); });
+    } else if (jqXHR.status === 422) {
+      // Fase 0.3: archivo rechazado por el servidor (tipo o tamaño no permitido).
+      var msg = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'Archivo no permitido.';
+      Swal.fire('Archivo no permitido', msg, 'warning');
     }
   });
   // Evita la alerta de DataTables ("Ajax error") justo antes de redirigir.
