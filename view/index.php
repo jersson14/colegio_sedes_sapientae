@@ -27,6 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
   <title>SEDES SAPIENTIAE</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -1878,6 +1879,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </script>
 <!-- jQuery -->
 <script src="../plantilla/plugins//jquery/jquery.min.js"></script>
+<script>
+  // Fase 0.5: token CSRF en toda petición AJAX al propio servidor.
+  // Solo mismo origen: el token no debe viajar a APIs externas.
+  $.ajaxPrefilter(function(opciones, originales, jqXHR) {
+    if (!opciones.crossDomain) {
+      jqXHR.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+    }
+  });
+</script>
 <!-- Bootstrap 4 -->
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -1903,11 +1913,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
   $(document).ajaxError(function(evento, jqXHR) {
     if (jqXHR.status === 401) {
       window.location.href = '../index.php';
+    } else if (jqXHR.status === 419) {
+      // El token cambió (p. ej. se inició sesión en otra pestaña): recargar lo renueva.
+      Swal.fire('Sesión actualizada', 'La página se recargará para continuar.', 'info')
+        .then(function() { window.location.reload(); });
     }
   });
   // Evita la alerta de DataTables ("Ajax error") justo antes de redirigir.
   $.fn.dataTable.ext.errMode = function(settings, techNote, mensaje) {
-    if (settings.jqXHR && settings.jqXHR.status === 401) return;
+    if (settings.jqXHR && [401, 419].indexOf(settings.jqXHR.status) !== -1) return;
     alert(mensaje);
   };
 </script>

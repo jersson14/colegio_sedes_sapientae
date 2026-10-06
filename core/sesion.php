@@ -90,5 +90,9 @@ function sesion_activa(): bool
         return false;
     }
     $_SESSION['ultima_actividad'] = time();
+    // Sesiones creadas antes de existir el token CSRF.
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
     return true;
 }

@@ -8,8 +8,8 @@ declare(strict_types=1);
  *     require_once __DIR__ . '/../../core/guard.php';
  *
  * - Sin sesión válida (o expirada) responde 401 y corta la ejecución.
- * - Expone exigir_rol() y verificar_csrf() para que cada controlador
- *   declare su autorización.
+ * - Peticiones no-GET sin token CSRF válido responden 419.
+ * - Expone exigir_rol() para que cada controlador declare su autorización.
  *
  * Endpoints públicos (NO llevan guard): usuario/controlador_iniciar_sesion.php,
  * usuario/controlador_cerrar_sesion.php y controlador_solicitudes.php (landing).
@@ -50,3 +50,7 @@ if (!sesion_activa()) {
 // para que las peticiones AJAX en paralelo no se serialicen. $_SESSION sigue
 // disponible para lectura.
 session_write_close();
+
+// CSRF (Fase 0.5): toda petición que no sea GET debe traer el token de la sesión.
+// El panel lo envía en la cabecera X-CSRF-Token (ver $.ajaxPrefilter en view/index.php).
+verificar_csrf();
