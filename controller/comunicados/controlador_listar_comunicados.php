@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_comunicados.php';
     $MC = new Modelo_Comunicados();//Instaciamos
     $consulta = $MC->Listar_Comunicados();

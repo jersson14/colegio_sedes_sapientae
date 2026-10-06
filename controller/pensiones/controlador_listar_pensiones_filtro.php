@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_pensiones.php';
     $MPE = new Modelo_Pensiones();//Instaciamos
     $nivel = htmlspecialchars($_POST['nivel'],ENT_QUOTES,'UTF-8');

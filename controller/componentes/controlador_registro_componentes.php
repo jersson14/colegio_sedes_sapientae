@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_componentes.php';
     $MCOM = new Modelo_Componentes();//Instaciamos
 

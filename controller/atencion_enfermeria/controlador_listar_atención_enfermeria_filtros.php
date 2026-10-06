@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_atencion_enfer.php';
     $MAEN = new Modelo_Atencion_Enfer();//Instaciamos
     $grado = htmlspecialchars($_POST['grado'],ENT_QUOTES,'UTF-8');

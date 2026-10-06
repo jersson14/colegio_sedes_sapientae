@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_asistencia.php';
     $MASIS = new Modelo_Asistencia();//Instaciamos
     $consulta = $MASIS->Listar_asitencia();

@@ -1897,6 +1897,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
+<script>
+  // Fase 0.2: los controladores responden 401 si la sesión no existe o expiró.
+  // En ese caso se vuelve al login en lugar de dejar tablas y formularios rotos.
+  $(document).ajaxError(function(evento, jqXHR) {
+    if (jqXHR.status === 401) {
+      window.location.href = '../index.php';
+    }
+  });
+  // Evita la alerta de DataTables ("Ajax error") justo antes de redirigir.
+  $.fn.dataTable.ext.errMode = function(settings, techNote, mensaje) {
+    if (settings.jqXHR && settings.jqXHR.status === 401) return;
+    alert(mensaje);
+  };
+</script>
 
 
 </body>

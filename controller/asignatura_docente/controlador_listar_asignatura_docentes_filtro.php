@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_asignatura_docente.php';
     $MASD = new Modelo_Asignatura_Docente();//Instaciamos
     $grado = htmlspecialchars($_POST['grado'],ENT_QUOTES,'UTF-8');

@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_tipo_documento.php';
     $MTD = new Modelo_Tipo_Documento();//Instaciamos
     $consulta = $MTD->Listar_Tipo_Documento();

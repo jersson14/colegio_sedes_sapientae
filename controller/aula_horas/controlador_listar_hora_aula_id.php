@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_aula_horas.php';
     $MAH = new Modelo_aula_Horas();//Instaciamos
     $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');

@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_docentes.php';
     $MDO = new Modelo_Docentes();//Instaciamos
     $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');

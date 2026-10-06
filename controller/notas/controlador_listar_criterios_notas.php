@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_notas.php';
     $MNOTAS = new Modelo_Notas();//Instaciamos
     $nivel = htmlspecialchars($_POST['nivel'],ENT_QUOTES,'UTF-8');

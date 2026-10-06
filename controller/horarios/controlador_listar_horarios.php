@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_horarios.php';
     $MHR = new Modelo_Horarios();//Instaciamos
     $consulta = $MHR->Listar_Horarios();

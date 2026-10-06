@@ -1,15 +1,9 @@
 <?php
+    require_once __DIR__ . '/../core/guard.php';
 /**
  * Controlador para actualizar el estado de una solicitud
  */
 require_once '../model/model_solicitudes.php';
-
-session_start();
-
-if (!isset($_SESSION['S_ID'])) {
-    echo 0;
-    exit;
-}
 
 $solicitud_model = new Solicitud_Model();
 

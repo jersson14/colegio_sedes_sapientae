@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../core/guard.php';
 /**
  * Controlador para listar solicitudes de información
  */

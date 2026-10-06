@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_matriculas.php';
     $MMAT= new Modelo_Matriculas();//Instaciamos
     $año = htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8');

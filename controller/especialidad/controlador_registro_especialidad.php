@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_especialidad.php';
     $MES = new Modelo_Especialidad();//Instaciamos
     $especialidad = strtoupper(htmlspecialchars($_POST['especialidad'],ENT_QUOTES,'UTF-8'));

@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
 require '../../model/model_periodos.php'; // Incluye el modelo de periodos
 $MPER = new Modelo_Periodos(); // Instancia del modelo
 

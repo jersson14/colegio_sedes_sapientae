@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_asignaturas.php';
     $MASIG = new Modelo_Asignaturas();//Instaciamos
     $consulta = $MASIG->Listar_Asignaturas();

@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_empresa.php';
     $ME = new Modelo_Empresa();//Instaciamos
     $consulta = $ME->Listar_Empresa();

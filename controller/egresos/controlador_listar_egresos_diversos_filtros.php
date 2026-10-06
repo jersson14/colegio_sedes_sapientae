@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_egresos.php';
     $MEGR= new Modelo_Egresos();//Instaciamos
     $indi = htmlspecialchars($_POST['indi'],ENT_QUOTES,'UTF-8');

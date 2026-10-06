@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_examenes.php';
     $MEXA = new Modelo_Examenes();//Instaciamos
     $consulta = $MEXA->Listar_examenes();

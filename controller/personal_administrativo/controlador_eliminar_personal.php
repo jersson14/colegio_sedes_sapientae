@@ -1,4 +1,5 @@
 <?php
+    require_once __DIR__ . '/../../core/guard.php';
     require '../../model/model_personal_admin.php';
     $MPAD = new Modelo_Personal_Administrativo();//Instaciamos
     $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));

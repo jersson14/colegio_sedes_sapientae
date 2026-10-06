@@ -72,8 +72,10 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 
 ## Deuda crítica que ya conocemos (no la "descubras" de nuevo)
 
-1. **260 de 263 controladores no verifican sesión.** Solo 3 llaman `session_start()`.
-   Cualquiera puede invocar `controller/alumnos/controlador_listar_alumnos.php` sin login.
+1. ~~**260 de 263 controladores no verifican sesión.**~~ ✅ Autenticación resuelta (Fase 0.2):
+   todo controlador empieza con `require_once __DIR__ . '/../../core/guard.php';` (401 sin sesión).
+   Públicos: `iniciar_sesion`, `cerrar_sesion`, `controlador_solicitudes`. Verifica con
+   `php tools/verificar_guard.php`. **Pendiente: autorización por rol (`exigir_rol`) y CSRF.**
 2. ~~**La sesión se construye desde el cliente.**~~ ✅ Resuelto (Fase 0.1): la sesión la crea
    `controlador_iniciar_sesion.php` con `core/sesion.php` a partir de la BD;
    `controlador_crear_sesion.php` fue eliminado. Usa `sesion_activa()` / `sesion_crear()`.
