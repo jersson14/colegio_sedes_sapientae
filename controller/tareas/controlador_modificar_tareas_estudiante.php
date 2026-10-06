@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
+    require_once __DIR__ . '/../../core/pertenencia.php';
     require_once __DIR__ . '/../../core/subidas.php';
 require '../../model/model_tareas.php';
 $MTA = new Modelo_Tareas(); // Instanciar el modelo
@@ -8,6 +9,8 @@ $MTA = new Modelo_Tareas(); // Instanciar el modelo
 // DATOS DE LA TAREA
 $iddetalle = strtoupper(htmlspecialchars($_POST['iddetalle'] ?? '', ENT_QUOTES, 'UTF-8'));
 $archivoactual = htmlspecialchars($_POST['archivoactual'] ?? '', ENT_QUOTES, 'UTF-8');
+// IDOR: el envío debe ser del estudiante y la carpeta a reemplazar sale de la BD, no del cliente.
+$archivoactual = exigir_envio_propio($iddetalle, $archivoactual);
 
 // Crear una carpeta única para este conjunto de archivos en "tarea_alumnos"
 $timestamp = time();

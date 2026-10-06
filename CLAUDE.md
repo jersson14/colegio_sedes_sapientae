@@ -79,7 +79,9 @@ mezclar inglés rompe la coherencia con los 254 SPs.
    `php tools/verificar_guard.php`. Autorización por rol con `exigir_rol(...)` en la línea
    siguiente al guard; matriz en [docs/MATRIZ_ROLES.md](docs/MATRIZ_ROLES.md).
    CSRF (0.5): el guard exige `X-CSRF-Token` en todo no-GET (419 si falta);
-   el panel lo añade con `$.ajaxPrefilter`. **Pendiente: pertenencia del dato (IDOR).**
+   el panel lo añade con `$.ajaxPrefilter`. Pertenencia (IDOR) del ESTUDIANTE con
+   [core/pertenencia.php](core/pertenencia.php): id propio desde la sesión y matrícula/aula/pago/
+   envío verificados contra `matricula.usu_id`. **Pendiente: DOCENTE → solo sus aulas.**
 2. ~~**La sesión se construye desde el cliente.**~~ ✅ Resuelto (Fase 0.1): la sesión la crea
    `controlador_iniciar_sesion.php` con `core/sesion.php` a partir de la BD;
    `controlador_crear_sesion.php` fue eliminado. Usa `sesion_activa()` / `sesion_crear()`.

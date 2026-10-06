@@ -1,9 +1,11 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'ESTUDIANTE', 'AUXILIAR');
+    require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_asistencia.php';
 $MASIS = new Modelo_Asistencia();
     $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');
+    $id = id_usuario_propio($id); // IDOR: el estudiante solo consulta lo suyo
 
     $año = htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8');
     $mes = htmlspecialchars($_POST['mes'],ENT_QUOTES,'UTF-8');

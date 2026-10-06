@@ -1,9 +1,11 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
+    require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_pago_pension.php';
 $MPP = new Modelo_Pago_Pension();
 $id = htmlspecialchars($_POST['id'], ENT_QUOTES, 'UTF-8');
+exigir_matricula_propia((string)$id); // IDOR: id = matrícula
 $consulta = $MPP->Listar_pagos_alu($id);
 
 if ($consulta) {

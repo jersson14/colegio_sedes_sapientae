@@ -1,6 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE');
+    exigir_rol('ADMINISTRADOR', 'DOCENTE');
     require '../../model/model_notas.php';
     $MNOTAS = new Modelo_Notas();//Instaciamos
     $año = htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8');

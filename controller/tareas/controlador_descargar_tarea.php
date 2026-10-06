@@ -2,6 +2,7 @@
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE', 'AUXILIAR');
     require_once __DIR__ . '/../../core/subidas.php';
+    require_once __DIR__ . '/../../core/pertenencia.php';
 /**
  * Descarga autenticada de archivos de tareas (Fase 0.3-B).
  * Sustituye al listado público de directorio: la carpeta de subidas ya no es
@@ -10,7 +11,8 @@
  * GET ?carpeta=<ruta guardada en la BD>              → lista de archivos
  * GET ?carpeta=<ruta guardada en la BD>&archivo=X    → envía el archivo
  *
- * Pendiente (IDOR): comprobar que la tarea pertenece al docente/estudiante.
+ * Pertenencia: el estudiante solo ve tareas asignadas y sus envíos (core/pertenencia.php).
+ * Pendiente: restringir al DOCENTE a sus propias aulas.
  */
 
 // Ruta física: las rutas de la BD son relativas a controller/tareas/ (ver controlador_registro_tareas.php).
@@ -21,6 +23,8 @@ $dir = $nombreCarpeta !== null ? realpath($base . '/' . $nombreCarpeta) : false;
 if ($dir === false || !is_dir($dir)) {
     responder_error(404, 'Tarea sin archivos');
 }
+// IDOR: el estudiante solo abre tareas asignadas a él o sus propios envíos.
+exigir_carpeta_tarea_visible($nombreCarpeta);
 
 $archivos = array_values(array_filter(
     scandir($dir),

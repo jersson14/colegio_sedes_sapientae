@@ -2,11 +2,17 @@
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
     require_once __DIR__ . '/../../core/subidas.php';
+    require_once __DIR__ . '/../../core/pertenencia.php';
     require '../../model/model_alumnos.php';
     $MALU = new Modelo_Alumnos();//Instaciamos
     $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');
     $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
     $fotoactual = htmlspecialchars($_POST['fotoactual'],ENT_QUOTES,'UTF-8');
+    // IDOR: un estudiante solo cambia SU foto (DNI de la sesión) y la foto a borrar sale de la BD.
+    $id = dni_propio($id, 'ESTUDIANTE');
+    if (es_estudiante()) {
+        $fotoactual = foto_actual_alumno($id);
+    }
 
     // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
     if(empty($nombrefoto)){
