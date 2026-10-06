@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
     require '../../model/model_asistencia.php';
     $MASIS = new Modelo_Asistencia();//Instaciamos
     $fechainicio = htmlspecialchars($_POST['fechainicio'],ENT_QUOTES,'UTF-8');

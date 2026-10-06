@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'DOCENTE', 'AUXILIAR');
 require '../../model/model_tareas.php';
 $MTA = new Modelo_Tareas(); // Instanciar el modelo
     $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));

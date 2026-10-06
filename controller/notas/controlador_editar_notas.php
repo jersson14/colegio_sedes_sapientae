@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
 // Asegurarse de que la solicitud sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

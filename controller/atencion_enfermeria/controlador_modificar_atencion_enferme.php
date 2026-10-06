@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'ENFERMERA');
     require '../../model/model_atencion_enfer.php';
     $MAEN = new Modelo_Atencion_Enfer();//Instaciamos
 

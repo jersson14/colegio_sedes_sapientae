@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_area.php';
     $MA = new Modelo_Area();//Instaciamos
     $consulta = $MA->Listar_Area();

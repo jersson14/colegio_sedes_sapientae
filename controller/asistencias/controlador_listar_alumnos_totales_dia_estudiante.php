@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'ESTUDIANTE', 'AUXILIAR');
 require '../../model/model_asistencia.php';
 $MASIS = new Modelo_Asistencia();
 $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');

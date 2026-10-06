@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_usuario.php';
     $MU = new Modelo_Usuario();
     $idrol = htmlspecialchars($_POST['idrol'],ENT_QUOTES,'UTF-8');

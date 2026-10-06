@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_roles.php';
     $MRO = new Modelo_Roles();//Instaciamos
     $consulta = $MRO->Listar_Roles();

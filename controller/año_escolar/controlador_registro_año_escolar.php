@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_año.php';
     $MANIO = new Modelo_Años();//Instaciamos
     $año = strtoupper(htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8'));

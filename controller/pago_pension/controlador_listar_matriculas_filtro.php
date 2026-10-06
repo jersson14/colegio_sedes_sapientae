@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_pago_pension.php';
     $MPP= new Modelo_Pago_Pension();//Instaciamos
     $año = htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8');

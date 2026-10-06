@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE');
     require '../../model/model_notas.php';
     $MNOTAS = new Modelo_Notas();//Instaciamos
     $matri = htmlspecialchars($_POST['matri'],ENT_QUOTES,'UTF-8');

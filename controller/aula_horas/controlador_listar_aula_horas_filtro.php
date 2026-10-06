@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
     require '../../model/model_aula_horas.php';
     $MAH = new Modelo_aula_Horas();//Instaciamos
     $año = htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8');

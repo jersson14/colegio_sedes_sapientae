@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_año.php';
     $MANIO = new Modelo_Años();//Instaciamos
     $consulta = $MANIO->Listar_Años();

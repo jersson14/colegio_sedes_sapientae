@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'ESTUDIANTE', 'AUXILIAR');
     require '../../model/model_horarios.php';
     $MHR = new Modelo_Horarios();//Instaciamos
     $consulta = $MHR->Listar_Horarios();

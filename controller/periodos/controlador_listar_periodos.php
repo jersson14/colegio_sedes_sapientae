@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_periodos.php';
     $MPERI = new Modelo_Periodos();//Instaciamos
     $consulta = $MPERI->Listar_Periodos();
