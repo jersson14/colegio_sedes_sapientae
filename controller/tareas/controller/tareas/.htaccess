@@ -1,10 +1,8 @@
-# Listado de directorio: el enlace "Descargar tarea" apunta a la carpeta.
-# Se retirará cuando exista el endpoint de descarga autenticado (Fase 0.3, paso B).
-Options +Indexes
-# Sin esto Apache prueba index.php, home.cgi... (bloqueados abajo) y responde 403.
-DirectoryIndex disabled
+# Fase 0.3-B: los archivos de tareas solo se sirven a través de
+# controller/tareas/controlador_descargar_tarea.php (con sesión y rol).
+Require all denied
+Options -Indexes
 
-# Fase 0.3: carpeta de archivos subidos. Nada de aquí se ejecuta como código.
 <IfModule php_module>
     php_flag engine off
 </IfModule>

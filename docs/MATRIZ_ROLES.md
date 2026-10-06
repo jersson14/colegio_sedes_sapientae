@@ -383,6 +383,7 @@ Leyenda: **A** administrador · **D** docente · **E** estudiante · **X** auxil
 | `controlador_cargar_curso_id_detalle_profesor.php` | Todos |  |
 | `controlador_cargar_select_cursos_docente.php` | A D X |  |
 | `controlador_cargar_select_grado_estudiante.php` | Todos |  |
+| `controlador_descargar_tarea.php` | A D E X | Fase 0.3-B: sustituye al listado público de la carpeta |
 | `controlador_eliminar_tarea.php` | A D X |  |
 | `controlador_listar_tabla_envio_tareas.php` | A D X |  |
 | `controlador_listar_tareas.php` | A D E X |  |

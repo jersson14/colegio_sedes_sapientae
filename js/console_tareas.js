@@ -67,7 +67,7 @@ function listar_tareas(){
                   if(data==''){
                       return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                   }else{
-                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/"+data+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_descargar_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
                   }
               }   
           },    
@@ -183,7 +183,7 @@ function listar_tareas_filtro(){
                 if(data==''){
                     return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                 }else{
-                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/"+data+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_descargar_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
                 }
             }   
         },    
@@ -626,7 +626,7 @@ $('#tabla_tarea').on('click','.delete',function(){
                     if (data == '') {
                         return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                     } else {
-                        return "<a class='btn btn-success btn-sm' href='../controller/tareas/" + data + "' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                        return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_descargar_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
                     }
                 }
             },

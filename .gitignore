@@ -6,6 +6,8 @@
 controller/**/fotos/*
 controller/**/FOTOS/*
 controller/tareas/documentos/
+# Ruta física real de las tareas (las rutas de la BD son relativas a controller/tareas/).
+controller/tareas/controller/tareas/documentos/
 storage/
 
 # === Dumps de base de datos ===

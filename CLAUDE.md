@@ -85,9 +85,10 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 3. ~~**Subida de archivos sin validación.**~~ ✅ Ejecución y borrado arbitrario cerrados (Fase 0.3-A):
    toda subida pasa por `core/subidas.php` (`imagen_validada`, `documentos_validados`,
    `borrar_archivo_subido`); el nombre lo genera el servidor y cada carpeta de subidas
-   tiene un `.htaccess` que impide ejecutar scripts. **Pendiente (0.3-B):** las tareas se
-   descargan por listado de directorio sin autenticación y 65 subidas siguen versionadas
-   en `controller/tareas/controller/`.
+   tiene un `.htaccess` que impide ejecutar scripts. Las tareas solo se descargan por
+   `controller/tareas/controlador_descargar_tarea.php` (0.3-B); su carpeta física
+   `controller/tareas/controller/tareas/documentos/` está cerrada por `.htaccess` y fuera de git.
+   **Pendiente:** mover las subidas fuera del docroot (`storage/`) y verificar pertenencia (IDOR).
 4. **Credenciales de BD en claro** con `root` sin contraseña.
 5. **Sin CSRF, sin rate limiting, sin cabeceras de seguridad, sin HTTPS forzado.**
 6. **`phpinfo.php`, `prueba.php`, `test_model.php`, `test_solicitudes.html`** expuestos en raíz.
