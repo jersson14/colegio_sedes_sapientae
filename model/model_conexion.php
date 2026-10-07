@@ -18,6 +18,10 @@ class conexionBD {
             $this->pdo = new PDO("mysql:host=$host;port=$puerto;dbname=$bdName", $usuario, $contrasena);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("set names utf8");
+            // Solo pruebas: congela NOW()/CURDATE() para que los SP que filtran por fecha sean deterministas.
+            if (config('APP_ENTORNO') === 'prueba' && config('DB_FECHA_PRUEBA')) {
+                $this->pdo->prepare("SET SESSION timestamp = UNIX_TIMESTAMP(?)")->execute([config('DB_FECHA_PRUEBA')]);
+            }
             return $this->pdo;
         } catch (PDOException $e) {
             // El detalle va al log; al cliente nunca (expone host, usuario y motor).

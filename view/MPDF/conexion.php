@@ -11,6 +11,13 @@ try {
         config('DB_NAME', 'colegio'),
         (int) config('DB_PORT', '3306')
     );
+    // Solo pruebas: congela NOW()/CURDATE() (ver model/model_conexion.php).
+    if (config('APP_ENTORNO') === 'prueba' && config('DB_FECHA_PRUEBA')) {
+        $fijar = $mysqli->prepare('SET SESSION timestamp = UNIX_TIMESTAMP(?)');
+        $fecha = config('DB_FECHA_PRUEBA');
+        $fijar->bind_param('s', $fecha);
+        $fijar->execute();
+    }
 } catch (mysqli_sql_exception $e) {
     // El detalle va al log; al cliente nunca (expone host, usuario y motor).
     error_log('Conexión MySQLi fallida: ' . $e->getMessage());

@@ -10,7 +10,7 @@ bloqueados=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE \
   -e '^controller/tareas/controller/tareas/documentos/' \
   -e '\.sql$' \
   -e '(^|/)\.env$' -e '\.env\.' -e '\.env$' \
-  | grep -vE '(^|/)fotos/(VACIO\.png|\.htaccess)$|(^|/)FOTOS/\.htaccess$|^config/usuario_bd\.sql$|^database/esquema/[^/]+\.sql$|^config/colegio\.env\.example$')
+  | grep -vE '(^|/)fotos/(VACIO\.png|\.htaccess)$|(^|/)FOTOS/\.htaccess$|^config/usuario_bd\.sql$|^database/esquema/[^/]+\.sql$|^database/seeders/datos_prueba\.sql$|^config/colegio\.env\.example$')
 if [ -n "$bloqueados" ]; then
   echo "BLOQUEADO: el commit incluye archivos que nunca deben versionarse:"
   echo "$bloqueados" | sed 's/^/  - /'

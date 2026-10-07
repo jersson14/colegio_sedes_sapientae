@@ -18,6 +18,8 @@ storage/*
 !config/usuario_bd.sql
 # Excepción: esquema SIN datos (estructura, procedimientos y eventos) para Phinx.
 !database/esquema/*.sql
+# Excepción: datos de prueba ANONIMIZADOS (tools/generar_datos_prueba.php verifica que no haya reales).
+!database/seeders/datos_prueba.sql
 
 # === Credenciales ===
 # Viven en colegio.env FUERA del docroot (core/config.php). Los archivos de conexión
@@ -59,3 +61,4 @@ desktop.ini
 /.phpunit.cache/
 /.php-cs-fixer.cache
 /var/
+/tests/E2E/node_modules/
