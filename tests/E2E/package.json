@@ -1,0 +1,14 @@
+{
+  "name": "colegio-pruebas-e2e",
+  "private": true,
+  "description": "Caracterización y E2E con Playwright sobre el Chrome instalado (channel: chrome)",
+  "type": "module",
+  "scripts": {
+    "grabar": "node caracterizacion.mjs grabar",
+    "verificar": "node caracterizacion.mjs verificar",
+    "flujos": "node flujos.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

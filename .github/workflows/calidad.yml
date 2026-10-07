@@ -103,5 +103,82 @@ jobs:
       - name: Crear el esquema con las migraciones
         run: vendor/bin/phinx migrate -c phinx.php
 
+      - name: Cargar los datos de prueba (anonimizados)
+        run: PERMITIR_DATOS_PRUEBA=1 vendor/bin/phinx seed:run -s DatosPrueba -c phinx.php
+
       - name: Pruebas de integración
         run: vendor/bin/phpunit --testsuite=Integration
+
+  e2e:
+    name: Caracterización y flujos E2E (Chrome)
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: colegio_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_NAME: colegio_ci
+      DB_MIGRACION_USER: root
+      DB_MIGRACION_PASS: root
+      BASE_URL: http://127.0.0.1:8099/
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mysqli, mbstring, fileinfo, intl, gd
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Dependencias
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          (cd tests/E2E && npm ci --no-audit --no-fund)
+
+      - name: Esquema y datos de prueba
+        run: |
+          vendor/bin/phinx migrate -c phinx.php
+          PERMITIR_DATOS_PRUEBA=1 vendor/bin/phinx seed:run -s DatosPrueba -c phinx.php
+
+      - name: Levantar la aplicación (fecha congelada en 2025-12-26)
+        run: |
+          mkdir -p "$RUNNER_TEMP/sesiones" "$RUNNER_TEMP/intentos"
+          cat > "$RUNNER_TEMP/colegio.env" <<EOF
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_NAME=colegio_ci
+          DB_USER=root
+          DB_PASS=root
+          APP_DEBUG=false
+          APP_ENTORNO=prueba
+          DB_FECHA_PRUEBA=2025-12-26 12:00:00
+          LOGIN_LIMITE_DIR=$RUNNER_TEMP/intentos
+          EOF
+          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8099 -t . > "$RUNNER_TEMP/servidor.log" 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$BASE_URL" && break; sleep 1; done
+
+      - name: Caracterización (respuestas idénticas a la grabación)
+        working-directory: tests/E2E
+        run: node caracterizacion.mjs verificar
+
+      - name: Flujos E2E (escriben en la BD; van después)
+        working-directory: tests/E2E
+        run: node flujos.mjs
+
+      - name: Log del servidor si algo falló
+        if: failure()
+        run: tail -100 "$RUNNER_TEMP/servidor.log"
