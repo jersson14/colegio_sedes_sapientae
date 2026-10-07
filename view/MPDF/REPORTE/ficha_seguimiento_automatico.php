@@ -4,7 +4,8 @@ require_once __DIR__ . '/../../../core/guard.php';
 exigir_rol('ADMINISTRADOR');
 require_once  __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
-$codigo = $_GET['codigo'];
+// SQL concatenado: se escapa como en el resto de reportes (antes iba sin sanear).
+$codigo = $mysqli->real_escape_string((string)($_GET['codigo'] ?? ''));
 $html="";
 $consulta="SELECT
 documento.documento_id, 

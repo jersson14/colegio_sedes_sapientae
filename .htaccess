@@ -1,14 +1,37 @@
 Options -Indexes
 
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /colegio_sedes_sapientae/
-  
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^controller/tareas/controller/tareas/documentos/([0-9]+)/?$ controller/tareas/ver_documento.php?id=$1 [L,QSA]
-</IfModule>
+# ---------------------------------------------------------------------------
+# Fase 0 — nada interno se sirve por HTTP (detectado con OWASP ZAP, 2026-10-07)
+# ---------------------------------------------------------------------------
 
-<FilesMatch "\.(pdf|doc|docx)$">
-  ForceType application/octet-stream
-  Header set Content-Disposition attachment
+# Archivos y carpetas ocultos: .git/ (todo el historial), .githooks/, .gitignore, .env…
+# 404 en vez de 403 para no confirmar que existen. Se respeta /.well-known/ (certificados).
+RedirectMatch 404 "/\.(?!well-known/)"
+
+# Dumps, documentación interna, manuales y metadatos de dependencias.
+<FilesMatch "(?i)(\.(sql|md|docx?|log|bak|old|orig|ini|lock|ya?ml|sh|py|dist)|^(composer|package)(-lock)?\.json)$">
+    Require all denied
 </FilesMatch>
+
+# Archivos descargables: siempre como adjunto (regla original).
+<FilesMatch "(?i)\.(pdf|doc|docx)$">
+    ForceType application/octet-stream
+    Header set Content-Disposition attachment
+</FilesMatch>
+
+# ---------------------------------------------------------------------------
+# Cabeceras de seguridad (hallazgo H-11)
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    # CSP base: impide incrustar la app en otros sitios, plugins y <base>/<form> hacia fuera.
+    # script-src todavía no se restringe: la app usa scripts y onclick en línea (Fase 3).
+    Header always set Content-Security-Policy "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    # No anunciar la versión de PHP. (La de Apache se oculta en httpd.conf:
+    # ServerTokens Prod y ServerSignature Off — ver docs/DESPLIEGUE.md.)
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+</IfModule>
