@@ -108,7 +108,10 @@ $reglas = [
         'emp_cod' => fn () => '0000', 'emp_telefono' => fn () => '900000000',
         'emp_direccion' => fn () => 'CALLE FICTICIA 1', 'emp_logo' => fn () => '',
     ],
-    'ingresos' => ['observacion' => fn () => 'INGRESO DE PRUEBA', 'motivo_anulacion' => fn ($r) => $r['motivo_anulacion'] ? 'ANULACION DE PRUEBA' : $r['motivo_anulacion']],
+    // La observación de un ingreso suele ser el concepto del pago (ADMISION, MATRICULA…): se conserva;
+    // solo se sustituye el texto libre.
+    'ingresos' => ['observacion' => fn ($r) => in_array($r['observacion'], ['ADMISION', 'ALUMNO NUEVO', 'MATRICULA', 'PENSION'], true)
+        ? $r['observacion'] : 'INGRESO DE PRUEBA', 'motivo_anulacion' => fn ($r) => $r['motivo_anulacion'] ? 'ANULACION DE PRUEBA' : $r['motivo_anulacion']],
     'egresos' => ['observacion' => fn () => 'EGRESO DE PRUEBA', 'motivo_anulacion' => fn ($r) => $r['motivo_anulacion'] ? 'ANULACION DE PRUEBA' : $r['motivo_anulacion']],
     'asistencia' => ['observacion' => fn ($r) => $r['observacion'] ? 'OBSERVACION DE PRUEBA' : $r['observacion']],
     'pago_pensiones' => ['motivo_edicion' => fn ($r) => $r['motivo_edicion'] ? 'EDICION DE PRUEBA' : $r['motivo_edicion']],

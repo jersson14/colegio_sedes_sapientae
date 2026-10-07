@@ -123,6 +123,14 @@ async function grabar(browser) {
       await ctx.close();
     }
   }
+  // Filas en orden canónico: la verificación ignora el orden, y así el diff de grabacion.json en un PR
+  // solo muestra cambios de contenido (no los reordenamientos de filas empatadas).
+  const canonico = (a) => (Array.isArray(a) ? [...a].sort((x, y) => JSON.stringify(x).localeCompare(JSON.stringify(y))) : a);
+  for (const g of grabacion) {
+    const j = g.respuesta.json;
+    if (Array.isArray(j)) g.respuesta.json = canonico(j);
+    else if (j && typeof j === 'object') for (const k of Object.keys(j)) j[k] = canonico(j[k]);
+  }
   grabacion.sort((a, b) => `${a.rol}${a.ruta}${a.cuerpo}`.localeCompare(`${b.rol}${b.ruta}${b.cuerpo}`));
   writeFileSync(ARCHIVO, JSON.stringify(grabacion, null, 1) + '\n');
   const inestables = grabacion.filter((g) => g.inestable).length;
