@@ -153,6 +153,13 @@ async function verificar(browser) {
         console.log(`CAMBIO  [${rol}] ${caso.ruta} ${caso.cuerpo.slice(0, 60)}\n`
           + `        esperado ${caso.estado} ${JSON.stringify(caso.respuesta).slice(0, 160)}\n`
           + `        obtenido ${real.estado} ${JSON.stringify(respuesta).slice(0, 160)}`);
+        if (process.env.GITHUB_ACTIONS) {
+          // Anotación visible en el PR y por la API pública (los logs requieren permisos de administrador).
+          const limpio = (s) => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+          console.log(`::error title=Caracterización [${rol}] ${caso.ruta}::`
+            + limpio(`cuerpo: ${caso.cuerpo.slice(0, 80)}\nesperado ${caso.estado}: ${JSON.stringify(caso.respuesta).slice(0, 300)}`
+            + `\nobtenido ${real.estado}: ${JSON.stringify(respuesta).slice(0, 300)}`));
+        }
       }
     }
     await ctx.close();

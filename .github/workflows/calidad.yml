@@ -176,6 +176,7 @@ jobs:
         run: node caracterizacion.mjs verificar
 
       - name: Flujos E2E (escriben en la BD; van después)
+        if: success() || failure() # independientes del resultado de la caracterización
         working-directory: tests/E2E
         run: node flujos.mjs
 
