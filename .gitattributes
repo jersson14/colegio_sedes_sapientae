@@ -2,3 +2,14 @@
 # Los hooks se ejecutan con sh: CRLF rompe el shebang en clones de Windows.
 .githooks/* text eol=lf
 *.sh text eol=lf
+
+# Código moderno: LF siempre (PSR-12 lo exige; con CRLF php-cs-fixer fallaría en Windows).
+core/** text eol=lf
+src/** text eol=lf
+tests/** text eol=lf
+tools/** text eol=lf
+database/** text eol=lf
+*.neon text eol=lf
+*.yml text eol=lf
+phinx.php text eol=lf
+.php-cs-fixer.dist.php text eol=lf
