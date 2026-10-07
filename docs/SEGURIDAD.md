@@ -23,7 +23,7 @@
 | H-12 | HTTPS no forzado | ⏳ Pendiente: depende del despliegue (certificado) | `docs/DESPLIEGUE.md` |
 | H-13 | CDN sin SRI | ✅ SweetAlert2 con versión fija y SRI; Select2 con SRI. Google Fonts no admite SRI (CSS generado por navegador): alojar las fuentes localmente | `index.php`, `view/index.php`, `registrar.php`, `seguimiento.php` |
 | H-14 | Rate limiting en la landing | ✅ 5 solicitudes/hora por IP (429); retirado `Access-Control-Allow-Origin: *` | `controlador_solicitudes.php`, `core/limite_login.php` |
-| H-15 | Sin auditoría | ⏳ Pendiente (Fase 2 del plan) | — |
+| H-15 | Sin auditoría | ⏳ Pendiente. Avance: los ingresos ya registran quién cobra (antes, siempre el usuario 9) | migración `20261008000000` |
 | H-16–H-18 | Bajos | ⏳ Pendientes | — |
 | H-20 | **Nuevo (ZAP):** `.git/`, `colegio.sql`, `docs/`, manual y metadatos servidos por HTTP | ✅ 404/403 desde `.htaccess` raíz | `.htaccess` |
 | H-21 | **Nuevo:** SQL concatenado sin escapar en `ticket_tramite`, `ficha_seguimiento*` (reportes heredados, solo administrador) | ✅ escapado como el resto de reportes. ⏳ Migrar todos los reportes a consultas con parámetros ligados | `view/MPDF/REPORTE/` |

@@ -251,6 +251,14 @@ composer install --no-dev --optimize-autoloader   # solo Phinx en producción
 vendor/bin/phinx migrate                          # la inicial se registra sin tocar el esquema existente
 ```
 
+> **Migración `20261008000000_corregir_cuentas_e_ingresos`** (cuentas e ingresos): cambia la firma de
+> `SP_REGISTRAR_MATRICULA` y `SP_REGISTRAR_DETALLE_PENSION_PAGO`, así que **el código y la migración van
+> juntos**: desplegar uno sin el otro rompe la matrícula y el cobro de pensiones. Es reversible
+> (`vendor/bin/phinx rollback`, junto con volver al código anterior).
+>
+> Ingresos históricos mal enlazados (opcional, decisión del responsable): respaldo de la BD y luego
+> `php tools/reparar_ingresos.php` (informa) → revisar → `php tools/reparar_ingresos.php --aplicar`.
+
 **Importantes:**
 
 - [ ] `fail2ban` sobre SSH. El login ya limita intentos (`core/limite_login.php`, registra en el log

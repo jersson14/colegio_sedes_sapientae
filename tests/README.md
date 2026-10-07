@@ -50,16 +50,25 @@ Solo cuando un cambio de comportamiento es **intencionado**: `node caracterizaci
 sin importar su orden porque varios procedimientos ordenan por columnas con empates
 (`ORDER BY created_at` con fecha sin hora) y la app no garantiza ese orden.
 
+## Defectos corregidos (Fase 3, migración `20261008000000_corregir_cuentas_e_ingresos`)
+
+| Defecto | Ahora |
+|---|---|
+| `USU VARCHAR(8)` en matrícula y personal: usuarios largos truncados sin aviso | `VARCHAR(250)`, como la columna |
+| Login con `BINARY` mientras la matrícula guarda en MAYÚSCULAS | El login no distingue mayúsculas (ningún usuario existente colisionaba) |
+| Los 3 ingresos de la matrícula apuntaban al último pago o a NULL | Cada ingreso apunta a su pago (`LAST_INSERT_ID`) |
+| Ingresos siempre a nombre del usuario 9 | A nombre de quien cobra (usuario de la sesión) |
+
+Los ingresos **históricos** mal enlazados se reparan aparte y a decisión del responsable con
+`tools/reparar_ingresos.php` (simula por defecto; `--aplicar` solo toca lo inequívoco). Quién cobró
+en el pasado no es recuperable.
+
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
 Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el mismo commit.
 
 | Dónde | Defecto | Prueba |
 |---|---|---|
-| `SP_REGISTRAR_MATRICULA`, `SP_REGISTRAR_PERSONAL` | `USU VARCHAR(8)`: un usuario más largo se trunca sin aviso y la persona no puede entrar | `flujos.mjs` §4 |
-| Matrícula + `SP_VERIFICAR_USUARIO` | Se guarda en MAYÚSCULAS y el login compara con `BINARY`: «mat18e2e» solo entra como «MAT18E2E» | `flujos.mjs` §4 |
-| `SP_REGISTRAR_MATRICULA` | Los 3 ingresos (admisión, alumno nuevo, matrícula) apuntan al último pago; en la rama de alumno antiguo quedan sin pago (`@ULID` no se recalcula) | `ProcedimientosCriticosTest` |
-| Pagos y matrícula | Ingresos con `id_user = 9` fijo, sin importar quién cobra (auditoría, H-15) | `ProcedimientosCriticosTest` |
 | `SP_REGISTRAR_DETALLE_PENSION_PAGO` | Un concepto fuera del ENUM se guarda vacío sin error | `ProcedimientosCriticosTest` |
 | `SP_REGISTRAR_NOTAS` | La validación «matrícula no existe» nunca se dispara (variable que sombrea la columna) y el conteo devuelto es solo del último registro | `ProcedimientosCriticosTest` |
 | 4 listados (asistencias, componentes, matrículas, pagos) | `ORDER BY` sobre columnas con empates: el orden de las filas varía entre peticiones | `caracterizacion.mjs` |
