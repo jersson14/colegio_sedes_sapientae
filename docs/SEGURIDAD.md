@@ -2,7 +2,53 @@
 
 > Revisión estática del código en `main` (commit `5f180bb`), 2026-09-20.
 > Clasificación: 🔴 Crítica · 🟠 Alta · 🟡 Media · 🔵 Baja.
-> **Este sistema no debe exponerse a internet en su estado actual.**
+> El detalle de cada hallazgo (secciones 2–5) describe el estado **anterior** a la
+> remediación; el estado actual está en la tabla siguiente.
+
+## 0. Estado de remediación — 2026-10-06
+
+| ID | Hallazgo | Estado | Dónde |
+|---|---|---|---|
+| H-01 | Sesión construida por el cliente | ✅ Corregido | `core/sesion.php`, `controlador_iniciar_sesion.php` |
+| H-02 | Endpoints sin autenticación | ✅ Corregido: guard en 266/266 (controladores + reportes), roles por endpoint, pertenencia del dato para ESTUDIANTE y DOCENTE | `core/guard.php`, `core/pertenencia.php`, `docs/MATRIZ_ROLES.md` |
+| H-03 | Subidas → ejecución remota | ✅ Corregido: validación por contenido, nombres del servidor, `.htaccess` sin ejecución, descarga autenticada | `core/subidas.php`, `controlador_descargar_tarea.php` |
+| H-04 | Credenciales en el código / `root` | ✅ Corregido: `colegio.env` fuera de htdocs, usuario `colegio_app` con privilegios mínimos | `core/config.php`, `config/usuario_bd.sql` |
+| H-05 | Sin CSRF | ✅ Corregido | `core/guard.php`, `$.ajaxPrefilter` en `view/index.php` |
+| H-06 | Contraseña en `localStorage` | ✅ Corregido | `js/console_usuario.js`, `index.php` |
+| H-07 | Sin límite de intentos de login | ✅ Corregido | `core/limite_login.php` |
+| H-08 | Cookies sin banderas, sin regenerar id | ✅ Corregido | `core/sesion.php` |
+| H-09 | Archivos de diagnóstico | ✅ Retirados del docroot | — |
+| H-10 | Errores de BD al cliente | ✅ Corregido: al log; `display_errors` apagado salvo `APP_DEBUG` | `model_conexion.php`, `core/config.php` |
+| H-11 | Cabeceras de seguridad | ✅ `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, CSP base (`frame-ancestors`, `object-src`, `base-uri`, `form-action`), sin `X-Powered-By`. ⏳ CSP de scripts (requiere quitar JS en línea, Fase 3) y `ServerTokens Prod` en `httpd.conf` de producción | `.htaccess` |
+| H-12 | HTTPS no forzado | ⏳ Pendiente: depende del despliegue (certificado) | `docs/DESPLIEGUE.md` |
+| H-13 | CDN sin SRI | ✅ SweetAlert2 con versión fija y SRI; Select2 con SRI. Google Fonts no admite SRI (CSS generado por navegador): alojar las fuentes localmente | `index.php`, `view/index.php`, `registrar.php`, `seguimiento.php` |
+| H-14 | Rate limiting en la landing | ✅ 5 solicitudes/hora por IP (429); retirado `Access-Control-Allow-Origin: *` | `controlador_solicitudes.php`, `core/limite_login.php` |
+| H-15 | Sin auditoría | ⏳ Pendiente (Fase 2 del plan) | — |
+| H-16–H-18 | Bajos | ⏳ Pendientes | — |
+| H-20 | **Nuevo (ZAP):** `.git/`, `colegio.sql`, `docs/`, manual y metadatos servidos por HTTP | ✅ 404/403 desde `.htaccess` raíz | `.htaccess` |
+| H-21 | **Nuevo:** SQL concatenado sin escapar en `ticket_tramite`, `ficha_seguimiento*` (reportes heredados, solo administrador) | ✅ escapado como el resto de reportes. ⏳ Migrar todos los reportes a consultas con parámetros ligados | `view/MPDF/REPORTE/` |
+| H-19 | Datos de piloto en el repositorio | ✅ Subidas fuera de git y `.gitignore` corregido; hook de pre-commit; gitleaks sin secretos en el historial | `.githooks/pre-commit` |
+
+Verificación realizada: prueba E2E en Chrome con un usuario de cada rol contra la BD
+real (sin regresiones respecto al código original), batería de pertenencia (35/35) y
+escaneo OWASP ZAP anónimo y autenticado (§0.1).
+
+### 0.1 Escaneo OWASP ZAP 2.17 — 2026-10-07
+
+Contra una copia desechable de la BD, con el usuario de BD `colegio_app` y `APP_DEBUG=false`.
+Fase anónima (rastreo + escaneo activo de los 268 endpoints) y fase autenticada como
+administrador (escaneo activo con sesión y token CSRF; la sesión siguió viva al final).
+
+| Resultado | Detalle |
+|---|---|
+| **High: 1 alerta (SQL Injection, 8 URLs) → 0 explotables** | Todas verificadas a mano: los endpoints PDO ligan parámetros (`bindParam`), los reportes escapan con `real_escape_string` entre comillas y ningún SP usa SQL dinámico. Pruebas por tiempo (`SLEEP(3)`) sin retraso. Las diferencias que vio ZAP se deben a contenido dinámico (los PDF llevan fecha y hora) y a conversiones de tipo. Durante la revisión apareció H-21, ya corregido |
+| Medium corregidos | Archivos ocultos/`.git` (H-20), CSP ausente, *clickjacking*, CORS `*` en la landing, SRI |
+| Medium aceptados | CSP con `unsafe-inline` (Fase 3); SRI imposible en Google Fonts |
+| Low | Versión de Apache en `Server` (configurar en producción); 500 sin detalle en ~30 endpoints ante parámetros inválidos (robustez, sin fuga) |
+
+**Criterio de cierre de la Fase 0 cumplido:** sin hallazgos altos ni críticos explotables.
+Nota de entorno: un `<VirtualHost stocky.local:80>` atado a `127.0.0.1` hace que todo el
+tráfico IPv4 a `localhost` caiga en otro sitio; los escáneres deben usar IPv6 (`::1`).
 
 ---
 

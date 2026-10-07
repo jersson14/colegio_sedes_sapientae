@@ -18,7 +18,8 @@ con solicitudes de información.
 - URL local: `http://localhost/colegio_sedes_sapientae/`
 - Login: [index.php](index.php) → `js/console_usuario.js` → `controller/usuario/controlador_iniciar_sesion.php`
 - Panel: [view/index.php](view/index.php) (SPA-like: un solo layout AdminLTE con menús por rol)
-- BD: MySQL **puerto 3307**, base `colegio`. Credenciales en `C:/xampp/colegio_config/colegio.env`
+- BD: MySQL **puerto 3307**, base `colegio_sedes` en local (la base `colegio` del MariaDB local tiene
+  entradas huérfanas de InnoDB y no admite reimportar). Credenciales en `C:/xampp/colegio_config/colegio.env`
   (fuera de htdocs y de git; plantilla en [config/colegio.env.example](config/colegio.env.example), lector en [core/config.php](core/config.php))
 - Dump: `colegio.sql` (36 tablas, 254 procedimientos almacenados) — ignorado por git
 
@@ -92,19 +93,20 @@ mezclar inglés rompe la coherencia con los 254 SPs.
    tiene un `.htaccess` que impide ejecutar scripts. Las tareas solo se descargan por
    `controller/tareas/controlador_descargar_tarea.php` (0.3-B); su carpeta física
    `controller/tareas/controller/tareas/documentos/` está cerrada por `.htaccess` y fuera de git.
-   **Pendiente:** mover las subidas fuera del docroot (`storage/`) y verificar pertenencia (IDOR).
+   **Pendiente:** mover las subidas fuera del docroot (`storage/`).
 4. ~~**Credenciales de BD en claro**~~ ✅ (Fase 0.4): `colegio.env` fuera de htdocs; errores de conexión
-   solo al log. Usuario mínimo en [config/usuario_bd.sql](config/usuario_bd.sql) (**pendiente de crear**:
-   requiere la BD importada; en local aún se usa `root`).
-5. **Sin CSRF, sin rate limiting, sin cabeceras de seguridad, sin HTTPS forzado.**
-6. **`phpinfo.php`, `prueba.php`, `test_model.php`, `test_solicitudes.html`** expuestos en raíz.
-7. 🚨 **Datos personales publicados en el repositorio público de GitHub**: 118 fotografías
-   rastreadas (43 de estudiantes, 43 de docentes) más dumps con DNI, direcciones y
-   atenciones de salud recuperables del historial. **No es una vulnerabilidad a explotar:
-   ya está público.** Remediación en
-   [docs/RUNBOOK-LIMPIEZA-HISTORIAL.md](docs/RUNBOOK-LIMPIEZA-HISTORIAL.md).
-   **No hacer push a `origin` hasta completar ese runbook.**
+   solo al log. Usuario mínimo `colegio_app` ([config/usuario_bd.sql](config/usuario_bd.sql)), ya en uso en local.
+5. ~~**Sin CSRF, sin rate limiting, sin cabeceras**~~ ✅ CSRF en el guard; límite de intentos de login
+   y de la landing (`core/limite_login.php`); cabeceras y bloqueo de `.git`/`.sql`/`docs` en el
+   `.htaccess` raíz. **Pendiente:** HTTPS forzado (depende del despliegue) y CSP de scripts (Fase 3).
+6. ~~**Archivos de diagnóstico en la raíz**~~ ✅ Retirados del docroot.
+7. **Datos de piloto en el historial público de GitHub** (confirmado: no son reales). Las subidas
+   ya no se versionan, el hook `.githooks/pre-commit` lo impide y gitleaks no encuentra secretos.
+   Reescribir el historial es opcional ([runbook](docs/RUNBOOK-LIMPIEZA-HISTORIAL.md)).
+   **Antes de hacer push:** confirmar que producción ya tiene estos parches, porque
+   `docs/SEGURIDAD.md` describe cómo explotar la versión anterior.
 
+Estado completo y resultado del escaneo OWASP ZAP en [docs/SEGURIDAD.md](docs/SEGURIDAD.md) §0.
 Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 **Regla: cualquier controlador nuevo o tocado debe pasar por el guard de sesión/rol.**
 
