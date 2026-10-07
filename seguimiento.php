@@ -190,7 +190,7 @@
 <script src="js/console_usuario.js?rev=<?php echo time();?>"></script>
 <script src="js/console_horario.js?rev=<?php echo time();?>"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js" integrity="sha384-nLoOnA/BDh8A/jxqtckg4DumuCGOBYUnNJLZdQz/zfYNp3wcjGSoWTAzgko06G/2" crossorigin="anonymous"></script>
 <script>
    $(document).ready(function () {
     traerdatos();
