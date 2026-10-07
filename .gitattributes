@@ -1,0 +1,4 @@
+
+# Los hooks se ejecutan con sh: CRLF rompe el shebang en clones de Windows.
+.githooks/* text eol=lf
+*.sh text eol=lf
