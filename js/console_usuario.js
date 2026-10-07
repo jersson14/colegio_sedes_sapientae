@@ -61,6 +61,10 @@ function Iniciar_Sesion(){
           });
 
        }
+    }).fail(function(jqXHR){
+       // H-07: demasiados intentos fallidos (429).
+       let msg = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'No se pudo iniciar sesión. Intenta más tarde.';
+       Swal.fire({ icon: 'warning', title: 'Acceso bloqueado temporalmente', text: msg, heightAuto: false });
     })
 }
 

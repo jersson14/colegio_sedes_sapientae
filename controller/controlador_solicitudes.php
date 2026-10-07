@@ -6,9 +6,9 @@
 
 // Configurar headers para JSON
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+// Sin cabeceras CORS: la landing envía el formulario desde el mismo origen
+// (antes Access-Control-Allow-Origin: * permitía enviarlo desde cualquier sitio).
+require_once __DIR__ . '/../core/limite_login.php';
 
 // Función para sanitizar datos de entrada
 function sanitizar_input($data) {
@@ -34,6 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(array(
         'status' => 'error',
         'message' => 'Método no permitido'
+    ));
+    exit;
+}
+
+// H-14: máximo 5 solicitudes por IP y hora.
+if (!limite_publico('solicitud', 5, 3600)) {
+    http_response_code(429);
+    echo json_encode(array(
+        'status' => 'error',
+        'message' => 'Has enviado demasiadas solicitudes. Inténtalo de nuevo más tarde.'
     ));
     exit;
 }
