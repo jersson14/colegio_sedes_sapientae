@@ -1,6 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'ESTUDIANTE', 'AUXILIAR');
+    exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
     require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_asistencia.php';
 $MASIS = new Modelo_Asistencia();

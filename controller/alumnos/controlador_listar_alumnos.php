@@ -1,6 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
+    exigir_rol('ADMINISTRADOR');
     require '../../model/model_alumnos.php';
     $MALU = new Modelo_Alumnos();//Instaciamos
     $consulta = $MALU->Listar_Alumnos();

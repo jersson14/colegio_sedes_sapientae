@@ -1,6 +1,7 @@
 # Matriz de autorización por rol
 
-> Generada en la Fase 0.2 a partir de un análisis estático de alcanzabilidad:
+> Generada en la Fase 0.2 y revisada con `tools/analizar_roles.py` (resuelve funciones JS como el
+> navegador: los scripts de cada vista ganan a los globales). Análisis estático de alcanzabilidad:
 > menú por rol en `view/index.php` → vistas → `<script>` → funciones JS → URL del controlador.
 > Un manejador `$('#x').on(...)` solo cuenta si `#x` existe en el documento que carga el script.
 > **Fuente de verdad:** la línea `exigir_rol(...)` de cada controlador. Este archivo es la foto de revisión.
@@ -25,7 +26,7 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | Controlador | Roles | Nota |
 |---|---|---|
 | `controlador_eliminar_alumnos.php` | A |  |
-| `controlador_listar_alumnos.php` | A X |  |
+| `controlador_listar_alumnos.php` | A |  |
 | `controlador_modificar_alumno.php` | A |  |
 | `controlador_modificar_foto_estudiante.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_registrar_alumno.php` | A |  |
@@ -57,7 +58,7 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_select_grado.php` | Todos |  |
+| `controlador_cargar_select_grado.php` | A X |  |
 | `controlador_eliminar_asignatura.php` | A |  |
 | `controlador_listar_asignaturas.php` | A |  |
 | `controlador_listar_asignaturas_filtro.php` | A |  |
@@ -75,8 +76,8 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | `controlador_listar_alumnos_por_grado.php` | A X |  |
 | `controlador_listar_alumnos_totales.php` | A X |  |
 | `controlador_listar_alumnos_totales_dia.php` | A X |  |
-| `controlador_listar_alumnos_totales_dia_estudiante.php` | A E X | IDOR: verifica pertenencia (estudiante) |
-| `controlador_listar_alumnos_totales_estu.php` | A E X | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_alumnos_totales_dia_estudiante.php` | A E | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_alumnos_totales_estu.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_asistencias.php` | A X |  |
 | `controlador_listar_asistencias_fechas.php` | A X |  |
 | `controlador_registro_asistencias.php` | A X |  |
@@ -138,10 +139,10 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_curso_id_detalle.php` | Todos |  |
+| `controlador_cargar_curso_id_detalle.php` | A |  |
 | `controlador_eliminar_componente_curso_unico.php` | A |  |
 | `controlador_eliminar_componentes.php` | A |  |
-| `controlador_listar_componenetes.php` | A D |  |
+| `controlador_listar_componenetes.php` | A |  |
 | `controlador_listar_componenetes_filtro.php` | A |  |
 | `controlador_listar_componentes_curso.php` | A |  |
 | `controlador_listar_tabla_componentes_curso.php` | A |  |
@@ -166,7 +167,7 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | `controlador_cargar_select_especialidad.php` | A |  |
 | `controlador_eliminar_docente.php` | A |  |
 | `controlador_empresa_modificar_foto_docente.php` | A D | IDOR: verifica pertenencia (estudiante) |
-| `controlador_listar_docentes.php` | A X |  |
+| `controlador_listar_docentes.php` | A |  |
 | `controlador_modificar_docente.php` | A |  |
 | `controlador_registrar_docente.php` | A |  |
 
@@ -215,8 +216,8 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | Controlador | Roles | Nota |
 |---|---|---|
 | `controlador_eliminar_examenes.php` | A D |  |
-| `controlador_listar_alumnos_examen.php` | A D X |  |
-| `controlador_listar_examenes.php` | A D |  |
+| `controlador_listar_alumnos_examen.php` | A D |  |
+| `controlador_listar_examenes.php` | A |  |
 | `controlador_listar_examenes_estudiante_solo_pendiente.php` | Todos | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_examenes_filtro.php` | A |  |
 | `controlador_listar_examenes_profesor.php` | A D |  |
@@ -229,13 +230,13 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_curso_id_detalle.php` | Todos |  |
-| `controlador_cargar_select_horas.php` | Todos |  |
+| `controlador_cargar_curso_id_detalle.php` | A X |  |
+| `controlador_cargar_select_horas.php` | A X |  |
 | `controlador_eliminar_horario.php` | A X |  |
 | `controlador_eliminar_horario_unico.php` | A X |  |
 | `controlador_listar_horarios.php` | A X |  |
 | `controlador_listar_horarios_editar.php` | A X |  |
-| `controlador_listar_horarios_estudiante_id.php` | A E X | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_horarios_estudiante_id.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_horarios_estudiante_id_año.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_horarios_estudiante_todo.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_horarios_filtro.php` | A X |  |
@@ -276,7 +277,7 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | `controlador_listar_matriculas_filtro.php` | A |  |
 | `controlador_modificar_matrícula.php` | A |  |
 | `controlador_registro_matriculas.php` | A |  |
-| `controlador_traernivel.php` | Todos |  |
+| `controlador_traernivel.php` | A X |  |
 | `controlador_traertipo.php` | A |  |
 
 ## nivel_academico
@@ -292,32 +293,32 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_años_por_estudiante.php` | A D E X | IDOR: verifica pertenencia (estudiante) |
+| `controlador_cargar_años_por_estudiante.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_cargar_periodos.php` | A D |  |
-| `controlador_cargar_periodos2.php` | A D |  |
-| `controlador_cargar_periodos_cargados.php` | A D |  |
+| `controlador_cargar_periodos2.php` | A |  |
+| `controlador_cargar_periodos_cargados.php` | A |  |
 | `controlador_cargar_periodos_cargados_estudiante.php` | A D E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_cargar_periodos_cargados_profesor.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
 | `controlador_cargar_select_grado_profesor.php` | Todos |  |
 | `controlador_editar_notas.php` | A |  |
 | `controlador_editar_notas_padre.php` | A |  |
-| `controlador_listar_criterios_notas.php` | A D |  |
-| `controlador_listar_criterios_notas_mostrar.php` | A D |  |
-| `controlador_listar_criterios_notas_mostrar_estudiante.php` | A D E | IDOR: verifica pertenencia (estudiante) |
-| `controlador_listar_criterios_notas_mostrar_padres.php` | A D E | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_criterios_notas.php` | A |  |
+| `controlador_listar_criterios_notas_mostrar.php` | A |  |
+| `controlador_listar_criterios_notas_mostrar_estudiante.php` | A E | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_criterios_notas_mostrar_padres.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_criterios_notas_mostrar_profesor.php` | A D |  |
 | `controlador_listar_criterios_notas_profesor.php` | A D |  |
-| `controlador_listar_matriculas_filtro.php` | A D |  |
-| `controlador_listar_matriculas_filtro_alumnos.php` | A D E | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_matriculas_filtro.php` | A |  |
+| `controlador_listar_matriculas_filtro_alumnos.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_matriculas_filtro_profesor.php` | A D |  |
 | `controlador_registro_notas.php` | A D |  |
-| `controlador_registro_notas_padres.php` | A D |  |
+| `controlador_registro_notas_padres.php` | A |  |
 
 ## pago_pension
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_select_pension.php` | A X N P |  |
+| `controlador_cargar_select_pension.php` | A |  |
 | `controlador_detalle_pago_pension.php` | A |  |
 | `controlador_eliminar_pago_pension.php` | A |  |
 | `controlador_listar_matriculas.php` | A |  |
@@ -327,7 +328,7 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | `controlador_listar_pension_todo.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_tabla_pagos.php` | A E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_modificar_pago_solo.php` | A |  |
-| `controlador_traermonto.php` | A X N P |  |
+| `controlador_traermonto.php` | A |  |
 
 ## pensiones
 
@@ -390,9 +391,9 @@ el id propio sale de la sesión y matrícula/aula/pago/envío/carpeta se verific
 | `controlador_descargar_tarea.php` | A D E X | Fase 0.3-B: sustituye al listado público de la carpeta · IDOR: verifica pertenencia (estudiante) |
 | `controlador_eliminar_tarea.php` | A D X |  |
 | `controlador_listar_tabla_envio_tareas.php` | A D X |  |
-| `controlador_listar_tareas.php` | A D X |  |
+| `controlador_listar_tareas.php` | A X |  |
 | `controlador_listar_tareas_estudiante.php` | A E | IDOR: verifica pertenencia (estudiante) |
-| `controlador_listar_tareas_estudiante_solo.php` | A D E X | IDOR: verifica pertenencia (estudiante) |
+| `controlador_listar_tareas_estudiante_solo.php` | A D E | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_tareas_estudiante_solo_pendiente.php` | Todos | IDOR: verifica pertenencia (estudiante) |
 | `controlador_listar_tareas_filtro.php` | A X |  |
 | `controlador_listar_tareas_profesor.php` | A |  |
