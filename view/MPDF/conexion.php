@@ -11,6 +11,9 @@ try {
         config('DB_NAME', 'colegio'),
         (int) config('DB_PORT', '3306')
     );
+    // Charset explícito, como el PDO («set names utf8»): con el latin1 por defecto de otros servidores,
+    // los identificadores con ñ (año_escolar) llegan como bytes inválidos y la consulta falla.
+    $mysqli->set_charset('utf8');
     // sql_mode explícito, el mismo que en model/model_conexion.php (no depender del servidor).
     $modoSql = config('DB_SQL_MODE', 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION');
     $fijarModo = $mysqli->prepare('SET SESSION sql_mode = ?');

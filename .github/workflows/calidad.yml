@@ -182,4 +182,7 @@ jobs:
 
       - name: Log del servidor si algo falló
         if: failure()
-        run: tail -100 "$RUNNER_TEMP/servidor.log"
+        # También como anotaciones: los logs del job exigen permisos de administrador; las anotaciones no.
+        run: |
+          tail -100 "$RUNNER_TEMP/servidor.log"
+          grep -iE "error|warning|fatal|exception" "$RUNNER_TEMP/servidor.log" | tail -20 | cut -c1-900 | sed 's/^/::warning title=Servidor PHP::/'

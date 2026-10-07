@@ -97,7 +97,8 @@ try {
     const ajeno = await pedir(est.page, `view/MPDF/REPORTE/kardex.php?codigo=${ESC.pago.matricula}`, null, 'GET');
     check(ajeno.estado === 403, 'estudiante no ve el kardex de otra matrícula → 403');
     const propio = await pedir(est.page, `view/MPDF/REPORTE/kardex.php?codigo=${ESC.matriculaEstudiante}`, null, 'GET');
-    check(propio.estado === 200 && propio.tipo === 'application/pdf', 'estudiante ve su propio kardex (PDF)');
+    check(propio.estado === 200 && propio.tipo === 'application/pdf', 'estudiante ve su propio kardex (PDF)',
+      `(${propio.estado} ${propio.tipo} ${String(propio.texto ?? '').slice(0, 200)})`);
     await est.ctx.close();
   }
 
