@@ -129,3 +129,5 @@ Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 - **No refactorices en masa sin tests.** El plan de trabajo define el orden seguro
   (seguridad → infraestructura de pruebas → refactor → multi-tenant → features).
 - **Idioma**: comentarios, commits y documentación en español.
+- **Hook de pre-commit** (`.githooks/pre-commit`): bloquea dumps, fotos, subidas, `.env` y
+  credenciales en el código. Actívalo en cada clon con `git config core.hooksPath .githooks`.

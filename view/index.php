@@ -1944,14 +1944,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     listar_tareas_menu_estudiante();
     listar_examenes_menu();
     listar_examenes_menu_estudiante();
-    Total_estudiantes();
-    Total_docentes();
-    Total_administrativos();
-    Total_usuarios();
-    Total_ingresos();
-    Total_egresos();
-    Total_atención_psicologica();
-    Total_atención_enefermeria();
+    // Las tarjetas de totales solo existen en el panel del administrador (y sus
+    // endpoints solo lo permiten a él): no se piden si no hay dónde mostrarlas.
+    if (document.getElementById('total_estudiantes')) {
+      Total_estudiantes();
+      Total_docentes();
+      Total_administrativos();
+      Total_usuarios();
+      Total_ingresos();
+      Total_egresos();
+      Total_atención_psicologica();
+      Total_atención_enefermeria();
+    }
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {
       mostrarSiguienteModal();

@@ -1,0 +1,25 @@
+#!/bin/sh
+# Bloquea commits con datos personales o secretos (runbook §9).
+# Activar una vez por clon:  git config core.hooksPath .githooks
+# Git da por bueno un hook que muere por SIGPIPE (p. ej. `git commit | head`):
+# se ignora la señal y los mensajes van a stderr para que el bloqueo sea firme.
+trap '' PIPE
+exec 1>&2
+bloqueados=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE \
+  -e '(^|/)(fotos|FOTOS)/' \
+  -e '^controller/tareas/controller/tareas/documentos/' \
+  -e '\.sql$' \
+  -e '(^|/)\.env$' -e '\.env\.' -e '\.env$' \
+  | grep -vE '(^|/)fotos/(VACIO\.png|\.htaccess)$|(^|/)FOTOS/\.htaccess$|^config/usuario_bd\.sql$|^config/colegio\.env\.example$')
+if [ -n "$bloqueados" ]; then
+  echo "BLOQUEADO: el commit incluye archivos que nunca deben versionarse:"
+  echo "$bloqueados" | sed 's/^/  - /'
+  echo "Si es un falso positivo, revisa .githooks/pre-commit."
+  exit 1
+fi
+# Credenciales en el código: los archivos de conexión deben leer config().
+if git diff --cached -U0 -- '*.php' | grep -E '^\+' | grep -qiE "new (PDO|mysqli)\([^)]*['\"]root['\"]"; then
+  echo "BLOQUEADO: credenciales de BD escritas en el código (usa config() y colegio.env)."
+  exit 1
+fi
+exit 0
