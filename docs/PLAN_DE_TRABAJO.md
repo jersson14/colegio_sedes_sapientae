@@ -10,7 +10,7 @@
 |---|---|
 | 0 — Seguridad crítica | ✅ Cerrada: OWASP ZAP sin hallazgos altos explotables ([SEGURIDAD.md](SEGURIDAD.md) §0) |
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
-| 2 — Pruebas | ⏳ Iniciada: 47 unitarias + 19 de integración sobre el código de seguridad |
+| 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
 | 3 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
@@ -26,6 +26,10 @@
 - **Phinx en `require` (no `require-dev`)**: producción instala con `--no-dev` y debe poder migrar.
 - **Añadido al plan:** el CI también verifica el guard (266/266), la matriz de roles contra la
   interfaz (`tools/analizar_roles.py --estricto`) y secretos en todo el historial (gitleaks).
+**Fase 2, notas:** las unitarias de dominio (2.1) llegan con la extracción de servicios de la Fase 3;
+el 100 % de los 254 SP con prueba (2.2) sigue siendo meta de la Fase 4. Las escrituras E2E se
+envían desde la sesión del navegador con los mismos parámetros que el JS, no clicando formularios.
+
 - **Pendiente de la Fase 1:** proteger `main` en GitHub (Settings → Branches → requerir el check
   «Calidad»), cobertura con Xdebug/PCOV y PHP-CS-Fixer en el hook de pre-commit.
 

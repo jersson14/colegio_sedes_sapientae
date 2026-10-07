@@ -135,7 +135,11 @@ python tools/analizar_roles.py . salida.json --estricto   # matriz de roles vs. 
 DB_HOST=127.0.0.1 DB_PORT=3307 DB_NAME=<bd_vacia> DB_USER=root DB_PASS= DB_MIGRACION_USER=root   vendor/bin/phinx migrate && vendor/bin/phpunit --testsuite=Integration
 ```
 
-- CI en `.github/workflows/calidad.yml` (los mismos pasos + gitleaks + MariaDB 10.4). **Sin CI en verde no se mergea.**
+- CI en `.github/workflows/calidad.yml` (los mismos pasos + gitleaks + MariaDB 10.4 + caracterización
+  y flujos E2E en Chrome). **Sin CI en verde no se mergea.** Capas y cómo ejecutarlas: [tests/README.md](tests/README.md).
+- **Antes de tocar un módulo heredado**, su comportamiento debe estar en `tests/Caracterizacion/grabacion.json`;
+  si cambias una respuesta a propósito, regraba y revisa el diff. Datos de prueba anonimizados:
+  `tools/generar_datos_prueba.php` (nunca subas datos reales: el generador aborta si detecta uno).
 - Código nuevo en `src/` (namespace `App\`, PSR-4); pruebas en `tests/Unit` y `tests/Integration`.
 - PHPStan nivel 5 y PSR-12 cubren `src/`, `core/`, `tools/`, `tests/`, `database/`; lo heredado se
   formatea y tipa al migrarlo, nunca en masa.
