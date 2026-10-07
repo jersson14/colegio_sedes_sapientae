@@ -146,3 +146,21 @@ for r in ROLES:
     for k in sorted(de_mas[r]): print('    -', k)
     print(f'  PERMISOS DE MENOS ({len(de_menos[r])}):')
     for k, o in sorted(de_menos[r]): print('    !', k, '   <=', o[:160])
+
+# --estricto (CI): falla si aparece un permiso de más, o uno de menos que no esté
+# en la lista de diferencias aceptadas (documentadas en docs/MATRIZ_ROLES.md).
+ESPERADOS_DE_MENOS = {
+    # Las tarjetas de totales solo existen en el panel del administrador.
+    *[(r, f'controller/usuario/controlador_total_{t}.php')
+      for r in ROLES if r != 'ADMINISTRADOR'
+      for t in ('administrativos', 'docentes', 'egresos', 'enfermeria', 'estudiantes',
+                'ingresos', 'psicologia', 'usuarios')],
+    # listar_tareas_menu() corre en el panel común, pero su tabla solo existe para el docente.
+    ('ENFERMERA', 'controller/tareas/controlador_descargar_tarea.php'),
+    ('PSICOLOGA', 'controller/tareas/controlador_descargar_tarea.php'),
+}
+if '--estricto' in sys.argv:
+    problemas = [f'DE MÁS   {r}: {k}' for r in ROLES for k in de_mas[r]]
+    problemas += [f'DE MENOS {r}: {k}' for r in ROLES for k, _ in de_menos[r] if (r, k) not in ESPERADOS_DE_MENOS]
+    print('\n' + ('\n'.join(problemas) if problemas else 'Matriz de roles alineada con la interfaz.'))
+    sys.exit(1 if problemas else 0)

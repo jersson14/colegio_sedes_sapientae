@@ -35,7 +35,7 @@ controller/<modulo>/controlador_<accion>.php   ← 263 archivos, 1 endpoint = 1 
 model/model_<x>.php  (clase Modelo_X extends conexionBD)
     │  PDO prepare("CALL SP_...(?,?)")
     ▼
-MySQL — toda la lógica SQL vive en 254 stored procedures
+MySQL — toda la lógica SQL vive en 254 stored procedures (+ 4 eventos programados)
 ```
 
 - **No hay router ni front controller.** La URL es la ruta física del archivo.
@@ -63,8 +63,11 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 
 ## Cosas que NO debes asumir
 
-- **No hay tests.** No existe PHPUnit, Jest ni CI. Si añades tests, es trabajo nuevo (ver plan).
-- **No hay Composer en la raíz.** Solo `view/MPDF/composer.json` y `package.json` (choices.js).
+- **Hay 4 eventos programados en la BD** (no en PHP): cada minuto pasan tareas y exámenes vencidos a
+  `FINALIZADO`/`REALIZADO`, y cada año actualizan el estado de los alumnos. Requieren
+  `event_scheduler=ON`; en el XAMPP local está **OFF**, así que esas transiciones no ocurren en local.
+- **El código heredado sigue fuera de `src/`.** `controller/`, `model/` y `view/` no se han movido a
+  `legacy/` ni el docroot a `public/`: las URLs dependen de las rutas físicas (migración progresiva).
 - **`empresa_id` existe pero no se usa.** Solo en `usuario` y `empresa`; las otras 34 tablas no
   tienen discriminador de tenant. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md).
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
@@ -121,6 +124,24 @@ Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 | [docs/MULTITENANT.md](docs/MULTITENANT.md) | Viabilidad colegios + institutos, diseño multi-tenant |
 | [docs/PLAN_DE_TRABAJO.md](docs/PLAN_DE_TRABAJO.md) | Fases, SOLID/Clean Code, estrategia de testing, empaquetado comercial |
 | [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) | Hosting compartido vs VPS vs AWS, costos, CI/CD |
+
+## Calidad y pruebas (Fase 1)
+
+```bash
+composer install                 # herramientas en vendor/ (bloqueado por HTTP)
+composer calidad                 # lint + guard + PSR-12 + PHPStan + pruebas unitarias
+python tools/analizar_roles.py . salida.json --estricto   # matriz de roles vs. interfaz
+# Integración: contra una BD creada con Phinx (nunca contra la de trabajo)
+DB_HOST=127.0.0.1 DB_PORT=3307 DB_NAME=<bd_vacia> DB_USER=root DB_PASS= DB_MIGRACION_USER=root   vendor/bin/phinx migrate && vendor/bin/phpunit --testsuite=Integration
+```
+
+- CI en `.github/workflows/calidad.yml` (los mismos pasos + gitleaks + MariaDB 10.4). **Sin CI en verde no se mergea.**
+- Código nuevo en `src/` (namespace `App\`, PSR-4); pruebas en `tests/Unit` y `tests/Integration`.
+- PHPStan nivel 5 y PSR-12 cubren `src/`, `core/`, `tools/`, `tests/`, `database/`; lo heredado se
+  formatea y tipa al migrarlo, nunca en masa.
+- **Cambios de esquema solo con migraciones** (`vendor/bin/phinx create NombreEnCamelCase`). La inicial
+  (`database/esquema/esquema_inicial.sql`, sin datos) se registra sin ejecutar en una BD existente.
+  Las migraciones usan `DB_MIGRACION_USER` (con DDL), nunca `colegio_app`.
 
 ## Cómo trabajar aquí
 

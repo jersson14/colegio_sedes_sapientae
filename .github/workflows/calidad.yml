@@ -1,0 +1,107 @@
+# CI de calidad y seguridad (Fase 1 del plan de trabajo).
+# Regla: con este workflow en rojo no se mergea a main.
+name: Calidad
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calidad-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: Lint, seguridad, estilo, PHPStan y pruebas unitarias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks revisa todo el historial
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mbstring, fileinfo, intl
+          coverage: none
+          tools: composer:v2
+
+      - name: Dependencias
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Vulnerabilidades conocidas en dependencias
+        run: composer audit
+
+      - name: Sintaxis de todo el PHP (php -l)
+        run: php tools/lint.php
+
+      - name: Todo endpoint pasa por el guard de sesión
+        run: php tools/verificar_guard.php
+
+      - name: Matriz de roles alineada con la interfaz
+        run: python3 tools/analizar_roles.py . "$RUNNER_TEMP/roles.json" --estricto
+
+      - name: Estilo PSR-12
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Análisis estático (PHPStan)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+      - name: Pruebas unitarias
+        run: vendor/bin/phpunit --testsuite=Unit
+
+      - name: Secretos en el historial (gitleaks)
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o checksums.txt \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          grep "linux_x64.tar.gz" checksums.txt | sed 's/ .*/  gitleaks.tar.gz/' | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks git . --log-opts="--all" --redact --no-banner
+
+  integracion:
+    name: Esquema (Phinx) y pertenencia del dato contra MariaDB
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.4 # misma versión que el XAMPP del proyecto
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: colegio_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_NAME: colegio_ci
+      DB_USER: root
+      DB_PASS: root
+      DB_MIGRACION_USER: root
+      DB_MIGRACION_PASS: root
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mbstring, fileinfo, intl
+          coverage: none
+          tools: composer:v2
+
+      - name: Dependencias
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Crear el esquema con las migraciones
+        run: vendor/bin/phinx migrate -c phinx.php
+
+      - name: Pruebas de integración
+        run: vendor/bin/phpunit --testsuite=Integration

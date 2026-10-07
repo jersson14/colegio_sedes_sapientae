@@ -4,6 +4,31 @@
 > "plataforma SaaS multi-tenant para colegios e institutos", sin detener su
 > operación y sin reescribirlo desde cero.
 
+## Estado — 2026-10-07
+
+| Fase | Estado |
+|---|---|
+| 0 — Seguridad crítica | ✅ Cerrada: OWASP ZAP sin hallazgos altos explotables ([SEGURIDAD.md](SEGURIDAD.md) §0) |
+| 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
+| 2 — Pruebas | ⏳ Iniciada: 47 unitarias + 19 de integración sobre el código de seguridad |
+| 3 en adelante | Pendiente |
+
+**Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
+
+- **No se movió lo heredado a `legacy/` ni el docroot a `public/`.** Todas las URLs del sistema son
+  rutas físicas (`controller/x/y.php`, `view/...`): moverlas rompe la aplicación entera. Se hará
+  con el front controller de la Fase 3. Mientras tanto, el `.htaccess` raíz bloquea por HTTP
+  `vendor/`, `src/`, `tests/`, `database/`, `storage/`, `.git`, `*.sql` y `docs/`.
+- **Sin `vlucas/phpdotenv` ni `monolog`.** `core/config.php` ya lee `colegio.env` fuera del docroot
+  (Fase 0.4) sin dependencias; Monolog entrará cuando haya registro de auditoría (H-15).
+- **CI con MariaDB 10.4 en lugar de MySQL 8.4**: es el motor real del proyecto (XAMPP) y el que
+  ejecuta los 254 procedimientos; validar contra otro motor daría falsos verdes o falsos rojos.
+- **Phinx en `require` (no `require-dev`)**: producción instala con `--no-dev` y debe poder migrar.
+- **Añadido al plan:** el CI también verifica el guard (266/266), la matriz de roles contra la
+  interfaz (`tools/analizar_roles.py --estricto`) y secretos en todo el historial (gitleaks).
+- **Pendiente de la Fase 1:** proteger `main` en GitHub (Settings → Branches → requerir el check
+  «Calidad»), cobertura con Xdebug/PCOV y PHP-CS-Fixer en el hook de pre-commit.
+
 ---
 
 ## 0. Estrategia general

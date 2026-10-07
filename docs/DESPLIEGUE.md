@@ -221,18 +221,40 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
 
 **Bloqueantes (sin esto no se despliega):**
 
-- [ ] Fase 0 de [SEGURIDAD.md](SEGURIDAD.md) completada y verificada
-- [ ] Docroot apuntando a `public/` — que `model/`, `.env`, `storage/` y `.git` sean inalcanzables por HTTP
+- [x] Fase 0 de [SEGURIDAD.md](SEGURIDAD.md) completada y verificada (ZAP, 2026-10-07)
+- [ ] **`AllowOverride All`** (o al menos `FileInfo AuthConfig Limit Options Indexes`) en el
+      directorio de la app, con `mod_rewrite` y `mod_headers` activos. **Toda la protección de
+      `.git`, `*.sql`, `docs/`, `vendor/`, `core/`, `config/` y de las carpetas de subidas está en
+      `.htaccess`**: con `AllowOverride None` se ignora en silencio. Verificar tras desplegar:
+      `curl -I https://<dominio>/.git/config` → 404 y `curl -I https://<dominio>/colegio.sql` → 403
+- [ ] Docroot apuntando a `public/` cuando exista (Fase 3); hasta entonces, lo anterior es obligatorio
 - [ ] HTTPS con redirección forzada + HSTS (certificado wildcard si hay subdominios de tenant)
-- [ ] `display_errors = Off`, `log_errors = On`, `expose_php = Off` en producción
-- [ ] Usuario de MySQL sin privilegios de `root`, limitado a la base de la aplicación
-- [ ] `phpinfo.php`, `prueba.php`, `test_*` eliminados
-- [ ] Subidas fuera del docroot, o `.htaccess` con el motor PHP desactivado en esa carpeta
+- [ ] `display_errors = Off`, `log_errors = On`, `expose_php = Off` en producción (la app ya fuerza
+      `display_errors=0` salvo `APP_DEBUG=true`)
+- [ ] `ServerTokens Prod` y `ServerSignature Off` en `httpd.conf` (no se puede desde `.htaccess`)
+- [ ] `colegio.env` fuera del docroot (`/var/www/colegio_config/colegio.env`, `chmod 640`,
+      dueño `root:www-data`) con `APP_DEBUG=false` — plantilla en `config/colegio.env.example`
+- [ ] **`event_scheduler = ON`** en MySQL/MariaDB: 4 eventos de la BD pasan tareas y exámenes
+      vencidos a FINALIZADO/REALIZADO y actualizan alumnos al cerrar el año
+- [ ] Usuario de MySQL sin privilegios de `root`: `colegio_app` según `config/usuario_bd.sql`
+      (EXECUTE + SELECT; INSERT/UPDATE solo en `solicitudes_informacion`), y un usuario de
+      migraciones aparte (`DB_MIGRACION_USER`) con DDL, que la aplicación nunca usa
+- [x] `phpinfo.php`, `prueba.php`, `test_*` eliminados del repositorio
+- [x] `.htaccess` con el motor PHP desactivado en las carpetas de subidas (mover a `storage/`: Fase 3)
 - [ ] Backups automáticos **con restauración probada** (un backup no verificado no es un backup)
+
+**Procedimiento de cada despliegue:**
+
+```bash
+git pull
+composer install --no-dev --optimize-autoloader   # solo Phinx en producción
+vendor/bin/phinx migrate                          # la inicial se registra sin tocar el esquema existente
+```
 
 **Importantes:**
 
-- [ ] `fail2ban` sobre SSH y sobre los intentos fallidos de login de la aplicación
+- [ ] `fail2ban` sobre SSH. El login ya limita intentos (`core/limite_login.php`, registra en el log
+      de PHP «Login bloqueado»): `fail2ban` puede leer esa línea para bloquear la IP en el firewall
 - [ ] Firewall: solo 80/443 públicos; SSH por clave y con puerto/IP restringidos
 - [ ] Monitoreo (UptimeRobot o similar) + alertas de disco lleno y de caída
 - [ ] Rotación de logs (logrotate) y retención definida
