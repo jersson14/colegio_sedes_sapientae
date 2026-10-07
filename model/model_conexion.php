@@ -18,6 +18,10 @@ class conexionBD {
             $this->pdo = new PDO("mysql:host=$host;port=$puerto;dbname=$bdName", $usuario, $contrasena);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("set names utf8");
+            // El sistema se construyó sobre el sql_mode permisivo de XAMPP (p. ej. '' en un parámetro INT
+            // se toma como 0). Con el modo estricto por defecto de otros servidores esas llamadas fallan
+            // con 500: se fija explícitamente para no depender de la configuración del servidor.
+            $this->pdo->prepare("SET SESSION sql_mode = ?")->execute([config('DB_SQL_MODE', 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION')]);
             // Solo pruebas: congela NOW()/CURDATE() para que los SP que filtran por fecha sean deterministas.
             if (config('APP_ENTORNO') === 'prueba' && config('DB_FECHA_PRUEBA')) {
                 $this->pdo->prepare("SET SESSION timestamp = UNIX_TIMESTAMP(?)")->execute([config('DB_FECHA_PRUEBA')]);

@@ -11,6 +11,11 @@ try {
         config('DB_NAME', 'colegio'),
         (int) config('DB_PORT', '3306')
     );
+    // sql_mode explícito, el mismo que en model/model_conexion.php (no depender del servidor).
+    $modoSql = config('DB_SQL_MODE', 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION');
+    $fijarModo = $mysqli->prepare('SET SESSION sql_mode = ?');
+    $fijarModo->bind_param('s', $modoSql);
+    $fijarModo->execute();
     // Solo pruebas: congela NOW()/CURDATE() (ver model/model_conexion.php).
     if (config('APP_ENTORNO') === 'prueba' && config('DB_FECHA_PRUEBA')) {
         $fijar = $mysqli->prepare('SET SESSION timestamp = UNIX_TIMESTAMP(?)');
