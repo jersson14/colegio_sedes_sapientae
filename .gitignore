@@ -8,13 +8,16 @@ controller/**/FOTOS/*
 controller/tareas/documentos/
 # Ruta física real de las tareas (las rutas de la BD son relativas a controller/tareas/).
 controller/tareas/controller/tareas/documentos/
-storage/
+storage/*
+!storage/README.md
 
 # === Dumps de base de datos ===
 # No se publican credenciales ni datos, ni de piloto ni reales.
 *.sql
 # Excepción: script del usuario de BD con privilegios mínimos (sin datos ni secretos).
 !config/usuario_bd.sql
+# Excepción: esquema SIN datos (estructura, procedimientos y eventos) para Phinx.
+!database/esquema/*.sql
 
 # === Credenciales ===
 # Viven en colegio.env FUERA del docroot (core/config.php). Los archivos de conexión
@@ -51,3 +54,8 @@ desktop.ini
 # Excepción: el .htaccess que impide ejecutar código en las carpetas de subidas (Fase 0.3).
 !controller/**/fotos/.htaccess
 !controller/**/FOTOS/.htaccess
+
+# === Herramientas de calidad (Fase 1) ===
+/.phpunit.cache/
+/.php-cs-fixer.cache
+/var/

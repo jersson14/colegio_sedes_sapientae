@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -48,7 +49,7 @@ function limite_actualizar(string $clave, callable $cambio): array
     $estado = json_decode((string)stream_get_contents($f), true) ?: [];
     $estado += ['fallos' => [], 'bloqueado_hasta' => 0, 'reincidencias' => 0];
     $ahora = time();
-    $estado['fallos'] = array_values(array_filter($estado['fallos'], fn($t) => $t > $ahora - LIMITE_VENTANA));
+    $estado['fallos'] = array_values(array_filter($estado['fallos'], fn ($t) => $t > $ahora - LIMITE_VENTANA));
     $estado = $cambio($estado, $ahora);
     ftruncate($f, 0);
     rewind($f);
@@ -64,7 +65,7 @@ function limite_bloqueo_restante(string $usuario): int
     $ahora = time();
     $max = 0;
     foreach (['u|' . strtolower($usuario) . '|' . limite_ip(), 'ip|' . limite_ip()] as $clave) {
-        $e = limite_actualizar($clave, fn($e) => $e);
+        $e = limite_actualizar($clave, fn ($e) => $e);
         $max = max($max, $e['bloqueado_hasta'] - $ahora);
     }
     return max(0, $max);
@@ -99,7 +100,7 @@ function limite_publico(string $accion, int $max, int $ventana): bool
 {
     $permitido = true;
     limite_actualizar('pub|' . $accion . '|' . limite_ip(), function (array $e, int $ahora) use ($max, $ventana, &$permitido) {
-        $e['usos'] = array_values(array_filter($e['usos'] ?? [], fn($t) => $t > $ahora - $ventana));
+        $e['usos'] = array_values(array_filter($e['usos'] ?? [], fn ($t) => $t > $ahora - $ventana));
         if (count($e['usos']) >= $max) {
             $permitido = false;
         } else {
@@ -112,6 +113,8 @@ function limite_publico(string $accion, int $max, int $ventana): bool
 
 function limite_registrar_exito(string $usuario): void
 {
-    limite_actualizar('u|' . strtolower($usuario) . '|' . limite_ip(),
-        fn($e) => ['fallos' => [], 'bloqueado_hasta' => 0, 'reincidencias' => 0]);
+    limite_actualizar(
+        'u|' . strtolower($usuario) . '|' . limite_ip(),
+        fn ($e) => ['fallos' => [], 'bloqueado_hasta' => 0, 'reincidencias' => 0]
+    );
 }

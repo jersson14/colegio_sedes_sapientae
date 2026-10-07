@@ -8,6 +8,13 @@ Options -Indexes
 # 404 en vez de 403 para no confirmar que existen. Se respeta /.well-known/ (certificados).
 RedirectMatch 404 "/\.(?!well-known/)"
 
+# Carpetas de desarrollo e infraestructura (Fase 1): solo se usan desde PHP o la consola.
+# El patrón es relativo a la raíz del proyecto: no afecta a plugins con carpetas homónimas.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(vendor|node_modules|tests|database|storage|src)(/|$) - [R=404,L]
+</IfModule>
+
 # Dumps, documentación interna, manuales y metadatos de dependencias.
 <FilesMatch "(?i)(\.(sql|md|docx?|log|bak|old|orig|ini|lock|ya?ml|sh|py|dist)|^(composer|package)(-lock)?\.json)$">
     Require all denied

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -119,26 +120,44 @@ function documentos_validados(string $campo = 'archivos'): array
         $item = ['error' => $f['error'][$i], 'tmp_name' => $f['tmp_name'][$i], 'size' => $f['size'][$i]];
         subida_comprobar($item, DOCUMENTO_MAX_BYTES);
 
-        $original = basename(str_replace('\\', '/', $original));
-        $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
-        if (!in_array($ext, DOCUMENTO_EXTENSIONES, true)) {
-            subida_rechazar('Tipo de archivo no permitido: ' . htmlspecialchars($original, ENT_QUOTES, 'UTF-8')
+        $nombre = nombre_documento_seguro($original, $usados);
+        if ($nombre === null) {
+            subida_rechazar('Tipo de archivo no permitido: '
+                . htmlspecialchars(basename(str_replace('\\', '/', $original)), ENT_QUOTES, 'UTF-8')
                 . '. Permitidos: ' . implode(', ', DOCUMENTO_EXTENSIONES) . '.');
         }
-        $base = pathinfo($original, PATHINFO_FILENAME);
-        $base = preg_replace('/[^\p{L}\p{N} _-]+/u', '_', $base) ?? '';
-        $base = mb_substr(trim($base, " _-"), 0, 100);
-        if ($base === '') {
-            $base = 'ARCHIVO';
-        }
-        $nombre = mb_strtoupper($base . '.' . $ext, 'UTF-8');
-        for ($n = 2; isset($usados[$nombre]); $n++) {
-            $nombre = mb_strtoupper($base . '_' . $n . '.' . $ext, 'UTF-8');
-        }
-        $usados[$nombre] = true;
         $salida[] = ['tmp' => $item['tmp_name'], 'nombre' => $nombre];
     }
     return $salida;
+}
+
+/**
+ * Nombre seguro para un documento subido, o null si su extensión no está permitida.
+ * Conserva el nombre original (útil al descargar) pero solo con letras, números,
+ * espacio, guion y guion bajo, y UNA extensión de la lista blanca. $usados evita
+ * colisiones dentro de la misma subida (NOMBRE.PDF, NOMBRE_2.PDF…).
+ *
+ * @param array<string, true> $usados
+ */
+function nombre_documento_seguro(string $original, array &$usados): ?string
+{
+    $original = basename(str_replace('\\', '/', $original));
+    $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+    if (!in_array($ext, DOCUMENTO_EXTENSIONES, true)) {
+        return null;
+    }
+    $base = pathinfo($original, PATHINFO_FILENAME);
+    $base = preg_replace('/[^\p{L}\p{N} _-]+/u', '_', $base) ?? '';
+    $base = mb_substr(trim($base, " _-"), 0, 100);
+    if ($base === '') {
+        $base = 'ARCHIVO';
+    }
+    $nombre = mb_strtoupper($base . '.' . $ext, 'UTF-8');
+    for ($n = 2; isset($usados[$nombre]); $n++) {
+        $nombre = mb_strtoupper($base . '_' . $n . '.' . $ext, 'UTF-8');
+    }
+    $usados[$nombre] = true;
+    return $nombre;
 }
 
 /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Verifica que todo controlador y reporte MPDF incluya core/guard.php (Fase 0.2).
  * Uso:  php tools/verificar_guard.php     → código de salida 1 si falta alguno.

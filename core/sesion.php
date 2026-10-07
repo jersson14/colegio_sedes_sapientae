@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -38,7 +39,7 @@ function sesion_crear(array $fila): void
     sesion_iniciar();
     session_regenerate_id(true); // evita fijación de sesión
 
-    $texto = static fn($v): string => htmlspecialchars((string)($v ?? ''), ENT_QUOTES, 'UTF-8');
+    $texto = static fn ($v): string => htmlspecialchars((string)($v ?? ''), ENT_QUOTES, 'UTF-8');
 
     $_SESSION = [];
     $_SESSION['S_ID']              = $texto($fila['usu_id']);

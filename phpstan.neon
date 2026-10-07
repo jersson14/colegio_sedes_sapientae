@@ -1,0 +1,18 @@
+# PHPStan (Fase 1). Meta del plan: nivel 8 sobre src/.
+# El código heredado (controller/, model/, view/) queda fuera hasta su migración.
+parameters:
+    level: 5
+    paths:
+        - src
+        - core
+        - tools
+        - tests
+        - database
+    excludePaths:
+        analyseAndScan:
+            - tests/*/.gitkeep
+    # Símbolos heredados que usa el código analizado (se leen, no se analizan).
+    scanFiles:
+        - model/model_conexion.php
+    tmpDir: var/phpstan
+    reportUnmatchedIgnoredErrors: false
