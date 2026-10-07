@@ -1,12 +1,15 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'DOCENTE');
+    require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_notas.php';
 $MNOTAS = new Modelo_Notas();
 
 if (isset($_POST['registros'])) {
     $registros = json_decode($_POST['registros'], true); // Decodificar JSON a un array PHP
     if (is_array($registros)) { // Verificar que $registros es un array válido
+        // IDOR: cada nota debe ir a un criterio del curso del docente y a un alumno de esa aula.
+        exigir_notas_propias($registros);
         // Convertir el array a JSON
         $registros_json = json_encode($registros);
 

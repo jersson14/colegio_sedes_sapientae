@@ -81,7 +81,8 @@ mezclar inglés rompe la coherencia con los 254 SPs.
    CSRF (0.5): el guard exige `X-CSRF-Token` en todo no-GET (419 si falta);
    el panel lo añade con `$.ajaxPrefilter`. Pertenencia (IDOR) del ESTUDIANTE con
    [core/pertenencia.php](core/pertenencia.php): id propio desde la sesión y matrícula/aula/pago/
-   envío verificados contra `matricula.usu_id`. **Pendiente: DOCENTE → solo sus aulas.**
+   envío verificados contra `matricula.usu_id`; DOCENTE limitado a sus cursos y aulas.
+   Auditoría de permisos por rol: `python tools/analizar_roles.py . salida.json`.
 2. ~~**La sesión se construye desde el cliente.**~~ ✅ Resuelto (Fase 0.1): la sesión la crea
    `controlador_iniciar_sesion.php` con `core/sesion.php` a partir de la BD;
    `controlador_crear_sesion.php` fue eliminado. Usa `sesion_activa()` / `sesion_crear()`.

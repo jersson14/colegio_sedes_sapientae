@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_tareas.php';
 
 $MTA = new Modelo_Tareas(); // Instanciamos
@@ -7,6 +8,7 @@ $MTA = new Modelo_Tareas(); // Instanciamos
 // Verificamos si los parámetros existen antes de usarlos
 $id = isset($_POST['id']) ? htmlspecialchars($_POST['id'], ENT_QUOTES, 'UTF-8') : null;
 $idpro = isset($_POST['idpro']) ? htmlspecialchars($_POST['idpro'], ENT_QUOTES, 'UTF-8') : null;
+$idpro = id_usuario_propio($idpro); // IDOR: la UI siempre envía el id propio
 
 // Verificamos que ambos parámetros tengan valor antes de hacer la consulta
 if ($id !== null && $idpro !== null) {

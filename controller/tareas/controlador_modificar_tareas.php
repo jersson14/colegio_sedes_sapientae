@@ -2,16 +2,20 @@
     require_once __DIR__ . '/../../core/guard.php';
     exigir_rol('ADMINISTRADOR', 'DOCENTE', 'AUXILIAR');
     require_once __DIR__ . '/../../core/subidas.php';
+    require_once __DIR__ . '/../../core/pertenencia.php';
 require '../../model/model_tareas.php';
 $MTA = new Modelo_Tareas(); // Instanciar el modelo
 
 // DATOS DE LA TAREA
 $id = strtoupper(htmlspecialchars($_POST['id'] ?? '', ENT_QUOTES, 'UTF-8'));
 $asig = strtoupper(htmlspecialchars($_POST['asig'] ?? '', ENT_QUOTES, 'UTF-8'));
+exigir_curso_propio((string)$asig); // IDOR
 $tema = strtoupper(htmlspecialchars($_POST['tema'] ?? '', ENT_QUOTES, 'UTF-8'));
 $fecha = strtoupper(htmlspecialchars($_POST['fecha'] ?? '', ENT_QUOTES, 'UTF-8'));
 $descrip = strtoupper(htmlspecialchars($_POST['descrip'] ?? '', ENT_QUOTES, 'UTF-8'));
 $archivoactual = htmlspecialchars($_POST['archivoactual'] ?? '', ENT_QUOTES, 'UTF-8');
+// IDOR: la tarea debe ser de un curso del docente y la carpeta a reemplazar sale de la BD.
+$archivoactual = exigir_tarea_propia((string)$id, $archivoactual);
 
 // Crear una carpeta única para este conjunto de archivos
 $timestamp = time();
