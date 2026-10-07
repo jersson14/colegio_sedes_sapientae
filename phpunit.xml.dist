@@ -5,7 +5,10 @@
          cacheDirectory=".phpunit.cache"
          colors="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         failOnPhpunitDeprecation="true">
     <testsuites>
         <!-- Sin BD ni red: se ejecutan en cada push. -->
         <testsuite name="Unit">

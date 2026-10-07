@@ -16,7 +16,8 @@
     $response = 1; // Suponemos éxito por defecto
     
     for ($i = 0; $i < count($array_id); $i++) {
-        $consulta = $MPP->Registrar_detalle_Pago_Pension($array_id[$i], $array_concepto[$i], $array_pension[$i], $array_subtotal[$i]);
+        // El ingreso se registra a nombre de quien cobra (antes, siempre el usuario 9).
+        $consulta = $MPP->Registrar_detalle_Pago_Pension($array_id[$i], $array_concepto[$i], $array_pension[$i], $array_subtotal[$i], (int)$_SESSION['S_ID']);
         if ($consulta == 2) {
             $response = 2; // Cambiamos el estado si existe algún duplicado
             break; // Salimos si ya existe la pensión

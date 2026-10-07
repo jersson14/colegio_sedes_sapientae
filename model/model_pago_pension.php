@@ -137,14 +137,15 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        function Registrar_detalle_Pago_Pension($array_id,$array_concepto,$array_pension,$array_subtotal){
+        function Registrar_detalle_Pago_Pension($array_id,$array_concepto,$array_pension,$array_subtotal,$idusuario){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_DETALLE_PENSION_PAGO(?,?,?,?)";
+            $sql = "CALL SP_REGISTRAR_DETALLE_PENSION_PAGO(?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$array_id);
             $query ->bindParam(2,$array_concepto);
             $query ->bindParam(3,$array_pension);
             $query ->bindParam(4,$array_subtotal);
+            $query ->bindParam(5,$idusuario); // quién cobra
 
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){

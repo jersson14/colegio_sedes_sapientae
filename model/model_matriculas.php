@@ -86,9 +86,9 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo){
+        public function Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,$idusuario){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?,?)";
+            $sql = "CALL SP_REGISTRAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$estu);
             $query ->bindParam(2,$año);
@@ -102,6 +102,7 @@
             $query ->bindParam(10,$usu);
             $query ->bindParam(11,$contra);
             $query ->bindParam(12,$correo);
+            $query ->bindParam(13,$idusuario); // quién cobra los pagos de la matrícula
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;

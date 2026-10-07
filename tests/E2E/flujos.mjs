@@ -126,20 +126,16 @@ try {
     });
     check(otra.texto === '2', 'no se matricula dos veces en el mismo año');
     await ctx.close();
-    const nuevo = await login(browser, 'MAT18E2E', 'Clave.Nueva1');
-    await nuevo.page.waitForURL('**/view/index.php', { timeout: 20000 }).catch(() => {});
-    check(nuevo.page.url().endsWith('view/index.php'), 'el alumno matriculado puede iniciar sesión con su nueva cuenta');
-    await nuevo.ctx.close();
+    // El usuario entra tal como se escribió (antes: la matrícula lo guardaba en mayúsculas y el login
+    // distinguía mayúsculas, así que «mat18e2e» solo entraba escribiendo «MAT18E2E»).
+    for (const escrito of ['mat18e2e', 'MAT18E2E']) {
+      const nuevo = await login(browser, escrito, 'Clave.Nueva1');
+      await nuevo.page.waitForURL('**/view/index.php', { timeout: 20000 }).catch(() => {});
+      check(nuevo.page.url().endsWith('view/index.php'), `el alumno matriculado entra con su cuenta escrita como «${escrito}»`);
+      await nuevo.ctx.close();
+    }
 
-    // DEFECTO: la matrícula guarda el usuario en MAYÚSCULAS (strtoupper) y el login compara con
-    // BINARY (distingue mayúsculas): el usuario «mat18e2e» solo entra escribiendo «MAT18E2E».
-    const minus = await login(browser, 'mat18e2e', 'Clave.Nueva1');
-    const msgMinus = await minus.page.locator('.swal2-html-container').textContent({ timeout: 10000 }).catch(() => '');
-    check(msgMinus.includes('Incorrectos'), 'DEFECTO: con el usuario en minúsculas, tal como se escribió, no se puede entrar');
-    await minus.ctx.close();
-
-    // DEFECTO: SP_REGISTRAR_MATRICULA declara USU VARCHAR(8) y el formulario no limita la longitud:
-    // un usuario más largo se guarda truncado sin aviso y la persona no puede entrar con lo que escribió.
+    // Un usuario de más de 8 caracteres se guarda completo (antes se truncaba sin aviso).
     const adm = await entrar(browser, ESC.admin);
     await pedir(adm.page, 'controller/matricula/controlador_registro_matriculas.php', {
       estu: ESC.otroAlumnoNuevo, año: ESC.anioEscolar, aula: ESC.aula, admi: '50', nuevo: '30', matri: '150',
@@ -147,13 +143,9 @@ try {
     });
     await adm.ctx.close();
     const largo = await login(browser, 'usuariolargo19', 'Clave.Nueva1');
-    const msgLargo = await largo.page.locator('.swal2-html-container').textContent({ timeout: 10000 }).catch(() => '');
-    check(msgLargo.includes('Incorrectos'), 'DEFECTO: con el usuario completo (14 caracteres) no se puede entrar');
+    await largo.page.waitForURL('**/view/index.php', { timeout: 20000 }).catch(() => {});
+    check(largo.page.url().endsWith('view/index.php'), 'un usuario de 14 caracteres entra con el nombre completo');
     await largo.ctx.close();
-    const truncado = await login(browser, 'USUARIOL', 'Clave.Nueva1');
-    await truncado.page.waitForURL('**/view/index.php', { timeout: 20000 }).catch(() => {});
-    check(truncado.page.url().endsWith('view/index.php'), 'DEFECTO: la cuenta quedó como sus 8 primeros caracteres');
-    await truncado.ctx.close();
   }
 
   console.log('5. Notas (docente)');

@@ -17,7 +17,8 @@
 
     $correo = strtoupper(htmlspecialchars($_POST['correo'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MMAT->Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo);
+    // El ingreso se registra a nombre de quien cobra (antes quedaba siempre a nombre del usuario 9).
+    $consulta = $MMAT->Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,(int)$_SESSION['S_ID']);
     echo $consulta;
 
 

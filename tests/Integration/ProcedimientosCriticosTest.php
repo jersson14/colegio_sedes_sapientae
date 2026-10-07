@@ -50,12 +50,14 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
     }
 
     // ------------------------------------------------------------------ Pagos de pensión
+    // Quién cobra: el usuario de la sesión (aquí, el auxiliar 22). Antes quedaba siempre el 9.
+    private const COBRA = 22;
 
-    public function testRegistrarPagoDePensionCreaPagoEIngreso(): void
+    public function testRegistrarPagoDePensionCreaPagoEIngresoDeQuienCobra(): void
     {
         $antesIngresos = (int) $this->valor('SELECT COUNT(*) FROM ingresos');
 
-        self::assertSame('1', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'PENSION', 36, 100]));
+        self::assertSame('1', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'PENSION', 36, 100, self::COBRA]));
 
         $pago = $this->pdo->query('SELECT * FROM pago_pensiones WHERE id_matri = 31 AND id_pension = 36')->fetch(PDO::FETCH_ASSOC);
         self::assertSame('PENSION', $pago['concepto']);
@@ -68,14 +70,13 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
         self::assertSame('100.00', $ingreso['monto']);
         self::assertSame('VALIDO', $ingreso['estado']);
         self::assertSame(1, (int) $ingreso['id_indicador']);
-        // DEFECTO: el ingreso queda siempre a nombre del usuario 9, sin importar quién cobra (H-15).
-        self::assertSame(9, (int) $ingreso['id_user']);
+        self::assertSame(self::COBRA, (int) $ingreso['id_user'], 'el ingreso queda a nombre de quien cobra');
     }
 
     public function testUnaPensionYaPagadaNoSeCobraDosVeces(): void
     {
         $antes = (int) $this->valor('SELECT COUNT(*) FROM pago_pensiones');
-        self::assertSame('2', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [32, 'PENSION', 36, 100]));
+        self::assertSame('2', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [32, 'PENSION', 36, 100, self::COBRA]));
         self::assertSame($antes, (int) $this->valor('SELECT COUNT(*) FROM pago_pensiones'));
     }
 
@@ -83,17 +84,32 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
     {
         // DEFECTO: concepto es ENUM y el SP corre en modo SQL permisivo: un valor fuera de la lista
         // se guarda como '' sin error. (La interfaz solo envía valores válidos desde un select.)
-        self::assertSame('1', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'CUALQUIER COSA', 36, 100]));
+        self::assertSame('1', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'CUALQUIER COSA', 36, 100, self::COBRA]));
         self::assertSame('', $this->valor('SELECT concepto FROM pago_pensiones WHERE id_matri = 31 AND id_pension = 36'));
     }
 
     // ------------------------------------------------------------------ Matrícula
 
     /** @return list<mixed> */
-    private function matricular(int $alumno, int $anio, int $aula): array
+    private function matricular(int $alumno, int $anio, int $aula, string $usuario = ''): array
     {
-        return [$alumno, $anio, $aula, 50, 30, 150, 'COLEGIO X', 'LIMA', 'LIMA', 'nuevo' . $alumno,
-            password_hash('x', PASSWORD_DEFAULT), "nuevo$alumno@example.com"];
+        return [$alumno, $anio, $aula, 50, 30, 150, 'COLEGIO X', 'LIMA', 'LIMA', $usuario ?: 'nuevo' . $alumno,
+            password_hash('x', PASSWORD_DEFAULT), "nuevo$alumno@example.com", self::COBRA];
+    }
+
+    /** @return array<string, array<string, mixed>> pagos de la matrícula, con su ingreso, por concepto */
+    private function pagosEIngresosDe(int $alumno, int $anio): array
+    {
+        $matricula = (int) $this->valor('SELECT id_matricula FROM matricula WHERE id_alumno = ? AND `id_año` = ?', $alumno, $anio);
+        $q = $this->pdo->query("SELECT p.concepto, p.id_pago_pension pago, p.sub_total monto,
+                i.id_pago_pension ingreso_pago, i.id_user usuario, i.observacion
+            FROM pago_pensiones p LEFT JOIN ingresos i ON i.id_pago_pension = p.id_pago_pension
+            WHERE p.id_matri = $matricula ORDER BY p.id_pago_pension");
+        $salida = [];
+        foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $f) {
+            $salida[$f['concepto']] = $f;
+        }
+        return $salida;
     }
 
     public function testMatricularAlumnoNuevoCreaUsuarioMatriculaYTresPagos(): void
@@ -119,16 +135,16 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
         self::assertSame(['ADMISION' => '50.00', 'ALUMNO NUEVO' => '30.00', 'MATRICULA' => '150.00'], $pagos);
     }
 
-    public function testDefectoLosTresIngresosDeMatriculaApuntanAlUltimoPago(): void
+    public function testCadaIngresoDeLaMatriculaApuntaASuPropioPagoYAQuienCobra(): void
     {
         $this->llamar('SP_REGISTRAR_MATRICULA', $this->matricular(18, 5, 5));
-        $ultimoPago = (int) $this->valor('SELECT MAX(id_pago_pension) FROM pago_pensiones');
-
-        $ingresos = $this->pdo->query("SELECT observacion, id_pago_pension FROM ingresos
-            WHERE observacion IN ('ADMISION','ALUMNO NUEVO','MATRICULA') AND id_pago_pension = $ultimoPago")
-            ->fetchAll(PDO::FETCH_KEY_PAIR);
-        // DEFECTO: ADMISION y ALUMNO NUEVO deberían apuntar a su propio pago, no al de MATRICULA.
-        self::assertSame(['ADMISION', 'ALUMNO NUEVO', 'MATRICULA'], array_keys($ingresos));
+        $filas = $this->pagosEIngresosDe(18, 5);
+        self::assertSame(['ADMISION', 'ALUMNO NUEVO', 'MATRICULA'], array_keys($filas));
+        foreach ($filas as $concepto => $f) {
+            self::assertSame((int) $f['pago'], (int) $f['ingreso_pago'], "el ingreso de $concepto apunta a su pago");
+            self::assertSame($concepto, $f['observacion']);
+            self::assertSame(self::COBRA, (int) $f['usuario'], "el ingreso de $concepto es de quien cobra");
+        }
     }
 
     public function testNoSeMatriculaDosVecesEnElMismoAnio(): void
@@ -149,14 +165,49 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
         self::assertSame($usuarioPrevio, (int) $this->valor('SELECT usu_id FROM matricula WHERE id_alumno = 6 AND `id_año` = 2'));
     }
 
-    public function testDefectoAlumnoAntiguoDejaLosIngresosSinPagoAsociado(): void
+    public function testAlumnoAntiguoTambienEnlazaCadaIngresoASuPago(): void
     {
+        // Antes: @ULID no se recalculaba en esta rama y los ingresos quedaban sin pago (NULL).
         $this->llamar('SP_REGISTRAR_MATRICULA', $this->matricular(6, 2, 5));
-        // DEFECTO: en esta rama no se recalcula @ULID; con una conexión nueva vale NULL y los tres
-        // ingresos quedan sin pago asociado (con otro valor previo en la sesión, apuntarían a otro pago).
-        $sinPago = (int) $this->valor("SELECT COUNT(*) FROM ingresos WHERE id_pago_pension IS NULL
-            AND observacion IN ('ADMISION','ALUMNO NUEVO','MATRICULA') AND created_at = '2025-12-26'");
-        self::assertSame(3, $sinPago);
+        $filas = $this->pagosEIngresosDe(6, 2);
+        self::assertSame(['ADMISION', 'ALUMNO NUEVO', 'MATRICULA'], array_keys($filas));
+        foreach ($filas as $concepto => $f) {
+            self::assertSame((int) $f['pago'], (int) $f['ingreso_pago'], "el ingreso de $concepto apunta a su pago");
+        }
+    }
+
+    // ------------------------------------------------------------------ Cuentas de usuario
+
+    /** @return list<array<string, mixed>> */
+    private function verificarUsuario(string $usuario): array
+    {
+        $q = $this->pdo->prepare('CALL SP_VERIFICAR_USUARIO(?)');
+        $q->execute([$usuario]);
+        $filas = $q->fetchAll(PDO::FETCH_ASSOC);
+        while ($q->nextRowset()) {
+            // consume los conjuntos de resultados restantes
+        }
+        $q->closeCursor();
+        return $filas;
+    }
+
+    public function testElLoginNoDistingueMayusculasEnElUsuario(): void
+    {
+        // Antes: comparaba con BINARY y solo entraba quien escribía las mayúsculas exactas.
+        foreach (['usuario10', 'USUARIO10', 'Usuario10'] as $escrito) {
+            $filas = $this->verificarUsuario($escrito);
+            self::assertCount(1, $filas, "«{$escrito}» encuentra la cuenta");
+            self::assertSame(10, (int) $filas[0]['usu_id']);
+        }
+    }
+
+    public function testUnUsuarioLargoSeGuardaCompleto(): void
+    {
+        // Antes: USU VARCHAR(8) truncaba «usuariolargo19» a «usuariol» y la persona no podía entrar.
+        $this->llamar('SP_REGISTRAR_MATRICULA', $this->matricular(19, 5, 5, 'usuariolargo19'));
+        self::assertSame('usuariolargo19', $this->valor('SELECT u.usu_usuario FROM usuario u
+            JOIN matricula m ON m.usu_id = u.usu_id WHERE m.id_alumno = 19'));
+        self::assertCount(1, $this->verificarUsuario('USUARIOLARGO19'));
     }
 
     // ------------------------------------------------------------------ Notas
