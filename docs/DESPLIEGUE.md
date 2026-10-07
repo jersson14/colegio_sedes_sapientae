@@ -258,6 +258,11 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 >
 > Ingresos históricos mal enlazados (opcional, decisión del responsable): respaldo de la BD y luego
 > `php tools/reparar_ingresos.php` (informa) → revisar → `php tools/reparar_ingresos.php --aplicar`.
+>
+> **Migración `20261009000000_corregir_notas_conceptos_y_orden`**: el SP de notas ahora devuelve el
+> total insertado y el controlador nuevo lo compara con lo enviado; también van juntos. Antes de
+> recrear cada procedimiento compila la versión nueva con un nombre temporal, así que un error no deja
+> la BD sin el procedimiento. Reversible con `rollback`.
 
 **Importantes:**
 

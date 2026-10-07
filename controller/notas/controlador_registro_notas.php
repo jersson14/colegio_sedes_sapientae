@@ -16,12 +16,14 @@ if (isset($_POST['registros'])) {
         // Llamar al modelo para registrar notas
         $resultado = $MNOTAS->Registrar_Notas($registros_json);
 
-        if ($resultado == 2) {
-            echo json_encode(["inserted_count" => 0, "status" => 2]); // Algunos registros ya existen
-        } elseif ($resultado == 1) {
-            echo json_encode(["inserted_count" => 1, "status" => 1]); // Todos los registros fueron insertados con éxito
+        // SP_REGISTRAR_NOTAS devuelve cuántas notas insertó (antes, solo el conteo del último registro,
+        // así que la UI mostraba «error» si la última nota ya existía aunque las demás se guardaran).
+        if ($resultado === false) {
+            echo json_encode(["inserted_count" => 0, "status" => 0]); // Error en la inserción
+        } elseif ((int)$resultado === count($registros)) {
+            echo json_encode(["inserted_count" => (int)$resultado, "status" => 1]); // Todas insertadas
         } else {
-            echo json_encode(["inserted_count" => 0, "status" => 0]); // Error en la inserción o datos incompletos
+            echo json_encode(["inserted_count" => (int)$resultado, "status" => 2]); // Algunas ya existían
         }
     } else {
         echo json_encode(["inserted_count" => 0, "status" => 0]); // Error debido a datos incompletos o formato incorrecto

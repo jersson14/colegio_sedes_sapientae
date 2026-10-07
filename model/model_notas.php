@@ -337,7 +337,7 @@
             } catch (PDOException $e) {
                 // Manejar errores de manera más clara
                 error_log("Error en Registrar_Notas: " . $e->getMessage());
-                return 0; // Puedes devolver un código de error o mensaje adecuado
+                return false; // fallo; distinto de 0 = «ninguna nota nueva» (todas existían)
             }
         }
         public function Registrar_Notas_Padres($registros) {

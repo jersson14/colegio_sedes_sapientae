@@ -13,14 +13,18 @@ const CLAVE = 'Prueba.2026';
 // Escenario del dataset de prueba (ver tests/E2E/README.md).
 const ESC = {
   admin: 'usuario9', docente: 'usuario10', auxiliar: 'usuario22', estudiante: 'usuario62', inactivo: 'usuario33',
-  cursoDocente: 20, aula: 5, criterio: 1, periodo: 44, matriculaEstudiante: 40,
+  cursoDocente: 20, aula: 5, criterio: 1, otroCriterio: 8, periodo: 44, matriculaEstudiante: 40,
   pago: { matricula: 31, pension: 36 }, alumnoNuevo: 18, otroAlumnoNuevo: 19, anioEscolar: 5,
   matriculaOtraAula: 33,
 };
 
 let ok = 0, fallos = 0;
 const check = (cond, desc, detalle = '') => {
-  if (cond) { ok++; console.log(`  ok    ${desc}`); } else { fallos++; console.log(`  FALLO ${desc} ${detalle}`); }
+  if (cond) { ok++; console.log(`  ok    ${desc}`); return; }
+  fallos++;
+  console.log(`  FALLO ${desc} ${detalle}`);
+  // En GitHub Actions, como anotación: se lee sin permisos de administrador (los logs no).
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=Flujo E2E::${desc} ${detalle}`.replace(/\r?\n/g, ' '));
 };
 
 async function login(browser, usuario, clave = CLAVE) {
@@ -157,6 +161,12 @@ try {
     const ajena = await pedir(page, 'controller/notas/controlador_registro_notas.php',
       { registros: JSON.stringify([{ ...registros[0], id_matri: ESC.matriculaOtraAula }]) });
     check(ajena.estado === 403, 'el docente no puede poner notas a un alumno que no es de su curso → 403');
+    // Lote mixto: la nota anterior ya existe y no se duplica; solo cuenta la nueva → status 2 (parcial).
+    const mixto = await pedir(page, 'controller/notas/controlador_registro_notas.php', { registros: JSON.stringify([
+      registros[0], { ...registros[0], cri: ESC.otroCriterio, nota: '15' },
+    ]) });
+    check(mixto.json?.status === 2 && Number(mixto.json?.inserted_count) === 1,
+      'un lote con una nota ya registrada informa 1 insertada de 2', `(${mixto.texto.slice(0, 80)})`);
     await ctx.close();
   }
 

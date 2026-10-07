@@ -80,12 +80,16 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
         self::assertSame($antes, (int) $this->valor('SELECT COUNT(*) FROM pago_pensiones'));
     }
 
-    public function testDefectoUnConceptoInvalidoSeGuardaVacioSinError(): void
+    public function testUnConceptoInvalidoSeRechazaYNoSeGuarda(): void
     {
-        // DEFECTO: concepto es ENUM y el SP corre en modo SQL permisivo: un valor fuera de la lista
-        // se guarda como '' sin error. (La interfaz solo envía valores válidos desde un select.)
-        self::assertSame('1', (string) $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'CUALQUIER COSA', 36, 100, self::COBRA]));
-        self::assertSame('', $this->valor('SELECT concepto FROM pago_pensiones WHERE id_matri = 31 AND id_pension = 36'));
+        // Antes: el ENUM en modo permisivo guardaba '' sin error.
+        try {
+            $this->llamar('SP_REGISTRAR_DETALLE_PENSION_PAGO', [31, 'CUALQUIER COSA', 36, 100, self::COBRA]);
+            self::fail('Se esperaba un error');
+        } catch (PDOException $e) {
+            self::assertStringContainsString('Concepto de pago no válido', $e->getMessage());
+        }
+        self::assertSame(0, (int) $this->valor('SELECT COUNT(*) FROM pago_pensiones WHERE id_matri = 31 AND id_pension = 36'));
     }
 
     // ------------------------------------------------------------------ Matrícula
@@ -233,27 +237,60 @@ final class ProcedimientosCriticosTest extends BaseDatosTestCase
         self::assertSame(['12'], array_map('trim', $q->fetchAll(PDO::FETCH_COLUMN)));
     }
 
-    public function testDefectoElConteoDevueltoEsSoloDelUltimoRegistro(): void
+    public function testElConteoEsElTotalDeNotasInsertadas(): void
     {
+        // Antes: ROW_COUNT() del último INSERT (aquí habría devuelto 1).
         $insertadas = $this->registrarNotas([
             ['id_matri' => 34, 'perio' => 12, 'cri' => 1, 'nota' => '15', 'conclu' => ''],
             ['id_matri' => 34, 'perio' => 12, 'cri' => 8, 'nota' => '16', 'conclu' => ''],
         ]);
         self::assertSame(2, (int) $this->valor('SELECT COUNT(*) FROM notas WHERE id_matricula = 34 AND id_bimestre = 12'));
-        // DEFECTO: ROW_COUNT() refleja solo el último INSERT, no el total insertado.
+        self::assertSame(2, (int) $insertadas);
+    }
+
+    public function testEnUnLoteMixtoSoloCuentanLasNuevas(): void
+    {
+        // 34/44/42 ya existe; la otra es nueva. Antes devolvía 1 o 0 según cuál fuera la última.
+        $insertadas = $this->registrarNotas([
+            ['id_matri' => 34, 'perio' => 12, 'cri' => 1, 'nota' => '15', 'conclu' => ''],
+            ['id_matri' => 34, 'perio' => 44, 'cri' => 42, 'nota' => '20', 'conclu' => ''],
+        ]);
         self::assertSame(1, (int) $insertadas);
     }
 
-    public function testDefectoMatriculaInexistenteFallaPorLaClaveForaneaNoPorLaValidacion(): void
+    public function testMatriculaInexistenteSeRechazaConSuMensaje(): void
     {
-        // DEFECTO: «WHERE id_matricula = id_matricula» compara la variable consigo misma (sombrea la
-        // columna), así que el mensaje «id_matricula no existe» nunca se lanza; falla la FK.
+        // Antes: la variable sombreaba la columna y la validación nunca se lanzaba (fallaba la FK).
         try {
             $this->registrarNotas([['id_matri' => 999999, 'perio' => 12, 'cri' => 1, 'nota' => '10', 'conclu' => '']]);
             self::fail('Se esperaba un error');
         } catch (PDOException $e) {
-            self::assertStringContainsString('foreign key constraint', strtolower($e->getMessage()));
-            self::assertStringNotContainsString('no existe en la tabla matricula', $e->getMessage());
+            self::assertStringContainsString('no existe en la tabla matricula', $e->getMessage());
+        }
+    }
+
+    // ------------------------------------------------------------------ Orden de los listados
+
+    public function testLasMatriculasConElMismoCreatedAtSalenEnOrdenEstable(): void
+    {
+        // Antes: ORDER BY created_at (fecha sin hora) dejaba el orden de los empates al azar.
+        $ids = function (): array {
+            $q = $this->pdo->query('CALL SP_LISTAR_MATRICULADOS()');
+            $filas = array_column($q->fetchAll(PDO::FETCH_ASSOC), 'id_matricula');
+            while ($q->nextRowset()) {
+                // consume
+            }
+            $q->closeCursor();
+            return array_map('intval', $filas);
+        };
+        $primera = $ids();
+        self::assertSame($primera, $ids());
+        $fechas = $this->pdo->query('SELECT id_matricula, created_at FROM matricula')->fetchAll(PDO::FETCH_KEY_PAIR);
+        for ($i = 1; $i < count($primera); $i++) {
+            [$a, $b] = [$primera[$i - 1], $primera[$i]];
+            if ($fechas[$a] === $fechas[$b]) {
+                self::assertGreaterThan($b, $a, 'empate en created_at: va primero el id mayor');
+            }
         }
     }
 }

@@ -47,10 +47,11 @@ BASE_URL=http://127.0.0.1:8099/ node flujos.mjs
 
 Solo cuando un cambio de comportamiento es **intencionado**: `node caracterizacion.mjs grabar`
 (con datos recién cargados) y revisar el diff de `grabacion.json` en el PR. Las filas se comparan
-sin importar su orden porque varios procedimientos ordenan por columnas con empates
-(`ORDER BY created_at` con fecha sin hora) y la app no garantiza ese orden.
+sin importar su orden y se guardan en orden canónico, de modo que regrabar sin cambios no produce diff.
 
-## Defectos corregidos (Fase 3, migración `20261008000000_corregir_cuentas_e_ingresos`)
+## Defectos corregidos (Fase 3)
+
+Migración `20261008000000_corregir_cuentas_e_ingresos`:
 
 | Defecto | Ahora |
 |---|---|
@@ -63,13 +64,19 @@ Los ingresos **históricos** mal enlazados se reparan aparte y a decisión del r
 `tools/reparar_ingresos.php` (simula por defecto; `--aplicar` solo toca lo inequívoco). Quién cobró
 en el pasado no es recuperable.
 
+Migración `20261009000000_corregir_notas_conceptos_y_orden`:
+
+| Defecto | Ahora |
+|---|---|
+| Un concepto de pago fuera del ENUM se guardaba vacío sin error | `SP_REGISTRAR_DETALLE_PENSION_PAGO` lo rechaza («Concepto de pago no válido») |
+| `SP_REGISTRAR_NOTAS`: la validación «matrícula no existe» nunca se disparaba (variable que sombreaba la columna) | Variables con prefijo `v_`; la validación se lanza con su mensaje |
+| `SP_REGISTRAR_NOTAS` devolvía el conteo del último registro | Devuelve el total insertado; el controlador responde 1 (todas), 2 (parcial: alguna ya existía) o 0 (error) |
+| 4 listados (asistencias, componentes, matrículas, pagos) con `ORDER BY` sobre columnas con empates | Desempate por clave: el orden es estable entre peticiones |
+
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
 Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el mismo commit.
 
 | Dónde | Defecto | Prueba |
 |---|---|---|
-| `SP_REGISTRAR_DETALLE_PENSION_PAGO` | Un concepto fuera del ENUM se guarda vacío sin error | `ProcedimientosCriticosTest` |
-| `SP_REGISTRAR_NOTAS` | La validación «matrícula no existe» nunca se dispara (variable que sombrea la columna) y el conteo devuelto es solo del último registro | `ProcedimientosCriticosTest` |
-| 4 listados (asistencias, componentes, matrículas, pagos) | `ORDER BY` sobre columnas con empates: el orden de las filas varía entre peticiones | `caracterizacion.mjs` |
 | BD | 4 eventos programados que requieren `event_scheduler=ON` (OFF en el XAMPP local) | `EsquemaTest` |
