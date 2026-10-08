@@ -1,31 +1,19 @@
 <?php
 // Las credenciales viven en colegio.env, fuera de htdocs (ver core/config.php).
 // Este archivo ya no contiene secretos y se versiona.
+// La conexión se crea en src/Core/Conexion.php, la misma que usa el código nuevo.
+// config.php se carga AQUÍ y no solo al conectar: al cargarse apaga display_errors, y todo
+// controlador lo necesita desde el principio (si no, un aviso muestra rutas del servidor).
 require_once __DIR__ . '/../core/config.php';
+require_once __DIR__ . '/../core/autoload.php';
 
 class conexionBD {
     private $pdo;
 
     public function conexionPDO() {
-        $host       = config('DB_HOST', 'localhost');
-        $puerto     = (int) config('DB_PORT', '3306');
-        $usuario    = config('DB_USER', '');
-        $contrasena = config('DB_PASS', '');
-        $bdName     = config('DB_NAME', 'colegio');
         $this->pdo = null;
-
         try {
-            $this->pdo = new PDO("mysql:host=$host;port=$puerto;dbname=$bdName", $usuario, $contrasena);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->exec("set names utf8");
-            // El sistema se construyó sobre el sql_mode permisivo de XAMPP (p. ej. '' en un parámetro INT
-            // se toma como 0). Con el modo estricto por defecto de otros servidores esas llamadas fallan
-            // con 500: se fija explícitamente para no depender de la configuración del servidor.
-            $this->pdo->prepare("SET SESSION sql_mode = ?")->execute([config('DB_SQL_MODE', 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION')]);
-            // Solo pruebas: congela NOW()/CURDATE() para que los SP que filtran por fecha sean deterministas.
-            if (config('APP_ENTORNO') === 'prueba' && config('DB_FECHA_PRUEBA')) {
-                $this->pdo->prepare("SET SESSION timestamp = UNIX_TIMESTAMP(?)")->execute([config('DB_FECHA_PRUEBA')]);
-            }
+            $this->pdo = \App\Core\Conexion::crear();
             return $this->pdo;
         } catch (PDOException $e) {
             // El detalle va al log; al cliente nunca (expone host, usuario y motor).

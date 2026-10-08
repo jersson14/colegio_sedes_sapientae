@@ -1,14 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_usuario.php';
-    $MU = new Modelo_Usuario();
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $con = password_hash(htmlspecialchars($_POST['con'],ENT_QUOTES,'UTF-8'),PASSWORD_DEFAULT,['cost'=>12]);
 
-    $consulta = $MU->Modificar_Usuario_Contra($id,$con);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require __DIR__ . '/../../model/model_conexion.php';
 
+use App\Repositories\PdoUsuarioRepositorio;
+use App\Services\GestionarCuentas;
 
-?>
+$cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->conexionPDO()));
+
+// Respuesta: 1 = cambiada, 0 = datos inválidos. La contraseña llega sin escapar: Contrasena la normaliza.
+try {
+    $cuentas->cambiarContrasena((int) ($_POST['id'] ?? 0), (string) ($_POST['con'] ?? ''));
+    echo 1;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

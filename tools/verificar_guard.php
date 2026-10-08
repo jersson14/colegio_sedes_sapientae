@@ -38,8 +38,9 @@ foreach ($archivosPhp as $archivo) {
     }
     $total++;
     $fuente = file_get_contents($archivo->getPathname());
-    // Se admiten comentarios de una línea antes del require.
-    if (!preg_match("#^(?:\xEF\xBB\xBF)?<\?php\s+(?://[^\n]*\n\s*)*require_once __DIR__ \. '([^']+)';#", $fuente, $m)) {
+    // Se admiten comentarios de una línea y declare(strict_types=1) antes del require
+    // (PHP exige que declare sea la primera sentencia; no ejecuta nada).
+    if (!preg_match("#^(?:\xEF\xBB\xBF)?<\?php\s+(?:declare\(strict_types=1\);\s*)?(?://[^\n]*\n\s*)*require_once __DIR__ \. '([^']+)';#", $fuente, $m)) {
         $fallos[] = "$rel: no incluye el guard como primera instrucción";
     } elseif (realpath($archivo->getPath() . $m[1]) !== $guard) {
         $fallos[] = "$rel: la ruta del guard no resuelve a core/guard.php";

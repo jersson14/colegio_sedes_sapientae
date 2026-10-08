@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -21,7 +21,9 @@ si aparece, no escribe nada.
   `SET SESSION timestamp`, así que `NOW()`/`YEAR(NOW())` de los 254 procedimientos son deterministas.
 
 Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, periodo 44), alumno
-`usuario62` (matrícula 40, aula 5), administrador `usuario9`, auxiliar `usuario22`.
+`usuario62` (matrícula 40, aula 5), administrador `usuario9`, auxiliar `usuario22`; la cuenta que se renombra y desactiva es la del docente
+`usuario11` (id 11). Los flujos cuentan para el límite de intentos de login: al repetirlos en local,
+vacía `LOGIN_LIMITE_DIR` además de recargar los datos.
 
 ## Ejecutar en local
 
@@ -72,6 +74,14 @@ Migración `20261009000000_corregir_notas_conceptos_y_orden`:
 | `SP_REGISTRAR_NOTAS`: la validación «matrícula no existe» nunca se disparaba (variable que sombreaba la columna) | Variables con prefijo `v_`; la validación se lanza con su mensaje |
 | `SP_REGISTRAR_NOTAS` devolvía el conteo del último registro | Devuelve el total insertado; el controlador responde 1 (todas), 2 (parcial: alguna ya existía) o 0 (error) |
 | 4 listados (asistencias, componentes, matrículas, pagos) con `ORDER BY` sobre columnas con empates | Desempate por clave: el orden es estable entre peticiones |
+
+Migración `20261010000000_corregir_modificar_usuario` (módulo usuario, ya en `src/`):
+
+| Defecto | Ahora |
+|---|---|
+| Editar una cuenta truncaba el usuario a 20 caracteres (`SP_MODIFICAR_USUARIO`) | Hasta 250, como la columna |
+| Se podía renombrar una cuenta al nombre de otra (dos cuentas con el mismo usuario) | Responde 2 sin tocar nada; el panel lo avisa |
+| Un estado distinto de ACTIVO/INACTIVO se guardaba vacío, y el login lo trataba como activo | Se rechaza (0) en el servicio y en el SP |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

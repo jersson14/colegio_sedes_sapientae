@@ -11,7 +11,8 @@
 | 0 — Seguridad crítica | ✅ Cerrada: OWASP ZAP sin hallazgos altos explotables ([SEGURIDAD.md](SEGURIDAD.md) §0) |
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
-| 3 en adelante | Pendiente |
+| 3 — Refactor | 🔄 En curso: 8 defectos corregidos (3 migraciones); módulo usuario en `src/` (login y gestión de cuentas). Ver [src/README.md](../src/README.md) |
+| 4 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
 

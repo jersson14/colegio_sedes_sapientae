@@ -263,6 +263,10 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > total insertado y el controlador nuevo lo compara con lo enviado; también van juntos. Antes de
 > recrear cada procedimiento compila la versión nueva con un nombre temporal, así que un error no deja
 > la BD sin el procedimiento. Reversible con `rollback`.
+>
+> **Migración `20261010000000_corregir_modificar_usuario`**: `SP_MODIFICAR_USUARIO` ahora devuelve 1/2
+> y el código nuevo lee ese valor (con el SP anterior toda edición respondería 2): **van juntos**.
+> El despliegue también añade `core/autoload.php` y `src/`, que el código heredado carga sin Composer.
 
 **Importantes:**
 

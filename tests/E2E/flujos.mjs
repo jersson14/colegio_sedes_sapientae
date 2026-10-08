@@ -16,6 +16,8 @@ const ESC = {
   cursoDocente: 20, aula: 5, criterio: 1, otroCriterio: 8, periodo: 44, matriculaEstudiante: 40,
   pago: { matricula: 31, pension: 36 }, alumnoNuevo: 18, otroAlumnoNuevo: 19, anioEscolar: 5,
   matriculaOtraAula: 33,
+  // Docente que ningún otro flujo usa: se renombra, cambia de contraseña y se desactiva.
+  cuenta: { id: '11', rol: '2', correo: 'usuario11@example.com' },
 };
 
 let ok = 0, fallos = 0;
@@ -215,6 +217,44 @@ try {
     const otra = await pedir(page, 'controller/asistencias/controlador_registro_asistencias.php', { registros: JSON.stringify(registros) });
     check(otra.texto === '2', 'registrar la misma asistencia otra vez responde 2 (no duplica)');
     await ctx.close();
+  }
+
+  console.log('8. Cuentas de usuario (administrador)');
+  {
+    const entra = async (usuario, clave) => {
+      const s = await login(browser, usuario, clave);
+      await s.page.waitForURL('**/view/index.php', { timeout: 15000 }).catch(() => {});
+      const dentro = s.page.url().endsWith('view/index.php');
+      await s.ctx.close();
+      return dentro;
+    };
+    const { id, rol, correo } = ESC.cuenta;
+    const adm = await entrar(browser, ESC.admin);
+    const modificar = (usu) => pedir(adm.page, 'controller/usuario/controlador_modificar_usuario.php', { id, usu, rol, correo });
+
+    check((await modificar('cuenta.e2e')).texto === '1', 'el administrador renombra una cuenta');
+    check(await entra('cuenta.e2e', CLAVE), 'la cuenta entra con su nuevo nombre');
+    check((await modificar(ESC.admin)).texto === '2', 'no se puede renombrar a un usuario que ya existe → 2');
+    check((await modificar('u'.repeat(30))).texto === '1', 'un nombre de 30 caracteres se guarda');
+    check(await entra('u'.repeat(30), CLAVE), 'y entra con el nombre completo (no truncado)');
+
+    const contra = await pedir(adm.page, 'controller/usuario/controlador_modificar_usuario_contra.php', { id, con: 'Otra.Clave&2026' });
+    check(contra.texto === '1', 'el administrador cambia la contraseña');
+    check(await entra('u'.repeat(30), 'Otra.Clave&2026'), 'entra con la contraseña nueva (con caracteres especiales)');
+    check(!(await entra('u'.repeat(30), CLAVE)), 'la contraseña anterior ya no sirve');
+
+    const estatus = (e) => pedir(adm.page, 'controller/usuario/controlador_modificar_usuario_estatus.php', { id, estatus: e });
+    check((await estatus('INACTIVO')).texto === '1', 'el administrador desactiva la cuenta');
+    check(!(await entra('u'.repeat(30), 'Otra.Clave&2026')), 'la cuenta desactivada no entra');
+    check((await estatus('CUALQUIERA')).texto === '0', 'un estado inválido se rechaza → 0');
+    check((await estatus('ACTIVO')).texto === '1', 'el administrador la reactiva');
+    check(await entra('u'.repeat(30), 'Otra.Clave&2026'), 'la cuenta reactivada entra');
+    await adm.ctx.close();
+
+    const doc = await entrar(browser, ESC.docente);
+    check((await pedir(doc.page, 'controller/usuario/controlador_modificar_usuario_estatus.php', { id, estatus: 'INACTIVO' })).estado === 403,
+      'un docente no puede cambiar el estado de una cuenta → 403');
+    await doc.ctx.close();
   }
 } finally {
   await browser.close();

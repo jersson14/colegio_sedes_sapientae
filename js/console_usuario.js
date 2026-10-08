@@ -458,6 +458,9 @@ function Modificar_Usuario(){
       correo:correo
     }
   }).done(function(resp){
+    if(resp==2){
+      return Swal.fire("Mensaje de Advertencia","El nombre de usuario ya pertenece a otra cuenta","warning");
+    }
     if(resp>0){
         Swal.fire("Mensaje de Confirmación","Datos del Usuario Actualizado","success").then((value)=>{
           tbl_usuario.ajax.reload();

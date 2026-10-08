@@ -1,14 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_usuario.php';
-    $MU = new Modelo_Usuario();
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $estatus = strtoupper(htmlspecialchars($_POST['estatus'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MU->Modificar_Usuario_Estatus($id,$estatus);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require __DIR__ . '/../../model/model_conexion.php';
 
+use App\Repositories\PdoUsuarioRepositorio;
+use App\Services\GestionarCuentas;
 
-?>
+$cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->conexionPDO()));
+
+// Respuesta: 1 = cambiado, 0 = estado o id inválidos (antes un estado inválido se guardaba vacío).
+try {
+    $cuentas->cambiarEstado((int) ($_POST['id'] ?? 0), (string) ($_POST['estatus'] ?? ''));
+    echo 1;
+} catch (InvalidArgumentException) {
+    echo 0;
+}
