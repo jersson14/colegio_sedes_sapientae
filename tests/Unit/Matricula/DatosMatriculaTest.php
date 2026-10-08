@@ -37,7 +37,7 @@ final class DatosMatriculaTest extends TestCase
     /** @return iterable<string, array{string}> */
     public static function montosInvalidos(): iterable
     {
-        yield 'mayor que 999.99 (antes se recortaba)' => ['1500'];
+        yield 'más de 8 cifras enteras (no cabe en DECIMAL(10,2))' => ['123456789'];
         yield 'negativo' => ['-10'];
         yield 'tres decimales' => ['10.555'];
         yield 'texto' => ['cien'];
@@ -51,9 +51,10 @@ final class DatosMatriculaTest extends TestCase
         Monto::desde($monto, 'matrícula');
     }
 
-    public function testAdmiteElMaximoDeLaColumna(): void
+    public function testAdmiteMontosMayoresA999YElMaximoDeLaColumna(): void
     {
-        self::assertSame('999.99', Monto::desde('999.99', 'x')->valor);
+        self::assertSame('1500.00', Monto::desde('1500', 'x')->valor, 'antes se recortaba a 999.99');
+        self::assertSame('99999999.99', Monto::desde(Monto::MAXIMO, 'x')->valor);
     }
 
     public function testExigeAnioYAula(): void

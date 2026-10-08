@@ -1,15 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_egresos.php';
-    $MEGR= new Modelo_Egresos();//Instaciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8')); 
-    $obser = strtoupper(htmlspecialchars($_POST['obser'],ENT_QUOTES,'UTF-8'));
-    $usu = strtoupper(htmlspecialchars($_POST['usu'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MEGR->Anular_Egreso($id,$obser,$usu);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Caja\Movimiento;
+use App\Repositories\PdoCajaRepositorio;
+use App\Services\AnularMovimiento;
 
-?>
+// Respuesta: 1 = anulado, 0 = no existe, ya estaba anulado o falta el motivo.
+// Quién anula sale de la sesión (antes llegaba en «usu» y reemplazaba a quien pagó).
+try {
+    $anular = new AnularMovimiento(new PdoCajaRepositorio((new conexionBD())->conexionPDO()));
+    echo $anular->ejecutar(Movimiento::Egreso, $_POST['id'] ?? '', $_POST['obser'] ?? '', (int) $_SESSION['S_ID']) ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

@@ -498,7 +498,7 @@ function Registrar_matriculado(){
         else{ Swal.fire("Mensaje de Advertencia","El estudiante que intentas matricular ya se encuentra en la base de datos, revise por favor","warning"); }
       }
     }else{
-      return Swal.fire("Mensaje de Error","No se completo el registro: revise los datos (montos de 0 a 999.99)","error");
+      return Swal.fire("Mensaje de Error","No se completo el registro: revise los datos (montos con hasta 2 decimales)","error");
 
     }
   })

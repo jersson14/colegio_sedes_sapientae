@@ -7,12 +7,13 @@ namespace App\Domain\Matricula;
 use InvalidArgumentException;
 
 /**
- * Importe en soles tal como lo guardan las columnas DECIMAL(5,2) de matrícula, pagos e ingresos.
- * Un valor mayor a 999.99 antes se recortaba sin aviso (modo SQL permisivo): ahora se rechaza.
+ * Importe en soles tal como lo guardan las columnas DECIMAL(10,2) de matrícula, pagos e ingresos
+ * (migración 20261015000000; antes DECIMAL(5,2) recortaba a 999.99 sin aviso). Lo que no cabe se
+ * rechaza en lugar de recortarse.
  */
 final class Monto
 {
-    public const MAXIMO = '999.99';
+    public const MAXIMO = '99999999.99';
 
     private function __construct(public readonly string $valor)
     {
@@ -29,9 +30,11 @@ final class Monto
         if ($texto === '') {
             return new self('0.00');
         }
-        if (!preg_match('/^\d{1,3}(\.\d{1,2})?$/', $texto)) {
+        if (!preg_match('/^\d{1,8}(\.\d{1,2})?$/', $texto)) {
             throw new InvalidArgumentException("{$campo}: monto no válido (0 a " . self::MAXIMO . ')');
         }
-        return new self(number_format((float) $texto, 2, '.', ''));
+        // Como texto, sin pasar por float (que pierde precisión en montos grandes).
+        [$enteros, $decimales] = array_pad(explode('.', $texto), 2, '');
+        return new self((ltrim($enteros, '0') ?: '0') . '.' . str_pad($decimales, 2, '0'));
     }
 }

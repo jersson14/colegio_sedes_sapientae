@@ -278,6 +278,12 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > equivocado y días duplicados. Revisar (y corregir a decisión del responsable, con respaldo):
 > `SELECT COUNT(*) FROM asistencia WHERE mes <> MONTH(fecha);` y
 > `SELECT id_matricula, fecha, COUNT(*) FROM asistencia GROUP BY 1, 2 HAVING COUNT(*) > 1;`
+>
+> **Migraciones `20261015000000` a `20261017000000`** (montos, pagos de la matrícula, anulación):
+> amplían los montos a `DECIMAL(10,2)` (un `ALTER TABLE` sobre 5 tablas: hacer el respaldo antes), y
+> añaden `id_usuario_anulacion` a ingresos y egresos. En los movimientos anulados **antes** de la
+> migración, `id_user` ya era quien anuló (el responsable original no es recuperable): la migración lo
+> copia a `id_usuario_anulacion`. El código y las migraciones van juntos.
 
 **Importantes:**
 

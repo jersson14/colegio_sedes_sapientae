@@ -362,8 +362,8 @@ try {
 
     check((await registrar({ usu: ESC.admin })).texto === '3' && !(await de(anio)),
       'con un usuario que ya existe responde 3 y no matricula (antes duplicaba la cuenta)');
-    check((await registrar({ matri: '1500' })).texto === '0' && !(await de(anio)),
-      'un monto mayor a 999.99 se rechaza → 0 (antes se recortaba a 999.99)');
+    check((await registrar({ matri: '123456789' })).texto === '0' && !(await de(anio)),
+      'un monto que no cabe en la columna se rechaza → 0 (no se recorta)');
     check((await registrar()).texto === '1', 'matricula a un alumno nuevo');
     check(await entra('nuevo20e2e', 'Clave.Mat20'), 'el alumno entra con la cuenta creada');
     check((await registrar({ 'año': otroAnio })).texto === '1', 'lo matricula también en otro año (ya es ANTIGUO)');
@@ -457,6 +457,23 @@ try {
     check((await enviar('editar_asistencia', [{ id_asis: 99999999, fecha, esta: 'PRESENTE', obse: '' }])).texto === '2',
       'editar una asistencia inexistente responde 2');
     await aux.ctx.close();
+  }
+
+  console.log('13. Anulación de un ingreso (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const ingresos = async () => filas(await pedir(adm.page, 'controller/ingresos/controlador_listar_ingresos_pensiones.php'));
+    const valido = (await ingresos()).find((i) => i.estado === 'VALIDO');
+    const anular = (extra) => pedir(adm.page, 'controller/ingresos/controlador_anular_ingreso.php', { id: String(valido?.id_ingreso), obser: 'Cobro duplicado', usu: '22', ...extra });
+
+    check(!!valido, 'hay un ingreso válido del día para anular', `(${JSON.stringify((await ingresos())[0] ?? {}).slice(0, 160)})`);
+    check((await anular({ obser: '  ' })).texto === '0', 'sin motivo no se anula → 0');
+    check((await anular()).texto === '1', 'anula el ingreso');
+    const despues = (await ingresos()).find((i) => i.id_ingreso === valido?.id_ingreso);
+    check(despues?.estado === 'ANULADO' && String(despues?.id_user) === String(valido?.id_user),
+      'queda anulado y conserva quién lo cobró aunque el formulario envíe otro usuario', `(${JSON.stringify(despues ?? {}).slice(0, 160)})`);
+    check((await anular({ obser: 'Otra vez' })).texto === '0', 'un ingreso ya anulado no se vuelve a anular → 0');
+    await adm.ctx.close();
   }
 } finally {
   await browser.close();

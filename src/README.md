@@ -34,6 +34,7 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 | matrícula | `GestionarMatriculas`, `DatosMatricula`, `Monto`, `CuentaNueva` | `registro_matriculas`, `modificar_matrícula`, `eliminar_matricula` | `tests/Unit/Matricula`, `tests/Integration/MatriculaRepositorioTest`, flujos §4 y §10 |
 | notas | `GestionarNotas` (`FabricaNotas`), `ValorNota`, `TextoLibre`, `Lote` | `registro_notas`, `registro_notas_padres`, `editar_notas`, `editar_notas_padre` | `tests/Unit/Nota`, `tests/Integration/NotaRepositorioTest`, flujos §5 y §11 |
 | asistencia | `GestionarAsistencia`, `Asistencia`, `EstadoAsistencia` | `registro_asistencias`, `editar_asistencia`, `eliminar_asistencia` | `tests/Unit/Asistencia`, `tests/Integration/AsistenciaRepositorioTest`, flujos §7 y §12 |
+| caja (anulación) | `AnularMovimiento`, `Domain\Caja\Movimiento` | `ingresos/anular_ingreso`, `egresos/anular_egreso` | `tests/Unit/Caja`, `tests/Integration/MontosYAnulacionTest`, flujos §13 |
 
 Las lecturas del módulo (listados, totales del panel, combos) siguen en `model/model_usuario.php`,
 cubiertas por la caracterización; igual los listados de alumnos y matrícula (`model/model_alumnos.php`,

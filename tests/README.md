@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición) | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -103,7 +103,7 @@ Migración `20261012000000_corregir_matricula` (módulo matrícula, ya en `src/`
 |---|---|
 | Eliminar una matrícula con 3 pagos o menos borraba en cascada sus **ingresos cobrados**, notas, asistencias y tareas | Responde 2 si hay pensiones, ingresos válidos con monto, notas, asistencias, tareas o atenciones; los ingresos se anulan antes |
 | Al matricular a un alumno NUEVO se creaba la cuenta aunque el usuario ya existiera (cuentas duplicadas) | Responde 3 sin tocar nada; el panel lo avisa |
-| Un monto mayor a 999.99 se recortaba a 999.99 sin aviso (columnas DECIMAL(5,2)) | Se rechaza (0) |
+| Un monto mayor a 999.99 se recortaba a 999.99 sin aviso (columnas DECIMAL(5,2)) | Columnas ampliadas a DECIMAL(10,2) (migración `20261015000000_ampliar_montos`); lo que no cabe se rechaza |
 | Modificar permitía mover una matrícula a un año en el que el alumno ya estaba | Regla única (alumno, año), como el registro |
 | Modificar podía cambiar el alumno de la matrícula, que seguía unida a la cuenta del anterior | El alumno no cambia |
 | Tras eliminar su única matrícula, el alumno quedaba ANTIGUO: al volver a matricularlo quedaba sin cuenta | Vuelve a NUEVO y su cuenta sin uso se borra |
@@ -130,6 +130,14 @@ Migración `20261014000000_corregir_asistencia` y módulo asistencia en `src/`:
 | Editar cambiaba la fecha (deshabilitada en el panel) y respondía éxito aunque el registro no existiera | No toca la fecha; 2 si no existe |
 | El registro de un aula era fila a fila: un error a mitad la dejaba incompleta | En una transacción |
 
+Decisiones del responsable (migraciones `20261015000000` a `20261017000000`):
+
+| Antes | Ahora |
+|---|---|
+| Montos en `DECIMAL(5,2)`: nada por encima de S/ 999.99 | `DECIMAL(10,2)` en las 8 columnas de montos y en los 16 parámetros de los SP que los reciben |
+| Editar los montos de una matrícula no tocaba sus pagos ni sus ingresos | Los pagos de ADMISION, ALUMNO NUEVO y MATRICULA y sus ingresos **válidos** siguen a los montos; un ingreso anulado conserva su monto |
+| Anular un ingreso o egreso sobrescribía quién cobró/pagó con un id que llegaba del formulario, y se podía volver a anular | `id_user` no cambia; quién anula (de la sesión) va en `id_usuario_anulacion`; solo se anula lo VALIDO y el motivo es obligatorio |
+
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
 Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el mismo commit.
@@ -137,6 +145,3 @@ Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el 
 | Dónde | Defecto | Prueba |
 |---|---|---|
 | BD | 4 eventos programados que requieren `event_scheduler=ON` (OFF en el XAMPP local) | `EsquemaTest` |
-| `SP_ANULAR_INGRESOS` | Al anular, sobrescribe `id_user` (quién cobró) con quien anula, y ese id llega del formulario | Pendiente (módulo pagos/ingresos) |
-| Montos | Columnas `DECIMAL(5,2)`: nada por encima de S/ 999.99 (hoy se rechaza en vez de recortarse). Ampliarlas afecta matrícula, pagos, ingresos y sus SP | Decisión pendiente |
-| `SP_MODIFICAR_MATRICULA` | Cambiar los montos de una matrícula no toca los pagos ni los ingresos ya registrados | Decisión pendiente (contable) |

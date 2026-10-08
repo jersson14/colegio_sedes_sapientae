@@ -112,22 +112,7 @@
             }
             conexionBD::cerrar_conexion();;
         }
-        public function Anular_Ingresos($id,$obser,$usu){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ANULAR_INGRESOS(?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$obser);
-            $query ->bindParam(3,$usu);
-          
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();;
-        }
+        // Anulación: src/Services/AnularMovimiento.php (quién anula sale de la sesión).
     }
 
 

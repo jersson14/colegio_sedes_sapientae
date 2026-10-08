@@ -369,13 +369,13 @@ function Anular_Ingreso(){
     }
   }).done(function(resp){
     if(resp>0){
-        Swal.fire("Mensaje de Confirmación","Se anulo correctamente el ingreso","success").then((value)=>{
+        Swal.fire("Mensaje de Confirmación","Se anuló correctamente el egreso","success").then((value)=>{
         tbl_egresos_diversos.ajax.reload();
         $("#modal_anular").modal('hide');
         });
     
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Error","No se pudo anular: indique el motivo; si ya estaba anulado no se vuelve a anular.","error");
     }
   })
 }
