@@ -1,38 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require_once __DIR__ . '/../../core/subidas.php';
-    require '../../model/model_alumnos.php';
-    $MALU = new Modelo_Alumnos();//Instaciamos
-    //DATOS DE ESTUDIANTE//
-    $dni = strtoupper(htmlspecialchars($_POST['dni'],ENT_QUOTES,'UTF-8'));
-    $nombre = strtoupper(htmlspecialchars($_POST['nombre'],ENT_QUOTES,'UTF-8'));
-    $apepa = strtoupper(htmlspecialchars($_POST['apepa'],ENT_QUOTES,'UTF-8'));
-    $apema = strtoupper(htmlspecialchars($_POST['apema'],ENT_QUOTES,'UTF-8'));
-    $sexo = strtoupper(htmlspecialchars($_POST['sexo'],ENT_QUOTES,'UTF-8'));
-    $fechanaci = strtoupper(htmlspecialchars($_POST['fechanaci'],ENT_QUOTES,'UTF-8'));
-    $telf = strtoupper(htmlspecialchars($_POST['telf'],ENT_QUOTES,'UTF-8'));
-    $direc = strtoupper(htmlspecialchars($_POST['direc'],ENT_QUOTES,'UTF-8'));
-    $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
 
-    //DATOS DE LOS PAPAS //
-    $dnipa = strtoupper(htmlspecialchars($_POST['dnipa'],ENT_QUOTES,'UTF-8'));
-    $nompa = strtoupper(htmlspecialchars($_POST['nompa'],ENT_QUOTES,'UTF-8'));
-    $celpa = strtoupper(htmlspecialchars($_POST['celpa'],ENT_QUOTES,'UTF-8'));
-    $dnima = strtoupper(htmlspecialchars($_POST['dnima'],ENT_QUOTES,'UTF-8'));
-    $nomma = strtoupper(htmlspecialchars($_POST['nomma'],ENT_QUOTES,'UTF-8'));
-    $celma = strtoupper(htmlspecialchars($_POST['celma'],ENT_QUOTES,'UTF-8'));
+declare(strict_types=1);
 
-    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
-    if($nombrefoto!=""){
-        $nombrefoto = imagen_validada('foto');
-    }
-    $ruta='controller/alumnos/fotos/'.$nombrefoto;
-    $consulta = $MALU->Registrar_Alumnos($dni,$nombre,$apepa,$apema,$sexo,$fechanaci,$telf,$direc,$ruta,$dnipa,$nompa,$celpa,$dnima,$nomma,$celma);
-    if ($consulta) {
-        if($nombrefoto!=""){
-            imagen_guardar('foto','controller/alumnos/fotos',$nombrefoto);
-        }
-        echo $consulta;
-    }
-?>
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
+
+use App\Domain\Alumno\FichaAlumno;
+use App\Services\FabricaAlumnos;
+
+// Respuesta: 1 = registrado, 2 = el DNI ya existe, 0 = datos inválidos. Foto inválida: 422.
+// «nombrefoto» solo indica que hay foto nueva; el nombre lo genera el servidor.
+try {
+    $ficha = FichaAlumno::desdeFormulario($_POST);
+} catch (InvalidArgumentException) {
+    exit('0');
+}
+$alumnos = FabricaAlumnos::gestionar((new conexionBD())->conexionPDO());
+echo $alumnos->registrar($ficha, ($_POST['nombrefoto'] ?? '') !== '') ? 1 : 2;

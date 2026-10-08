@@ -267,6 +267,9 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > **Migración `20261010000000_corregir_modificar_usuario`**: `SP_MODIFICAR_USUARIO` ahora devuelve 1/2
 > y el código nuevo lee ese valor (con el SP anterior toda edición respondería 2): **van juntos**.
 > El despliegue también añade `core/autoload.php` y `src/`, que el código heredado carga sin Composer.
+>
+> **Migración `20261011000000_corregir_alumnos`**: `SP_ELIMINAR_ALUMNO` pasa a recibir el DNI como texto y
+> devolver 1/0; el código nuevo lee ese valor (con el SP anterior toda baja respondería 0): **van juntos**.
 
 **Importantes:**
 

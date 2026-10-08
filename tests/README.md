@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto) | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -23,7 +23,8 @@ si aparece, no escribe nada.
 Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, periodo 44), alumno
 `usuario62` (matrícula 40, aula 5), administrador `usuario9`, auxiliar `usuario22`; la cuenta que se renombra y desactiva es la del docente
 `usuario11` (id 11). Los flujos cuentan para el límite de intentos de login: al repetirlos en local,
-vacía `LOGIN_LIMITE_DIR` además de recargar los datos.
+vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 20, sin matrícula) se modifica;
+70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo.
 
 ## Ejecutar en local
 
@@ -82,6 +83,17 @@ Migración `20261010000000_corregir_modificar_usuario` (módulo usuario, ya en `
 | Editar una cuenta truncaba el usuario a 20 caracteres (`SP_MODIFICAR_USUARIO`) | Hasta 250, como la columna |
 | Se podía renombrar una cuenta al nombre de otra (dos cuentas con el mismo usuario) | Responde 2 sin tocar nada; el panel lo avisa |
 | Un estado distinto de ACTIVO/INACTIVO se guardaba vacío, y el login lo trataba como activo | Se rechaza (0) en el servicio y en el SP |
+
+Migración `20261011000000_corregir_alumnos` (módulo alumnos, ya en `src/`):
+
+| Defecto | Ahora |
+|---|---|
+| Modificar un alumno actualizaba los padres por el `idpa` del formulario: con uno ajeno, los de OTRO alumno | Por `id_alu` (1:1); `idpa` ya no se usa |
+| Un DNI de más de 8 caracteres (o celular de más de 9) se truncaba sin aviso; sexo o fecha inválidos se guardaban vacíos | `FichaAlumno` lo rechaza: responde 0 y el panel lo avisa |
+| Eliminar un alumno con matrícula daba 500 (clave foránea): el aviso del panel nunca aparecía | Responde 0 |
+| `SP_ELIMINAR_ALUMNO` comparaba el DNI como número | Como texto |
+| Los padres se enlazaban con `MAX(Id_alumno)` (carrera entre altas simultáneas) | `LAST_INSERT_ID()` |
+| La foto actual y la que se borraba venían del formulario; al eliminar, la foto quedaba en el disco | Se leen de la BD; al eliminar se borra |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

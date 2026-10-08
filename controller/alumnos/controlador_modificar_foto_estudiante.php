@@ -1,34 +1,17 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
-    require_once __DIR__ . '/../../core/subidas.php';
-    require_once __DIR__ . '/../../core/pertenencia.php';
-    require '../../model/model_alumnos.php';
-    $MALU = new Modelo_Alumnos();//Instaciamos
-    $id = htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8');
-    $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
-    $fotoactual = htmlspecialchars($_POST['fotoactual'],ENT_QUOTES,'UTF-8');
-    // IDOR: un estudiante solo cambia SU foto (DNI de la sesión) y la foto a borrar sale de la BD.
-    $id = dni_propio($id, 'ESTUDIANTE');
-    if (es_estudiante()) {
-        $fotoactual = foto_actual_alumno($id);
-    }
 
-    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
-    if(empty($nombrefoto)){
-        $ruta = 'controller/alumnos/fotos/VACIO.png';
-    }else{
-        $nombrefoto = imagen_validada('foto');
-        $ruta = 'controller/alumnos/fotos/'.$nombrefoto;
-    }
+declare(strict_types=1);
 
-    $consulta = $MALU->Modificar_foto_estudiante($id,$ruta);
-    echo $consulta;
-    if ($consulta==1) {
-        if(!empty($nombrefoto)){
-            if(imagen_guardar('foto','controller/alumnos/fotos',$nombrefoto)){
-                borrar_archivo_subido($fotoactual,'controller/alumnos/fotos');
-            }
-        }
-    }
-?>
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'ESTUDIANTE');
+require_once __DIR__ . '/../../core/pertenencia.php';
+require_once __DIR__ . '/../../model/model_conexion.php';
+
+use App\Services\FabricaAlumnos;
+
+// IDOR: un estudiante solo cambia SU foto (DNI de la sesión). La foto a borrar sale de la BD.
+// Sin foto nueva, el alumno queda sin foto. Respuesta: 1. Foto inválida: 422.
+$dni = dni_propio(htmlspecialchars((string) ($_POST['id'] ?? ''), ENT_QUOTES, 'UTF-8'), 'ESTUDIANTE');
+$alumnos = FabricaAlumnos::gestionar((new conexionBD())->conexionPDO());
+$alumnos->cambiarFoto($dni, ($_POST['nombrefoto'] ?? '') !== '');
+echo 1;

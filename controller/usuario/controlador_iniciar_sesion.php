@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../../model/model_conexion.php';
+require_once __DIR__ . '/../../model/model_conexion.php';
 require __DIR__ . '/../../core/sesion.php';
 require __DIR__ . '/../../core/limite_login.php';
 

@@ -18,6 +18,8 @@ const ESC = {
   matriculaOtraAula: 33,
   // Docente que ningún otro flujo usa: se renombra, cambia de contraseña y se desactiva.
   cuenta: { id: '11', rol: '2', correo: 'usuario11@example.com' },
+  // Alumnos: 70000001 tiene matrícula; 70000014 (id 20) no, y ningún otro flujo lo usa.
+  alumnoMatriculadoDni: '70000001', alumnoSinMatriculaDni: '70000014',
 };
 
 let ok = 0, fallos = 0;
@@ -46,16 +48,23 @@ async function entrar(browser, usuario) {
   return s;
 }
 
-/** Petición desde la sesión del navegador. datos: objeto (urlencoded) o {archivos: true, ...} (multipart). */
+/**
+ * Petición desde la sesión del navegador. datos: objeto (urlencoded), o multipart si trae
+ * __archivo (un PDF en archivos[]) o __foto (un PNG de 1×1 válido en el campo foto).
+ */
 async function pedir(page, ruta, datos = null, metodo = 'POST') {
   return page.evaluate(async ({ url, datos, metodo }) => {
     const token = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
     let body;
     const headers = { 'X-CSRF-Token': token };
-    if (datos && datos.__archivo) {
+    if (datos && (datos.__archivo || datos.__foto)) {
       body = new FormData();
-      for (const [k, v] of Object.entries(datos)) if (k !== '__archivo') body.append(k, v);
-      body.append('archivos[]', new Blob(['%PDF-1.4 prueba E2E'], { type: 'application/pdf' }), datos.__archivo);
+      for (const [k, v] of Object.entries(datos)) if (!k.startsWith('__')) body.append(k, v);
+      if (datos.__archivo) body.append('archivos[]', new Blob(['%PDF-1.4 prueba E2E'], { type: 'application/pdf' }), datos.__archivo);
+      if (datos.__foto) {
+        const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='), (c) => c.charCodeAt(0));
+        body.append('foto', new Blob([png], { type: 'image/png' }), datos.__foto);
+      }
     } else if (datos) {
       body = new URLSearchParams(datos);
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
@@ -255,6 +264,70 @@ try {
     check((await pedir(doc.page, 'controller/usuario/controlador_modificar_usuario_estatus.php', { id, estatus: 'INACTIVO' })).estado === 403,
       'un docente no puede cambiar el estado de una cuenta → 403');
     await doc.ctx.close();
+  }
+
+  console.log('9. Alumnos (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const ruta = (r) => `controller/alumnos/controlador_${r}.php`;
+    const alumnos = async () => filas(await pedir(adm.page, ruta('listar_alumnos')));
+    const alumno = async (dni) => (await alumnos()).find((a) => a.alum_dni === dni);
+    const ficha = (dni, extra = {}) => ({
+      dni, nombre: 'Prueba', apepa: 'Flujo', apema: 'Nuevo', sexo: 'FEMENINO', fechanaci: '2015-03-04', telf: '900000001',
+      direc: 'Calle E2E 1', nombrefoto: '', dnipa: '40000001', nompa: 'Padre E2E', celpa: '911111111',
+      dnima: '40000002', nomma: 'Madre E2E', celma: '922222222', ...extra,
+    });
+
+    check((await pedir(adm.page, ruta('registrar_alumno'), ficha('79999991'))).texto === '1', 'registra un alumno con sus padres');
+    const nuevo = await alumno('79999991');
+    check(nuevo?.alum_nombre === 'PRUEBA' && nuevo?.Datos_mama === 'MADRE E2E', 'el alumno y sus padres aparecen en el listado (en mayúsculas)');
+    check((await pedir(adm.page, ruta('registrar_alumno'), ficha('79999991'))).texto === '2', 'un DNI repetido responde 2');
+    check((await pedir(adm.page, ruta('registrar_alumno'), ficha('123456789'))).texto === '0', 'un DNI de más de 8 caracteres se rechaza → 0 (antes se truncaba)');
+    check(!(await alumno('12345678')), 'y no queda guardado truncado');
+    const conFoto = await pedir(adm.page, ruta('registrar_alumno'), { ...ficha('79999992', { nombrefoto: 'x.png' }), __foto: 'x.png' });
+    check(conFoto.texto === '1' && /^controller\/alumnos\/fotos\/.+\.png$/.test((await alumno('79999992'))?.alum_fotoperfil ?? ''),
+      'registra con foto: el servidor genera el nombre', `(${conFoto.texto.slice(0, 80)})`);
+
+    // Modificar: idpa apunta a los padres de OTRO alumno (como si el formulario trajera un id ajeno).
+    const victima = await alumno(ESC.alumnoMatriculadoDni);
+    const objetivo = await alumno(ESC.alumnoSinMatriculaDni);
+    const cambio = await pedir(adm.page, ruta('modificar_alumno'), {
+      ...ficha(ESC.alumnoSinMatriculaDni, { direc: 'Nueva Direccion 9', nompa: 'Padre Cambiado' }),
+      id: String(objetivo.Id_alumno), idpa: String(victima.id_papas), fotoactual: objetivo.alum_fotoperfil,
+    });
+    check(cambio.texto === '1', 'modifica los datos del alumno');
+    check((await alumno(ESC.alumnoSinMatriculaDni))?.Datos_papa === 'PADRE CAMBIADO', 'los padres del alumno se actualizan');
+    check((await alumno(ESC.alumnoMatriculadoDni))?.Datos_papa === victima.Datos_papa,
+      'los padres de otro alumno no cambian aunque llegue su id');
+    check((await alumno(ESC.alumnoSinMatriculaDni))?.alum_fotoperfil === objetivo.alum_fotoperfil, 'sin foto nueva se conserva la actual');
+    const dniAjeno = await pedir(adm.page, ruta('modificar_alumno'), {
+      ...ficha(ESC.alumnoMatriculadoDni), id: String(objetivo.Id_alumno), idpa: String(objetivo.id_papas), fotoactual: '',
+    });
+    check(dniAjeno.texto === '2', 'no se puede poner el DNI de otro alumno → 2');
+
+    const borrarMatriculado = await pedir(adm.page, ruta('eliminar_alumnos'), { id: ESC.alumnoMatriculadoDni });
+    check(borrarMatriculado.texto === '0' && !!(await alumno(ESC.alumnoMatriculadoDni)),
+      'un alumno con matrícula no se elimina y responde 0 (el panel muestra el aviso)', `(${borrarMatriculado.estado} ${borrarMatriculado.texto.slice(0, 60)})`);
+    check((await pedir(adm.page, ruta('eliminar_alumnos'), { id: '79999991' })).texto === '1' && !(await alumno('79999991')),
+      'un alumno sin matrícula se elimina');
+    await adm.ctx.close();
+
+    const doc = await entrar(browser, ESC.docente);
+    check((await pedir(doc.page, ruta('eliminar_alumnos'), { id: '79999992' })).estado === 403, 'un docente no puede eliminar alumnos → 403');
+    await doc.ctx.close();
+
+    // El estudiante cambia SU foto aunque envíe el DNI de otro (IDOR).
+    const antes = victima; // leído antes con la sesión del administrador (ya cerrada)
+    const est = await entrar(browser, ESC.estudiante);
+    const foto = await pedir(est.page, ruta('modificar_foto_estudiante'), { id: ESC.alumnoMatriculadoDni, nombrefoto: 'yo.png', __foto: 'yo.png' });
+    await est.ctx.close();
+    const adm2 = await entrar(browser, ESC.admin);
+    const lista = filas(await pedir(adm2.page, ruta('listar_alumnos')));
+    await adm2.ctx.close();
+    const propio = lista.find((a) => /^controller\/alumnos\/fotos\/IMG.+\.png$/.test(a.alum_fotoperfil) && a.alum_dni !== '79999992');
+    check(foto.texto === '1' && !!propio, 'el estudiante cambia su propia foto', `(${foto.texto.slice(0, 60)})`);
+    check(lista.find((a) => a.alum_dni === ESC.alumnoMatriculadoDni)?.alum_fotoperfil === antes.alum_fotoperfil,
+      'y no la de otro alumno aunque envíe su DNI');
   }
 } finally {
   await browser.close();

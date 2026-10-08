@@ -1,49 +1,22 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require_once __DIR__ . '/../../core/subidas.php';
-    require '../../model/model_alumnos.php';
-    $MALU = new Modelo_Alumnos();//Instaciamos
-    //DATOS DE ESTUDIANTE//
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $dni = strtoupper(htmlspecialchars($_POST['dni'],ENT_QUOTES,'UTF-8'));
-    $nombre = strtoupper(htmlspecialchars($_POST['nombre'],ENT_QUOTES,'UTF-8'));
-    $apepa = strtoupper(htmlspecialchars($_POST['apepa'],ENT_QUOTES,'UTF-8'));
-    $apema = strtoupper(htmlspecialchars($_POST['apema'],ENT_QUOTES,'UTF-8'));
-    $sexo = strtoupper(htmlspecialchars($_POST['sexo'],ENT_QUOTES,'UTF-8'));
-    $fechanaci = strtoupper(htmlspecialchars($_POST['fechanaci'],ENT_QUOTES,'UTF-8'));
-    $telf = strtoupper(htmlspecialchars($_POST['telf'],ENT_QUOTES,'UTF-8'));
-    $direc = strtoupper(htmlspecialchars($_POST['direc'],ENT_QUOTES,'UTF-8'));
-    $fotoactual = htmlspecialchars($_POST['fotoactual'],ENT_QUOTES,'UTF-8');
-    $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
 
-    //DATOS DE LOS PAPAS //
-    $idpa = strtoupper(htmlspecialchars($_POST['idpa'],ENT_QUOTES,'UTF-8'));
-    $dnipa = strtoupper(htmlspecialchars($_POST['dnipa'],ENT_QUOTES,'UTF-8'));
-    $nompa = strtoupper(htmlspecialchars($_POST['nompa'],ENT_QUOTES,'UTF-8'));
-    $celpa = strtoupper(htmlspecialchars($_POST['celpa'],ENT_QUOTES,'UTF-8'));
-    $dnima = strtoupper(htmlspecialchars($_POST['dnima'],ENT_QUOTES,'UTF-8'));
-    $nomma = strtoupper(htmlspecialchars($_POST['nomma'],ENT_QUOTES,'UTF-8'));
-    $celma = strtoupper(htmlspecialchars($_POST['celma'],ENT_QUOTES,'UTF-8'));
+declare(strict_types=1);
 
-    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
-    // 'controller/alumnos/fotos/' (sin archivo) es la marca que usa la vista para "sin foto".
-    $nueva = !empty($nombrefoto) && $nombrefoto != 'controller/alumnos/fotos/';
-    if ($nueva) {
-        $nombrefoto = imagen_validada('foto');
-        $ruta = 'controller/alumnos/fotos/' . $nombrefoto;
-    } elseif (empty($nombrefoto)) {
-        $ruta = $fotoactual;
-    } else {
-        $ruta = $nombrefoto;
-    }
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
-    $consulta = $MALU->Modificar_alumno($id,$dni,$nombre,$apepa,$apema,$sexo,$fechanaci,$telf,$direc,$ruta,$idpa,$dnipa,$nompa,$celpa,$dnima,$nomma,$celma);
-    echo $consulta;
+use App\Domain\Alumno\FichaAlumno;
+use App\Services\FabricaAlumnos;
 
-    if ($consulta == 1 && $nueva) {
-        if (imagen_guardar('foto', 'controller/alumnos/fotos', $nombrefoto)) {
-            borrar_archivo_subido($fotoactual, 'controller/alumnos/fotos');
-        }
-    }
-?>
+// Respuesta: 1 = modificado, 2 = el DNI pertenece a otro alumno, 0 = datos inválidos. Foto inválida: 422.
+// «idpa» y «fotoactual» del formulario ya no se usan: los padres y la foto actual salen de la BD.
+try {
+    $ficha = FichaAlumno::desdeFormulario($_POST);
+} catch (InvalidArgumentException) {
+    exit('0');
+}
+$id = (int) ($_POST['id'] ?? 0);
+$fotoNueva = ($_POST['nombrefoto'] ?? '') !== '';
+$alumnos = FabricaAlumnos::gestionar((new conexionBD())->conexionPDO());
+echo $alumnos->modificar($id, $ficha, $fotoNueva) ? 1 : 2;

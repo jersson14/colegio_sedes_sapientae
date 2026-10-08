@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../core/guard.php';
 exigir_rol('ADMINISTRADOR');
-require __DIR__ . '/../../model/model_conexion.php';
+require_once __DIR__ . '/../../model/model_conexion.php';
 
 use App\Repositories\PdoUsuarioRepositorio;
 use App\Services\GestionarCuentas;

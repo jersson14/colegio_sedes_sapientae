@@ -342,7 +342,8 @@ function Registrar_alumno(){
             document.getElementById('txt_cel_ma').value="";
           });
         }else{
-        Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+        if(resp==0){ Swal.fire("Mensaje de Advertencia","Datos no válidos: revise que el DNI tenga hasta 8 caracteres, el celular hasta 9 y la fecha de nacimiento","warning"); }
+        else{ Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning"); }
         }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo registrar al alumno","warning");
@@ -432,7 +433,8 @@ function Modificar_alumno(){
 
           });
         }else{
-        Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+        if(resp==0){ Swal.fire("Mensaje de Advertencia","Datos no válidos: revise que el DNI tenga hasta 8 caracteres, el celular hasta 9 y la fecha de nacimiento","warning"); }
+        else{ Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning"); }
         }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo actualizar la foto","warning");

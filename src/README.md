@@ -30,10 +30,16 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 | Módulo | Servicios | Endpoints adaptados | Pruebas |
 |---|---|---|---|
 | usuario (cuentas) | `AutenticarUsuario`, `GestionarCuentas` | `iniciar_sesion`, `modificar_usuario`, `modificar_usuario_contra`, `modificar_usuario_estatus` | `tests/Unit/Usuario`, `tests/Integration/UsuarioRepositorioTest`, flujos §1 y §8 |
+| alumnos | `GestionarAlumnos` (`FabricaAlumnos`), `FichaAlumno` | `registrar_alumno`, `modificar_alumno`, `eliminar_alumnos`, `modificar_foto_estudiante` | `tests/Unit/Alumno`, `tests/Integration/AlumnoRepositorioTest`, flujos §9 |
 
 Las lecturas del módulo (listados, totales del panel, combos) siguen en `model/model_usuario.php`,
-cubiertas por la caracterización. No se migran los endpoints sin uso desde la interfaz
-(`docs/MATRIZ_ROLES.md`, «restos de otro sistema»): su retirada queda pendiente de decisión.
+cubiertas por la caracterización; igual el listado de alumnos (`model/model_alumnos.php`).
+
+Las fotos pasan por `Support\AlmacenFotos` (`FotosSubidas` sobre `core/subidas.php`): se validan antes
+de tocar la BD y se guardan, o se borra la anterior, solo si la BD aceptó el cambio.
+
+No se migran los endpoints sin uso desde la interfaz (`docs/MATRIZ_ROLES.md`, «restos de otro
+sistema»): su retirada queda pendiente de decisión.
 
 **Compatibilidad que no se debe romper:** `Domain\Usuario\Contrasena` aplica `htmlspecialchars` antes
 de hashear y de verificar, como hacía el código heredado; todas las contraseñas guardadas dependen de ello.
