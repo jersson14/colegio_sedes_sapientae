@@ -293,6 +293,10 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > **Migración `20261019000000_corregir_pagos_y_caja`**: `SP_ELIMINAR_PAGO_PENSION` recibe ahora también
 > quién anula, y los SP de registrar/modificar ingresos, egresos, pensiones y pagos devuelven un
 > código que el código nuevo lee: van juntos. Avisar a caja: «anular pago» ya no borra el ingreso.
+>
+> **Migración `20261020000000_corregir_tareas_y_examenes`**: las entregas fuera de plazo se rechazan
+> también en producción, aunque `event_scheduler` esté apagado (se compara con la fecha de entrega).
+> Las carpetas nuevas tienen otro formato de nombre; `core/subidas.php` acepta los dos.
 
 **Importantes:**
 

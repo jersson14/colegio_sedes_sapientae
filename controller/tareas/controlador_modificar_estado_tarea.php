@@ -1,16 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'DOCENTE', 'AUXILIAR');
-    require_once __DIR__ . '/../../core/pertenencia.php';
-require '../../model/model_tareas.php';
-$MTA = new Modelo_Tareas(); // Instanciar el modelo
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    exigir_tarea_propia((string)$id); // IDOR
-    $estatus = strtoupper(htmlspecialchars($_POST['estatus'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MTA->Modificar_Tarea_Estatus($id,$estatus);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'DOCENTE', 'AUXILIAR');
+require_once __DIR__ . '/../../core/pertenencia.php';
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Services\FabricaTareas;
 
-?>
+// Solo se finaliza (quien no entregó queda con 5). Respuesta: 1 = finalizada, 0 = otro estado.
+try {
+    $tareas = FabricaTareas::gestionar((new conexionBD())->conexionPDO());
+    $id = (string) ($_POST['id'] ?? '');
+    exigir_tarea_propia($id); // IDOR
+    echo $tareas->cambiarEstado($id, $_POST['estatus'] ?? '') ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

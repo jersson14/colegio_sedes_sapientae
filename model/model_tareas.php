@@ -189,83 +189,6 @@
             return $arreglo;
         }
         
-        public function Registrar_Tarea($asig, $tema, $fecha, $descrip, $carpeta){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_TAREA(?,?,?,?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$asig);
-            $query ->bindParam(2,$tema);
-            $query ->bindParam(3,$fecha);
-            $query ->bindParam(4,$descrip);
-            $query ->bindParam(5,$carpeta);
-
-
-            $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Tarea($id, $asig, $tema, $fecha, $descrip, $ruta_carpeta){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_TAREAS(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$asig);
-            $query ->bindParam(3,$tema);
-            $query ->bindParam(4,$fecha);
-            $query ->bindParam(5,$descrip);
-            $query ->bindParam(6,$ruta_carpeta);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Registrar_envio_tarea($iddetalle,$ruta_carpeta){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ENVIAR_TAREA(?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$iddetalle);
-            $query ->bindParam(2,$ruta_carpeta);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_envio_tarea($iddetalle,$ruta_carpeta){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_ENVIAR_TAREA(?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$iddetalle);
-            $query ->bindParam(2,$ruta_carpeta);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_Tareas($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_TAREA(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
         public function Listar_tareas_enviadas($id){
             $c = conexionBD::conexionPDO();
             $arreglo = array();
@@ -280,38 +203,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_calificación($id,$nota,$obser){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_CALIFICACION(?,?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);            
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$nota);
-            $query ->bindParam(3,$obser);
-
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Tarea_Estatus($id,$estatus){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_TAREA_ESTATUS(?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$estatus);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Tareas, entregas y calificación: src/Services/GestionarTareas.php.
     }
 
 

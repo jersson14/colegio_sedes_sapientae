@@ -624,7 +624,7 @@ function Registrar_Tarea_envio() {
     contentType: false,
     processData: false,
     success: function(resp) {
-      if (resp.length > 0) {
+      if (resp == 1) {
        
           Swal.fire("Mensaje de Confirmación", "Se envio correctamente la tarea con el TEMA: " + tema, "success").then((value) => {
             tbl_tareas.ajax.reload();
@@ -637,7 +637,7 @@ function Registrar_Tarea_envio() {
           });
        
       } else {
-        Swal.fire("Mensaje de Advertencia", "No se pudo realizar la actualización, verifique por favor", "warning");
+        Swal.fire("Mensaje de Advertencia", "No se pudo enviar: la tarea venció o fue finalizada, o tu entrega ya fue calificada", "warning");
       }
     }
   });
@@ -679,7 +679,7 @@ function Modificar_Tarea_envio() {
     contentType: false,
     processData: false,
     success: function(resp) {
-      if (resp.length > 0) {
+      if (resp == 1) {
        
           Swal.fire("Mensaje de Confirmación", "Se actualizo correctamente el archivo de la tarea con el TEMA: " + tema, "success").then((value) => {
             tbl_tareas.ajax.reload();
@@ -692,7 +692,7 @@ function Modificar_Tarea_envio() {
           });
        
       } else {
-        Swal.fire("Mensaje de Advertencia", "No se pudo realizar la actualización, verifique por favor", "warning");
+        Swal.fire("Mensaje de Advertencia", "No se pudo enviar: la tarea venció o fue finalizada, o tu entrega ya fue calificada", "warning");
       }
     }
   });

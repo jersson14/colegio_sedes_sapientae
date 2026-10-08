@@ -36,6 +36,7 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 | asistencia | `GestionarAsistencia`, `Asistencia`, `EstadoAsistencia` | `registro_asistencias`, `editar_asistencia`, `eliminar_asistencia` | `tests/Unit/Asistencia`, `tests/Integration/AsistenciaRepositorioTest`, flujos §7 y §12 |
 | caja | `AnularMovimiento`, `GestionarCaja`, `Domain\Caja\Movimiento`, `MovimientoDiverso` | `ingresos/*` y `egresos/*` (registrar, modificar, anular), `indicadores/eliminar_indicador` | `tests/Unit/Caja`, `tests/Integration/MontosYAnulacionTest`, `PagosYCajaTest`, flujos §13 y §15 |
 | pensiones y pagos | `GestionarPensiones`, `Domain\Pension\DatosPension`, `Pago` | `pensiones/*` (registro, modificar, eliminar), `pago_pension/*` (cobrar, modificar, anular) | `tests/Unit/Pension`, `tests/Integration/PagosYCajaTest`, flujos §3 y §15 |
+| tareas y exámenes | `GestionarTareas` (`FabricaTareas`), `Domain\Tarea\Actividad`, `Support\DocumentosTarea` | `tareas/*` (publicar, modificar, eliminar, finalizar, entregar, calificar), `examenes/*` | `tests/Unit/Tarea`, `tests/Integration/TareaRepositorioTest`, flujos §6 y §16 |
 | asignaturas/horarios | `GestionarHorarios` (`FabricaHorarios`), `Domain\Horario\Clase`, `ResultadoClase` | `registro_asignaturas`, `modificar_asignaturas`, `eliminar_asignatura`, `registro_horario_aula`, `modificar_horarios`, `eliminar_horario` | `tests/Unit/Horario`, `tests/Integration/HorarioRepositorioTest`, flujos §14 |
 
 Las lecturas del módulo (listados, totales del panel, combos) siguen en `model/model_usuario.php`,

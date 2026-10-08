@@ -167,5 +167,7 @@ function nombre_documento_seguro(string $original, array &$usados): ?string
 function carpeta_tarea_valida(string $ruta): ?string
 {
     $nombre = basename(str_replace('\\', '/', $ruta));
-    return preg_match('/^(tarea_alumnos_)?\d{9,11}$/', $nombre) ? $nombre : null;
+    // Marca de tiempo (carpetas antiguas) o marca de tiempo + sufijo aleatorio (App\Support\DocumentosTarea:
+    // con solo segundos, dos entregas del mismo segundo compartían carpeta).
+    return preg_match('/^(tarea_alumnos_)?\d{9,11}(_[0-9a-f]{8})?$/', $nombre) ? $nombre : null;
 }

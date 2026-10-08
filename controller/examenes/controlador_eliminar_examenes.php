@@ -1,16 +1,21 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'DOCENTE');
-    require_once __DIR__ . '/../../core/pertenencia.php';
-    require '../../model/model_examenes.php';
-    $MEXA = new Modelo_Examenes();//Instaciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    exigir_examen_propio((string)$id); // IDOR
 
+declare(strict_types=1);
 
-    $consulta = $MEXA->Eliminar_Examen($id);
-    echo $consulta;
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'DOCENTE');
+require_once __DIR__ . '/../../core/pertenencia.php';
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Services\FabricaTareas;
 
-
-?>
+// Respuesta: 1.
+try {
+    $tareas = FabricaTareas::gestionar((new conexionBD())->conexionPDO());
+    $id = (string) ($_POST['id'] ?? '');
+    exigir_examen_propio($id); // IDOR
+    $tareas->eliminarExamen($id);
+    echo 1;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

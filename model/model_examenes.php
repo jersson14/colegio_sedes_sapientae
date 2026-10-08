@@ -60,68 +60,6 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Examenes($asig,$tema,$fecha,$descrip){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_EXAMENES(?,?,?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$asig);
-            $query ->bindParam(2,$tema);
-            $query ->bindParam(3,$fecha);
-            $query ->bindParam(4,$descrip);
-
-
-            $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Examenes($id,$asig,$tema,$fecha,$descrip){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_EXAMENES(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$asig);
-            $query ->bindParam(3,$tema);
-            $query ->bindParam(4,$fecha);
-            $query ->bindParam(5,$descrip);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Examen_Estatus($id,$estatus){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_EXAMEN_ESTATUS(?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$estatus);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_Examen($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_EXAMEN(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
         public function Listar_alumnos_examenes($id){
             $c = conexionBD::conexionPDO();
             $arreglo = array();
@@ -186,6 +124,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        // Registro, cambios, estado y baja: src/Services/GestionarTareas.php.
     }
 
 

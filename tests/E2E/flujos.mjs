@@ -545,6 +545,52 @@ try {
     check(otraVez.texto === '1', 'la pensión anulada se puede volver a cobrar');
     await adm.ctx.close();
   }
+
+  console.log('16. Tareas y exámenes: plazos, calificación y estados');
+  {
+    const t = (r) => `controller/tareas/controlador_${r}.php`;
+    const tareaDelAlumno = async (page, tema) => filas(await pedir(page, t('listar_tareas_estudiante_solo'), { id: 0 }))
+      .find((x) => JSON.stringify(x).includes(tema));
+
+    // El docente publica una tarea vigente y otra ya vencida (la fecha del sistema es 2025-12-26).
+    const doc = await entrar(browser, ESC.docente);
+    for (const [tema, fecha] of [['VIGENTE E2E', '2025-12-31'], ['VENCIDA E2E', '2025-12-20']]) {
+      await pedir(doc.page, t('registro_tareas'), { __archivo: 'enunciado.pdf', asig: ESC.cursoDocente, tema, fecha, descrip: 'x' });
+    }
+    await doc.ctx.close();
+
+    const est = await entrar(browser, ESC.estudiante);
+    const vigente = await tareaDelAlumno(est.page, 'VIGENTE E2E');
+    const vencida = await tareaDelAlumno(est.page, 'VENCIDA E2E');
+    const enviar = (iddetalle, r = 'registro_tareas_estudiante') => pedir(est.page, t(r), { __archivo: 'entrega.pdf', iddetalle, archivoactual: '' });
+    check((await enviar(vigente?.id_detalle_tarea)).texto === '1', 'el alumno entrega una tarea vigente → 1');
+    check((await enviar(vencida?.id_detalle_tarea)).texto === '0', 'no se entrega una tarea vencida → 0');
+    await est.ctx.close();
+
+    const doc2 = await entrar(browser, ESC.docente);
+    const calificar = (nota) => pedir(doc2.page, t('registro_calificacion'), { id: String(vigente?.id_detalle_tarea), nota, obser: 'bien' });
+    check((await calificar('25')).texto === '0', 'una calificación fuera de 0–20 se rechaza → 0');
+    check((await calificar('18')).texto === '1', 'el docente califica la entrega');
+    check((await pedir(doc2.page, t('modificar_estado_tarea'), { id: vigente?.id_tarea, estatus: 'PENDIENTE' })).texto === '0',
+      'solo se puede finalizar una tarea (otro estado → 0; antes calificaba con 5 a los pendientes)');
+    check((await pedir(doc2.page, t('eliminar_tarea'), { id: vigente?.id_tarea })).texto === '0',
+      'una tarea con entregas calificadas no se elimina → 0 (antes se borraban en cascada)');
+    await doc2.ctx.close();
+
+    const est2 = await entrar(browser, ESC.estudiante);
+    const reenvio = await pedir(est2.page, t('modificar_tareas_estudiante'), { __archivo: 'otra.pdf', iddetalle: vigente?.id_detalle_tarea, archivoactual: '' });
+    check(reenvio.texto === '0', 'una entrega ya calificada no se reemplaza → 0 (antes volvía a «ENVIADO»)', `(${reenvio.texto.slice(0, 60)})`);
+    await est2.ctx.close();
+
+    const adm = await entrar(browser, ESC.admin);
+    const ex = (r, datos) => pedir(adm.page, `controller/examenes/controlador_${r}.php`, datos);
+    check((await ex('registro_examenes', { asig: ESC.cursoDocente, tema: 'EXAMEN E2E', fecha: '2025-12-30T10:00', descrip: 'x' })).texto === '1', 'registra un examen con hora');
+    const examen = filas(await ex('listar_examenes')).find((e) => e.tema_examen === 'EXAMEN E2E');
+    const editado = await ex('modificar_examen', { id: examen?.id_examen, asig: ESC.cursoDocente, tema: 'EXAMEN E2E 2', fecha: '2025-12-30T10:00', descrip: 'x' });
+    check(editado.texto === '1', 'editar solo el tema de un examen con hora responde 1 (antes «ya existe»)', `(${editado.texto})`);
+    check((await ex('modificar_estado_examen', { id: examen?.id_examen, estatus: 'CUALQUIERA' })).texto === '0', 'un estado de examen inválido se rechaza → 0');
+    await adm.ctx.close();
+  }
 } finally {
   await browser.close();
 }

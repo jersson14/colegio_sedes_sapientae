@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos, tareas y exámenes | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -28,7 +28,8 @@ vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 2
 matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas. Notas §11: matrícula 40,
 periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26). Horarios §14: el aula 5 tiene la semana
 completa; la hora 41 del lunes es del curso 20. Pagos §15: edita y anula el pago del §3 (matrícula 31,
-pensión 36); por eso el §13 anula un ingreso que no es de pensión.
+pensión 36); por eso el §13 anula un ingreso que no es de pensión. Tareas §16: el docente publica una
+tarea vigente (2025-12-31) y otra vencida (2025-12-20); exámenes con el administrador.
 
 ## Ejecutar en local
 
@@ -163,6 +164,20 @@ Migración `20261019000000_corregir_pagos_y_caja` y módulo pensiones/pagos/caja
 | Editar el monto de un pago no tocaba su ingreso | El ingreso válido lo sigue |
 | «Anular pago» **borraba el ingreso cobrado** | Lo anula (motivo, fecha, quién), lo conserva en caja y libera la pensión |
 | El cobro de varias filas se cortaba en el primer duplicado dejando cobradas las anteriores | Todo o nada |
+
+Migración `20261020000000_corregir_tareas_y_examenes` y módulo tareas/exámenes en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| La carpeta de cada entrega se nombraba con `time()`: dos entregas del mismo segundo compartían carpeta y una reentrega **borraba los archivos de otro alumno** | Nombre único (marca de tiempo + sufijo aleatorio) |
+| Al reemplazar archivos se borraba la carpeta anterior **antes** de actualizar la BD | Se guarda lo nuevo, se actualiza la BD y solo entonces se borra lo anterior |
+| Se podía entregar una tarea vencida o finalizada, y reemplazar una entrega ya calificada | 0 (el panel lo avisa; antes «enviado correctamente» con cualquier respuesta) |
+| Cualquier estado de tarea calificaba con 5 a los pendientes | Solo se finaliza |
+| Eliminar una tarea borraba en cascada las entregas enviadas y calificadas (y dejaba los archivos en el disco) | 0 si hay entregas; si se elimina, se borran sus archivos |
+| Una calificación fuera de 0–20 se guardaba | Se rechaza |
+| Editar un examen con hora sin cambiar la fecha respondía «ya existe» (DATE contra DATETIME) | Regla (curso, fecha) sin contar el propio examen |
+| El primer examen recibía el código «D0000001» | «E0000001» (el ya existente se conserva) |
+| Estado de examen sin validar | Solo los del ENUM |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
