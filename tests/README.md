@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -26,7 +26,8 @@ Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, peri
 vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 20, sin matrícula) se modifica;
 70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo. Matrícula: el alumno 20 se
 matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas. Notas §11: matrícula 40,
-periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26).
+periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26). Horarios §14: el aula 5 tiene la semana
+completa; la hora 41 del lunes es del curso 20.
 
 ## Ejecutar en local
 
@@ -137,6 +138,17 @@ Decisiones del responsable (migraciones `20261015000000` a `20261017000000`):
 | Montos en `DECIMAL(5,2)`: nada por encima de S/ 999.99 | `DECIMAL(10,2)` en las 8 columnas de montos y en los 16 parámetros de los SP que los reciben |
 | Editar los montos de una matrícula no tocaba sus pagos ni sus ingresos | Los pagos de ADMISION, ALUMNO NUEVO y MATRICULA y sus ingresos **válidos** siguen a los montos; un ingreso anulado conserva su monto |
 | Anular un ingreso o egreso sobrescribía quién cobró/pagó con un id que llegaba del formulario, y se podía volver a anular | `id_user` no cambia; quién anula (de la sesión) va en `id_usuario_anulacion`; solo se anula lo VALIDO y el motivo es obligatorio |
+
+Migración `20261018000000_corregir_horarios` y módulo asignaturas/horarios en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| Dos cursos distintos podían ocupar la misma hora y día de un aula | Responde 3 y no registra nada del lote |
+| Un docente podía tener dos clases a la vez en aulas distintas | Responde 4 (solapamiento de horas, mismo día y año escolar) |
+| Eliminar el horario de un aula borraba el de **todos los años escolares** | Solo el del año de la fila |
+| Eliminar una asignatura con docente asignado daba 500 (el aviso del panel no aparecía) | Responde 0 |
+| Un día fuera de lunes a viernes se guardaba vacío | Se rechaza (0) |
+| El registro del horario era fila a fila | Todo el lote o nada (con punto de guardado si hay una transacción abierta) |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

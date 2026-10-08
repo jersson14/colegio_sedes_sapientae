@@ -44,50 +44,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-       
-        public function Registrar_Asignaturas($asigna,$grado,$obse){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_ASIGNATURAS(?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$asigna);
-            $query ->bindParam(2,$grado);
-            $query ->bindParam(3,$obse);
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Asignaturas($id,$asigna,$grado,$observa){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_ASIGNATURA(?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$asigna);
-            $query ->bindParam(3,$grado);
-            $query ->bindParam(4,$observa);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_Asignatura($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL ELIMINAR_ASIGNATURA(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Registro, cambios y baja de asignaturas: src/Services/GestionarHorarios.php.
     }
 
 

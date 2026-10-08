@@ -644,6 +644,12 @@ function Registrar_horario_aula() {
         }
     }).done(function(resp) {
         if (resp > 0) {
+                if (resp == 3) {
+                    return Swal.fire("Mensaje de Advertencia", "Una de las horas ya tiene otro curso en ese día. No se registró nada.", "warning");
+                }
+                if (resp == 4) {
+                    return Swal.fire("Mensaje de Advertencia", "El docente de uno de los cursos ya tiene clase a esa hora. No se registró nada.", "warning");
+                }
             if (resp == 1) {
                 Swal.fire("Mensaje de Confirmación", "Horario registrado satisfactoriamente!!!", "success").then(() => {
                     tbl_horario.ajax.reload(); // Recarga la tabla de datos
@@ -691,7 +697,12 @@ function Modificar_horarios_aula() {
       componentes: JSON.stringify(componentes)  // Enviar solo los datos de la tabla actual
     }
   }).done(function(resp) {
-    console.log("Respuesta del servidor:", resp);  // Verificar la respuesta del servidor
+    if (resp == 3) {
+        return Swal.fire("Mensaje de Advertencia", "Una de las horas ya tiene otro curso en ese día. No se modificó nada.", "warning");
+    }
+    if (resp == 4) {
+        return Swal.fire("Mensaje de Advertencia", "El docente de uno de los cursos ya tiene clase a esa hora. No se modificó nada.", "warning");
+    }
     if (resp == 1) {
       Swal.fire("Mensaje de Confirmación", "Componentes modificados satisfactoriamente!!!", "success").then(() => {
         tbl_horario.ajax.reload();  // Recargar la tabla original (si es necesario)
@@ -714,12 +725,13 @@ function Modificar_horarios_aula() {
 
 
 //ELIMINANDO HORARIO
-function Eliminar_horario(id){
+function Eliminar_horario(id, anio){
     $.ajax({
       "url":"../controller/horarios/controlador_eliminar_horario.php",
       type:'POST',
       data:{
-        id:id
+        id:id,
+        anio:anio  // solo el horario de ese año escolar
       }
     }).done(function(resp){
       if(resp>0){
@@ -727,7 +739,7 @@ function Eliminar_horario(id){
             tbl_horario.ajax.reload();
           });
       }else{
-        return Swal.fire("Mensaje de Advetencia","No se puede eliminar este horario por que esta siendo utilizado, verifique por favor","warning");
+        return Swal.fire("Mensaje de Advetencia","No se pudo eliminar el horario: falta el aula o el año escolar","warning");
   
       }
     })
@@ -750,7 +762,7 @@ $('#tabla_horario').on('click','.delete',function(){
       confirmButtonText: 'Si, Eliminar'
     }).then((result) => {
       if (result.isConfirmed) {
-        Eliminar_horario(data.id_aula);
+        Eliminar_horario(data.id_aula, data['id_año_academico']);
       }
     })
   })

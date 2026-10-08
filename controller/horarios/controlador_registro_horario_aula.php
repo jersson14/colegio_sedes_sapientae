@@ -1,37 +1,19 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
-    require '../../model/model_horarios.php';
-    $MHR = new Modelo_Horarios();//Instaciamos
 
-    $componentes = json_decode($_POST['componentes'], true); // Decodificar JSON a un array PHP
-    $exito = true; // Bandera de éxito global
-    $ya_existen = false; // Bandera para detectar si algunos registros ya existen
+declare(strict_types=1);
 
-    foreach ($componentes as $componente) {
-        $resultado = $MHR->Registrar_horarios(
-            $componente['idhora'],
-            $componente['idasig'],
-            $componente['dia']
-        );
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'AUXILIAR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
-        if ($resultado == 2) {
-            $ya_existen = true; // Detectar si al menos uno ya existe
-        }
+use App\Services\FabricaHorarios;
+use App\Support\Lote;
 
-        if ($resultado != 1 && $resultado != 2) {
-            $exito = false; // Si alguno falla, marcamos como fallo
-            break;
-        }
-    }
-
-    if ($exito) {
-        if ($ya_existen) {
-            echo 2; // Algunos registros ya existen
-        } else {
-            echo 1; // Todos los registros fueron insertados con éxito
-        }
-    } else {
-        echo 0; // Error en la inserción
-    }
-?>
+// Respuesta: 1 = registrado, 2 = alguna clase ya estaba, 3 = una celda ya tiene otro curso,
+// 4 = el docente ya tiene clase a esa hora, 0 = datos inválidos. Con 3 o 4 no se registra nada.
+try {
+    $horarios = FabricaHorarios::gestionar((new conexionBD())->conexionPDO());
+    echo $horarios->registrar(Lote::desdeJson($_POST['componentes'] ?? ''));
+} catch (InvalidArgumentException) {
+    echo 0;
+}

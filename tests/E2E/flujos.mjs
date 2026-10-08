@@ -26,6 +26,8 @@ const ESC = {
   notasFlujo: { matricula: '40', periodo: '12', criterio: '1', otroCriterio: '8' },
   // Asistencia §12 (auxiliar): un día pasado, distinto del de §7.
   asistenciaFlujo: { matricula: '40', aula: '5', fecha: '2025-12-01' },
+  // Horarios §14: el aula 5 tiene toda la semana ocupada; la asignatura 2 tiene docente asignado.
+  horarioFlujo: { aula: '5', enUso: '2', celda: { hora: '41', dia: 'LUNES', curso: '20', otroCurso: '21' } },
 };
 
 let ok = 0, fallos = 0;
@@ -473,6 +475,27 @@ try {
     check(despues?.estado === 'ANULADO' && String(despues?.id_user) === String(valido?.id_user),
       'queda anulado y conserva quién lo cobró aunque el formulario envíe otro usuario', `(${JSON.stringify(despues ?? {}).slice(0, 160)})`);
     check((await anular({ obser: 'Otra vez' })).texto === '0', 'un ingreso ya anulado no se vuelve a anular → 0');
+    await adm.ctx.close();
+  }
+
+  console.log('14. Asignaturas y horarios (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const asig = (r, datos) => pedir(adm.page, `controller/asignaturas/controlador_${r}.php`, datos);
+    const horario = (componentes) => pedir(adm.page, 'controller/horarios/controlador_registro_horario_aula.php', { componentes: JSON.stringify(componentes) });
+    const { aula, enUso, celda } = ESC.horarioFlujo;
+
+    check((await asig('registro_asignaturas', { asigna: 'Robótica E2E', grado: aula, obse: '' })).texto === '1', 'registra una asignatura');
+    check((await asig('registro_asignaturas', { asigna: 'robótica e2e', grado: aula, obse: '' })).texto === '2', 'la misma asignatura en el aula responde 2');
+    const nueva = filas(await asig('listar_asignaturas')).find((a) => String(a.nombre_asig).startsWith('ROB') && String(a.nombre_asig).includes('E2E'));
+    const enUsoResp = await asig('eliminar_asignatura', { id: enUso });
+    check(enUsoResp.texto === '0', 'una asignatura con docente asignado no se elimina → 0 (antes daba 500)', `(${enUsoResp.estado} ${enUsoResp.texto.slice(0, 60)})`);
+    check(!!nueva && (await asig('eliminar_asignatura', { id: String(nueva.Id_asignatura) })).texto === '1', 'una asignatura sin uso se elimina');
+
+    const ocupada = await horario([{ idhora: celda.hora, idasig: celda.otroCurso, dia: celda.dia }]);
+    check(ocupada.texto === '3', 'no se pone un curso en una hora y día que ya tiene otro curso del aula → 3', `(${ocupada.texto})`);
+    check((await horario([{ idhora: celda.hora, idasig: celda.curso, dia: celda.dia }])).texto === '2', 'el mismo curso en la misma celda responde 2');
+    check((await horario([{ idhora: celda.hora, idasig: celda.curso, dia: 'SABADO' }])).texto === '0', 'un día fuera de lunes a viernes se rechaza → 0');
     await adm.ctx.close();
   }
 } finally {

@@ -284,6 +284,11 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > añaden `id_usuario_anulacion` a ingresos y egresos. En los movimientos anulados **antes** de la
 > migración, `id_user` ya era quien anuló (el responsable original no es recuperable): la migración lo
 > copia a `id_usuario_anulacion`. El código y las migraciones van juntos.
+>
+> **Migración `20261018000000_corregir_horarios`**: `SP_ELIMINAR_HORARIO` recibe ahora también el año
+> (el panel lo envía): van juntos. Las reglas nuevas (celda y docente ocupados) solo se aplican a los
+> horarios que se registren. Para revisar los existentes (celdas con dos cursos):
+> `SELECT id_hora_aula, dia, COUNT(*) FROM horarios GROUP BY 1, 2 HAVING COUNT(*) > 1;`
 
 **Importantes:**
 
