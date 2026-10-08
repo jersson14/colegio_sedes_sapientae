@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja) | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres) | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -25,7 +25,8 @@ Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, peri
 `usuario11` (id 11). Los flujos cuentan para el límite de intentos de login: al repetirlos en local,
 vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 20, sin matrícula) se modifica;
 70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo. Matrícula: el alumno 20 se
-matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas.
+matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas. Notas §11: matrícula 40,
+periodo 12 (el §5 usa el 44).
 
 ## Ejecutar en local
 
@@ -107,6 +108,16 @@ Migración `20261012000000_corregir_matricula` (módulo matrícula, ya en `src/`
 | Modificar podía cambiar el alumno de la matrícula, que seguía unida a la cuenta del anterior | El alumno no cambia |
 | Tras eliminar su única matrícula, el alumno quedaba ANTIGUO: al volver a matricularlo quedaba sin cuenta | Vuelve a NUEVO y su cuenta sin uso se borra |
 | El registro (cuenta, matrícula, 3 pagos, 3 ingresos) no era atómico | En una transacción |
+
+Migración `20261013000000_corregir_notas_padres` y módulo notas en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| **XSS almacenado**: el docente registraba conclusiones sin escapar y el panel las pinta como HTML | Se guardan escapadas (`Domain\Nota\TextoLibre`) |
+| Una nota podía ser cualquier texto de 5 caracteres | Escala 0–20 (un decimal) o AD/A/B/C; si no, el lote entero se rechaza |
+| Conclusiones de más de 255 caracteres se truncaban (los SP declaraban 1000) | Se rechazan |
+| Guardar otra vez las notas de los padres las **duplicaba** (`ON DUPLICATE KEY` sin clave única) | Se actualizan por (matrícula, periodo, competencia) |
+| Editar devolvía al navegador los mensajes de la BD; usaba `FILTER_SANITIZE_STRING` (obsoleto) | Mensajes propios; mismo escapado que el registro |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

@@ -1,69 +1,28 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-// Asegurarse de que la solicitud sea POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Método no permitido']);
-    exit;
-}
 
-// Verificar que se hayan enviado registros
-if (!isset($_POST['registros'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'No se recibieron registros']);
-    exit;
-}
+declare(strict_types=1);
 
-require '../../model/model_notas.php';
-$MNOTAS = new Modelo_Notas();
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
-// Decodificar los registros enviados desde el frontend
-$registros = json_decode($_POST['registros'], true);
+use App\Domain\Nota\Lote;
+use App\Services\FabricaNotas;
 
-if (json_last_error() !== JSON_ERROR_NONE) {
-    http_response_code(400);
-    echo json_encode(['error' => 'JSON inválido']);
-    exit;
-}
-
-$respuesta = 1; // Inicialmente asumimos éxito
-$errores = [];
-$actualizaciones_exitosas = 0;
-
-foreach ($registros as $registro) {
-    if (!isset($registro['id_nota_bole'], $registro['nota'], $registro['conclusiones'])) {
-        $errores[] = 'Registro incompleto';
-        continue;
-    }
-
-    $id_nota_bole = filter_var($registro['id_nota_bole'], FILTER_VALIDATE_INT);
-    $nota = filter_var($registro['nota'], FILTER_SANITIZE_STRING);
-    $conclusiones = filter_var($registro['conclusiones'], FILTER_SANITIZE_STRING);
-
-    if ($id_nota_bole === false) {
-        $errores[] = 'ID de nota inválido';
-        continue;
-    }
-
-    $resultado = $MNOTAS->Editar_Nota($id_nota_bole, $nota, $conclusiones);
-    
-    if (!$resultado['success']) {
-        $errores[] = "Error al actualizar la nota con ID: $id_nota_bole. Razón: " . $resultado['message'];
-        $respuesta = 2;
-    } else {
-        $actualizaciones_exitosas++;
-    }
-}
-
-// Preparar la respuesta
-$response = [
-    'status' => $respuesta,
-    'message' => $respuesta == 1 ? "Todas las notas se actualizaron correctamente ($actualizaciones_exitosas actualizaciones)" : 
-                                   "Hubo errores al actualizar algunas notas ($actualizaciones_exitosas actualizaciones exitosas)",
-    'errores' => $errores
-];
-
-// Enviar la respuesta como JSON
+// Respuesta: {"status": 1|2, "message", "errores": [...]}; 2 si alguna nota no se pudo actualizar.
+// Los errores ya no incluyen mensajes de la BD.
 header('Content-Type: application/json');
-echo json_encode($response);
+try {
+    $registros = Lote::desdeJson($_POST['registros'] ?? '');
+} catch (InvalidArgumentException $e) {
+    http_response_code(400);
+    exit(json_encode(['error' => $e->getMessage()]));
+}
+$r = FabricaNotas::gestionar((new conexionBD())->conexionPDO())->editar($registros);
+$ok = $r['errores'] === [];
+echo json_encode([
+    'status' => $ok ? 1 : 2,
+    'message' => $ok ? "Todas las notas se actualizaron correctamente ({$r['actualizadas']} actualizaciones)"
+                     : "Hubo errores al actualizar algunas notas ({$r['actualizadas']} actualizaciones exitosas)",
+    'errores' => $r['errores'],
+]);

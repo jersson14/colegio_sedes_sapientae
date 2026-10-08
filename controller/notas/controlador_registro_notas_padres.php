@@ -1,41 +1,31 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-require '../../model/model_notas.php';
 
-$MNOTAS = new Modelo_Notas();
+declare(strict_types=1);
 
-if (isset($_POST['registros'])) {
-    $registros_json = $_POST['registros'];
-    
-    // Decodificar el JSON para verificar su validez
-    $registros = json_decode($registros_json, true);
-    
-    if (is_array($registros) && !empty($registros)) {
-        $resultado = $MNOTAS->Registrar_Notas_Padres($registros);
-        
-        if (isset($resultado['processed_count']) && $resultado['processed_count'] > 0) {
-            echo json_encode([
-                "status" => 1,
-                "message" => "Notas de padres registradas satisfactoriamente.",
-                "inserted_count" => $resultado['processed_count']
-            ]);
-        } else {
-            echo json_encode([
-                "status" => 0,
-                "message" => "Error al registrar las notas de padres."
-            ]);
-        }
-    } else {
-        echo json_encode([
-            "status" => 0,
-            "message" => "Formato de datos incorrecto o no hay registros para procesar."
-        ]);
-    }
-} else {
-    echo json_encode([
-        "status" => 0,
-        "message" => "No se recibieron registros."
-    ]);
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
+
+use App\Domain\Nota\Lote;
+use App\Services\FabricaNotas;
+
+// Respuesta: {"status": 1, "message", "inserted_count"} o {"status": 0, "message"}.
+// Guardar otra vez una competencia la actualiza (antes se duplicaba).
+$error = static function (string $mensaje): never {
+    exit(json_encode(['status' => 0, 'message' => $mensaje]));
+};
+
+try {
+    $registros = Lote::desdeJson($_POST['registros'] ?? '');
+    $procesadas = FabricaNotas::gestionar((new conexionBD())->conexionPDO())->registrarDePadres($registros);
+} catch (InvalidArgumentException $e) {
+    $error($e->getMessage());
+} catch (PDOException $e) {
+    error_log('Registrar notas de padres: ' . $e->getMessage());
+    $error('Error al registrar las notas de padres.');
 }
-?>
+echo json_encode([
+    'status' => 1,
+    'message' => 'Notas de padres registradas satisfactoriamente.',
+    'inserted_count' => $procesadas,
+]);

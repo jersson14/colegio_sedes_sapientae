@@ -680,7 +680,11 @@ function Registrar_notas() {
               if (response.status === 1) {
                 Registrar_notas_padre();
               } else {
-                Swal.fire("Mensaje de Advertencia", "Este alumno ya tiene notas registradas en el periodo que intentas ingresar", "warning");
+                if (response.status === 0) {
+                  Swal.fire("Mensaje de Advertencia", "Revise los datos: notas de 0 a 20 o AD, A, B, C y conclusiones de hasta 255 caracteres", "warning");
+                } else {
+                  Swal.fire("Mensaje de Advertencia", "Este alumno ya tiene notas registradas en el periodo que intentas ingresar", "warning");
+                }
               }
           } catch (e) {
               Swal.fire("Mensaje de Error", "Error al procesar la respuesta del servidor.", "error");

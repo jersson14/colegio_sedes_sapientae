@@ -22,6 +22,8 @@ const ESC = {
   alumnoMatriculadoDni: '70000001', alumnoSinMatriculaDni: '70000014',
   // Matrícula §10: el alumno 20 (sin matrícula) en el año 5 (2025) y en el 2 (2024); 6 es otro alumno.
   matriculaFlujo: { alumno: '20', dni: '70000014', anio: '5', otroAnio: '2', aula: '5' }, alumnoAjeno: '6',
+  // Notas §11 (administrador): matrícula 40 en el periodo 12, que §5 no usa.
+  notasFlujo: { matricula: '40', periodo: '12', criterio: '1', otroCriterio: '8' },
 };
 
 let ok = 0, fallos = 0;
@@ -382,6 +384,47 @@ try {
     check((await eliminar((await de(anio)).id_matricula)).texto === '2',
       'una matrícula con ingresos válidos no se elimina → 2 (antes se borraban los ingresos)');
     await adm.ctx.close();
+  }
+
+  console.log('11. Notas: registro, edición y notas de los padres (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const ruta = (r) => `controller/notas/controlador_${r}.php`;
+    const { matricula, periodo, criterio, otroCriterio } = ESC.notasFlujo;
+    const enviar = (r, registros) => pedir(adm.page, ruta(r), { registros: JSON.stringify(registros) });
+    const notas = async () => filas(await pedir(adm.page, ruta('listar_criterios_notas_mostrar'), { matri: matricula, bime: periodo }));
+    const deCriterio = async (c) => (await notas()).find((n) => String(n.id_criterio) === String(c));
+    const xss = '<img src=x onerror=alert(1)>';
+
+    const r1 = await enviar('registro_notas', [{ id_matri: matricula, perio: periodo, cri: criterio, nota: '15', conclu: xss }]);
+    check(r1.json?.status === 1, 'registra una nota con su conclusión', `(${r1.texto.slice(0, 80)})`);
+    const guardada = await deCriterio(criterio);
+    check(!!guardada && !String(guardada.conclusiones).includes('<img'),
+      'la conclusión se guarda escapada: no se ejecuta al mostrarla (XSS)', `(${JSON.stringify(guardada ?? {}).slice(0, 160)})`);
+    const r2 = await enviar('registro_notas', [{ id_matri: matricula, perio: periodo, cri: otroCriterio, nota: 'XYZ', conclu: '' }]);
+    check(r2.json?.status === 0 && !(await deCriterio(otroCriterio)), 'una nota fuera de la escala (0–20, AD/A/B/C) se rechaza');
+
+    const largo = await enviar('editar_notas', [{ id_nota_bole: guardada?.id_nota_bole, nota: '16', conclusiones: 'x'.repeat(300) }]);
+    check(largo.json?.status === 2 && (await deCriterio(criterio))?.nota?.trim() === '15',
+      'una conclusión de más de 255 caracteres se rechaza (antes se truncaba)', `(${largo.texto.slice(0, 120)})`);
+    const bien = await enviar('editar_notas', [{ id_nota_bole: guardada?.id_nota_bole, nota: 'ad', conclusiones: 'Logro destacado' }]);
+    check(bien.json?.status === 1 && (await deCriterio(criterio))?.nota?.trim() === 'AD', 'edita la nota (en mayúsculas)');
+    const inexistente = await enviar('editar_notas', [{ id_nota_bole: 99999999, nota: '10', conclusiones: '' }]);
+    check(inexistente.json?.status === 2 && !/SQLSTATE|base de datos/i.test(inexistente.texto),
+      'una nota inexistente informa el error sin detalles de la BD', `(${inexistente.texto.slice(0, 120)})`);
+
+    const padres = [{ id_matri: matricula, perio: periodo, competencia: 'Responsabilidad E2E', nota: 'A' }];
+    check((await enviar('registro_notas_padres', padres)).json?.status === 1, 'registra la nota de los padres');
+    await enviar('registro_notas_padres', [{ ...padres[0], nota: 'B' }]);
+    const dePadres = filas(await pedir(adm.page, ruta('listar_criterios_notas_mostrar_padres'), { matri: matricula, bime: periodo }))
+      .filter((n) => n.criterio === 'RESPONSABILIDAD E2E' || n.criterio === 'Responsabilidad E2E');
+    check(dePadres.length === 1 && dePadres[0].nota?.trim() === 'B',
+      'guardarla otra vez la actualiza, no la duplica', `(${dePadres.length} filas: ${JSON.stringify(dePadres).slice(0, 160)})`);
+    await adm.ctx.close();
+
+    const doc = await entrar(browser, ESC.docente);
+    check((await pedir(doc.page, ruta('editar_notas'), { registros: '[]' })).estado === 403, 'un docente no puede editar notas → 403');
+    await doc.ctx.close();
   }
 } finally {
   await browser.close();
