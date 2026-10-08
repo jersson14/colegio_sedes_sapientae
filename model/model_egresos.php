@@ -75,43 +75,6 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Egreso($indi,$cantidad,$monto,$obse,$usu){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_EGRESOS(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$indi);
-            $query ->bindParam(2,$cantidad);
-            $query ->bindParam(3,$monto);
-            $query ->bindParam(4,$obse);
-            $query ->bindParam(5,$usu);
-
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Egresos($id,$indi,$cantidad,$monto,$obser,$usu){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_EGRESOS(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$indi);
-            $query ->bindParam(3,$cantidad);
-            $query ->bindParam(4,$monto);
-            $query ->bindParam(5,$obser);
-            $query ->bindParam(6,$usu);
-          
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();;
-        }
         // Anulación: src/Services/AnularMovimiento.php (quién anula sale de la sesión).
         public function Listar_diferencia(){
             $c = conexionBD::conexionPDO();
@@ -142,6 +105,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
+        // Registro y edición: src/Services/GestionarCaja.php.
     }
 
 

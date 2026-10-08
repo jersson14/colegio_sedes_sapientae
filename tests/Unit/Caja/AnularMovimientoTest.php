@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Caja;
 
 use App\Domain\Caja\Movimiento;
+use App\Domain\Caja\MovimientoDiverso;
 use App\Repositories\CajaRepositorio;
 use App\Services\AnularMovimiento;
 use InvalidArgumentException;
@@ -25,6 +26,21 @@ final class AnularMovimientoTest extends TestCase
             public function anular(Movimiento $tipo, int $id, string $motivo, int $anuladoPor): bool
             {
                 $this->llamadas[] = [$tipo, $id, $motivo, $anuladoPor];
+                return true;
+            }
+
+            public function registrar(Movimiento $tipo, MovimientoDiverso $movimiento, int $responsable): bool
+            {
+                return true;
+            }
+
+            public function modificar(Movimiento $tipo, int $id, MovimientoDiverso $movimiento): bool
+            {
+                return true;
+            }
+
+            public function eliminarIndicador(int $id): bool
+            {
                 return true;
             }
         };

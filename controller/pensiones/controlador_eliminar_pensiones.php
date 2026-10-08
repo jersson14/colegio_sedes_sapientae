@@ -1,14 +1,18 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_pensiones.php';
-    $MPE = new Modelo_Pensiones();//Instaciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
 
+declare(strict_types=1);
 
-    $consulta = $MPE->Eliminar_Pensiones($id);
-    echo $consulta;
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Repositories\PdoPensionRepositorio;
+use App\Services\GestionarPensiones;
 
-
-?>
+// Respuesta: 1 = eliminada, 0 = tiene pagos o no existe (antes: 500).
+try {
+    $pensiones = new GestionarPensiones(new PdoPensionRepositorio((new conexionBD())->conexionPDO()));
+    echo $pensiones->eliminar($_POST['id'] ?? '') ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

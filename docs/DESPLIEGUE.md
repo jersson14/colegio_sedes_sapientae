@@ -289,6 +289,10 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 > (el panel lo envía): van juntos. Las reglas nuevas (celda y docente ocupados) solo se aplican a los
 > horarios que se registren. Para revisar los existentes (celdas con dos cursos):
 > `SELECT id_hora_aula, dia, COUNT(*) FROM horarios GROUP BY 1, 2 HAVING COUNT(*) > 1;`
+>
+> **Migración `20261019000000_corregir_pagos_y_caja`**: `SP_ELIMINAR_PAGO_PENSION` recibe ahora también
+> quién anula, y los SP de registrar/modificar ingresos, egresos, pensiones y pagos devuelven un
+> código que el código nuevo lee: van juntos. Avisar a caja: «anular pago» ya no borra el ingreso.
 
 **Importantes:**
 

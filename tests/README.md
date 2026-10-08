@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -27,7 +27,8 @@ vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 2
 70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo. Matrícula: el alumno 20 se
 matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas. Notas §11: matrícula 40,
 periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26). Horarios §14: el aula 5 tiene la semana
-completa; la hora 41 del lunes es del curso 20.
+completa; la hora 41 del lunes es del curso 20. Pagos §15: edita y anula el pago del §3 (matrícula 31,
+pensión 36); por eso el §13 anula un ingreso que no es de pensión.
 
 ## Ejecutar en local
 
@@ -149,6 +150,19 @@ Migración `20261018000000_corregir_horarios` y módulo asignaturas/horarios en 
 | Eliminar una asignatura con docente asignado daba 500 (el aviso del panel no aparecía) | Responde 0 |
 | Un día fuera de lunes a viernes se guardaba vacío | Se rechaza (0) |
 | El registro del horario era fila a fila | Todo el lote o nada (con punto de guardado si hay una transacción abierta) |
+
+Migración `20261019000000_corregir_pagos_y_caja` y módulo pensiones/pagos/caja en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| Ingresos y egresos diversos se registraban a nombre del `usu` del formulario y editarlos reescribía quién cobró/pagó | Responsable de la sesión; editar no lo cambia |
+| Un ingreso podía llevar un indicador de gastos (y un egreso uno de ingresos) | Se rechaza (0) |
+| Se podía editar un movimiento anulado, o desde caja el ingreso de un pago de pensión (se descuadraba del pago) | Solo lo VALIDO; el de un pago se edita desde el pago |
+| Una sola pensión de cada mes por nivel **para siempre** (`AND fecha_vencimiento` siempre verdadero): la del año siguiente respondía «ya existe» | Regla (nivel, mes, año del vencimiento) |
+| Eliminar una pensión con pagos o un indicador en uso daba 500 | Responde 0 |
+| Editar el monto de un pago no tocaba su ingreso | El ingreso válido lo sigue |
+| «Anular pago» **borraba el ingreso cobrado** | Lo anula (motivo, fecha, quién), lo conserva en caja y libera la pensión |
+| El cobro de varias filas se cortaba en el primer duplicado dejando cobradas las anteriores | Todo o nada |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

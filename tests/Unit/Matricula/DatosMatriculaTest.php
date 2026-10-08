@@ -6,7 +6,7 @@ namespace Tests\Unit\Matricula;
 
 use App\Domain\Matricula\CuentaNueva;
 use App\Domain\Matricula\DatosMatricula;
-use App\Domain\Matricula\Monto;
+use App\Domain\Monto;
 use App\Domain\Usuario\Contrasena;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;

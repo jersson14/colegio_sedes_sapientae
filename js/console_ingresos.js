@@ -289,7 +289,7 @@ function Registrar_ingreso() {
         $("#modal_registro").modal('hide');
       });
     } else {
-      Swal.fire("Mensaje de Error", "No se completó el registro", "error");
+      Swal.fire("Mensaje de Error", "No se completó el registro: el indicador debe ser de ingresos y el monto válido", "error");
     }
   });
 }
@@ -329,7 +329,7 @@ function Modificar_Ingreso(){
         });
     
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Error","No se pudo editar: está anulado, es el cobro de una pensión (edítelo desde el pago) o el indicador no es de ingresos.","error");
     }
   })
 }

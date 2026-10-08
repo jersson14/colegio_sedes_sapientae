@@ -1,28 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_pago_pension.php';
-    $MPP = new Modelo_Pago_Pension(); //Instanciamos
-    $id_matri = htmlspecialchars($_POST['id_matri'], ENT_QUOTES, 'UTF-8');
-    $concepto = htmlspecialchars($_POST['concepto'], ENT_QUOTES, 'UTF-8');
-    $id_pension = htmlspecialchars($_POST['id_pension'], ENT_QUOTES, 'UTF-8');
-    $monto = htmlspecialchars($_POST['monto'], ENT_QUOTES, 'UTF-8');
-    
-    $array_id = explode(",", $id_matri);
-    $array_concepto = explode(",", $concepto);
-    $array_pension = explode(",", $id_pension);
-    $array_subtotal = explode(",", $monto);
-    
-    $response = 1; // Suponemos éxito por defecto
-    
-    for ($i = 0; $i < count($array_id); $i++) {
-        // El ingreso se registra a nombre de quien cobra (antes, siempre el usuario 9).
-        $consulta = $MPP->Registrar_detalle_Pago_Pension($array_id[$i], $array_concepto[$i], $array_pension[$i], $array_subtotal[$i], (int)$_SESSION['S_ID']);
-        if ($consulta == 2) {
-            $response = 2; // Cambiamos el estado si existe algún duplicado
-            break; // Salimos si ya existe la pensión
-        }
-    }
-    
-    echo $response;
-?>
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
+
+use App\Repositories\PdoPensionRepositorio;
+use App\Services\GestionarPensiones;
+
+// Cobro de una o varias filas (listas separadas por comas). Respuesta: 1 = cobrado, 2 = alguna ya estaba
+// pagada (no se cobra ninguna; antes quedaban cobradas las anteriores), 0 = datos inválidos.
+// Los ingresos quedan a nombre de quien cobra: el usuario de la sesión.
+try {
+    $pensiones = new GestionarPensiones(new PdoPensionRepositorio((new conexionBD())->conexionPDO()));
+    echo $pensiones->cobrar($_POST, (int) $_SESSION['S_ID']) ? 1 : 2;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

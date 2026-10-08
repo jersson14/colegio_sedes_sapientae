@@ -137,22 +137,6 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        function Registrar_detalle_Pago_Pension($array_id,$array_concepto,$array_pension,$array_subtotal,$idusuario){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_DETALLE_PENSION_PAGO(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$array_id);
-            $query ->bindParam(2,$array_concepto);
-            $query ->bindParam(3,$array_pension);
-            $query ->bindParam(4,$array_subtotal);
-            $query ->bindParam(5,$idusuario); // quién cobra
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
 
         public function Listar_pagos_alu($id) {
             $c = conexionBD::conexionPDO();
@@ -172,36 +156,7 @@
             conexionBD::cerrar_conexion();
             return $arreglo;
         }
-        public function Modificar_Pago_pension($id,$monto,$descrip){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_PAGO_PENSION(?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$monto);
-            $query ->bindParam(3,$descrip);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_pago_pension($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_PAGO_PENSION(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
 
+        // Cobro, edición y anulación de pagos: src/Services/GestionarPensiones.php.
     }
 ?>

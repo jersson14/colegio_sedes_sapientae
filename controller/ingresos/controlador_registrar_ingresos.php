@@ -1,17 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_ingresos.php';
-    $MING = new Modelo_Ingresos();//Instaciamos
-    $indi = strtoupper(htmlspecialchars($_POST['indi'],ENT_QUOTES,'UTF-8'));
-    $cantidad = strtoupper(htmlspecialchars($_POST['cantidad'],ENT_QUOTES,'UTF-8'));
-    $monto = strtoupper(htmlspecialchars($_POST['monto'],ENT_QUOTES,'UTF-8'));
-    $obse = strtoupper(htmlspecialchars($_POST['obse'],ENT_QUOTES,'UTF-8'));
-    $usu = strtoupper(htmlspecialchars($_POST['usu'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MING->Registrar_Ingresos($indi,$cantidad,$monto,$obse,$usu);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Caja\Movimiento;
+use App\Repositories\PdoCajaRepositorio;
+use App\Services\GestionarCaja;
 
-?>
+// Respuesta: 1 = registrado, 0 = el indicador no es de ingresos o datos inválidos.
+// Quién cobra: el usuario de la sesión (antes el «usu» del formulario).
+try {
+    $caja = new GestionarCaja(new PdoCajaRepositorio((new conexionBD())->conexionPDO()));
+    echo $caja->registrar(Movimiento::Ingreso, $_POST, (int) $_SESSION['S_ID']) ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

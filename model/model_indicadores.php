@@ -46,21 +46,7 @@
             }
             conexionBD::cerrar_conexion();
         }
-        public function Eliminar_Indicador($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_INDICADOR(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Baja: src/Services/GestionarCaja.php.
     }
 
 

@@ -28,6 +28,8 @@ const ESC = {
   asistenciaFlujo: { matricula: '40', aula: '5', fecha: '2025-12-01' },
   // Horarios §14: el aula 5 tiene toda la semana ocupada; la asignatura 2 tiene docente asignado.
   horarioFlujo: { aula: '5', enUso: '2', celda: { hora: '41', dia: 'LUNES', curso: '20', otroCurso: '21' } },
+  // Pagos §15: la pensión 36 (nivel 1, marzo 2026) tiene pagos; el §3 paga una más hoy.
+  pagosFlujo: { pensionPagada: '36', nivel: '1' },
 };
 
 let ok = 0, fallos = 0;
@@ -465,7 +467,8 @@ try {
   {
     const adm = await entrar(browser, ESC.admin);
     const ingresos = async () => filas(await pedir(adm.page, 'controller/ingresos/controlador_listar_ingresos_pensiones.php'));
-    const valido = (await ingresos()).find((i) => i.estado === 'VALIDO');
+    // Uno de la matrícula del §10 (ADMISION…), no el de la pensión del §3, que el §15 edita y anula.
+    const valido = (await ingresos()).find((i) => i.estado === 'VALIDO' && i.observacion !== 'PENSION');
     const anular = (extra) => pedir(adm.page, 'controller/ingresos/controlador_anular_ingreso.php', { id: String(valido?.id_ingreso), obser: 'Cobro duplicado', usu: '22', ...extra });
 
     check(!!valido, 'hay un ingreso válido del día para anular', `(${JSON.stringify((await ingresos())[0] ?? {}).slice(0, 160)})`);
@@ -496,6 +499,50 @@ try {
     check(ocupada.texto === '3', 'no se pone un curso en una hora y día que ya tiene otro curso del aula → 3', `(${ocupada.texto})`);
     check((await horario([{ idhora: celda.hora, idasig: celda.curso, dia: celda.dia }])).texto === '2', 'el mismo curso en la misma celda responde 2');
     check((await horario([{ idhora: celda.hora, idasig: celda.curso, dia: 'SABADO' }])).texto === '0', 'un día fuera de lunes a viernes se rechaza → 0');
+    await adm.ctx.close();
+  }
+
+  console.log('15. Pensiones, pagos e ingresos diversos (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const p = (r, datos) => pedir(adm.page, `controller/${r}.php`, datos);
+    const { pensionPagada, nivel } = ESC.pagosFlujo;
+    const diversos = async () => filas(await p('ingresos/controlador_listar_ingresos_diversos'));
+    const dePensiones = async () => filas(await p('ingresos/controlador_listar_ingresos_pensiones'));
+
+    // Ingresos diversos: el indicador debe ser de ingresos y el responsable sale de la sesión.
+    check((await p('ingresos/controlador_registrar_ingresos', { indi: '2', cantidad: '1', monto: '50', obse: 'X', usu: '22' })).texto === '0',
+      'un ingreso con un indicador de gastos se rechaza → 0');
+    check((await p('ingresos/controlador_registrar_ingresos', { indi: '4', cantidad: '2', monto: '50', obse: 'Uniformes E2E', usu: '22' })).texto === '1',
+      'registra un ingreso diverso');
+    const ingreso = (await diversos()).find((i) => i.observacion === 'UNIFORMES E2E');
+    check(String(ingreso?.id_user) === '9', 'queda a nombre de quien cobra (la sesión), no del «usu» del formulario', `(${JSON.stringify(ingreso ?? {}).slice(0, 140)})`);
+    const editado = await p('ingresos/controlador_modificar_ingreso', { id: String(ingreso?.id_ingreso), indi: '4', cantidad: '2', monto: '60', obser: 'Uniformes E2E', usu: '22' });
+    const tras = (await diversos()).find((i) => i.id_ingreso === ingreso?.id_ingreso);
+    check(editado.texto === '1' && String(tras?.id_user) === '9' && Number(tras?.monto) === 60,
+      'editar cambia el monto pero no quién cobró', `(${editado.texto} ${JSON.stringify(tras ?? {}).slice(0, 140)})`);
+
+    // Pensiones: una por nivel, mes y AÑO; con pagos no se elimina.
+    check((await p('pensiones/controlador_registro_pensiones', { nivel, mes: 'MARZO', fecha: '2027-03-31', precio: '150', mora: '5' })).texto === '1',
+      'registra la pensión de marzo del año siguiente (antes: «ya existe» para siempre)');
+    const borrar = await p('pensiones/controlador_eliminar_pensiones', { id: pensionPagada });
+    check(borrar.texto === '0', 'una pensión con pagos no se elimina → 0 (antes daba 500)', `(${borrar.estado} ${borrar.texto.slice(0, 60)})`);
+
+    // Pago de la pensión del §3: editar su monto y anularlo.
+    const pagosMatricula = filas(await p('pago_pension/controlador_listar_tabla_pagos', { id: ESC.pago.matricula }));
+    const delParagrafo3 = pagosMatricula.find((x) => String(x.id_pension ?? x[3]) === String(ESC.pago.pension));
+    const pago = { id_pago_pension: delParagrafo3?.id_pago_pension ?? delParagrafo3?.[0] };
+    const nuevoMonto = await p('pago_pension/controlador_modificar_pago_solo', { id: String(pago?.id_pago_pension), monto: '95', descrip: 'Descuento' });
+    const ingresoDelPago = (await dePensiones()).find((i) => i.id_pago_pension === pago?.id_pago_pension);
+    check(nuevoMonto.texto === '1' && Number(ingresoDelPago?.monto) === 95, 'editar el monto de un pago actualiza su ingreso', `(${JSON.stringify(ingresoDelPago ?? {}).slice(0, 140)})`);
+    check((await p('pago_pension/controlador_eliminar_pago_pension', { id: String(pago?.id_pago_pension) })).texto === '1', 'anula el pago');
+    // Desligado del pago, el ingreso sigue en la caja del día (listado general) con el motivo.
+    const anulado = (await diversos()).find((i) => i.id_ingreso === ingresoDelPago?.id_ingreso);
+    check(anulado?.estado === 'ANULADO' && String(anulado?.motivo_anulacion ?? '').startsWith('PAGO ANULADO'),
+      'su ingreso queda ANULADO en caja con el motivo (antes se borraba)', `(${JSON.stringify(anulado ?? {}).slice(0, 200)})`);
+    const otraVez = await pedir(adm.page, 'controller/pago_pension/controlador_detalle_pago_pension.php',
+      { id_matri: ESC.pago.matricula, concepto: 'PENSION', id_pension: ESC.pago.pension, monto: '100.00' });
+    check(otraVez.texto === '1', 'la pensión anulada se puede volver a cobrar');
     await adm.ctx.close();
   }
 } finally {

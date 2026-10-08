@@ -43,53 +43,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Pensiones($nivel,$mes,$fecha,$precio,$mora){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_PENSIONES(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$nivel);
-            $query ->bindParam(2,$mes);
-            $query ->bindParam(3,$fecha);
-            $query ->bindParam(4,$precio);
-            $query ->bindParam(5,$mora);
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Pensiones($id,$nivel,$mes,$fecha,$precio,$mora){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_PENSIONES(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$nivel);
-            $query ->bindParam(3,$mes);
-            $query ->bindParam(4,$fecha);
-            $query ->bindParam(5,$precio);
-            $query ->bindParam(6,$mora);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_Pensiones($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_PENSION(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Registro, cambios y baja: src/Services/GestionarPensiones.php.
     }
 
 

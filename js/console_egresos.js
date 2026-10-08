@@ -291,7 +291,7 @@ function Registrar_egreso() {
         $("#modal_registro").modal('hide');
       });
     } else {
-      Swal.fire("Mensaje de Error", "No se completó el registro", "error");
+      Swal.fire("Mensaje de Error", "No se completó el registro: el indicador debe ser de gastos y el monto válido", "error");
     }
   });
 }
@@ -331,7 +331,7 @@ function Modificar_Egreso(){
         });
     
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Error","No se pudo editar: está anulado o el indicador no es de gastos.","error");
     }
   })
 }

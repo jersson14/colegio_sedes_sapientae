@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Matricula;
 
+use App\Domain\Monto;
 use App\Support\Texto;
 use InvalidArgumentException;
 
