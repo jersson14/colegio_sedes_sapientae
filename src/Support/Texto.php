@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Alumno;
+namespace App\Support;
 
 use InvalidArgumentException;
 
-/** Reglas de texto compartidas por la ficha del alumno. */
+/** Reglas de texto de los formularios heredados (alumnos, matrícula). */
 final class Texto
 {
     /**

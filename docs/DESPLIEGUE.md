@@ -270,6 +270,9 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 >
 > **Migración `20261011000000_corregir_alumnos`**: `SP_ELIMINAR_ALUMNO` pasa a recibir el DNI como texto y
 > devolver 1/0; el código nuevo lee ese valor (con el SP anterior toda baja respondería 0): **van juntos**.
+>
+> **Migración `20261012000000_corregir_matricula`**: cambia cuándo se puede eliminar una matrícula
+> (ya no se borran ingresos cobrados: hay que anularlos antes). Avisar al personal administrativo.
 
 **Importantes:**
 

@@ -494,10 +494,11 @@ function Registrar_matriculado(){
         $("#modal_registro").modal('hide');
         });
       }else{
-        Swal.fire("Mensaje de Advertencia","El estudiante que intentas matricular ya se encuentra en la base de datos, revise por favor","warning");
+        if(resp==3){ Swal.fire("Mensaje de Advertencia","El usuario ingresado ya pertenece a otra cuenta, elija otro","warning"); }
+        else{ Swal.fire("Mensaje de Advertencia","El estudiante que intentas matricular ya se encuentra en la base de datos, revise por favor","warning"); }
       }
     }else{
-      return Swal.fire("Mensaje de Error","No se completo el registro","error");
+      return Swal.fire("Mensaje de Error","No se completo el registro: revise los datos (montos de 0 a 999.99)","error");
 
     }
   })
@@ -626,11 +627,11 @@ function eliminar_matricula(id){
   }).done(function(resp){
     if(resp>0){
       if(resp==1){
-        Swal.fire("Mensaje de Confirmación","Se anulo el pago satisfactoriamente","success").then((value)=>{
+        Swal.fire("Mensaje de Confirmación","Se eliminó la matrícula satisfactoriamente","success").then((value)=>{
           tbl_matricula.ajax.reload();
         });
       }else{
-        Swal.fire("Mensaje de Advertencia","La matricula del alumno no podra ser eliminada ya que cuenta con pagos de pensión y tiene registros en otros formularios, revise por favor","warning");
+        Swal.fire("Mensaje de Advertencia","La matrícula no puede eliminarse: tiene pagos de pensión, ingresos válidos (anúlelos antes), notas, asistencias u otros registros","warning");
       }
     }else{
       return Swal.fire("Mensaje de Error","No se pudo completar el proceso","error");

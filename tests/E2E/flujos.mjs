@@ -20,6 +20,8 @@ const ESC = {
   cuenta: { id: '11', rol: '2', correo: 'usuario11@example.com' },
   // Alumnos: 70000001 tiene matrícula; 70000014 (id 20) no, y ningún otro flujo lo usa.
   alumnoMatriculadoDni: '70000001', alumnoSinMatriculaDni: '70000014',
+  // Matrícula §10: el alumno 20 (sin matrícula) en el año 5 (2025) y en el 2 (2024); 6 es otro alumno.
+  matriculaFlujo: { alumno: '20', dni: '70000014', anio: '5', otroAnio: '2', aula: '5' }, alumnoAjeno: '6',
 };
 
 let ok = 0, fallos = 0;
@@ -328,6 +330,58 @@ try {
     check(foto.texto === '1' && !!propio, 'el estudiante cambia su propia foto', `(${foto.texto.slice(0, 60)})`);
     check(lista.find((a) => a.alum_dni === ESC.alumnoMatriculadoDni)?.alum_fotoperfil === antes.alum_fotoperfil,
       'y no la de otro alumno aunque envíe su DNI');
+  }
+
+  console.log('10. Matrícula: registrar, modificar y eliminar (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const ruta = (r) => `controller/matricula/controlador_${r}.php`;
+    const { alumno, dni, anio, otroAnio, aula } = ESC.matriculaFlujo;
+    const matriculas = async () => filas(await pedir(adm.page, ruta('listar_matriculas'))).filter((m) => m.alum_dni === dni);
+    const de = async (a) => (await matriculas()).find((m) => String(m['id_año']) === String(a));
+    const registrar = (extra) => pedir(adm.page, ruta('registro_matriculas'), {
+      estu: alumno, 'año': anio, aula, admi: '0', nuevo: '0', matri: '0', proce: 'X', pro: 'X', depa: 'X',
+      usu: 'nuevo20e2e', contra: 'Clave.Mat20', correo: 'n20@example.com', ...extra,
+    });
+    const modificar = (m, extra) => pedir(adm.page, ruta('modificar_matrícula'), {
+      id: String(m.id_matricula), estu: alumno, 'año': String(m['id_año']), aula: String(m.id_aula),
+      admi: '0', nuevo: '0', matri: '0', proce: 'X', pro: 'X', depa: 'X', ...extra,
+    });
+    const eliminar = (id) => pedir(adm.page, ruta('eliminar_matricula'), { id: String(id) });
+    const entra = async (u, c) => {
+      const s = await login(browser, u, c);
+      await s.page.waitForURL('**/view/index.php', { timeout: 15000 }).catch(() => {});
+      const dentro = s.page.url().endsWith('view/index.php');
+      await s.ctx.close();
+      return dentro;
+    };
+
+    check((await registrar({ usu: ESC.admin })).texto === '3' && !(await de(anio)),
+      'con un usuario que ya existe responde 3 y no matricula (antes duplicaba la cuenta)');
+    check((await registrar({ matri: '1500' })).texto === '0' && !(await de(anio)),
+      'un monto mayor a 999.99 se rechaza → 0 (antes se recortaba a 999.99)');
+    check((await registrar()).texto === '1', 'matricula a un alumno nuevo');
+    check(await entra('nuevo20e2e', 'Clave.Mat20'), 'el alumno entra con la cuenta creada');
+    check((await registrar({ 'año': otroAnio })).texto === '1', 'lo matricula también en otro año (ya es ANTIGUO)');
+
+    const delOtroAnio = await de(otroAnio);
+    check((await modificar(delOtroAnio, { 'año': anio })).texto === '2', 'no se puede mover una matrícula a un año donde el alumno ya está → 2');
+    check((await modificar(delOtroAnio, { estu: ESC.alumnoAjeno })).texto === '1' && !!(await de(otroAnio)),
+      'modificar no cambia el alumno de la matrícula aunque llegue otro id');
+
+    check((await eliminar(ESC.matriculaEstudiante)).texto === '2',
+      'una matrícula con notas y asistencias no se elimina → 2 (antes se borraban en cascada)');
+    check((await eliminar(delOtroAnio.id_matricula)).texto === '1' && (await de(anio))?.tipo_alum === 'ANTIGUO',
+      'una matrícula sin registros ni ingresos se elimina; con otra matrícula sigue siendo ANTIGUO');
+    check((await eliminar((await de(anio)).id_matricula)).texto === '1', 'elimina su última matrícula');
+    const alumnos = filas(await pedir(adm.page, 'controller/alumnos/controlador_listar_alumnos.php'));
+    check(alumnos.find((a) => a.alum_dni === dni)?.tipo_alum === 'NUEVO', 'sin matrículas, el alumno vuelve a ser NUEVO');
+    check(!(await entra('nuevo20e2e', 'Clave.Mat20')), 'y su cuenta, que quedó sin uso, se elimina');
+    check((await registrar({ contra: 'Otra.Mat20', admi: '100' })).texto === '1' && await entra('nuevo20e2e', 'Otra.Mat20'),
+      'puede volver a matricularse como NUEVO con el mismo usuario');
+    check((await eliminar((await de(anio)).id_matricula)).texto === '2',
+      'una matrícula con ingresos válidos no se elimina → 2 (antes se borraban los ingresos)');
+    await adm.ctx.close();
   }
 } finally {
   await browser.close();

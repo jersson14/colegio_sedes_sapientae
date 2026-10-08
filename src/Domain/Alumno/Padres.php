@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Alumno;
 
+use App\Support\Texto;
+
 /** Datos de los padres de un alumno (tabla padres, 1:1 con alumnos). */
 final class Padres
 {

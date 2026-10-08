@@ -1,26 +1,24 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require '../../model/model_matriculas.php';
-    $MMAT= new Modelo_Matriculas();//Instaciamos
-    $estu = strtoupper(htmlspecialchars($_POST['estu'],ENT_QUOTES,'UTF-8'));
-    $año = strtoupper(htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8'));
-    $aula = strtoupper(htmlspecialchars($_POST['aula'],ENT_QUOTES,'UTF-8'));
-    $admi = strtoupper(htmlspecialchars($_POST['admi'],ENT_QUOTES,'UTF-8'));
-    $nuevo = strtoupper(htmlspecialchars($_POST['nuevo'],ENT_QUOTES,'UTF-8'));
-    $matri = strtoupper(htmlspecialchars($_POST['matri'],ENT_QUOTES,'UTF-8'));
-    $proce = strtoupper(htmlspecialchars($_POST['proce'],ENT_QUOTES,'UTF-8'));
-    $pro = strtoupper(htmlspecialchars($_POST['pro'],ENT_QUOTES,'UTF-8'));
-    $depa = strtoupper(htmlspecialchars($_POST['depa'],ENT_QUOTES,'UTF-8'));
-    $usu = strtoupper(htmlspecialchars($_POST['usu'],ENT_QUOTES,'UTF-8'));
-    $contra = password_hash(htmlspecialchars($_POST['contra'],ENT_QUOTES,'UTF-8'),PASSWORD_DEFAULT,['cost'=>12]);
 
-    $correo = strtoupper(htmlspecialchars($_POST['correo'],ENT_QUOTES,'UTF-8'));
+declare(strict_types=1);
 
-    // El ingreso se registra a nombre de quien cobra (antes quedaba siempre a nombre del usuario 9).
-    $consulta = $MMAT->Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,(int)$_SESSION['S_ID']);
-    echo $consulta;
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Matricula\CuentaNueva;
+use App\Domain\Matricula\DatosMatricula;
+use App\Domain\Matricula\ResultadoRegistro;
+use App\Repositories\PdoMatriculaRepositorio;
+use App\Services\GestionarMatriculas;
 
-
-?>
+// Respuesta: 1 = matriculado, 2 = ya matriculado ese año, 3 = el usuario ya existe, 0 = datos inválidos.
+// Los ingresos quedan a nombre de quien cobra: el usuario de la sesión.
+try {
+    $datos = DatosMatricula::desdeFormulario($_POST);
+    $cuenta = CuentaNueva::desdeFormulario($_POST);
+} catch (InvalidArgumentException) {
+    exit((string) ResultadoRegistro::Invalida->value);
+}
+$matriculas = new GestionarMatriculas(new PdoMatriculaRepositorio((new conexionBD())->conexionPDO()));
+echo $matriculas->registrar((int) ($_POST['estu'] ?? 0), $datos, $cuenta, (int) $_SESSION['S_ID'])->value;

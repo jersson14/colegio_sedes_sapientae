@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto) | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja) | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -24,7 +24,8 @@ Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, peri
 `usuario62` (matrícula 40, aula 5), administrador `usuario9`, auxiliar `usuario22`; la cuenta que se renombra y desactiva es la del docente
 `usuario11` (id 11). Los flujos cuentan para el límite de intentos de login: al repetirlos en local,
 vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 20, sin matrícula) se modifica;
-70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo.
+70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo. Matrícula: el alumno 20 se
+matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas.
 
 ## Ejecutar en local
 
@@ -95,6 +96,18 @@ Migración `20261011000000_corregir_alumnos` (módulo alumnos, ya en `src/`):
 | Los padres se enlazaban con `MAX(Id_alumno)` (carrera entre altas simultáneas) | `LAST_INSERT_ID()` |
 | La foto actual y la que se borraba venían del formulario; al eliminar, la foto quedaba en el disco | Se leen de la BD; al eliminar se borra |
 
+Migración `20261012000000_corregir_matricula` (módulo matrícula, ya en `src/`):
+
+| Defecto | Ahora |
+|---|---|
+| Eliminar una matrícula con 3 pagos o menos borraba en cascada sus **ingresos cobrados**, notas, asistencias y tareas | Responde 2 si hay pensiones, ingresos válidos con monto, notas, asistencias, tareas o atenciones; los ingresos se anulan antes |
+| Al matricular a un alumno NUEVO se creaba la cuenta aunque el usuario ya existiera (cuentas duplicadas) | Responde 3 sin tocar nada; el panel lo avisa |
+| Un monto mayor a 999.99 se recortaba a 999.99 sin aviso (columnas DECIMAL(5,2)) | Se rechaza (0) |
+| Modificar permitía mover una matrícula a un año en el que el alumno ya estaba | Regla única (alumno, año), como el registro |
+| Modificar podía cambiar el alumno de la matrícula, que seguía unida a la cuenta del anterior | El alumno no cambia |
+| Tras eliminar su única matrícula, el alumno quedaba ANTIGUO: al volver a matricularlo quedaba sin cuenta | Vuelve a NUEVO y su cuenta sin uso se borra |
+| El registro (cuenta, matrícula, 3 pagos, 3 ingresos) no era atómico | En una transacción |
+
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
 Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el mismo commit.
@@ -102,3 +115,6 @@ Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el 
 | Dónde | Defecto | Prueba |
 |---|---|---|
 | BD | 4 eventos programados que requieren `event_scheduler=ON` (OFF en el XAMPP local) | `EsquemaTest` |
+| `SP_ANULAR_INGRESOS` | Al anular, sobrescribe `id_user` (quién cobró) con quien anula, y ese id llega del formulario | Pendiente (módulo pagos/ingresos) |
+| Montos | Columnas `DECIMAL(5,2)`: nada por encima de S/ 999.99 (hoy se rechaza en vez de recortarse). Ampliarlas afecta matrícula, pagos, ingresos y sus SP | Decisión pendiente |
+| `SP_MODIFICAR_MATRICULA` | Cambiar los montos de una matrícula no toca los pagos ni los ingresos ya registrados | Decisión pendiente (contable) |

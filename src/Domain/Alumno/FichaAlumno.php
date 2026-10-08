@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Alumno;
 
+use App\Support\Texto;
 use DateTimeImmutable;
 use InvalidArgumentException;
 

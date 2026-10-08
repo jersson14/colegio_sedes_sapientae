@@ -86,77 +86,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,$idusuario){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$estu);
-            $query ->bindParam(2,$año);
-            $query ->bindParam(3,$aula);
-            $query ->bindParam(4,$admi);
-            $query ->bindParam(5,$nuevo);
-            $query ->bindParam(6,$matri);
-            $query ->bindParam(7,$proce);
-            $query ->bindParam(8,$pro);
-            $query ->bindParam(9,$depa);
-            $query ->bindParam(10,$usu);
-            $query ->bindParam(11,$contra);
-            $query ->bindParam(12,$correo);
-            $query ->bindParam(13,$idusuario); // quién cobra los pagos de la matrícula
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Modificar_Matricula($id,$estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_MATRICULA(?,?,?,?,?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$estu);
-            $query ->bindParam(3,$año);
-            $query ->bindParam(4,$aula);
-            $query ->bindParam(5,$admi);
-            $query ->bindParam(6,$nuevo);
-            $query ->bindParam(7,$matri);
-            $query ->bindParam(8,$proce);
-            $query ->bindParam(9,$pro);
-            $query ->bindParam(10,$depa);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_Aulas($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_AULA(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
-        public function Eliminar_matricula($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_MATRICULA(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Registro, cambios y baja: src/Services/GestionarMatriculas.php.
     }
 
 

@@ -31,9 +31,11 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 |---|---|---|---|
 | usuario (cuentas) | `AutenticarUsuario`, `GestionarCuentas` | `iniciar_sesion`, `modificar_usuario`, `modificar_usuario_contra`, `modificar_usuario_estatus` | `tests/Unit/Usuario`, `tests/Integration/UsuarioRepositorioTest`, flujos §1 y §8 |
 | alumnos | `GestionarAlumnos` (`FabricaAlumnos`), `FichaAlumno` | `registrar_alumno`, `modificar_alumno`, `eliminar_alumnos`, `modificar_foto_estudiante` | `tests/Unit/Alumno`, `tests/Integration/AlumnoRepositorioTest`, flujos §9 |
+| matrícula | `GestionarMatriculas`, `DatosMatricula`, `Monto`, `CuentaNueva` | `registro_matriculas`, `modificar_matrícula`, `eliminar_matricula` | `tests/Unit/Matricula`, `tests/Integration/MatriculaRepositorioTest`, flujos §4 y §10 |
 
 Las lecturas del módulo (listados, totales del panel, combos) siguen en `model/model_usuario.php`,
-cubiertas por la caracterización; igual el listado de alumnos (`model/model_alumnos.php`).
+cubiertas por la caracterización; igual los listados de alumnos y matrícula (`model/model_alumnos.php`,
+`model/model_matriculas.php`). `Support\Texto` reúne la normalización heredada de los formularios.
 
 Las fotos pasan por `Support\AlmacenFotos` (`FotosSubidas` sobre `core/subidas.php`): se validan antes
 de tocar la BD y se guardan, o se borra la anterior, solo si la BD aceptó el cambio.

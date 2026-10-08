@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../core/guard.php';
 exigir_rol('ADMINISTRADOR');
 require_once __DIR__ . '/../../model/model_conexion.php';
 
-use App\Domain\Alumno\Texto;
+use App\Support\Texto;
 use App\Services\FabricaAlumnos;
 
 // Respuesta: 1 = eliminado, 0 = tiene matrícula o no existe (el panel muestra su aviso).
