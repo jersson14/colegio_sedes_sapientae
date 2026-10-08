@@ -33,10 +33,13 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 | alumnos | `GestionarAlumnos` (`FabricaAlumnos`), `FichaAlumno` | `registrar_alumno`, `modificar_alumno`, `eliminar_alumnos`, `modificar_foto_estudiante` | `tests/Unit/Alumno`, `tests/Integration/AlumnoRepositorioTest`, flujos §9 |
 | matrícula | `GestionarMatriculas`, `DatosMatricula`, `Monto`, `CuentaNueva` | `registro_matriculas`, `modificar_matrícula`, `eliminar_matricula` | `tests/Unit/Matricula`, `tests/Integration/MatriculaRepositorioTest`, flujos §4 y §10 |
 | notas | `GestionarNotas` (`FabricaNotas`), `ValorNota`, `TextoLibre`, `Lote` | `registro_notas`, `registro_notas_padres`, `editar_notas`, `editar_notas_padre` | `tests/Unit/Nota`, `tests/Integration/NotaRepositorioTest`, flujos §5 y §11 |
+| asistencia | `GestionarAsistencia`, `Asistencia`, `EstadoAsistencia` | `registro_asistencias`, `editar_asistencia`, `eliminar_asistencia` | `tests/Unit/Asistencia`, `tests/Integration/AsistenciaRepositorioTest`, flujos §7 y §12 |
 
 Las lecturas del módulo (listados, totales del panel, combos) siguen en `model/model_usuario.php`,
 cubiertas por la caracterización; igual los listados de alumnos y matrícula (`model/model_alumnos.php`,
-`model/model_matriculas.php`). `Support\Texto` reúne la normalización heredada de los formularios.
+`model/model_matriculas.php`). `Support\Texto` reúne la normalización heredada de los formularios;
+`Support\TextoLibre` (texto escapado, sin mayúsculas) y `Support\Lote` (el JSON «registros») los comparten
+notas y asistencia.
 
 Las fotos pasan por `Support\AlmacenFotos` (`FotosSubidas` sobre `core/subidas.php`): se validan antes
 de tocar la BD y se guardan, o se borra la anterior, solo si la BD aceptó el cambio.

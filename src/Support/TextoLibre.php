@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Nota;
+namespace App\Support;
 
-use App\Support\Texto;
 use InvalidArgumentException;
 
 /**

@@ -1,38 +1,23 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
-require '../../model/model_asistencia.php';
-$MASIS = new Modelo_Asistencia();
 
-$registros = json_decode($_POST['registros'], true); // Decodificar JSON a un array PHP
-$exito = true; // Bandera de éxito global
-$ya_existen = false; // Bandera para detectar si algunos registros ya existen
+declare(strict_types=1);
 
-foreach ($registros as $registro) {
-    $resultado = $MASIS->Registrar_Asistencias(
-        $registro['id_matri'],
-        $registro['fecha'],
-        $registro['esta'],
-        $registro['obse']
-    );
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'AUXILIAR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
-    if ($resultado == 2) {
-        $ya_existen = true; // Detectar si al menos uno ya existe
-    }
+use App\Repositories\PdoAsistenciaRepositorio;
+use App\Services\GestionarAsistencia;
+use App\Support\Lote;
 
-    if ($resultado != 1 && $resultado != 2) {
-        $exito = false; // Si alguno falla, marcamos como fallo
-        break;
-    }
+// Respuesta: 1 = todas registradas, 2 = alguna ya existía ese día (no se toca), 0 = datos inválidos
+// o error (no se registra ninguna).
+try {
+    $asistencia = new GestionarAsistencia(new PdoAsistenciaRepositorio((new conexionBD())->conexionPDO()));
+    echo $asistencia->registrar(Lote::desdeJson($_POST['registros'] ?? ''));
+} catch (InvalidArgumentException) {
+    echo 0;
+} catch (PDOException $e) {
+    error_log('Registrar asistencia: ' . $e->getMessage()); // p. ej. matrícula inexistente
+    echo 0;
 }
-
-if ($exito) {
-    if ($ya_existen) {
-        echo 2; // Algunos registros ya existen
-    } else {
-        echo 1; // Todos los registros fueron insertados con éxito
-    }
-} else {
-    echo 0; // Error en la inserción
-}
-?>

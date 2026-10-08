@@ -162,67 +162,7 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Asistencias($id_matri, $fecha, $esta, $obse) {
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_ASISTENCIA(?,?,?,?)";
-            $query  = $c->prepare($sql);
-            
-            // Vinculación de parámetros
-            $query->bindParam(1, $id_matri);
-            $query->bindParam(2, $fecha);
-            $query->bindParam(3, $esta);
-            $query->bindParam(4, $obse);
-        
-            try {
-                // Ejecutar consulta
-                $query->execute();
-        
-                // Obtener resultado
-                if ($row = $query->fetchColumn()) {
-                    return $row;  // Devolver el resultado del procedimiento almacenado
-                }
-            } catch (PDOException $e) {
-                // Manejar errores
-                return 0; // Enviar un valor que indique error
-            } finally {
-                // Asegurar que la conexión se cierra
-                conexionBD::cerrar_conexion();
-            }
-        }
-        
-       
-        public function Editar_Asistencia($id_asis, $fecha, $esta, $obse){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ACTUALIZAR_ASISTENCIA(?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id_asis);
-            $query ->bindParam(2,$fecha);
-            $query ->bindParam(3,$esta);
-            $query ->bindParam(4,$obse);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }        
-        public function Eliminar_Asistencia($fecha,$aula){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_ASISTENCIA_POR_FECHA_Y_AULA(?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$fecha);
-            $query ->bindParam(2,$aula);
-
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
-        }
+        // Registro, edición y borrado: src/Services/GestionarAsistencia.php.
     }
 
 

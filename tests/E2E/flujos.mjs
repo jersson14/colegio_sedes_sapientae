@@ -24,6 +24,8 @@ const ESC = {
   matriculaFlujo: { alumno: '20', dni: '70000014', anio: '5', otroAnio: '2', aula: '5' }, alumnoAjeno: '6',
   // Notas §11 (administrador): matrícula 40 en el periodo 12, que §5 no usa.
   notasFlujo: { matricula: '40', periodo: '12', criterio: '1', otroCriterio: '8' },
+  // Asistencia §12 (auxiliar): un día pasado, distinto del de §7.
+  asistenciaFlujo: { matricula: '40', aula: '5', fecha: '2025-12-01' },
 };
 
 let ok = 0, fallos = 0;
@@ -224,7 +226,7 @@ try {
   console.log('7. Asistencia (auxiliar)');
   {
     const { ctx, page } = await entrar(browser, ESC.auxiliar);
-    const registros = [{ id_matri: ESC.matriculaEstudiante, fecha: '2025-12-26', esta: 'ASISTIO', obse: '' }];
+    const registros = [{ id_matri: ESC.matriculaEstudiante, fecha: '2025-12-26', esta: 'PRESENTE', obse: '' }];
     const r = await pedir(page, 'controller/asistencias/controlador_registro_asistencias.php', { registros: JSON.stringify(registros) });
     check(r.texto === '1', 'el auxiliar registra la asistencia', `(${r.texto.slice(0, 80)})`);
     const otra = await pedir(page, 'controller/asistencias/controlador_registro_asistencias.php', { registros: JSON.stringify(registros) });
@@ -425,6 +427,36 @@ try {
     const doc = await entrar(browser, ESC.docente);
     check((await pedir(doc.page, ruta('editar_notas'), { registros: '[]' })).estado === 403, 'un docente no puede editar notas → 403');
     await doc.ctx.close();
+  }
+
+  console.log('12. Asistencia: fechas pasadas, edición y observaciones (auxiliar)');
+  {
+    const aux = await entrar(browser, ESC.auxiliar);
+    const ruta = (r) => `controller/asistencias/controlador_${r}.php`;
+    const { matricula, aula, fecha } = ESC.asistenciaFlujo;
+    const enviar = (r, registros) => pedir(aux.page, ruta(r), { registros: JSON.stringify(registros) });
+    const delDia = async (f = fecha) => filas(await pedir(aux.page, ruta('listar_alumnos_asistencia'), { fecha: f, aula }))
+      .filter((a) => String(a.id_matricula) === matricula && a.id_asistencia);
+    const xss = '<img src=x onerror=alert(1)>';
+
+    const r1 = await enviar('registro_asistencias', [{ id_matri: matricula, fecha, esta: 'TARDE', obse: xss }]);
+    check(r1.texto === '1', 'registra la asistencia de un día pasado');
+    const r2 = await enviar('registro_asistencias', [{ id_matri: matricula, fecha, esta: 'PRESENTE', obse: '' }]);
+    const dia = await delDia();
+    check(r2.texto === '2' && dia.length === 1,
+      'registrar otra vez ese día responde 2 y no duplica (antes comparaba con la fecha de registro)', `(${r2.texto}, ${dia.length} filas)`);
+    check(dia.length > 0 && !String(dia[0].observacion ?? '').includes('<img'),
+      'la observación se guarda escapada (XSS)', `(${JSON.stringify(dia[0] ?? {}).slice(0, 160)})`);
+    check((await enviar('registro_asistencias', [{ id_matri: matricula, fecha: '2025-12-02', esta: 'ASISTIO', obse: '' }])).texto === '0'
+      && (await delDia('2025-12-02')).length === 0, 'un estado fuera de la lista se rechaza → 0 (antes se guardaba vacío)');
+
+    const editada = await enviar('editar_asistencia', [{ id_asis: dia[0]?.id_asistencia, fecha: '2025-12-03', esta: 'JUSTIFICADO', obse: 'Cita médica' }]);
+    const tras = await delDia();
+    check(editada.texto === '1' && tras.length === 1 && tras[0].estado === 'JUSTIFICADO',
+      'edita el estado; la fecha no cambia aunque llegue otra', `(${editada.texto}, ${JSON.stringify(tras[0] ?? {}).slice(0, 120)})`);
+    check((await enviar('editar_asistencia', [{ id_asis: 99999999, fecha, esta: 'PRESENTE', obse: '' }])).texto === '2',
+      'editar una asistencia inexistente responde 2');
+    await aux.ctx.close();
   }
 } finally {
   await browser.close();

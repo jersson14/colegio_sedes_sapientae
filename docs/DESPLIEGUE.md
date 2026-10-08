@@ -273,6 +273,11 @@ vendor/bin/phinx migrate                          # la inicial se registra sin t
 >
 > **Migración `20261012000000_corregir_matricula`**: cambia cuándo se puede eliminar una matrícula
 > (ya no se borran ingresos cobrados: hay que anularlos antes). Avisar al personal administrativo.
+>
+> **Migración `20261014000000_corregir_asistencia`**: los registros históricos pueden tener el `mes`
+> equivocado y días duplicados. Revisar (y corregir a decisión del responsable, con respaldo):
+> `SELECT COUNT(*) FROM asistencia WHERE mes <> MONTH(fecha);` y
+> `SELECT id_matricula, fecha, COUNT(*) FROM asistencia GROUP BY 1, 2 HAVING COUNT(*) > 1;`
 
 **Importantes:**
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Nota;
 
+use App\Support\Lote;
+use App\Support\TextoLibre;
 use InvalidArgumentException;
 
 /** Una nota nueva de un alumno en un criterio y periodo (claves del JSON de js/console_notas.js). */

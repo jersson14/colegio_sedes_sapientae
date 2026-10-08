@@ -1,30 +1,20 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'AUXILIAR');
-require '../../model/model_asistencia.php';
-$MASIS = new Modelo_Asistencia();
 
-// Decodificar los registros enviados desde el frontend
-$registros = json_decode($_POST['registros'], true);
+declare(strict_types=1);
 
-// Variable para almacenar la respuesta global
-$respuesta = 1;  // Inicialmente asumimos éxito
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'AUXILIAR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
-foreach ($registros as $registro) {
-    $id_asis = $registro['id_asis'];
-    $fecha = $registro['fecha'];
-    $esta = $registro['esta'];
-    $obse = $registro['obse'];
-    
-    // Intentar actualizar cada registro
-    $resultado = $MASIS->Editar_Asistencia($id_asis, $fecha, $esta, $obse);
-    
-    // Si alguna actualización falla, marcamos la respuesta como 2 (error)
-    if (!$resultado) {
-        $respuesta = 2;
-        break;  // Opcional: salir del bucle si hay un error
-    }
+use App\Repositories\PdoAsistenciaRepositorio;
+use App\Services\GestionarAsistencia;
+use App\Support\Lote;
+
+// Respuesta: 1 = editadas, 2 = alguna no existe, 0 = datos inválidos (no se edita ninguna).
+// La fecha no cambia aunque llegue en el registro.
+try {
+    $asistencia = new GestionarAsistencia(new PdoAsistenciaRepositorio((new conexionBD())->conexionPDO()));
+    echo $asistencia->editar(Lote::desdeJson($_POST['registros'] ?? ''));
+} catch (InvalidArgumentException) {
+    echo 0;
 }
-
-// Retornar la respuesta global
-echo $respuesta;

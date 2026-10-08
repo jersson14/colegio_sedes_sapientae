@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Nota;
 
+use App\Support\Lote;
+use App\Support\TextoLibre;
 use InvalidArgumentException;
 
 /** Nota de los padres en una competencia (texto libre) y periodo. */

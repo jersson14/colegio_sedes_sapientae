@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Nota;
 
 use App\Domain\Nota\EdicionNota;
-use App\Domain\Nota\Lote;
+use App\Support\Lote;
 use App\Domain\Nota\NotaDePadres;
 use App\Domain\Nota\RegistroNota;
 use App\Domain\Nota\ValorNota;

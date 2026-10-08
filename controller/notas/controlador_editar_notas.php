@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../core/guard.php';
 exigir_rol('ADMINISTRADOR');
 require_once __DIR__ . '/../../model/model_conexion.php';
 
-use App\Domain\Nota\Lote;
+use App\Support\Lote;
 use App\Services\FabricaNotas;
 
 // Respuesta: {"status": 1|2, "message", "errores": [...]}; 2 si alguna nota no se pudo actualizar.

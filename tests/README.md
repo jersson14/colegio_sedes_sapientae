@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres) | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición) | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -26,7 +26,7 @@ Escenario de los flujos: docente `usuario10` (curso 20, aula 5, criterio 1, peri
 vacía `LOGIN_LIMITE_DIR` además de recargar los datos. Alumnos: 70000014 (id 20, sin matrícula) se modifica;
 70000001 tiene matrícula; los DNI 79999991/2 los crea el propio flujo. Matrícula: el alumno 20 se
 matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas. Notas §11: matrícula 40,
-periodo 12 (el §5 usa el 44).
+periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26).
 
 ## Ejecutar en local
 
@@ -118,6 +118,17 @@ Migración `20261013000000_corregir_notas_padres` y módulo notas en `src/`:
 | Conclusiones de más de 255 caracteres se truncaban (los SP declaraban 1000) | Se rechazan |
 | Guardar otra vez las notas de los padres las **duplicaba** (`ON DUPLICATE KEY` sin clave única) | Se actualizan por (matrícula, periodo, competencia) |
 | Editar devolvía al navegador los mensajes de la BD; usaba `FILTER_SANITIZE_STRING` (obsoleto) | Mensajes propios; mismo escapado que el registro |
+
+Migración `20261014000000_corregir_asistencia` y módulo asistencia en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| El duplicado se buscaba por la fecha de **registro**: registrar dos veces un día pasado lo duplicaba | Por (matrícula, fecha de la asistencia) |
+| `mes` se guardaba con el mes del registro, no el de la asistencia (reportes mensuales) | `MONTH(fecha)` |
+| **XSS almacenado** en la observación (el panel la pinta como HTML) | Se guarda escapada |
+| Un estado fuera del ENUM se guardaba vacío | Se rechaza (0) |
+| Editar cambiaba la fecha (deshabilitada en el panel) y respondía éxito aunque el registro no existiera | No toca la fecha; 2 si no existe |
+| El registro de un aula era fila a fila: un error a mitad la dejaba incompleta | En una transacción |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

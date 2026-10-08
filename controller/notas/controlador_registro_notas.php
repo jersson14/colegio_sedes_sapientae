@@ -7,7 +7,7 @@ exigir_rol('ADMINISTRADOR', 'DOCENTE');
 require_once __DIR__ . '/../../core/pertenencia.php';
 require_once __DIR__ . '/../../model/model_conexion.php';
 
-use App\Domain\Nota\Lote;
+use App\Support\Lote;
 use App\Services\FabricaNotas;
 
 // Respuesta: {"inserted_count": n, "status": s} con s = 1 todas insertadas, 2 alguna ya existía

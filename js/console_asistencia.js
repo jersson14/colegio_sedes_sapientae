@@ -1221,7 +1221,7 @@ function Registrar_asistencia() {
         } else if (resp == 2) {
             Swal.fire("Mensaje de Advertencia", "Algunos registros ya existen en la base de datos, revise por favor", "warning");
         } else {
-            Swal.fire("Mensaje de Error", "No se completó el registro", "error");
+            Swal.fire("Mensaje de Error", "No se completó el registro: revise el estado y que la observación no supere los 1000 caracteres", "error");
         }
     });
 }
@@ -1295,7 +1295,7 @@ function Eliminar_Asistencia(fecha,aula){
             tbl_asistencia.ajax.reload();
           });
       }else{
-        return Swal.fire("Mensaje de Advertencia","No se puede eliminar este grado académico por que esta siendo utilizado en otro registros, verifique por favor","warning");
+        return Swal.fire("Mensaje de Advertencia","No se pudo eliminar: revise la fecha y el aula seleccionadas","warning");
   
       }
     })
