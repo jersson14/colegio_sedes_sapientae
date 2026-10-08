@@ -30,6 +30,8 @@ const ESC = {
   horarioFlujo: { aula: '5', enUso: '2', celda: { hora: '41', dia: 'LUNES', curso: '20', otroCurso: '21' } },
   // Pagos §15: la pensión 36 (nivel 1, marzo 2026) tiene pagos; el §3 paga una más hoy.
   pagosFlujo: { pensionPagada: '36', nivel: '1' },
+  // Salud §17: usuario32 (id 32) es la psicóloga y usuario50 (id 50) la enfermera.
+  salud: { psicologa: { usuario: 'usuario32', id: '32' }, enfermera: { usuario: 'usuario50', id: '50' } },
 };
 
 let ok = 0, fallos = 0;
@@ -589,6 +591,41 @@ try {
     const editado = await ex('modificar_examen', { id: examen?.id_examen, asig: ESC.cursoDocente, tema: 'EXAMEN E2E 2', fecha: '2025-12-30T10:00', descrip: 'x' });
     check(editado.texto === '1', 'editar solo el tema de un examen con hora responde 1 (antes «ya existe»)', `(${editado.texto})`);
     check((await ex('modificar_estado_examen', { id: examen?.id_examen, estatus: 'CUALQUIERA' })).texto === '0', 'un estado de examen inválido se rechaza → 0');
+    await adm.ctx.close();
+  }
+
+  console.log('17. Atenciones de salud y comunicados');
+  {
+    const { psicologa, enfermera } = ESC.salud;
+    const atencion = (motivo, extra = {}) => ({ estu: ESC.matriculaEstudiante, motivo, diagno: 'D', observa: 'O', idusu: '22', ...extra });
+    const psicologicas = async (page) => filas(await pedir(page, 'controller/atencion_psicologica/controlador_listar_atención_psicologica.php'));
+
+    const psi = await entrar(browser, psicologa.usuario);
+    check((await pedir(psi.page, 'controller/atencion_psicologica/controlador_registro_psicologia.php', atencion('Ansiedad E2E'))).texto === '1',
+      'la psicóloga registra una atención');
+    const registrada = (await psicologicas(psi.page)).find((a) => a.motivo_consulta === 'ANSIEDAD E2E');
+    check(String(registrada?.id_usuario) === psicologa.id,
+      'la atención queda a nombre de quien atendió (la sesión), no del «idusu» del formulario', `(${JSON.stringify(registrada ?? {}).slice(0, 120)})`);
+    await psi.ctx.close();
+
+    const enf = await entrar(browser, enfermera.usuario);
+    const ajena = await pedir(enf.page, 'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php',
+      atencion('Cambiado por enfermeria', { id: String(registrada?.id_atencion) }));
+    check(ajena.texto === '0', 'la enfermera no puede modificar una atención psicológica → 0 (antes la reescribía)', `(${ajena.texto})`);
+    await enf.ctx.close();
+
+    const psi2 = await entrar(browser, psicologa.usuario);
+    const intacta = (await psicologicas(psi2.page)).find((a) => a.id_atencion === registrada?.id_atencion);
+    check(intacta?.motivo_consulta === 'ANSIEDAD E2E', 'la atención psicológica sigue intacta');
+    await psi2.ctx.close();
+
+    const adm = await entrar(browser, ESC.admin);
+    const comunicado = await pedir(adm.page, 'controller/comunicados/controlador_registro_comunicados.php', {
+      tipo: 'GENERAL', grado: '5', titulo: 'Aviso E2E', descripcion: 'Reunión', nombrefoto: 'aviso.png', usu: '22', __foto: 'aviso.png',
+    });
+    const publicado = filas(await pedir(adm.page, 'controller/comunicados/controlador_listar_comunicados.php')).find((c) => c.titulo === 'AVISO E2E');
+    check(comunicado.texto === '1' && String(publicado?.id_usuario) === '9',
+      'el comunicado queda a nombre de quien lo publica (la sesión)', `(${comunicado.texto} ${JSON.stringify(publicado ?? {}).slice(0, 120)})`);
     await adm.ctx.close();
   }
 } finally {

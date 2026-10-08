@@ -1,19 +1,18 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'PSICOLOGA');
-    require '../../model/model_atencion_psico.php';
-    $MAPSI = new Modelo_Atencion_Psico();//Instaciamos}
 
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $estu = strtoupper(htmlspecialchars($_POST['estu'],ENT_QUOTES,'UTF-8'));
-    $motivo = strtoupper(htmlspecialchars($_POST['motivo'],ENT_QUOTES,'UTF-8'));
-    $diagno = strtoupper(htmlspecialchars($_POST['diagno'],ENT_QUOTES,'UTF-8'));
-    $observa = strtoupper(htmlspecialchars($_POST['observa'],ENT_QUOTES,'UTF-8'));
-    $idusu = strtoupper(htmlspecialchars($_POST['idusu'],ENT_QUOTES,'UTF-8'));
+declare(strict_types=1);
 
-    $consulta = $MAPSI->Modificar_Atencion_Psico($id,$estu,$motivo,$diagno,$observa,$idusu);
-    echo $consulta;
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'PSICOLOGA');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Salud\TipoAtencion;
+use App\Services\FabricaBienestar;
 
-
-?>
+// Respuesta: 1 = modificada, 0 = no existe, no es psicológica o datos inválidos.
+try {
+    $bienestar = FabricaBienestar::gestionar((new conexionBD())->conexionPDO());
+    echo $bienestar->modificarAtencion(TipoAtencion::Psicologia, $_POST) ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

@@ -1,30 +1,18 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR');
-    require_once __DIR__ . '/../../core/subidas.php';
-    require '../../model/model_comunicados.php';
-    $MC = new Modelo_Comunicados();//Instaciamos
-    //DATOS DE COMUNICADO//
 
-    $tipo = strtoupper(htmlspecialchars($_POST['tipo'],ENT_QUOTES,'UTF-8'));
-    $grado = strtoupper(htmlspecialchars($_POST['grado'],ENT_QUOTES,'UTF-8'));
-    $titulo = strtoupper(htmlspecialchars($_POST['titulo'],ENT_QUOTES,'UTF-8'));
-    $descripcion = strtoupper(htmlspecialchars($_POST['descripcion'],ENT_QUOTES,'UTF-8'));
-    $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
-    $usu = htmlspecialchars($_POST['usu'],ENT_QUOTES,'UTF-8');
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Services\FabricaBienestar;
 
-    // Fase 0.3: el nombre lo genera el servidor; el $nombrefoto del cliente solo indica que hay foto nueva.
-    if($nombrefoto!=""){
-        $nombrefoto = imagen_validada('foto');
-    }
-    $ruta='controller/comunicados/fotos/'.$nombrefoto;
-    $consulta = $MC->Registrar_Comunicado($tipo,$grado,$titulo,$descripcion,$ruta,$usu);
-    if ($consulta) {
-        if($nombrefoto!=""){
-            imagen_guardar('foto','controller/comunicados/fotos',$nombrefoto);
-        }
-        echo $consulta;
-    }
-?>
+// Respuesta: 1 = publicado, 2 = duplicado, 0 = datos inválidos. Foto inválida: 422.
+// Autor: el usuario de la sesión (antes el «usu» del formulario).
+try {
+    $bienestar = FabricaBienestar::gestionar((new conexionBD())->conexionPDO());
+    echo $bienestar->publicarComunicado($_POST, ($_POST['nombrefoto'] ?? '') !== '', (int) $_SESSION['S_ID']);
+} catch (InvalidArgumentException) {
+    echo 0;
+}

@@ -1,17 +1,19 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'ENFERMERA');
-    require '../../model/model_atencion_enfer.php';
-    $MAEN = new Modelo_Atencion_Enfer();//Instaciamos
-    $estu = strtoupper(htmlspecialchars($_POST['estu'],ENT_QUOTES,'UTF-8'));
-    $motivo = strtoupper(htmlspecialchars($_POST['motivo'],ENT_QUOTES,'UTF-8'));
-    $diagno = strtoupper(htmlspecialchars($_POST['diagno'],ENT_QUOTES,'UTF-8'));
-    $observa = strtoupper(htmlspecialchars($_POST['observa'],ENT_QUOTES,'UTF-8'));
-    $idusu = strtoupper(htmlspecialchars($_POST['idusu'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MAEN->Registrar_Atencion_Enferme($estu,$motivo,$diagno,$observa,$idusu);
-    echo $consulta;
+declare(strict_types=1);
 
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'ENFERMERA');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Salud\TipoAtencion;
+use App\Services\FabricaBienestar;
 
-?>
+// Respuesta: 1 = registrada, 0 = datos inválidos. Quien atiende: el usuario de la sesión (antes el «idusu»).
+try {
+    $bienestar = FabricaBienestar::gestionar((new conexionBD())->conexionPDO());
+    $bienestar->registrarAtencion(TipoAtencion::Enfermeria, $_POST, (int) $_SESSION['S_ID']);
+    echo 1;
+} catch (InvalidArgumentException) {
+    echo 0;
+}

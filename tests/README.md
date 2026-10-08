@@ -5,7 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
-| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos, tareas y exámenes | Sí, **escribe** |
+| E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos, tareas y exámenes, atenciones de salud y comunicados | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
 
@@ -29,7 +29,8 @@ matricula en los años 5 y 2 con el usuario `nuevo20e2e` y se dan de baja ambas.
 periodo 12 (el §5 usa el 44). Asistencia §12: matrícula 40 el 2025-12-01 (el §7 usa el 26). Horarios §14: el aula 5 tiene la semana
 completa; la hora 41 del lunes es del curso 20. Pagos §15: edita y anula el pago del §3 (matrícula 31,
 pensión 36); por eso el §13 anula un ingreso que no es de pensión. Tareas §16: el docente publica una
-tarea vigente (2025-12-31) y otra vencida (2025-12-20); exámenes con el administrador.
+tarea vigente (2025-12-31) y otra vencida (2025-12-20); exámenes con el administrador. Salud §17:
+psicóloga `usuario32` y enfermera `usuario50`.
 
 ## Ejecutar en local
 
@@ -178,6 +179,14 @@ Migración `20261020000000_corregir_tareas_y_examenes` y módulo tareas/exámene
 | Editar un examen con hora sin cambiar la fecha respondía «ya existe» (DATE contra DATETIME) | Regla (curso, fecha) sin contar el propio examen |
 | El primer examen recibía el código «D0000001» | «E0000001» (el ya existente se conserva) |
 | Estado de examen sin validar | Solo los del ENUM |
+
+Migración `20261021000000_corregir_salud_y_comunicados` y módulo bienestar en `src/`:
+
+| Defecto | Ahora |
+|---|---|
+| **La enfermera podía reescribir una atención psicológica** (confidencial) con solo enviar su id, y la psicóloga una de enfermería | Cada uno solo modifica las de su tipo |
+| El profesional que atendió y el autor de un comunicado llegaban del formulario, y editar los reemplazaba (y una atención con un usuario que no es personal desaparecía del listado) | Salen de la sesión y no cambian al editar |
+| Al eliminar un comunicado su imagen quedaba en el disco; la imagen actual al editar venía del formulario | Se borra; se lee de la BD |
 
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 

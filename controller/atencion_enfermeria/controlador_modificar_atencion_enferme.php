@@ -1,19 +1,19 @@
 <?php
-    require_once __DIR__ . '/../../core/guard.php';
-    exigir_rol('ADMINISTRADOR', 'ENFERMERA');
-    require '../../model/model_atencion_enfer.php';
-    $MAEN = new Modelo_Atencion_Enfer();//Instaciamos
 
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $estu = strtoupper(htmlspecialchars($_POST['estu'],ENT_QUOTES,'UTF-8'));
-    $motivo = strtoupper(htmlspecialchars($_POST['motivo'],ENT_QUOTES,'UTF-8'));
-    $diagno = strtoupper(htmlspecialchars($_POST['diagno'],ENT_QUOTES,'UTF-8'));
-    $observa = strtoupper(htmlspecialchars($_POST['observa'],ENT_QUOTES,'UTF-8'));
-    $idusu = strtoupper(htmlspecialchars($_POST['idusu'],ENT_QUOTES,'UTF-8'));
+declare(strict_types=1);
 
-    $consulta = $MAEN->Modificar_Atencion_Enfermeria($id,$estu,$motivo,$diagno,$observa,$idusu);
-    echo $consulta;
+require_once __DIR__ . '/../../core/guard.php';
+exigir_rol('ADMINISTRADOR', 'ENFERMERA');
+require_once __DIR__ . '/../../model/model_conexion.php';
 
+use App\Domain\Salud\TipoAtencion;
+use App\Services\FabricaBienestar;
 
-
-?>
+// Respuesta: 1 = modificada, 0 = no existe, no es de enfermería o datos inválidos.
+// Una atención psicológica no se puede editar desde aquí (antes sí, con solo enviar su id).
+try {
+    $bienestar = FabricaBienestar::gestionar((new conexionBD())->conexionPDO());
+    echo $bienestar->modificarAtencion(TipoAtencion::Enfermeria, $_POST) ? 1 : 0;
+} catch (InvalidArgumentException) {
+    echo 0;
+}
