@@ -6,9 +6,13 @@ ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$codigo = (string) ($_GET['codigo'] ?? '');
 
 // Consulta principal para obtener datos de matrícula (sin filtro de concepto)
 $query_matricula = "SELECT
@@ -48,14 +52,8 @@ FROM
 	alumnos
 	ON 
 		matricula.id_alumno = alumnos.Id_alumno
-	INNER JOIN
-	usuario
-	ON 
-		matricula.usu_id = usuario.usu_id
-	INNER JOIN
-	empresa
-	ON 
-		usuario.empresa_id = empresa.empresa_id
+	LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+	INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
 	INNER JOIN
 	aulas
 	ON 
@@ -77,11 +75,9 @@ FROM
 	ON 
 		alumnos.Id_alumno = padres.id_alu
 WHERE
-	matricula.id_matricula = '$codigo'";
+	matricula.id_matricula = ?";
 
-$stmt_matricula = $mysqli->prepare($query_matricula);
-$stmt_matricula->execute();
-$resultado_matricula = $stmt_matricula->get_result();
+$filas_matricula = $datos->filas($query_matricula, [$codigo]);
 
 // Consulta separada para obtener los pagos
 $query_pagos = "SELECT
@@ -92,14 +88,12 @@ $query_pagos = "SELECT
 FROM
 	pago_pensiones
 WHERE
-	pago_pensiones.id_matri = '$codigo' AND
+	pago_pensiones.id_matri = ? AND
 	pago_pensiones.concepto IN ('ADMISION','ALUMNO NUEVO','MATRICULA')
 ORDER BY
 	pago_pensiones.fecha_pago ASC";
 
-$stmt_pagos = $mysqli->prepare($query_pagos);
-$stmt_pagos->execute();
-$resultado_pagos = $stmt_pagos->get_result();
+$filas_pagos = $datos->filas($query_pagos, [$codigo]);
 
 // Consulta para obtener el horario del alumno
 $query_horario = "SELECT
@@ -151,20 +145,18 @@ INNER JOIN
 INNER JOIN 
     docentes ON asignatura_docente.Id_docente = docentes.Id_docente
 WHERE
-    horas_aula.id_aula = (SELECT id_aula FROM matricula WHERE id_matricula = '$codigo' )
+    horas_aula.id_aula = (SELECT id_aula FROM matricula WHERE id_matricula = ? )
 GROUP BY
     horas_aula.hora_inicio, horas_aula.hora_fin
 ORDER BY
     horas_aula.hora_inicio";
 
-$stmt_horario = $mysqli->prepare($query_horario);
-$stmt_horario->execute();
-$resultado_horario = $stmt_horario->get_result();
+$filas_horario = $datos->filas($query_horario, [$codigo]);
 
 // Generar HTML para el PDF
 $html = '';
 
-if ($row_matricula = $resultado_matricula->fetch_assoc()) {
+if ($row_matricula = $filas_matricula[0] ?? null) {
     $html .= '
     <style>
         body { font-family: Arial, sans-serif; }
@@ -212,7 +204,7 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
     $total = 0;
     $hay_pagos = false;
 
-    while ($row_pago = $resultado_pagos->fetch_assoc()) {
+    foreach ($filas_pagos as $row_pago) {
         $hay_pagos = true;
         $fecha_pago = new DateTime($row_pago['fecha_pago'], new DateTimeZone('America/Lima'));
         $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'America/Lima', IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
@@ -264,7 +256,7 @@ $html .= '<h3>Horario</h3>
     </tr>';
 
 $hay_horario = false;
-while ($row_horario = $resultado_horario->fetch_assoc()) {
+foreach ($filas_horario as $row_horario) {
     $hay_horario = true;
     $html .= '
     <tr>
@@ -289,22 +281,5 @@ $html .= '</table>';
 // Limpiar el buffer de salida antes de crear el PDF
 ob_end_clean();
 
-try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9,
-    ]);
-
-    $mpdf->SetTitle('Cédula de matricula');
-    $mpdf->WriteHTML($html);
-    $mpdf->Output('Cedula_matricula.pdf', 'I');
-} catch (\Mpdf\MpdfException $e) {
-    echo $e->getMessage();
-}
+Pdf::enviar($html, Pdf::A4, 'Cedula_matricula.pdf', titulo: 'Cédula de matricula');
 ?>

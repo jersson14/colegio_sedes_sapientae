@@ -11,8 +11,13 @@ parameters:
     excludePaths:
         analyseAndScan:
             - tests/*/.gitkeep
+            # Sustituye a \Mpdf\Mpdf a propósito para capturar el HTML de los reportes.
+            - tests/Caracterizacion/reporte_html.php
     # Símbolos heredados que usa el código analizado (se leen, no se analizan).
     scanFiles:
         - model/model_conexion.php
+    # mPDF vive en el vendor propio de view/MPDF (src/Reportes/Pdf.php lo usa).
+    scanDirectories:
+        - view/MPDF/vendor/mpdf/mpdf/src
     tmpDir: var/phpstan
     reportUnmatchedIgnoredErrors: false

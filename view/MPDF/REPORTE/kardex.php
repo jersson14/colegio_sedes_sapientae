@@ -7,11 +7,15 @@ ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$codigo = (string) ($_GET['codigo'] ?? '');
 // IDOR: codigo = matrícula; el estudiante solo ve la suya.
-exigir_matricula_propia((string)$codigo);
+exigir_matricula_propia($codigo);
 
 $query = "SELECT
     pensiones.id_nivel_academico, 
@@ -45,22 +49,23 @@ FROM
     LEFT JOIN pensiones ON pensiones.id_pensiones = pago_pensiones.id_pension
     INNER JOIN matricula ON pago_pensiones.id_matri = matricula.id_matricula
     INNER JOIN alumnos ON matricula.id_alumno = alumnos.Id_alumno
-    INNER JOIN usuario ON matricula.usu_id = usuario.usu_id
-    INNER JOIN empresa ON usuario.empresa_id = empresa.empresa_id
+    LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+    INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
     INNER JOIN aulas ON matricula.id_aula = aulas.Id_aula
     INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nivel
     INNER JOIN seccion ON aulas.id_seccion = seccion.seccion_id
     INNER JOIN año_escolar ON matricula.id_año = año_escolar.Id_año_escolar
 WHERE
-    matricula.id_matricula = '$codigo'";
+    matricula.id_matricula = ?";
 
-$stmt = $mysqli->prepare($query);
-$stmt->execute();
-$resultado = $stmt->get_result();
+$filas = $datos->filas($query, [$codigo]);
+if ($filas === []) {
+    Pdf::sinDatos();
+}
 
 $html = '';
 
-if ($row1 = $resultado->fetch_assoc()) {
+if ($row1 = $filas[0]) {
     $html .= '
     <style>
         body { font-family: Arial, sans-serif; }
@@ -93,11 +98,7 @@ if ($row1 = $resultado->fetch_assoc()) {
     // Inicializar la suma total
     $total = 0;
 
-    // Repetir la ejecución para obtener los pagos
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    
-    while ($row2 = $resultado->fetch_assoc()) {
+    foreach ($filas as $row2) {
         // Crear el objeto DateTime con la zona horaria de América/Lima
         $fecha_pago = new DateTime($row2['fecha_pago'], new DateTimeZone('America/Lima'));
     
@@ -136,23 +137,5 @@ if ($row1 = $resultado->fetch_assoc()) {
 // Limpiar el buffer de salida antes de crear el PDF
 ob_end_clean();
 
-try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9
-    ]);
-    
-    // Definir el pie de página
-    $mpdf->SetHTMLFooter('<p style="text-align: center; font-size: 10px;">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>');
-
-    $mpdf->WriteHTML($html);
-    $mpdf->Output('Kardex_de_Pagos.pdf', 'I');
-} catch (\Mpdf\MpdfException $e) {
-    echo 'Error al generar el PDF: ' . $e->getMessage();
-}
+Pdf::enviar($html, Pdf::A4, 'Kardex_de_Pagos.pdf',
+    '<p style="text-align: center; font-size: 10px;">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>');

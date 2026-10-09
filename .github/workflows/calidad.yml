@@ -175,6 +175,10 @@ jobs:
         working-directory: tests/E2E
         run: node caracterizacion.mjs verificar
 
+      - name: Reportes PDF (HTML idéntico a la grabación)
+        if: success() || failure()
+        run: COLEGIO_ENV="$RUNNER_TEMP/colegio.env" php tools/caracterizar_reportes.php verificar
+
       - name: Flujos E2E (escriben en la BD; van después)
         if: success() || failure() # independientes del resultado de la caracterización
         working-directory: tests/E2E

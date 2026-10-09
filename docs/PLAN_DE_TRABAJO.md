@@ -11,7 +11,7 @@
 | 0 — Seguridad crítica | ✅ Cerrada: OWASP ZAP sin hallazgos altos explotables ([SEGURIDAD.md](SEGURIDAD.md) §0) |
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
-| 3 — Refactor | 🔄 En curso: 61 defectos corregidos (14 migraciones); en `src/`: usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, ingresos, egresos, tareas, exámenes, enfermería, psicología y comunicados. Falta: reportes PDF. Ver [src/README.md](../src/README.md) |
+| 3 — Refactor | 🔄 En curso: ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
 | 4 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**

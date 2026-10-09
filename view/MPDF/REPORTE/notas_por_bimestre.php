@@ -6,10 +6,14 @@ ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
-$id_matricula = $mysqli->real_escape_string($_GET['id_matricula']);
-$id_bimestre = $mysqli->real_escape_string($_GET['id_bimestre']);
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$id_matricula = (string) ($_GET['id_matricula'] ?? '');
+$id_bimestre = (string) ($_GET['id_bimestre'] ?? '');
 
 // Consulta para obtener los datos del estudiante y la institución
 $query_datos = "SELECT
@@ -37,14 +41,8 @@ FROM
 	alumnos
 	ON 
 		matricula.id_alumno = alumnos.Id_alumno
-	INNER JOIN
-	usuario
-	ON 
-		matricula.usu_id = usuario.usu_id
-	INNER JOIN
-	empresa
-	ON 
-		usuario.empresa_id = empresa.empresa_id
+	LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+	INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
 	INNER JOIN
 	aulas
 	ON 
@@ -66,12 +64,12 @@ FROM
 	ON 
 		`año_escolar`.`Id_año_escolar` = periodos.`id_año_escolar`
 WHERE
-	matricula.id_matricula = '$id_matricula' AND periodos.id_periodo='$id_bimestre'";
+	matricula.id_matricula = ? AND periodos.id_periodo = ?";
 
-$stmt_datos = $mysqli->prepare($query_datos);
-$stmt_datos->execute();
-$resultado_datos = $stmt_datos->get_result();
-$datos_estudiante = $resultado_datos->fetch_assoc();
+$datos_estudiante = $datos->fila($query_datos, [$id_matricula, $id_bimestre]);
+if ($datos_estudiante === null) {
+    Pdf::sinDatos(); // periodo de otro año o matrícula inexistente (antes: avisos de PHP y un PDF vacío)
+}
 
 // Consulta para obtener las notas y competencias
 $query_notas = "SELECT
@@ -99,15 +97,13 @@ FROM
     ON 
         notas.id_bimestre = periodos.id_periodo
 WHERE
-    notas.id_matricula = '$id_matricula' AND
-    notas.id_bimestre = '$id_bimestre'
+    notas.id_matricula = ? AND
+    notas.id_bimestre = ?
 ORDER BY
     asignaturas.nombre_asig ASC, 
     criterios.id_criterio ASC";
 
-$stmt_notas = $mysqli->prepare($query_notas);
-$stmt_notas->execute();
-$resultado_notas = $stmt_notas->get_result();
+$filas_notas = $datos->filas($query_notas, [$id_matricula, $id_bimestre]);
 
 // Consulta para obtener las notas de los padres
 $query_notas_padres = "SELECT
@@ -116,11 +112,9 @@ $query_notas_padres = "SELECT
 FROM
     notas_padre
 WHERE 
-    id_matricula = '$id_matricula' AND id_bimestre = '$id_bimestre'";
+    id_matricula = ? AND id_bimestre = ?";
 
-$stmt_notas_padres = $mysqli->prepare($query_notas_padres);
-$stmt_notas_padres->execute();
-$resultado_notas_padres = $stmt_notas_padres->get_result();
+$filas_notas_padres = $datos->filas($query_notas_padres, [$id_matricula, $id_bimestre]);
 
 // Consulta para obtener la asistencia
 $query_asistencia = "SELECT
@@ -131,12 +125,11 @@ $query_asistencia = "SELECT
 FROM
     asistencia
 WHERE
-    id_matricula = '$id_matricula'";
+    id_matricula = ?
+    AND fecha BETWEEN (SELECT fecha_inicio FROM periodos WHERE id_periodo = ?)
+                  AND (SELECT fecha_fin FROM periodos WHERE id_periodo = ?)";
 
-$stmt_asistencia = $mysqli->prepare($query_asistencia);
-$stmt_asistencia->execute();
-$resultado_asistencia = $stmt_asistencia->get_result();
-$asistencia = $resultado_asistencia->fetch_assoc();
+$asistencia = $datos->fila($query_asistencia, [$id_matricula, $id_bimestre, $id_bimestre]);
 
 // Generar HTML para el PDF
 $html = '
@@ -203,7 +196,7 @@ $html = '
 
     $current_area = '';
     $area_rows = 0;
-    $result_array = $resultado_notas->fetch_all(MYSQLI_ASSOC);
+    $result_array = $filas_notas;
     
     foreach ($result_array as $index => $row) {
         if ($current_area != $row['nombre_asig']) {
@@ -243,7 +236,7 @@ $html .= '
         <th style="text-align:center;">Nota</th>
     </tr>';
 
-while ($row = $resultado_notas_padres->fetch_assoc()) {
+foreach ($filas_notas_padres as $row) {
     $html .= '
     <tr>
         <td>' . $row['criterio'] . '</td>
@@ -276,10 +269,5 @@ $html .= '
     <p><strong>FIRMA Y SELLO DEL DIRECTOR</strong></p>
 </div>';
 
-$mpdf = new \Mpdf\Mpdf([
-    'format' => 'A4' // Configuración del tamaño de hoja como A4
-]);
-
-$mpdf->WriteHTML($html);
-$mpdf->Output();
+Pdf::enviar($html, ['format' => 'A4']);
 ?>

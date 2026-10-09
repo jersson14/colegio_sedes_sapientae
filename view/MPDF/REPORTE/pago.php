@@ -5,10 +5,15 @@ exigir_rol('ADMINISTRADOR');
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
-$fecha = $mysqli->real_escape_string($_GET['fecha']);
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Fecha;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$codigo = (string) ($_GET['codigo'] ?? '');
+$fecha = (string) ($_GET['fecha'] ?? '');
 
 // Consulta SQL principal
 $query = "SELECT
@@ -32,18 +37,21 @@ FROM
     INNER JOIN aulas ON matricula.id_aula = aulas.Id_aula
     INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nivel
     INNER JOIN seccion ON aulas.id_seccion = seccion.seccion_id
-    INNER JOIN usuario ON matricula.usu_id = usuario.usu_id
-    INNER JOIN empresa ON usuario.empresa_id = empresa.empresa_id
+    LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+    INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
     INNER JOIN año_escolar ON matricula.id_año = año_escolar.Id_año_escolar
 WHERE
-    matricula.id_matricula = '$codigo' AND DATE(pago_pensiones.fecha_pago) = '$fecha'";
+    matricula.id_matricula = ? AND DATE(pago_pensiones.fecha_pago) = ?";
 
-$resultado = $mysqli->query($query);
+$filas = $datos->filas($query, [$codigo, $fecha]);
+if ($filas === []) {
+    Pdf::sinDatos();
+}
 
 $html = '';
 
-if ($resultado->num_rows > 0) {
-    $first_row = $resultado->fetch_assoc(); // Obtenemos el primer registro para la información general
+if ($filas !== []) {
+    $first_row = $filas[0]; // Obtenemos el primer registro para la información general
     
     // Guardamos la información de la empresa
     $emp_logo = $first_row['emp_logo'];
@@ -83,12 +91,10 @@ if ($resultado->num_rows > 0) {
                 <th>Total pagado</th>
             </tr>';
 
-    // Volvemos al inicio del resultado para iterar sobre todos los registros
-    $resultado->data_seek(0);
     $total = 0;
-    while ($row = $resultado->fetch_assoc()) {
-        $timestamp_fecha_pago = strtotime($row['fecha_pago']);
-        $fecha_formateada = mb_strtolower(strftime('%d de %B del %Y', $timestamp_fecha_pago), 'UTF-8');
+    foreach ($filas as $row) {
+        // Antes strftime() sin el locale disponible: «25 de december del 2025».
+        $fecha_formateada = Fecha::larga((string) $row['fecha_pago']);
         
         $html .= '
             <tr>
@@ -123,6 +129,4 @@ if ($resultado->num_rows > 0) {
 }
 
 // Generar el PDF
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8','format' => [130,300]]);
-$mpdf->WriteHTML($html);
-$mpdf->Output('boleta_de_pago.pdf', 'I');
+Pdf::enviar($html, ['mode' => 'UTF-8', 'format' => [130, 300]], 'boleta_de_pago.pdf');

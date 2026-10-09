@@ -42,7 +42,9 @@ MySQL — toda la lógica SQL vive en 254 stored procedures (+ 4 eventos program
 - **No hay capa de servicio ni entidades.** El controlador lee `$_POST`, el modelo llama un SP.
 - **Las vistas** (`view/<modulo>/*.php`) son fragmentos HTML incluidos desde `view/index.php`.
 - **El JS** (`js/<modulo>.js`) es el que orquesta: dibuja DataTables, arma formularios, llama AJAX.
-- **Reportes**: `view/MPDF/` tiene su propio `vendor/` (mPDF 8.1.5) y su **propia conexión MySQLi** separada.
+- **Reportes**: `view/MPDF/` tiene su propio `vendor/` (mPDF 8.1.5). Los reportes en uso consultan por PDO
+  preparado (`App\Reportes\Datos`) y generan con `App\Reportes\Pdf`; solo los de «trámite/seguimiento»
+  (sin uso) siguen con la conexión MySQLi de `view/MPDF/conexion.php`.
 
 Detalle completo en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
 

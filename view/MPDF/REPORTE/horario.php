@@ -7,11 +7,15 @@ ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$codigo = (string) ($_GET['codigo'] ?? '');
 // IDOR: codigo = aula; el estudiante solo ve el horario de su aula.
-exigir_aula_propia((string)$codigo);
+exigir_aula_propia($codigo);
 
 // Obtener el código de matrícula desde la URL
 
@@ -52,12 +56,9 @@ FROM
 		aulas.id_seccion = seccion.seccion_id,
 	empresa
 WHERE
-	aulas.Id_aula = '$codigo'";
+	aulas.Id_aula = ?";
 
-$stmt_pagos = $mysqli->prepare($query_pagos);
-
-$stmt_pagos->execute();
-$resultado_pagos = $stmt_pagos->get_result();
+$filas_aula = $datos->filas($query_pagos, [$codigo]);
 
 // Consulta para obtener el horario del alumno
 $query_horario = "SELECT
@@ -109,21 +110,19 @@ INNER JOIN
 INNER JOIN 
     docentes ON asignatura_docente.Id_docente = docentes.Id_docente
 WHERE
-    horas_aula.id_aula = '$codigo'
+    horas_aula.id_aula = ?
 GROUP BY
     horas_aula.hora_inicio, horas_aula.hora_fin
 ORDER BY
     horas_aula.hora_inicio;
 ";
 
-$stmt_horario = $mysqli->prepare($query_horario);
-$stmt_horario->execute();
-$resultado_horario = $stmt_horario->get_result();
+$filas_horario = $datos->filas($query_horario, [$codigo]);
 
 // Generar HTML para el PDF
 $html = '';
 
-if ($row1 = $resultado_pagos->fetch_assoc()) {
+if ($row1 = $filas_aula[0] ?? null) {
     $html .= '
     <style>
         body { font-family: Arial, sans-serif; }
@@ -168,7 +167,7 @@ $html .= '<h3>Horario</h3>
         <th style="color:black;margin: 0 auto; text-align: center;">Viernes</th>
     </tr>';
 
-while ($row_horario = $resultado_horario->fetch_assoc()) {
+foreach ($filas_horario as $row_horario) {
     $html .= '
     <tr>
         <td style="font-size: 11px;margin: 0 auto; text-align: center;">' . $row_horario['hora'] . '</td>
@@ -185,22 +184,5 @@ $html .= '</table>';
 // Limpiar el buffer de salida antes de crear el PDF
 ob_end_clean();
 
-try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9,
-    ]);
-
-    $mpdf->SetTitle('HORARIO');
-    $mpdf->WriteHTML($html);
-    $mpdf->Output('Horario_aula.pdf', 'I'); // Salida en el navegador
-} catch (\Mpdf\MpdfException $e) {
-    echo $e->getMessage();
-}
+Pdf::enviar($html, Pdf::A4, 'Horario_aula.pdf', titulo: 'HORARIO');
 ?>

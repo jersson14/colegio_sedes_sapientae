@@ -1,0 +1,359 @@
+[
+    {
+        "reporte": "boleta_pago.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "38",
+            "idpagopen": "133"
+        },
+        "registro": {
+            "config": {
+                "mode": "UTF-8",
+                "format": [
+                    130,
+                    210
+                ]
+            },
+            "html": [
+                "\r\n<style>\r\n    @page{\r\n        margin: 10mm;\r\n        margin-header: 0mm;\r\n        margin-footer: 0mm;\r\n        odd-footer-name: html_myFooter1;\r\n    }\r\n</style>\r\n\r\n<table>\r\n    <tr>\r\n        <td align=\"center\">\r\n         <img style=\"border: 1.5px solid black; padding: 10px;border-radius: 25px;\" width=\"auto\" align=\"center\" src=\"../../../\">\r\n        </td>\r\n    </tr>\r\n</table>\r\n<br>\r\n\r\n<h2 style=\"text-align: center;margin: 0;text-decoration: underline;\">BOLETA DE PAGO</h2>\r\n<div style=\"text-align:center\">\r\n<br><b>DNI: </b><b>70000008</b>\r\n<br><b>Estudiante: </b>ISIDORO SIMULADO EJEMPLO\r\n<br><b>Nivel académico: </b>SECUNDARIA\r\n<br><b>Grado - Sección: </b>QUINTO GRADO - UNICO<hr>\r\n\r\n<table width=\"100%\" style=\"margin: 0;border-bottom:1px solid;border-left:0px;border-right:0px;border-top:0px;\">\r\n<thead>\r\n    <tr style=\"background-color: #CCCDCF;\">\r\n        <th style=\"margin: 0;border-bottom:0px solid;border-left:0px;border-right:0px;border-top:0px;font-size:15px\">Concepto</th>\r\n        <th   style=\"margin: 0;border-bottom:0px solid;border-left:0px;border-right:0px;border-top:0px;font-size:15px\">Mes</th>\r\n        <th  style=\"margin: 0;border-bottom:0px solid;border-left:0px;border-right:0px;border-top:0px;font-size:15px\">Fecha de pago</th>\r\n        <th style=\"margin: 0;border-bottom:0px solid;border-left:0px;border-right:0px;border-top:0px;font-size:15px\">Total pagado</th>\r\n\r\n    </tr>\r\n</thead>\r\n\r\n\r\n    <tr>\r\n    <td  style='text-align:center;font-size:14px'>PENSION</td>\r\n    <td  style='text-align:center;font-size:14px'>MARZO</td>\r\n    <td  style='text-align:center;font-size:14px'>25 de diciembre del 2025</td>\r\n    <td  style='text-align:center;font-size:14px'>S/. 150.00</td>\r\n\r\n   \r\n</tr><tbody>\r\n</tbody>\r\n</table>\r\n\r\n<br>\r\n<div style='text-align:center'>\r\n<b>!Gracias por su preferencia¡</b><br>\r\n\r\n<br><b>Tel&eacute;fono: </b>900000000\r\n<br><b>Email: </b>contacto@example.com<br>\r\n<b style='text-align: center;'>Dirección: </b>CALLE FICTICIA 1<br>\r\n   <br> <b style='text-align: center;'>Abancay-Apurímac-Perú</b></div>\r\n</div>\r\n<br><br>\r\n<p style='text-align:center'>(Esta boleta de pago puede ser remplazada por una original en el colegio)</p>\r\n"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "archivo": ""
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "cedula.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "34"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n        .no-data { text-align: center; font-style: italic; color: #666; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>CÉDULA DE MATRICULA</u></h2>\r\n    </div>\r\n    <h3>Datos de Matricula</h3>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000004</td></tr>\r\n        <tr><th>Estudiante:</th><td>EUSEBIO MUESTRA PATRON</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>SECUNDARIA</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>QUINTO GRADO - UNICO</td></tr>\r\n        <tr><th>Año Escolar (Matriculado):</th><td>2025</td></tr>\r\n        <tr><th>Procedencia de colegio:</th><td>COLEGIO DE PROCEDENCIA DE PRUEBA</td></tr>\r\n        <tr><th>Provincia:</th><td>ABANCAY</td></tr>\r\n        <tr><th>Departamento:</th><td>APURIMAC</td></tr>\r\n    </table>\r\n    <h3>Datos de los Padres</h3>\r\n    <table>\r\n        <tr><th>DNI Papá:</th><td>50000004</td></tr>\r\n        <tr><th>Datos Papá:</th><td>GUMERSINDO MUESTRA</td></tr>\r\n        <tr><th>Celular Papá:</th><td>900000304</td></tr>\r\n        <tr><th>DNI Mamá:</th><td>51000004</td></tr>\r\n        <tr><th>Datos Mamá:</th><td>MACARIA SIMULADO</td></tr>\r\n        <tr><th>Celular Mamá:</th><td>900000404</td></tr>\r\n    </table><h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 100.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"2\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 400.00</b></td>\r\n        </tr></table><h3>Horario</h3>\r\n<table style=\"margin: 0 auto; text-align: center;\">\r\n    <tr style=\"color:black;margin: 0 auto; text-align: center;\">\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Hora</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Lunes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Martes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Miércoles</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Jueves</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Viernes</th>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">07:30:00 - 08:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">SOCIALES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ANATOMIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">BIOLOGIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">08:30:00 - 09:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">BIOLOGIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RELIGION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ARTE - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ALGEBRA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">09:30:00 - 10:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ALGEBRA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">INGLES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ARTE - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">SOCIALES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">11:00:00 - 12:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">13:00:00 - 14:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">TUTORIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr></table>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "otros": [
+                "SetTitle"
+            ],
+            "archivo": "Cedula_matricula.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "cedula.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "40"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n        .no-data { text-align: center; font-style: italic; color: #666; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>CÉDULA DE MATRICULA</u></h2>\r\n    </div>\r\n    <h3>Datos de Matricula</h3>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000010</td></tr>\r\n        <tr><th>Estudiante:</th><td>LEOCADIO PRUEBA DEMO</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>INICIAL</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>3 AÑOS - UNICO</td></tr>\r\n        <tr><th>Año Escolar (Matriculado):</th><td>2025</td></tr>\r\n        <tr><th>Procedencia de colegio:</th><td>COLEGIO DE PROCEDENCIA DE PRUEBA</td></tr>\r\n        <tr><th>Provincia:</th><td>ABANCAY</td></tr>\r\n        <tr><th>Departamento:</th><td>APURIMAC</td></tr>\r\n    </table>\r\n    <h3>Datos de los Padres</h3>\r\n    <table>\r\n        <tr><th>DNI Papá:</th><td>50000010</td></tr>\r\n        <tr><th>Datos Papá:</th><td>NICASIO PRUEBA</td></tr>\r\n        <tr><th>Celular Papá:</th><td>900000310</td></tr>\r\n        <tr><th>DNI Mamá:</th><td>51000010</td></tr>\r\n        <tr><th>Datos Mamá:</th><td>SATURNINA MUESTRA</td></tr>\r\n        <tr><th>Celular Mamá:</th><td>900000410</td></tr>\r\n    </table><h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 100.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"2\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 400.00</b></td>\r\n        </tr></table><h3>Horario</h3>\r\n<table style=\"margin: 0 auto; text-align: center;\">\r\n    <tr style=\"color:black;margin: 0 auto; text-align: center;\">\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Hora</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Lunes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Martes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Miércoles</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Jueves</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Viernes</th>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">08:00:00 - 09:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">10:00:00 - 11:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">11:00:00 - 12:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">12:00:00 - 13:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr></table>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "otros": [
+                "SetTitle"
+            ],
+            "archivo": "Cedula_matricula.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "horario.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "5"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>HORARIOS POR AULA</u></h2>\r\n    </div>\r\n    <h3>Datos de Horaio</h3>\r\n    <table>\r\n        <tr><th>Aula o Grado:</th><td>3 AÑOS</td></tr>\r\n        <tr><th>Sección:</th><td>UNICO</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>INICIAL</td></tr>\r\n        <tr><th>Año académico:</th><td>2025</td></tr>\r\n\r\n\r\n    </table><h3>Horario</h3>\r\n<table style=\"margin: 0 auto; text-align: center;\">\r\n    <tr style=\"color:black;margin: 0 auto; text-align: center;\">\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Hora</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Lunes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Martes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Miércoles</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Jueves</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Viernes</th>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">08:00:00 - 09:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">10:00:00 - 11:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">11:00:00 - 12:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">12:00:00 - 13:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr></table>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "otros": [
+                "SetTitle"
+            ],
+            "archivo": "Horario_aula.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "horario.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "18"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>HORARIOS POR AULA</u></h2>\r\n    </div>\r\n    <h3>Datos de Horaio</h3>\r\n    <table>\r\n        <tr><th>Aula o Grado:</th><td>QUINTO GRADO</td></tr>\r\n        <tr><th>Sección:</th><td>UNICO</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>SECUNDARIA</td></tr>\r\n        <tr><th>Año académico:</th><td>2025</td></tr>\r\n\r\n\r\n    </table><h3>Horario</h3>\r\n<table style=\"margin: 0 auto; text-align: center;\">\r\n    <tr style=\"color:black;margin: 0 auto; text-align: center;\">\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Hora</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Lunes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Martes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Miércoles</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Jueves</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Viernes</th>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">07:30:00 - 08:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">SOCIALES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ANATOMIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">BIOLOGIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">08:30:00 - 09:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">BIOLOGIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RELIGION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ARTE - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ALGEBRA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">09:30:00 - 10:30:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ALGEBRA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">INGLES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">ARTE - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">SOCIALES - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">11:00:00 - 12:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">GEOMETRIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">QUIMICA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">13:00:00 - 14:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMPUTACION - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">TUTORIA - (QUITERIA PRUEBA EJEMPLO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (QUITERIA PRUEBA EJEMPLO)</td>\r\n    </tr></table>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "otros": [
+                "SetTitle"
+            ],
+            "archivo": "Horario_aula.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "kardex.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "38"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>KARDEX DE PAGOS</u></h2>\r\n    </div>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000008</td></tr>\r\n        <tr><th>Estudiante:</th><td>ISIDORO SIMULADO EJEMPLO</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>SECUNDARIA</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>QUINTO GRADO - UNICO</td></tr>\r\n        <tr><th>Año Escolar:</th><td>2025</td></tr>\r\n    </table>\r\n    <h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Mes</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 100.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>MARZO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>ABRIL</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>MAYO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>JUNIO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>JULIO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>AGOSTO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>SEPTIEMBRE</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>OCTUBRE</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>NOVIEMBRE</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>PENSION</td>\r\n            <td>DICIEMBRE</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"3\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 1,900.00</b></td>\r\n        </tr>\r\n    </table>\r\n    </div>"
+            ],
+            "pie": [
+                "<p style=\"text-align: center; font-size: 10px;\">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>"
+            ],
+            "cabecera": [],
+            "archivo": "Kardex_de_Pagos.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "kardex.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "34"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>KARDEX DE PAGOS</u></h2>\r\n    </div>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000004</td></tr>\r\n        <tr><th>Estudiante:</th><td>EUSEBIO MUESTRA PATRON</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>SECUNDARIA</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>QUINTO GRADO - UNICO</td></tr>\r\n        <tr><th>Año Escolar:</th><td>2025</td></tr>\r\n    </table>\r\n    <h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Mes</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 100.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"3\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 400.00</b></td>\r\n        </tr>\r\n    </table>\r\n    </div>"
+            ],
+            "pie": [
+                "<p style=\"text-align: center; font-size: 10px;\">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>"
+            ],
+            "cabecera": [],
+            "archivo": "Kardex_de_Pagos.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "notas_general.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "id_matricula": "34"
+        },
+        "registro": {
+            "config": {
+                "format": [
+                    216,
+                    356
+                ]
+            },
+            "html": [
+                "\r\n <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10px; } /* Cambia el tamaño de fuente aquí */\r\n        th, td { border: 1px solid black; padding: 8px; text-align: left; line-height: 1.5; } /* Aumentar el espaciado */\r\n        th { background-color: #f2f2f2; }\r\n        .curso { font-weight: bold; }\r\n        .nota { text-align: center; }\r\n    </style>\r\n<div class=\"header\">\r\n    <img src=\"../../../\" alt=\"Logo\">\r\n    <h3><u>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE 2025</u></h3>\r\n</div>\r\n<table>\r\n    <tr>\r\n        <th>DRE:</th>\r\n        <td><b>APURÍMAC</b></td>\r\n        <th>UGEL:</th>\r\n        <td><b>UGEL Abancay</b></td>\r\n    </tr>\r\n    <tr>\r\n        <th>Institución Educativa:</th>\r\n        <td>COLEGIO DE PRUEBA</td>\r\n        <th>Código Modular:</th>\r\n        <td>0000</td>\r\n    </tr>\r\n    <tr>\r\n        <th>DNI:</th>\r\n        <td>70000004</td>\r\n        <th>Estudiante:</th>\r\n        <td>EUSEBIO MUESTRA PATRON</td>\r\n    </tr>\r\n    <tr>\r\n        <th>Grado:</th>\r\n        <td>QUINTO GRADO</td>\r\n        <th>Sección:</th>\r\n        <td>UNICO</td>\r\n    </tr>\r\n    <tr>\r\n        <th>Nivel:</th>\r\n        <td>SECUNDARIA</td>\r\n        <th>Año Escolar:</th>\r\n        <td>2025</td>\r\n    </tr>\r\n</table>\r\n\r\n<h3>Competencias y Calificaciones</h3>\r\n<table>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Área</th>\r\n        <th style=\"text-align:center;\">Competencia</th>\r\n        <th style=\"text-align:center;\">I</th>\r\n        <th style=\"text-align:center;\">II</th>\r\n        <th style=\"text-align:center;\">III</th>\r\n        <th style=\"text-align:center;\">IV</th>\r\n        <th style=\"text-align:center;\">Conclusión Descriptiva de la Competencia</th>\r\n    </tr>\r\n            <tr>\r\n                <td class=\"curso\" rowspan=\"3\">ALGEBRA</td>\r\n                <td class=\"competencia\">Resuelve problemas de cantidad</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">12</td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"competencia\">Resuelve problemas de forma, movimiento y localización</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">15</td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"competencia\">Resuelve problemas de regularidad, equivalencia y cambio</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">0</td>\r\n                <td class=\"nota\">15</td>\r\n                <td></td>\r\n            </tr></table>\r\n<h3>Notas de Padres</h3>\r\n<table>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Criterio</th>\r\n        <th style=\"text-align:center;\">I</th>\r\n        <th style=\"text-align:center;\">II</th>\r\n        <th style=\"text-align:center;\">III</th>\r\n        <th style=\"text-align:center;\">IV</th>\r\n    </tr>\r\n    <tr>\r\n        <td>Acude regularmente al colegio en el horario de atencion a padres de familia, para dialogar con los docentes sobre el rendimiento academico y la conducta de su hijo. (a)</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr>\r\n    <tr>\r\n        <td>Asiste y participa activamente en actividades y reuniones del Aula</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr>\r\n    <tr>\r\n        <td>Cumple con las cuotas de pension.</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr></table><h3>Registro de Asistencia</h3>\r\n<table>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Periodo</th>\r\n        <th style=\"text-align:center;\">Fecha de Inicio</th>\r\n        <th style=\"text-align:center;\">Fecha de Fin</th>\r\n        <th style=\"text-align:center;\">Total Presentes</th>\r\n        <th style=\"text-align:center;\">Total Tardes</th>\r\n        <th style=\"text-align:center;\">Total Ausentes</th>\r\n        <th style=\"text-align:center;\">Total Justificados</th>\r\n    </tr>\r\n    <tr>\r\n        <td>IV BIMESTRE</td>\r\n        <td>01-12-2025</td>\r\n        <td>31-12-2025</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">1</td>\r\n        <td class=\"nota\">0</td>\r\n    </tr>\r\n    <tr>\r\n        <td>I BIMESTRE</td>\r\n        <td>09-03-2026</td>\r\n        <td>15-05-2026</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n    </tr>\r\n    <tr>\r\n        <td>II BIMESTRE</td>\r\n        <td>18-05-2026</td>\r\n        <td>31-07-2026</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n    </tr>\r\n    <tr>\r\n        <td>III BIMESTRE</td>\r\n        <td>03-08-2026</td>\r\n        <td>16-10-2026</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n    </tr></table>\r\n\r\n<!-- Sección de firma del director -->\r\n<div style=\"margin-top: 150px; text-align: center;\">\r\n    <p>______________________________________________</p>\r\n    <p><strong>FIRMA Y SELLO DEL DIRECTOR</strong></p>\r\n</div>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "archivo": "informe_progreso.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "notas_por_bimestre.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "id_matricula": "34",
+            "id_bimestre": "44"
+        },
+        "registro": {
+            "config": {
+                "format": "A4"
+            },
+            "html": [
+                "\r\n <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10px; } /* Cambia el tamaño de fuente aquí */\r\n        th, td { border: 1px solid black; padding: 8px; text-align: left; line-height: 1.5; } /* Aumentar el espaciado */\r\n        th { background-color: #f2f2f2; }\r\n        .curso { font-weight: bold; }\r\n        .nota { text-align: center; }\r\n    </style>\r\n<div class=\"header\">\r\n    <img src=\"../../../\" alt=\"Logo\">\r\n    <h3><u>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE 2025</u></h3>\r\n</div>\r\n<table>\r\n    <tr>\r\n        <th>DRE:</th>\r\n        <td><b>APURÍMAC</b></td>\r\n        <th>UGEL:</th>\r\n        <td><b>UGEL Abancay</b></td>\r\n    </tr>\r\n    <tr>\r\n        <th>Institución Educativa:</th>\r\n        <td>COLEGIO DE PRUEBA</td>\r\n        <th>Código Modular:</th>\r\n        <td>0000</td>\r\n    </tr>\r\n    <tr>\r\n        <th>DNI:</th>\r\n        <td>70000004</td>\r\n        <th>Estudiante:</th>\r\n        <td>EUSEBIO MUESTRA PATRON</td>\r\n    </tr>\r\n    <tr>\r\n        <th>Grado:</th>\r\n        <td>QUINTO GRADO</td>\r\n        <th>Sección:</th>\r\n        <td>UNICO</td>\r\n    </tr>\r\n    <tr>\r\n        <th>Nivel:</th>\r\n        <td>SECUNDARIA</td>\r\n        <th>Año Escolar:</th>\r\n        <td>2025</td>\r\n    </tr>\r\n</table>\r\n\r\n<h3>Competencias y Calificaciones</h3>\r\n<table>\r\n    <tr>\r\n        <td colspan=\"4\" style=\"text-align:center; font-weight:bold;\">\r\n            Periodo: IV BIMESTRE\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Área</th>\r\n        <th style=\"text-align:center;\">Competencia</th>\r\n        <th style=\"text-align:center;\">Nota</th>\r\n        <th style=\"text-align:center;\">Conclusión Descriptiva</th>\r\n    </tr><tr>\n<td  rowspan=\"3\"><strong>ALGEBRA</strong></td>\n\r\n            <td class=\"competencia\">Resuelve problemas de cantidad</td>\r\n            <td class=\"nota\">12</td>\r\n            <td></td>\r\n        </tr>\n<tr>\n\r\n            <td class=\"competencia\">Resuelve problemas de regularidad, equivalencia y cambio</td>\r\n            <td class=\"nota\">15</td>\r\n            <td></td>\r\n        </tr>\n<tr>\n\r\n            <td class=\"competencia\">Resuelve problemas de forma, movimiento y localización</td>\r\n            <td class=\"nota\">15</td>\r\n            <td></td>\r\n        </tr>\n\r\n</table>\r\n\r\n<h3>Evaluación de Padres de Familia</h3>\r\n<table>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Criterio</th>\r\n        <th style=\"text-align:center;\">Nota</th>\r\n    </tr>\r\n    <tr>\r\n        <td>Asiste y participa activamente en actividades y reuniones del Aula</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr>\r\n    <tr>\r\n        <td>Acude regularmente al colegio en el horario de atencion a padres de familia, para dialogar con los docentes sobre el rendimiento academico y la conducta de su hijo. (a)</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr>\r\n    <tr>\r\n        <td>Cumple con las cuotas de pension.</td>\r\n        <td class=\"nota\">A</td>\r\n    </tr>\r\n</table>\r\n\r\n<h3>Asistencia y Puntualidad</h3>\r\n<table>\r\n    <tr>\r\n        <th style=\"text-align:center;\">Presentes</th>\r\n        <th style=\"text-align:center;\">Tardanzas</th>\r\n        <th style=\"text-align:center;\">Faltas</th>\r\n        <th style=\"text-align:center;\">Justificadas</th>\r\n    </tr>\r\n    <tr>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">0</td>\r\n        <td class=\"nota\">1</td>\r\n        <td class=\"nota\">0</td>\r\n    </tr>\r\n</table>\r\n\r\n<!-- Sección de firma del director -->\r\n<div style=\"margin-top: 150px; text-align: center;\">\r\n    <p>______________________________________________</p>\r\n    <p><strong>FIRMA Y SELLO DEL DIRECTOR</strong></p>\r\n</div>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "archivo": ""
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "notas_por_bimestre.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "id_matricula": "34",
+            "id_bimestre": "12"
+        },
+        "registro": null,
+        "salida": "No hay datos para este reporte."
+    },
+    {
+        "reporte": "pago.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "38",
+            "fecha": "2025-12-25"
+        },
+        "registro": {
+            "config": {
+                "mode": "UTF-8",
+                "format": [
+                    130,
+                    300
+                ]
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .boleta { width: 100%; max-width: 800px; margin: 0 auto; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .logo { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"boleta\">\r\n        <div class=\"header\">\r\n            <img src=\"../../../\" class=\"logo\">\r\n            <h2><u>RECIBO DE PAGO</u></h2>\r\n        </div>\r\n        <hr>\r\n        <p><strong>DNI:</strong> 70000008</p>\r\n        <p><strong>Estudiante:</strong> ISIDORO SIMULADO EJEMPLO</p>\r\n        <p><strong>Nivel académico:</strong> SECUNDARIA</p>\r\n        <p><strong>Grado - Sección:</strong> QUINTO GRADO - UNICO</p>\r\n        <p><strong>Año escolar:</strong> 2025</p>\r\n        <hr>\r\n\r\n        <table>\r\n            <tr>\r\n                <th>Concepto</th>\r\n                <th>Mes</th>\r\n                <th>Fecha de pago</th>\r\n                <th>Total pagado</th>\r\n            </tr>\r\n            <tr>\r\n                <td>ADMISION</td>\r\n                <td></td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 100.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>ALUMNO NUEVO</td>\r\n                <td></td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>MATRICULA</td>\r\n                <td></td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>MARZO</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>ABRIL</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>MAYO</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>JUNIO</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>JULIO</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>AGOSTO</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>SEPTIEMBRE</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>OCTUBRE</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>NOVIEMBRE</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td>PENSION</td>\r\n                <td>DICIEMBRE</td>\r\n                <td>25 de diciembre del 2025</td>\r\n                <td>S/. 150.00</td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"3\" style=\"text-align: right;\"><strong>Total:</strong></td>\r\n                <td><strong>S/. 1,900.00</strong></td>\r\n            </tr>\r\n        </table>\r\n        \r\n        <div style=\"margin-top: 20px; text-align: center;\">\r\n            <p><strong>¡Gracias por su preferencia!</strong></p>\r\n            <p><strong>Teléfono:</strong> 900000000</p>\r\n            <p><strong>Email:</strong> contacto@example.com</p>\r\n            <p><strong>Dirección:</strong> CALLE FICTICIA 1</p>\r\n            <p><strong>Abancay-Apurímac-Perú</strong></p>\r\n        </div>\r\n        \r\n        <p style=\"text-align: center; font-style: italic; margin-top: 20px;\">\r\n            (Esta boleta de pago puede ser reemplazada por una original en el colegio)\r\n        </p>\r\n    </div>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "archivo": "boleta_de_pago.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "kardex.php",
+        "rol": "ESTUDIANTE",
+        "parametros": {
+            "codigo": "40"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>KARDEX DE PAGOS</u></h2>\r\n    </div>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000010</td></tr>\r\n        <tr><th>Estudiante:</th><td>LEOCADIO PRUEBA DEMO</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>INICIAL</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>3 AÑOS - UNICO</td></tr>\r\n        <tr><th>Año Escolar:</th><td>2025</td></tr>\r\n    </table>\r\n    <h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Mes</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 100.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"3\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 400.00</b></td>\r\n        </tr>\r\n    </table>\r\n    </div>"
+            ],
+            "pie": [
+                "<p style=\"text-align: center; font-size: 10px;\">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>"
+            ],
+            "cabecera": [],
+            "archivo": "Kardex_de_Pagos.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "kardex.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "31"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>KARDEX DE PAGOS</u></h2>\r\n    </div>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000001</td></tr>\r\n        <tr><th>Estudiante:</th><td>BENITA EJEMPLO MUESTRA</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>INICIAL</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>3 AÑOS - UNICO</td></tr>\r\n        <tr><th>Año Escolar:</th><td>2025</td></tr>\r\n    </table>\r\n    <h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Mes</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 0.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 0.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td></td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"3\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 150.00</b></td>\r\n        </tr>\r\n    </table>\r\n    </div>"
+            ],
+            "pie": [
+                "<p style=\"text-align: center; font-size: 10px;\">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>"
+            ],
+            "cabecera": [],
+            "archivo": "Kardex_de_Pagos.pdf"
+        },
+        "salida": ""
+    },
+    {
+        "reporte": "cedula.php",
+        "rol": "ADMINISTRADOR",
+        "parametros": {
+            "codigo": "31"
+        },
+        "registro": {
+            "config": {
+                "mode": "utf-8",
+                "format": "A4",
+                "margin_left": 15,
+                "margin_right": 15,
+                "margin_top": 16,
+                "margin_bottom": 16,
+                "margin_header": 9,
+                "margin_footer": 9
+            },
+            "html": [
+                "\r\n    <style>\r\n        body { font-family: Arial, sans-serif; }\r\n        .header { text-align: center; margin-bottom: 20px; }\r\n        .header img { max-width: 150px; }\r\n        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }\r\n        th, td { border: 1px solid black; padding: 5px; text-align: left; }\r\n        th { background-color: #f2f2f2; }\r\n        .no-data { text-align: center; font-style: italic; color: #666; }\r\n    </style>\r\n    <div class=\"header\">\r\n        <img src=\"../../../\" alt=\"Logo\">\r\n        <h2><u>CÉDULA DE MATRICULA</u></h2>\r\n    </div>\r\n    <h3>Datos de Matricula</h3>\r\n    <table>\r\n        <tr><th>DNI:</th><td>70000001</td></tr>\r\n        <tr><th>Estudiante:</th><td>BENITA EJEMPLO MUESTRA</td></tr>\r\n        <tr><th>Nivel Académico:</th><td>INICIAL</td></tr>\r\n        <tr><th>Grado - Sección:</th><td>3 AÑOS - UNICO</td></tr>\r\n        <tr><th>Año Escolar (Matriculado):</th><td>2025</td></tr>\r\n        <tr><th>Procedencia de colegio:</th><td>COLEGIO DE PROCEDENCIA DE PRUEBA</td></tr>\r\n        <tr><th>Provincia:</th><td></td></tr>\r\n        <tr><th>Departamento:</th><td></td></tr>\r\n    </table>\r\n    <h3>Datos de los Padres</h3>\r\n    <table>\r\n        <tr><th>DNI Papá:</th><td>50000001</td></tr>\r\n        <tr><th>Datos Papá:</th><td>DOROTEA EJEMPLO</td></tr>\r\n        <tr><th>Celular Papá:</th><td>900000301</td></tr>\r\n        <tr><th>DNI Mamá:</th><td>51000001</td></tr>\r\n        <tr><th>Datos Mamá:</th><td>ISIDORO ENSAYO</td></tr>\r\n        <tr><th>Celular Mamá:</th><td>900000401</td></tr>\r\n    </table><h3>Detalle de Pagos</h3>\r\n    <table>\r\n        <tr>\r\n            <th>Concepto</th>\r\n            <th>Fecha de Pago</th>\r\n            <th>Subtotal</th>\r\n        </tr>\r\n        <tr>\r\n            <td>ADMISION</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 0.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>ALUMNO NUEVO</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 0.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td>MATRICULA</td>\r\n            <td>25 de diciembre de 2025</td>\r\n            <td>S/. 150.00</td>\r\n        </tr>\r\n        <tr>\r\n            <td colspan=\"2\" style=\"text-align: right;\"><b>Total:</b></td>\r\n            <td><b>S/. 150.00</b></td>\r\n        </tr></table><h3>Horario</h3>\r\n<table style=\"margin: 0 auto; text-align: center;\">\r\n    <tr style=\"color:black;margin: 0 auto; text-align: center;\">\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Hora</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Lunes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Martes</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Miércoles</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Jueves</th>\r\n        <th style=\"color:black;margin: 0 auto; text-align: center;\">Viernes</th>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">08:00:00 - 09:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">10:00:00 - 11:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">11:00:00 - 12:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">PERSONAL SOCIAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">CIENCIA Y AMBIENTE - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr>\r\n    <tr>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">12:00:00 - 13:00:00</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">COMUNICACIÓN INTEGRAL - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n        <td style=\"font-size: 11px;margin: 0 auto; text-align: center;\">RAZONAMIENTO MATEMATICO - (GUMERSINDO EJEMPLO FICTICIO)</td>\r\n    </tr></table>"
+            ],
+            "pie": [],
+            "cabecera": [],
+            "otros": [
+                "SetTitle"
+            ],
+            "archivo": "Cedula_matricula.pdf"
+        },
+        "salida": ""
+    }
+]

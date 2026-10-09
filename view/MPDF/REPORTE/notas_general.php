@@ -6,11 +6,13 @@ ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
+require_once __DIR__ . '/../../../model/model_conexion.php';
 
-// ID de matrícula, puedes cambiarlo a un parámetro dinámico si lo necesitas
-$id_matricula = $mysqli->real_escape_string($_GET['id_matricula']);
+use App\Reportes\Datos;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
+$id_matricula = (string) ($_GET['id_matricula'] ?? '');
 
 // Consulta para obtener los datos del estudiante y la institución
 $query_datos = "SELECT
@@ -34,10 +36,8 @@ FROM
     matricula
 INNER JOIN
     alumnos ON matricula.id_alumno = alumnos.Id_alumno
-INNER JOIN
-    usuario ON matricula.usu_id = usuario.usu_id
-INNER JOIN
-    empresa ON usuario.empresa_id = empresa.empresa_id
+LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
 INNER JOIN
     aulas ON matricula.id_aula = aulas.Id_aula
 INNER JOIN
@@ -47,12 +47,12 @@ INNER JOIN
 INNER JOIN
     año_escolar ON matricula.id_año = año_escolar.Id_año_escolar
 WHERE
-    matricula.id_matricula = '$id_matricula'";
+    matricula.id_matricula = ?";
 
-$stmt_datos = $mysqli->prepare($query_datos);
-$stmt_datos->execute();
-$resultado_datos = $stmt_datos->get_result();
-$datos_estudiante = $resultado_datos->fetch_assoc();
+$datos_estudiante = $datos->fila($query_datos, [$id_matricula]);
+if ($datos_estudiante === null) {
+    Pdf::sinDatos();
+}
 
 // Consulta para obtener las notas y competencias
 $query_notas = "    SELECT 
@@ -74,7 +74,7 @@ LEFT JOIN
 LEFT JOIN
     periodos p ON n.id_bimestre = p.id_periodo
 WHERE
-    n.id_matricula = '$id_matricula'
+    n.id_matricula = ?
 GROUP BY
     a.nombre_asig, 
     c.competencias
@@ -84,9 +84,7 @@ ORDER BY
     a.nombre_asig ASC,
     c.competencias ASC";
 
-$stmt_notas = $mysqli->prepare($query_notas);
-$stmt_notas->execute();
-$resultado_notas = $stmt_notas->get_result();
+$filas_notas = $datos->filas($query_notas, [$id_matricula]);
 
 // Consulta para obtener las notas de los padres
 $query_notas_padres = "SELECT
@@ -100,15 +98,13 @@ FROM
 INNER JOIN
     periodos p ON n.id_bimestre = p.id_periodo
 WHERE
-    n.id_matricula ='$id_matricula'
+    n.id_matricula = ?
 GROUP BY
     n.criterio
 ORDER BY
     n.criterio";
 
-$stmt_notas_padres = $mysqli->prepare($query_notas_padres);
-$stmt_notas_padres->execute();
-$resultado_notas_padres = $stmt_notas_padres->get_result();
+$filas_notas_padres = $datos->filas($query_notas_padres, [$id_matricula]);
 
 // Consulta para obtener la asistencia
 $query_asistencia = "SELECT
@@ -123,7 +119,9 @@ FROM
     periodos
 LEFT JOIN
     asistencia ON asistencia.fecha BETWEEN periodos.fecha_inicio AND periodos.fecha_fin
-    AND asistencia.id_matricula = '$id_matricula' 
+    AND asistencia.id_matricula = ?
+WHERE
+    periodos.`id_año_escolar` = (SELECT matricula.`id_año` FROM matricula WHERE matricula.id_matricula = ?)
 GROUP BY
     periodos.periodos, 
     periodos.fecha_inicio, 
@@ -131,10 +129,7 @@ GROUP BY
 ORDER BY
     periodos.fecha_inicio";
 
-$stmt_asistencia = $mysqli->prepare($query_asistencia);
-$stmt_asistencia->execute();
-$resultado_asistencia = $stmt_asistencia->get_result();
-$asistencia = $resultado_asistencia->fetch_assoc();
+$filas_asistencia = $datos->filas($query_asistencia, [$id_matricula, $id_matricula]);
 
 // Generar HTML para el PDF
 $html = '
@@ -200,7 +195,7 @@ $html = '
 $asignaturas = []; // Array para almacenar asignaturas
 
 // Construcción de las filas de notas
-while ($fila = $resultado_notas->fetch_assoc()) {
+foreach ($filas_notas as $fila) {
     $asignaturas[$fila['nombre_asig']][] = $fila; // Agrupar por nombre de asignatura
 }
 
@@ -246,7 +241,7 @@ $html .= '
     </tr>';
 
 // Construcción de las filas de notas de padres
-while ($fila_notas_padres = $resultado_notas_padres->fetch_assoc()) {
+foreach ($filas_notas_padres as $fila_notas_padres) {
     $html .= '
     <tr>
         <td>' . $fila_notas_padres['criterio'] . '</td>
@@ -272,7 +267,7 @@ $html .= '<h3>Registro de Asistencia</h3>
     </tr>';
 
 // Construcción de las filas de asistencia
-while ($fila_asistencia = $resultado_asistencia->fetch_assoc()) {
+foreach ($filas_asistencia as $fila_asistencia) {
     
     $html .= '
     <tr>
@@ -295,10 +290,6 @@ $html .= '</table>
 </div>';
 
 // Generación del PDF con MPDF
-$mpdf = new \Mpdf\Mpdf([
-    'format' => [216, 356] // Dimensiones en milímetros para tamaño oficio
-]);
-$mpdf->WriteHTML($html);
-$mpdf->Output('informe_progreso.pdf', 'I'); // 'D' para forzar la descarga
+Pdf::enviar($html, ['format' => [216, 356]], 'informe_progreso.pdf'); // tamaño oficio, en mm
 exit();
 ?>

@@ -52,6 +52,17 @@ BASE_URL=http://127.0.0.1:8099/ node caracterizacion.mjs verificar
 BASE_URL=http://127.0.0.1:8099/ node flujos.mjs
 ```
 
+## Reportes PDF
+
+`tools/caracterizar_reportes.php` ejecuta cada reporte de `view/MPDF/REPORTE/` por línea de comandos con
+una sesión de prueba y un sustituto de mPDF (`tests/Caracterizacion/reporte_html.php`), y compara el
+**HTML** que el reporte entrega a mPDF con `tests/Caracterizacion/reportes.json` (el PDF lleva fechas de
+generación y compresión). Con los datos de prueba recién cargados:
+
+```bash
+COLEGIO_ENV=/ruta/prueba.env php tools/caracterizar_reportes.php verificar   # o «grabar» tras un cambio intencionado
+```
+
 ## Regrabar la caracterización
 
 Solo cuando un cambio de comportamiento es **intencionado**: `node caracterizacion.mjs grabar`
@@ -188,10 +199,23 @@ Migración `20261021000000_corregir_salud_y_comunicados` y módulo bienestar en 
 | El profesional que atendió y el autor de un comunicado llegaban del formulario, y editar los reemplazaba (y una atención con un usuario que no es personal desaparecía del listado) | Salen de la sesión y no cambian al editar |
 | Al eliminar un comunicado su imagen quedaba en el disco; la imagen actual al editar venía del formulario | Se borra; se lee de la BD |
 
+Reportes PDF (`src/Reportes`, sin migración: los defectos estaban en el PHP de cada reporte):
+
+| Defecto | Ahora |
+|---|---|
+| `utf8_encode`/`utf8_decode` sobre datos que ya eran UTF-8: «MUÑOZ» salía «MUÃOZ» en la boleta | Se quitaron (además, obsoletas en PHP 8.2) |
+| Fechas con `strftime()` (obsoleta): el mes salía en el idioma del servidor («25 de december del 2025» en el reporte de pagos) | `App\Reportes\Fecha` con `IntlDateFormatter` |
+| Las matrículas sin cuenta de alumno (2 de 11 en la BD de trabajo) daban boleta, kardex, pagos, cédula y notas **en blanco** | `LEFT JOIN` a la cuenta; la empresa por defecto si no hay |
+| El informe general omitía el **primer periodo** de asistencia y mezclaba periodos de otros años | Todos los periodos del año de la matrícula |
+| El informe por bimestre sumaba la asistencia de **todo el año** | Solo la del bimestre |
+| Periodo de otro año o matrícula inexistente: avisos de PHP y un PDF vacío | 404 «No hay datos para este reporte» |
+| SQL armado con `real_escape_string` y una conexión MySQLi aparte | Consultas preparadas sobre el PDO común (`App\Reportes\Datos`) |
+
 ## Defectos encontrados al caracterizar (comportamiento congelado, pendiente de corregir)
 
 Las pruebas los marcan con «DEFECTO». Al corregir uno, su prueba cambia en el mismo commit.
 
 | Dónde | Defecto | Prueba |
 |---|---|---|
+| Reporte de horario | La consulta no filtra por año escolar: con horarios de dos años los mezclaría | Pendiente: en los datos el «año escolar 2025» transcurre en 2026 y la regla no es obvia |
 | BD | 4 eventos programados que requieren `event_scheduler=ON` (OFF en el XAMPP local) | `EsquemaTest` |

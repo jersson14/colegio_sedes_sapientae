@@ -6,13 +6,18 @@ require_once __DIR__ . '/../../../core/pertenencia.php';
 setlocale(LC_TIME, 'es_ES.UTF-8'); // Establecer la configuración local para español
 $current_year = date('Y');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../conexion.php';
+require_once __DIR__ . '/../../../model/model_conexion.php';
+
+use App\Reportes\Datos;
+use App\Reportes\Fecha;
+use App\Reportes\Pdf;
+
+$datos = new Datos((new conexionBD())->conexionPDO());
 $html = '';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
-$idpagopen = $mysqli->real_escape_string($_GET['idpagopen']);
+$codigo = (string) ($_GET['codigo'] ?? '');
+$idpagopen = (string) ($_GET['idpagopen'] ?? '');
 // IDOR: el estudiante solo imprime boletas de sus propios pagos.
-exigir_pago_propio((string)$codigo, (string)$idpagopen);
+exigir_pago_propio($codigo, $idpagopen);
 
 	$query="SELECT
 	pensiones.id_nivel_academico, 
@@ -51,14 +56,8 @@ FROM
 	alumnos
 	ON 
 		matricula.id_alumno = alumnos.Id_alumno
-	INNER JOIN
-	usuario
-	ON 
-		matricula.usu_id = usuario.usu_id
-	INNER JOIN
-	empresa
-	ON 
-		usuario.empresa_id = empresa.empresa_id
+	LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+	INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
 	INNER JOIN
 	aulas
 	ON 
@@ -72,14 +71,17 @@ FROM
 	ON 
 		aulas.id_seccion = seccion.seccion_id
 	WHERE
-		pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
+		pago_pensiones.id_matri = ? and pago_pensiones.id_pago_pension = ?";
 //CONVERSIÓN DE FECHA
 
 
 
 
-$resultado = $mysqli ->query($query);
-while($row1 =$resultado->fetch_assoc()){
+$filas1 = $datos->filas($query, [$codigo, $idpagopen]);
+if ($filas1 === []) {
+    Pdf::sinDatos();
+}
+foreach ($filas1 as $row1) {
   
 // Definir el contenido HTML para la primera página
 $html.='
@@ -103,9 +105,9 @@ $html.='
 
 <h2 style="text-align: center;margin: 0;text-decoration: underline;">BOLETA DE PAGO</h2>
 <div style="text-align:center">
-<br><b>DNI: </b><b>'.utf8_encode($row1['alum_dni']).'</b>
-<br><b>Estudiante: </b>'.utf8_encode($row1['Estudiante']).'
-<br><b>Nivel académico: </b>'.utf8_decode($row1['Nivel_academico']).'
+<br><b>DNI: </b><b>'.$row1['alum_dni'].'</b>
+<br><b>Estudiante: </b>'.$row1['Estudiante'].'
+<br><b>Nivel académico: </b>'.$row1['Nivel_academico'].'
 <br><b>Grado - Sección: </b>'.$row1['grado'].'<hr>
 
 <table width="100%" style="margin: 0;border-bottom:1px solid;border-left:0px;border-right:0px;border-top:0px;">
@@ -157,18 +159,11 @@ FROM
 	alumnos
 	ON 
 		matricula.id_alumno = alumnos.Id_alumno
-	INNER JOIN
-	usuario
-	ON 
-		matricula.usu_id = usuario.usu_id
-	INNER JOIN
-	empresa
-	ON 
-		usuario.empresa_id = empresa.empresa_id
+	LEFT JOIN usuario ON matricula.usu_id = usuario.usu_id /* matrícula sin cuenta: igual se reporta */
+	INNER JOIN empresa ON empresa.empresa_id = COALESCE(usuario.empresa_id, 1)
 WHERE
-	pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
-$resultado2=$mysqli->query($query2);
-while($row2=$resultado2->fetch_assoc()){
+	pago_pensiones.id_matri = ? and pago_pensiones.id_pago_pension = ?";
+foreach ($datos->filas($query2, [$codigo, $idpagopen]) as $row2) {
     date_default_timezone_set('America/Lima'); // Configura la zona horaria a Lima/Perú
     setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES.utf8', 'es_ES', 'spanish'); // Configura el locale para español
     
@@ -179,16 +174,16 @@ while($row2=$resultado2->fetch_assoc()){
     $timestamp_fecha_pago = strtotime($fecha_consejo_uni);
     
     // Formatear la fecha en el formato requerido: "11 de agosto del 2024"
-    $fecha_formateada = strftime('%d de %B del %Y', $timestamp_fecha_pago);
+    $fecha_formateada = Fecha::larga($fecha_consejo_uni);
     
     // Convertir a minúsculas
     $fecha_formateada_minusculas = mb_strtolower($fecha_formateada, 'UTF-8');
     $html.="
     <tr>
-    <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['concepto'])."</td>
-    <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['mes'])."</td>
+    <td  style='text-align:center;font-size:14px'>".$row2['concepto']."</td>
+    <td  style='text-align:center;font-size:14px'>".$row2['mes']."</td>
     <td  style='text-align:center;font-size:14px'>".$fecha_formateada_minusculas."</td>
-    <td  style='text-align:center;font-size:14px'>S/. ".utf8_encode($row2['sub_total'])."</td>
+    <td  style='text-align:center;font-size:14px'>S/. ".$row2['sub_total']."</td>
 
    
 ";
@@ -201,9 +196,9 @@ $html.="</tr><tbody>
 <div style='text-align:center'>
 <b>!Gracias por su preferencia¡</b><br>
 
-<br><b>Tel&eacute;fono: </b>".utf8_encode($row2['emp_telefono'])."
-<br><b>Email: </b>".utf8_encode($row2['emp_email'])."<br>
-<b style='text-align: center;'>Dirección: </b>".utf8_encode($row2['emp_direccion'])."<br>
+<br><b>Tel&eacute;fono: </b>".$row2['emp_telefono']."
+<br><b>Email: </b>".$row2['emp_email']."<br>
+<b style='text-align: center;'>Dirección: </b>".$row2['emp_direccion']."<br>
    <br> <b style='text-align: center;'>Abancay-Apurímac-Perú</b></div>
 </div>
 <br><br>
@@ -213,9 +208,5 @@ $html.="</tr><tbody>
 }
 
 
-$mpdf = new \Mpdf\Mpdf(
-    ['mode' => 'UTF-8','format' => [130,210]]
-);
-$mpdf->WriteHTML($html);
-$mpdf->Output();
+Pdf::enviar($html, ['mode' => 'UTF-8', 'format' => [130, 210]]);
 ?>
