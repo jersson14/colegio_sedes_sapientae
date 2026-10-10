@@ -14,7 +14,7 @@
 | 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
 | 4 — Multi-tenant | ✅ Completa: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hitos 4.1–4.10 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando; nombre, logo, color y página pública de cada colegio. copias de seguridad por colegio con restauración verificada; panel de superadministrador con auditoría. Siguiente: Fase 4B (empaquetado comercial) |
 | 4B — Empaquetado comercial | ✅ Completa: planes editables y límites aplicados en el servidor, estados con su comportamiento (PRUEBA, MOROSO, SUSPENDIDO, CANCELADO), consumo diario, cobros con morosidad automática, exportación de datos, baja con borrado verificable, demo convertible, runbook P2, guía de operación y manual de la institución. Los precios los decide el responsable: el sistema no trae ninguno; los cobros son internos (el comprobante SUNAT va por un OSE/PSE) |
-| 5 — Institutos | 🔄 En curso: hechos 5.1 (tipo de institución y configuración académica en la base de cada una), 5.2 (periodo y etiquetas configurables), 5.3 (plan de estudios con créditos y prerrequisitos), 5.4 (matrícula por unidad didáctica), 5.5 (calificación y promedio ponderado por créditos), 5.6 (cargos y recuperación) y 5.7 (apoderado opcional). Faltan 5.8 (certificados), 5.9 (roles de instituto) y 5.10 (piloto). Los valores por defecto de institutos (nota mínima 13, semestres, créditos) se validan con el piloto (5.10) |
+| 5 — Institutos | 🔄 En curso: hechos 5.1 (tipo de institución y configuración académica en la base de cada una), 5.2 (periodo y etiquetas configurables), 5.3 (plan de estudios con créditos y prerrequisitos), 5.4 (matrícula por unidad didáctica), 5.5 (calificación y promedio ponderado por créditos), 5.6 (cargos y recuperación), 5.7 (apoderado opcional) y 5.8 (récord y certificados). Faltan 5.9 (roles de instituto) y 5.10 (piloto). Los valores por defecto de institutos (nota mínima 13, semestres, créditos) se validan con el piloto (5.10) |
 | 6 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
@@ -528,7 +528,7 @@ vs. suscripción, tarifa plana vs. por alumno matriculado).
 | 5.5 ✅ | `EstrategiaEvaluacion` con promedio ponderado por créditos (`PromedioSimple` / `PromedioPorCreditos`, elegida por la configuración; récord académico) |
 | 5.6 ✅ | Repitencia parcial: cargos y subsanación (una evaluación de recuperación en el rango configurado; la desaprobada se vuelve a llevar sola) |
 | 5.7 ✅ | Apoderado opcional según configuración del tenant |
-| 5.8 | Certificación modular y título técnico (plantillas mPDF) |
+| 5.8 ✅ | Récord académico, certificado modular y constancia de egreso en mPDF (`record_academico.php`, `certificado_instituto.php`; solo con lo aprobado). El título técnico oficial lo emite la institución en el formato y registro del MINEDU: queda fuera |
 | 5.9 | Roles y permisos propios de instituto |
 | 5.10 | Piloto con un instituto real |
 

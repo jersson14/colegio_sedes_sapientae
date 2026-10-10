@@ -162,4 +162,35 @@ final class PlanDeEstudiosTest extends BaseDatosTestCase
         self::assertSame(1, $matricula->matricular($alumno, $p['u2'], $otroPeriodo), 'y se vuelve a llevar solo esa unidad');
         self::assertSame([], (new \App\Institucion\Evaluacion\RecordAcademico($this->pdo))->de($alumno, $p['programa'], $c)['cargos'], 'mientras la lleva, no es cargo');
     }
+
+    public function testDetalleParaCertificados(): void
+    {
+        $p = $this->plan();
+        $c = new \App\Institucion\Configuracion(['institucion.tipo' => 'INSTITUTO']);
+        $matricula = new \App\Institucion\MatriculaPorUnidad($this->pdo);
+        $record = new \App\Institucion\Evaluacion\RecordAcademico($this->pdo);
+        [$alumno, $periodo] = [$this->alumno(), $this->periodo()];
+        $calificar = function (int $unidad, string $nota) use ($matricula, $alumno, $periodo, $c): void {
+            $matricula->matricular($alumno, $unidad, $periodo);
+            $id = (int) $this->pdo->query("SELECT MAX(id_matricula_unidad) FROM matricula_unidades WHERE id_alumno = $alumno AND id_unidad = $unidad")->fetchColumn();
+            $matricula->registrarNota('calificar', $id, $nota, $c);
+        };
+
+        $vacio = $record->detalle($alumno, $p['programa']);
+        self::assertCount(3, $vacio['unidades'], 'todas las unidades del programa, aunque no las haya llevado');
+        self::assertNull($vacio['unidades'][0]['estado']);
+        self::assertSame([['id_modulo' => $p['modulo'], 'nombre' => 'Gestión de soporte técnico', 'unidades' => 3, 'aprobadas' => 0, 'creditos' => 0.0, 'completo' => false]], $vacio['modulos']);
+        self::assertFalse($vacio['completo']);
+
+        $calificar($p['u1'], '15');
+        $calificar($p['u2'], '16');
+        $parcial = $record->detalle($alumno, $p['programa']);
+        self::assertSame([2, 6.0, false], [$parcial['modulos'][0]['aprobadas'], $parcial['modulos'][0]['creditos'], $parcial['modulos'][0]['completo']]);
+
+        // Una unidad desactivada sin haberla aprobado ya no se exige para el certificado.
+        $this->sp('CALL SP_GUARDAR_UNIDAD(?, ?, ?, ?, ?, ?, ?, ?, ?)', [$p['u3'], $p['modulo'], 'UD-T3', 'Unidad UD-T3', 3, '3.0', 32, 32, 'INACTIVO']);
+        $completo = $record->detalle($alumno, $p['programa']);
+        self::assertTrue($completo['modulos'][0]['completo']);
+        self::assertTrue($completo['completo'], 'con todos sus módulos completos, el programa también');
+    }
 }

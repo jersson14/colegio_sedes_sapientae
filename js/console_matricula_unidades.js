@@ -58,8 +58,26 @@ var MatriculaUnidades = (function () {
         : 'ninguno';
       $('#mu_record').prop('hidden', false).html('<b>' + e(r.estrategia) + ':</b> ' + (r.promedio == null ? '—' : e(r.promedio))
         + ' &nbsp;·&nbsp; <b>Créditos aprobados:</b> ' + e(r.creditos_aprobados) + ' (' + e(r.unidades_aprobadas) + ' unidades)'
-        + ' &nbsp;·&nbsp; <b>Cargos:</b> <span id="mu_cargos">' + cargos + '</span>');
+        + ' &nbsp;·&nbsp; <b>Cargos:</b> <span id="mu_cargos">' + cargos + '</span>'
+        + '<div class="mt-2" id="mu_documentos">' + documentos(r, s) + '</div>');
     });
+  }
+
+  // Fase 5.8: récord académico siempre; certificado por módulo completo; constancia de egreso con todo aprobado.
+  function documentos(r, s) {
+    var base = '../view/MPDF/REPORTE/';
+    var consulta = 'alumno=' + encodeURIComponent(s.alumno) + '&programa=' + encodeURIComponent(s.programa);
+    var html = '<a class="btn btn-xs btn-outline-dark mr-1" target="_blank" id="mu_record_pdf" href="' + base + 'record_academico.php?' + consulta + '">Récord académico (PDF)</a>';
+    (r.modulos || []).forEach(function (m) {
+      if (m.completo) {
+        html += '<a class="btn btn-xs btn-outline-success mr-1 certificado-modulo" target="_blank" href="' + base + 'certificado_instituto.php?' + consulta
+          + '&modulo=' + m.id_modulo + '">Certificado: ' + e(m.nombre) + '</a>';
+      }
+    });
+    if (r.completo) {
+      html += '<a class="btn btn-xs btn-success" target="_blank" id="mu_egreso" href="' + base + 'certificado_instituto.php?' + consulta + '">Constancia de egreso</a>';
+    }
+    return html;
   }
 
   function enviar(datos) {

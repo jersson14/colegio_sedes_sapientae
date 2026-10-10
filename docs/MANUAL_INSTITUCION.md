@@ -48,6 +48,15 @@ En la misma pantalla se registran las notas:
   repetir el resto.
 - Arriba se ven el **promedio** (ponderado por créditos en institutos), los créditos aprobados y los cargos.
 
+Debajo están los documentos en PDF:
+
+- **Récord académico**: todas las unidades del programa con su nota (con «(R)» si la aprobó en recuperación),
+  la situación y el periodo en que la llevó. Sale siempre.
+- **Certificado modular**: aparece por cada módulo con todas sus unidades aprobadas.
+- **Constancia de egreso**: aparece cuando aprobó todas las unidades del programa.
+
+El título técnico oficial no lo genera el sistema: se tramita en el formato y el registro del MINEDU.
+
 Lo que ya tiene alumnos o historial no se borra: se desactiva.
 
 ## Usuarios y permisos

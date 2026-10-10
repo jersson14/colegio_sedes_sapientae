@@ -26,7 +26,10 @@ $entero = static fn (array $origen, string $c): int => preg_match('/^\d{1,9}$/',
 $configuracion = (new PdoConfiguracionRepositorio($pdo))->cargar();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['record'])) {
-        echo json_encode((new RecordAcademico($pdo))->de($entero($_GET, 'alumno'), $entero($_GET, 'programa'), $configuracion), JSON_UNESCAPED_UNICODE);
+        $record = new RecordAcademico($pdo);
+        $detalle = $record->detalle($entero($_GET, 'alumno'), $entero($_GET, 'programa'));
+        echo json_encode($record->de($entero($_GET, 'alumno'), $entero($_GET, 'programa'), $configuracion)
+            + ['modulos' => $detalle['modulos'], 'completo' => $detalle['completo']], JSON_UNESCAPED_UNICODE);
         exit;
     }
     if (isset($_GET['alumno'])) {

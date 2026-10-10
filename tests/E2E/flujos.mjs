@@ -794,6 +794,28 @@ try {
     const record = await adm.page.textContent('#mu_record');
     check(/ponderado/i.test(record) && record.includes('11.5') && (await adm.page.textContent('#mu_cargos')).includes(`B${sufijo}`),
       'el récord muestra el promedio ponderado (14 y 9, 3 créditos cada una → 11.5) y B como cargo', record);
+
+    // Fase 5.8: récord académico en PDF; certificados solo con lo aprobado.
+    const pdf = (url) => adm.page.evaluate(async (u) => {
+      const r = await fetch(u);
+      const texto = await r.text();
+      return { estado: r.status, inicio: texto.slice(0, 4) };
+    }, url);
+    const recordPdf = await pdf(await adm.page.getAttribute('#mu_record_pdf', 'href'));
+    check(recordPdf.estado === 200 && recordPdf.inicio === '%PDF', 'el récord académico sale en PDF', JSON.stringify(recordPdf));
+    const base = `../view/MPDF/REPORTE/certificado_instituto.php?alumno=${alumno}&programa=${programa}`;
+    check((await pdf(`${base}&modulo=${modulo}`)).estado === 422, 'con B pendiente no hay certificado del módulo (422)');
+    const actual = await adm.page.inputValue('#mu_periodo');
+    const otroPeriodo = (await pedir(adm.page, 'controller/matricula_unidades/controlador_matricula_unidades.php', null, 'GET')).json.periodos
+      .map((x) => String(x.id)).find((id) => id !== actual);
+    await pedir(adm.page, 'controller/matricula_unidades/controlador_matricula_unidades.php', { accion: 'matricular', alumno, unidad: u2, periodo: otroPeriodo });
+    const enCurso = (await pedir(adm.page, `controller/matricula_unidades/controlador_matricula_unidades.php?alumno=${alumno}&programa=${programa}&periodo=${otroPeriodo}`, null, 'GET'))
+      .json.find((x) => String(x.id_unidad) === String(u2));
+    await pedir(adm.page, 'controller/matricula_unidades/controlador_matricula_unidades.php', { accion: 'calificar', id: enCurso.id_matricula_unidad, nota: '15' });
+    const modular = await pdf(`${base}&modulo=${modulo}`);
+    const egreso = await pdf(base);
+    check(modular.estado === 200 && modular.inicio === '%PDF' && egreso.estado === 200 && egreso.inicio === '%PDF',
+      'B llevada de nuevo y aprobada: certificado modular y constancia de egreso', JSON.stringify([modular, egreso]));
     const docente = await entrar(browser, ESC.docente);
     check((await pedir(docente.page, plan, null, 'GET')).estado === 403, 'el plan de estudios es del administrador (403)');
     await docente.ctx.close();
