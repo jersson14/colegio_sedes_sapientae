@@ -246,7 +246,8 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
 - [x] `.htaccess` con el motor PHP desactivado en las carpetas de subidas (mover a `storage/`: Fase 3)
 - [ ] Backups automáticos **con restauración probada** (un backup no verificado no es un backup). De cada
       colegio: su base de datos **y** su almacén de archivos `storage/tenants/<slug>/`. Con
-      `php tools/respaldo_tenant.php respaldar --todos` en un cron diario (necesita `mysqldump`/`mysql`:
+      `php tools/respaldo_tenant.php respaldar --todos` en un cron diario (necesita `mysqldump`/`mysql` de la
+      misma familia que el servidor: con MariaDB, los de MariaDB; el de MySQL 8 estropea los nombres con «ñ»;
       `MYSQL_BIN_DIR`), y una copia fuera del servidor. Restaurar: `restaurar --desde=<carpeta>` (en una
       base nueva, verificada; `--activar` para que el colegio pase a usarla). En modo único el respaldo incluye
       también los archivos subidos antes de la Fase 4, que al restaurar quedan en el almacén. Ensayarlo

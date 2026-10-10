@@ -288,10 +288,16 @@ jobs:
           for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
           php tests/E2E/aislamiento.php
 
+      # El mysqldump de MySQL 8 de la imagen estropea contra MariaDB los nombres con «ñ» (SP_CARGAR_AÑO):
+      # se usa el cliente de MariaDB, como en XAMPP y en el hosting.
+      - name: Cliente de MariaDB (mysqldump y mysql)
+        run: sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mariadb-client > /dev/null && mysqldump --version
+
       - name: Respaldo y restauración de un colegio (tools/respaldo_tenant.php)
         env:
           COLEGIO_ENV: ${{ runner.temp }}/colegio.env
         run: |
+          set -o pipefail # «| tee» no debe ocultar un fallo de la herramienta
           # Los logs del job piden permisos de administrador: la salida de cada paso va también como anotación.
           registro="$RUNNER_TEMP/respaldo.log"
           trap 'echo "::error title=Respaldo::$(tail -c 900 "$registro" | tr "\n" " ")"' ERR

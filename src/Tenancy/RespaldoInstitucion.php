@@ -47,12 +47,18 @@ final class RespaldoInstitucion
         if (!is_dir($carpeta) && !mkdir($carpeta, 0700, true)) {
             throw new \RuntimeException("No se pudo crear $carpeta");
         }
-        $pdo = ($this->conectar)($tenant->baseDatos);
-        $filas = self::filasPorTabla($pdo);
-        $migracion = (string) $pdo->query('SELECT MAX(version) FROM phinxlog')->fetchColumn();
+        try {
+            $pdo = ($this->conectar)($tenant->baseDatos);
+            $filas = self::filasPorTabla($pdo);
+            $migracion = (string) $pdo->query('SELECT MAX(version) FROM phinxlog')->fetchColumn();
 
-        $this->mysql->volcar($tenant->baseDatos, "$carpeta/base.sql");
-        $archivos = self::comprimir($almacen, "$carpeta/archivos.zip", $anteriores, $esDeLaAplicacion ?? static fn (string $n): bool => false);
+            $this->mysql->volcar($tenant->baseDatos, "$carpeta/base.sql");
+            $archivos = self::comprimir($almacen, "$carpeta/archivos.zip", $anteriores, $esDeLaAplicacion ?? static fn (string $n): bool => false);
+        } catch (\Throwable $e) {
+            // Un respaldo a medias no debe quedar como si fuera uno bueno.
+            self::borrarCarpeta($carpeta);
+            throw $e;
+        }
 
         $manifiesto = [
             'formato' => self::VERSION_FORMATO,
