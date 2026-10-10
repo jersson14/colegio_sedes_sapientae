@@ -63,6 +63,19 @@ function config(string $clave, ?string $porDefecto = null): ?string
     return config_cargar()[$clave] ?? $porDefecto;
 }
 
+/**
+ * Zona horaria del sistema (APP_ZONA_HORARIA, por defecto America/Lima). Sin esto PHP usa la del php.ini
+ * del servidor (Europe/Berlin en XAMPP, UTC en muchos hostings). Core\Conexion fija la misma en la sesión
+ * de MySQL para que NOW() y date() coincidan.
+ */
+function config_zona_horaria(): string
+{
+    $zona = (string) config('APP_ZONA_HORARIA', 'America/Lima');
+    return in_array($zona, timezone_identifiers_list(), true) ? $zona : 'America/Lima';
+}
+
+date_default_timezone_set(config_zona_horaria());
+
 // Errores: nunca al navegador salvo APP_DEBUG=true (los mensajes de PDO exponen
 // rutas, nombres de tablas y SQL). Siempre al log de PHP.
 if (config('APP_DEBUG', 'false') !== 'true') {

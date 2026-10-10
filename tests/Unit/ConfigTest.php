@@ -48,4 +48,12 @@ final class ConfigTest extends TestCase
     {
         self::assertSame(getenv('COLEGIO_ENV'), config_ruta_env());
     }
+
+    public function testLaZonaHorariaEsLaDePeruSeaCualSeaLaDelServidor(): void
+    {
+        // tests/bootstrap.php no define APP_ZONA_HORARIA: la de por defecto, no la del php.ini.
+        self::assertSame('America/Lima', config_zona_horaria());
+        self::assertSame('America/Lima', date_default_timezone_get());
+        self::assertSame('-05:00', \App\Core\Conexion::desfase(), 'Perú no tiene horario de verano');
+    }
 }

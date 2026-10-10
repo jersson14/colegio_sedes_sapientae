@@ -70,6 +70,16 @@ final class Conexion
         );
     }
 
+    /**
+     * Desfase de APP_ZONA_HORARIA en este momento («-05:00»). MySQL no siempre tiene cargadas las tablas
+     * de zonas con nombre; el desfase funciona en cualquier servidor.
+     */
+    public static function desfase(): string
+    {
+        require_once __DIR__ . '/../../core/config.php';
+        return (new \DateTimeImmutable('now', new \DateTimeZone(config_zona_horaria())))->format('P');
+    }
+
     private static function abrir(?string $base, string $usuario, string $clave): PDO
     {
         require_once __DIR__ . '/../../core/config.php';
@@ -78,6 +88,8 @@ final class Conexion
         $pdo = new PDO($dsn, $usuario, $clave);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec('set names utf8');
+        // La hora de la institución, no la del servidor de BD (en un hosting suele ser UTC).
+        $pdo->prepare('SET SESSION time_zone = ?')->execute([self::desfase()]);
         return $pdo;
     }
 }
