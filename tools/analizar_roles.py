@@ -120,6 +120,11 @@ AB = dict(zip(ROLES, 'ADEXNP'))
 resultado, rastros = {}, {}
 for r in ROLES:
     resultado[r], rastros[r], docs = analizar_rol(r)
+# Endpoints que no se llaman desde el JS sino por URL de imagen: las fotos subidas (Fase 4.6) se
+# sirven por controlador_ver_archivo.php, y la foto de perfil del encabezado aparece en todos los roles.
+for r in ROLES:
+    resultado[r].add('controller/archivo/controlador_ver_archivo.php')
+    rastros[r].setdefault('controller/archivo/controlador_ver_archivo.php', 'URL de imagen (foto de perfil del encabezado)')
 
 # Comparación con el código
 codigo = {}

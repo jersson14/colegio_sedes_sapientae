@@ -102,7 +102,10 @@ mezclar inglés rompe la coherencia con los 254 SPs.
    tiene un `.htaccess` que impide ejecutar scripts. Las tareas solo se descargan por
    `controller/tareas/controlador_descargar_tarea.php` (0.3-B); su carpeta física
    `controller/tareas/controller/tareas/documentos/` está cerrada por `.htaccess` y fuera de git.
-   **Pendiente:** mover las subidas fuera del docroot (`storage/`).
+   ✅ Fase 4.6: lo nuevo se guarda en el almacén del colegio (`storage/tenants/<slug>/`, `almacen_raiz()`),
+   con la misma ruta relativa en la BD; las fotos se sirven con sesión por `controller/archivo/`
+   (regla del `.htaccess`; con el servidor de PHP, `tests/E2E/router.php`). Lo anterior sigue en su
+   carpeta y se encuentra en modo único (`tools/mover_subidas.php` lo traslada).
 4. ~~**Credenciales de BD en claro**~~ ✅ (Fase 0.4): `colegio.env` fuera de htdocs; errores de conexión
    solo al log. Usuario mínimo `colegio_app` ([config/usuario_bd.sql](config/usuario_bd.sql)), ya en uso en local.
 5. ~~**Sin CSRF, sin rate limiting, sin cabeceras**~~ ✅ CSRF en el guard; límite de intentos de login

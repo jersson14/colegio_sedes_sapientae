@@ -244,7 +244,8 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
       migraciones aparte (`DB_MIGRACION_USER`) con DDL, que la aplicación nunca usa
 - [x] `phpinfo.php`, `prueba.php`, `test_*` eliminados del repositorio
 - [x] `.htaccess` con el motor PHP desactivado en las carpetas de subidas (mover a `storage/`: Fase 3)
-- [ ] Backups automáticos **con restauración probada** (un backup no verificado no es un backup)
+- [ ] Backups automáticos **con restauración probada** (un backup no verificado no es un backup). De cada
+      colegio: su base de datos **y** su almacén de archivos `storage/tenants/<slug>/`
 
 **Procedimiento de cada despliegue:**
 
@@ -402,6 +403,8 @@ Pasos (por cada colegio: un dominio o subdominio con su propia base):
    - Desde tu PC contra la base remota: **hPanel → MySQL remoto**, autorizar tu IP, y en local
      `DB_HOST=<host remoto> DB_PORT=3306 DB_NAME=… DB_MIGRACION_USER=… DB_MIGRACION_PASS=… vendor/bin/phinx migrate`.
    En cada actualización del código, el mismo comando: solo aplica las migraciones nuevas.
+   Los archivos que suban los usuarios irán a `storage/tenants/<slug>/` (cerrado por `.htaccess`);
+   para guardarlos fuera de `public_html`, `ALMACEN_DIR=/home/<usuario>/domains/<dominio>/colegio_almacen`.
 6. **hPanel → Avanzado → Cron Jobs**, cada minuto:
    `/usr/bin/php /home/<usuario>/domains/<dominio>/public_html/tools/tareas_programadas.php`
    (comprobar la ruta de PHP que muestra hPanel). Solo escribe una línea cuando cierra algo.
@@ -437,5 +440,7 @@ es manual.
    `php tools/migrar_tenants.php --solo=colegio-x`, y el colegio entra por `https://colegio-x.midominio.pe`.
 8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php`.
    `event_scheduler` puede quedar apagado.
-9. Para pasar un colegio del hosting compartido al VPS: `mysqldump` de su base, importarla como
-   `sge_<slug>`, registrar la fila y migrar. Los usuarios y contraseñas siguen valiendo.
+9. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
+   --aplicar` (lleva al almacén lo subido antes de la Fase 4); después `mysqldump` de su base, importarla
+   como `sge_<slug>`, registrar la fila, migrar y copiar su `storage/tenants/<slug>/` al VPS con el slug
+   nuevo. Los usuarios y contraseñas siguen valiendo.

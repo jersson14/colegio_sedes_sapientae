@@ -144,7 +144,7 @@ $html = '
         .nota { text-align: center; }
     </style>
 <div class="header">
-    <img src="../../../' . $datos_estudiante['emp_logo'] . '" alt="Logo">
+    <img src="' . Pdf::imagen((string) $datos_estudiante['emp_logo']) . '" alt="Logo">
     <h3><u>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE ' . $datos_estudiante['año_escolar'] . '</u></h3>
 </div>
 <table>

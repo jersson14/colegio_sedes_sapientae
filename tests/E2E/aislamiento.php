@@ -154,6 +154,25 @@ comprobar(!str_contains($panel['cuerpo'], 'csrf-token'), 'ni el panel de B');
 $sigue = pedir($hostA, LISTAR, $galletaA, [], ["X-CSRF-Token: $tokenA"]);
 comprobar($sigue['codigo'] === 200 && str_contains($sigue['cuerpo'], '70000001'), 'la sesión de A sigue activa en A');
 
+// Archivos (Fase 4.6): cada colegio tiene su almacén; la URL es la misma de siempre.
+$almacen = rtrim(getenv('ALMACEN_DIR') ?: dirname(__DIR__, 2) . '/storage/tenants', '/\\');
+$png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+$fotoA = 'controller/alumnos/fotos/IMG_aislamiento_a.png';
+@mkdir("$almacen/colegio-a/controller/alumnos/fotos", 0755, true);
+file_put_contents("$almacen/colegio-a/$fotoA", $png);
+$comun = dirname(__DIR__, 2) . '/controller/alumnos/fotos/IMG_aislamiento_comun.png';
+file_put_contents($comun, $png);
+$verA = pedir($hostA, $fotoA, $galletaA);
+comprobar($verA['codigo'] === 200 && $verA['cuerpo'] === $png, 'A ve la foto de su almacén en la URL de siempre', "({$verA['codigo']})");
+$verB = pedir($hostB, $fotoA, $galletaB);
+comprobar($verB['codigo'] === 404 && $verB['cuerpo'] !== $png, 'B, con su sesión, no ve la foto de A (404)', "({$verB['codigo']})");
+$sinSesion = pedir($hostA, $fotoA, "$tmp/vacia.txt");
+comprobar($sinSesion['codigo'] === 401, 'sin sesión no se ve (401)', "({$sinSesion['codigo']})");
+$enComun = pedir($hostA, 'controller/archivo/controlador_ver_archivo.php?ruta=controller/alumnos/fotos/IMG_aislamiento_comun.png', $galletaA);
+comprobar($enComun['codigo'] === 404, 'en modo múltiple no se sirve nada de la carpeta común de antes', "({$enComun['codigo']})");
+@unlink("$almacen/colegio-a/$fotoA");
+@unlink($comun);
+
 // Hosts sin institución: la misma respuesta para el inexistente, el suspendido, la IP y el dominio base.
 $respuestas = [];
 foreach (['nadie.' . DOMINIO, 'suspendido.' . DOMINIO, '127.0.0.1', DOMINIO, 'colegio-a.otro.' . DOMINIO] as $host) {

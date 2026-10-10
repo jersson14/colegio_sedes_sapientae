@@ -168,7 +168,7 @@ jobs:
           DB_FECHA_PRUEBA=2025-12-26 12:00:00
           LOGIN_LIMITE_DIR=$RUNNER_TEMP/intentos
           EOF
-          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8099 -t . > "$RUNNER_TEMP/servidor.log" 2>&1 &
+          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8099 -t . tests/E2E/router.php > "$RUNNER_TEMP/servidor.log" 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$BASE_URL" && break; sleep 1; done
 
       - name: Caracterización (respuestas idénticas a la grabación)
@@ -271,7 +271,7 @@ jobs:
 
       - name: Aislamiento entre colegios (tests/E2E/aislamiento.php)
         run: |
-          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8098 -t . > "$RUNNER_TEMP/servidor.log" 2>&1 &
+          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8098 -t . tests/E2E/router.php > "$RUNNER_TEMP/servidor.log" 2>&1 &
           for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
           php tests/E2E/aislamiento.php
 

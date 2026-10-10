@@ -15,12 +15,10 @@
  * Pendiente: restringir al DOCENTE a sus propias aulas.
  */
 
-// Ruta física: las rutas de la BD son relativas a controller/tareas/ (ver controlador_registro_tareas.php).
-$base = __DIR__ . '/controller/tareas/documentos';
-
+// Ruta física: el almacén de la institución (Fase 4.6) o, en modo único, la carpeta anterior.
 $nombreCarpeta = carpeta_tarea_valida((string)($_GET['carpeta'] ?? ''));
-$dir = $nombreCarpeta !== null ? realpath($base . '/' . $nombreCarpeta) : false;
-if ($dir === false || !is_dir($dir)) {
+$dir = $nombreCarpeta !== null ? tarea_carpeta_fisica($nombreCarpeta) : null;
+if ($dir === null) {
     responder_error(404, 'Tarea sin archivos');
 }
 // IDOR: el estudiante solo abre tareas asignadas a él o sus propios envíos.

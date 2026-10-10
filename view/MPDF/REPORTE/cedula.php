@@ -168,7 +168,7 @@ if ($row_matricula = $filas_matricula[0] ?? null) {
         .no-data { text-align: center; font-style: italic; color: #666; }
     </style>
     <div class="header">
-        <img src="../../../'. $row_matricula['emp_logo'].'" alt="Logo">
+        <img src="' . Pdf::imagen((string) $row_matricula['emp_logo']) . '" alt="Logo">
         <h2><u>CÉDULA DE MATRICULA</u></h2>
     </div>
     <h3>Datos de Matricula</h3>

@@ -97,7 +97,7 @@ $html.='
 <table>
     <tr>
         <td align="center">
-         <img style="border: 1.5px solid black; padding: 10px;border-radius: 25px;" width="auto" align="center" src="../../../'.$row1['emp_logo'].'">
+         <img style="border: 1.5px solid black; padding: 10px;border-radius: 25px;" width="auto" align="center" src="' . Pdf::imagen((string) $row1['emp_logo']) . '">
         </td>
     </tr>
 </table>

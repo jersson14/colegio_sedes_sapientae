@@ -40,6 +40,21 @@ final class Pdf
         $archivo === '' ? $mpdf->Output() : $mpdf->Output($archivo, 'I');
     }
 
+    /**
+     * «src» de una imagen subida (el logo de la institución) para mPDF, que la lee del disco. Desde la
+     * Fase 4.6 puede estar en el almacén de la institución: entonces la ruta física. Si no, la ruta
+     * relativa de siempre desde view/MPDF/REPORTE/ (los archivos de antes de la Fase 4).
+     */
+    public static function imagen(string $rutaBd): string
+    {
+        require_once __DIR__ . '/../../core/subidas.php';
+        $fisica = $rutaBd !== '' ? subida_ubicar($rutaBd, dirname($rutaBd)) : null;
+        $almacen = realpath(almacen_raiz());
+        return $fisica !== null && $almacen !== false && str_starts_with($fisica, $almacen . DIRECTORY_SEPARATOR)
+            ? $fisica
+            : '../../../' . $rutaBd;
+    }
+
     /** Sin datos que mostrar: 404 en lugar de un PDF vacío o con avisos de PHP. */
     public static function sinDatos(): never
     {

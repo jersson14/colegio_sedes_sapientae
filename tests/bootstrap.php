@@ -12,6 +12,7 @@ file_put_contents($dir . DIRECTORY_SEPARATOR . 'colegio.env', implode("\n", [
     'DB_HOST=' . (getenv('DB_HOST') ?: 'localhost'),
     'APP_DEBUG=true',
     'LOGIN_LIMITE_DIR=' . $dir . DIRECTORY_SEPARATOR . 'intentos',
+    'ALMACEN_DIR=' . $dir . DIRECTORY_SEPARATOR . 'almacen',
     'VALOR_CON_IGUAL="a=b=c"',
     "COMILLA_SIMPLE='hola mundo'",
     '  CON_ESPACIOS  =  valor  ',

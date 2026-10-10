@@ -45,7 +45,7 @@ composer test
 DB_USER=root DB_PASS= vendor/bin/phpunit --testsuite=Integration
 
 # 3. App contra esa BD (colegio.env de prueba con APP_ENTORNO=prueba y DB_FECHA_PRUEBA)
-COLEGIO_ENV=/ruta/prueba.env php -S 127.0.0.1:8099 -t .
+COLEGIO_ENV=/ruta/prueba.env php -S 127.0.0.1:8099 -t . tests/E2E/router.php   # el router hace de .htaccess (fotos)
 
 # 4. Caracterización y flujos (Chrome instalado; flujos escribe: recargar datos antes de repetir)
 cd tests/E2E && npm ci

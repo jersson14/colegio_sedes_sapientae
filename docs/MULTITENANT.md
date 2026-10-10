@@ -225,6 +225,14 @@ Fuera del docroot, servido por un script que valide sesión **y** que el tenant 
 archivo coincida con el tenant de la sesión. Esto resuelve además H-03 de
 [SEGURIDAD.md](SEGURIDAD.md).
 
+> **Implementado (Fase 4.6):** `storage/tenants/<slug>/<ruta de la BD>` (o `ALMACEN_DIR`). La BD y el JS
+> no cambiaron: la URL de siempre (`controller/alumnos/fotos/IMG….jpg`) la envía el `.htaccess` a
+> `controller/archivo/controlador_ver_archivo.php` cuando no es un archivo físico, y los documentos de
+> tareas siguen saliendo por `controlador_descargar_tarea.php`. Como la sesión está atada al colegio,
+> el archivo se busca solo en el almacén del colegio de la sesión. En modo único también se encuentran
+> los archivos de antes en su carpeta original; para pasar a modo múltiple se trasladan con
+> `php tools/mover_subidas.php --aplicar`.
+
 ### 4.3 Personalización por tenant
 
 Logo, razón social, colores y datos de cabecera de los PDF deben leerse de `empresa`

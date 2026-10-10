@@ -7,6 +7,8 @@
 // MODIFICA la BD: ejecutar después de la caracterización, o recargar DatosPrueba antes de repetir.
 // Uso: BASE_URL=http://127.0.0.1:8099/ node flujos.mjs
 import { chromium } from 'playwright-core';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:8099/';
 const CLAVE = 'Prueba.2026';
@@ -299,6 +301,17 @@ try {
     const conFoto = await pedir(adm.page, ruta('registrar_alumno'), { ...ficha('79999992', { nombrefoto: 'x.png' }), __foto: 'x.png' });
     check(conFoto.texto === '1' && /^controller\/alumnos\/fotos\/.+\.png$/.test((await alumno('79999992'))?.alum_fotoperfil ?? ''),
       'registra con foto: el servidor genera el nombre', `(${conFoto.texto.slice(0, 80)})`);
+    // Fase 4.6: la foto va al almacén de la institución y la misma URL de siempre la sirve con sesión.
+    const rutaFoto = (await alumno('79999992'))?.alum_fotoperfil ?? '';
+    check(rutaFoto !== '' && !existsSync(fileURLToPath(new URL('../../' + rutaFoto, import.meta.url))),
+      'la foto no queda en la carpeta pública de antes', rutaFoto);
+    const verFoto = await adm.page.evaluate(async (u) => {
+      const r = await fetch(u);
+      return { estado: r.status, tipo: r.headers.get('content-type') };
+    }, BASE + rutaFoto);
+    check(verFoto.estado === 200 && verFoto.tipo === 'image/png', 'el panel la ve en su URL de siempre', JSON.stringify(verFoto));
+    const anonimo = await (await fetch(BASE + rutaFoto)).status;
+    check(anonimo === 401, 'sin sesión no se ve (401)', `(${anonimo})`);
 
     // Modificar: idpa apunta a los padres de OTRO alumno (como si el formulario trajera un id ajeno).
     const victima = await alumno(ESC.alumnoMatriculadoDni);

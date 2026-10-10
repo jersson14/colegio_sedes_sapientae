@@ -72,7 +72,7 @@ if ($filas !== []) {
     </style>
     <div class="boleta">
         <div class="header">
-            <img src="../../../'.$emp_logo.'" class="logo">
+            <img src="' . Pdf::imagen((string) $emp_logo) . '" class="logo">
             <h2><u>RECIBO DE PAGO</u></h2>
         </div>
         <hr>

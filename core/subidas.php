@@ -13,9 +13,60 @@ declare(strict_types=1);
  * - Si algo no cuadra se responde 422 ANTES de tocar la base de datos.
  *
  * Requiere core/guard.php (usa responder_error()).
+ *
+ * Almacén por institución (Fase 4.6): lo que se sube se guarda en <ALMACEN_DIR>/<slug>/<ruta de la BD>
+ * (por defecto storage/tenants/, cerrado por .htaccess). La BD sigue guardando la misma ruta relativa
+ * de siempre («controller/alumnos/fotos/IMG….jpg»), y esa URL la sirve controller/archivo/ con sesión.
+ * En modo único también se buscan los archivos subidos antes, en su carpeta original; en modo múltiple
+ * nunca: un colegio no puede leer ni borrar archivos que no estén en su propio almacén.
  */
 
+require_once __DIR__ . '/tenant.php';
+
+use App\Tenancy\ModoTenant;
+use App\Tenancy\ResolverTenant;
+
 const SUBIDA_RAIZ = __DIR__ . '/..';
+
+/** Carpeta física de la institución de la petición. */
+function almacen_raiz(): string
+{
+    $base = config('ALMACEN_DIR') ?: dirname(__DIR__) . '/storage/tenants';
+    return rtrim($base, '/\\') . '/' . tenant_actual()->slug;
+}
+
+/**
+ * Raíces donde puede estar un archivo de esta institución, en orden: su almacén y, solo en modo
+ * único, la ubicación anterior a la Fase 4 (la raíz del proyecto).
+ *
+ * @return list<string>
+ */
+function almacen_raices(): array
+{
+    $raices = [almacen_raiz()];
+    if (ResolverTenant::desdeConfig()->modo() === ModoTenant::Unico) {
+        $raices[] = SUBIDA_RAIZ;
+    }
+    return $raices;
+}
+
+/**
+ * Archivo físico de una ruta guardada en la BD, dentro de $directorio (ambas relativas), o null.
+ * $rutaRelativa viene del cliente o de la BD: no se confía en ella (entidades, «..», enlaces).
+ */
+function subida_ubicar(string $rutaRelativa, string $directorio): ?string
+{
+    $rutaRelativa = html_entity_decode($rutaRelativa, ENT_QUOTES, 'UTF-8');
+    foreach (almacen_raices() as $raiz) {
+        $dir = realpath($raiz . '/' . $directorio);
+        $archivo = realpath($raiz . '/' . $rutaRelativa);
+        if ($dir !== false && $archivo !== false && is_file($archivo)
+            && str_starts_with($archivo, $dir . DIRECTORY_SEPARATOR)) {
+            return $archivo;
+        }
+    }
+    return null;
+}
 
 const IMAGEN_TIPOS = [
     'image/jpeg' => 'jpg',
@@ -72,10 +123,14 @@ function imagen_validada(string $campo = 'foto'): string
     return 'IMG' . date('Ymd-His') . '-' . bin2hex(random_bytes(6)) . '.' . IMAGEN_TIPOS[$mime];
 }
 
-/** Mueve la imagen validada a $directorio (relativo a la raíz del proyecto). */
+/** Mueve la imagen validada a $directorio (la ruta de la BD) dentro del almacén de la institución. */
 function imagen_guardar(string $campo, string $directorio, string $nombre): bool
 {
-    return move_uploaded_file($_FILES[$campo]['tmp_name'], SUBIDA_RAIZ . '/' . $directorio . '/' . $nombre);
+    $destino = almacen_raiz() . '/' . $directorio;
+    if (!is_dir($destino) && !mkdir($destino, 0755, true) && !is_dir($destino)) {
+        return false;
+    }
+    return move_uploaded_file($_FILES[$campo]['tmp_name'], $destino . '/' . $nombre);
 }
 
 /**
@@ -85,15 +140,8 @@ function imagen_guardar(string $campo, string $directorio, string $nombre): bool
  */
 function borrar_archivo_subido(string $rutaRelativa, string $directorio): void
 {
-    $dir = realpath(SUBIDA_RAIZ . '/' . $directorio);
-    $archivo = realpath(SUBIDA_RAIZ . '/' . html_entity_decode($rutaRelativa, ENT_QUOTES, 'UTF-8'));
-    if ($dir === false || $archivo === false || !is_file($archivo)) {
-        return;
-    }
-    if (!str_starts_with($archivo, $dir . DIRECTORY_SEPARATOR)) {
-        return;
-    }
-    if (in_array(strtolower(basename($archivo)), IMAGENES_PROTEGIDAS, true)) {
+    $archivo = subida_ubicar($rutaRelativa, $directorio);
+    if ($archivo === null || in_array(strtolower(basename($archivo)), IMAGENES_PROTEGIDAS, true)) {
         return;
     }
     unlink($archivo);
@@ -158,6 +206,32 @@ function nombre_documento_seguro(string $original, array &$usados): ?string
     }
     $usados[$nombre] = true;
     return $nombre;
+}
+
+/** Ruta de los documentos de tareas tal como la guarda la BD. */
+const TAREAS_RUTA_BD = 'controller/tareas/documentos';
+
+/**
+ * Carpeta física existente de una tarea, o null. $carpeta ya pasó por carpeta_tarea_valida().
+ * Antes de la Fase 4 las rutas de la BD se resolvían relativas a controller/tareas/, así que las
+ * carpetas antiguas están en controller/tareas/controller/tareas/documentos/ (solo modo único).
+ */
+function tarea_carpeta_fisica(string $carpeta): ?string
+{
+    foreach (almacen_raices() as $raiz) {
+        $base = $raiz === SUBIDA_RAIZ ? SUBIDA_RAIZ . '/controller/tareas/' . TAREAS_RUTA_BD : $raiz . '/' . TAREAS_RUTA_BD;
+        $dir = realpath($base . '/' . $carpeta);
+        if ($dir !== false && is_dir($dir)) {
+            return $dir;
+        }
+    }
+    return null;
+}
+
+/** Dónde se crea la carpeta de una tarea nueva: en el almacén de la institución. */
+function tarea_carpeta_nueva(string $carpeta): string
+{
+    return almacen_raiz() . '/' . TAREAS_RUTA_BD . '/' . $carpeta;
 }
 
 /**

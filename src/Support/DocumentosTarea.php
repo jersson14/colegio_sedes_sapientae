@@ -9,9 +9,9 @@ use RuntimeException;
 /**
  * AlmacenDocumentos sobre core/subidas.php para las tareas.
  *
- * Las rutas de la BD («controller/tareas/documentos/<carpeta>») siempre se resolvieron relativas a
- * controller/tareas/, así que la carpeta física es controller/tareas/controller/tareas/documentos/
- * (cerrada por .htaccess; se descarga con controlador_descargar_tarea.php). Se conserva.
+ * La BD guarda «controller/tareas/documentos/<carpeta>». Las carpetas nuevas van al almacén de la
+ * institución (Fase 4.6); las anteriores siguen donde estaban (tarea_carpeta_fisica()). Se descargan
+ * siempre por controller/tareas/controlador_descargar_tarea.php.
  */
 final class DocumentosTarea implements AlmacenDocumentos
 {
@@ -33,7 +33,7 @@ final class DocumentosTarea implements AlmacenDocumentos
         // Único aunque dos entregas lleguen en el mismo segundo (antes compartían carpeta y una
         // reentrega borraba los archivos de otro alumno).
         $carpeta = $prefijo . time() . '_' . bin2hex(random_bytes(4));
-        $fisica = self::fisica($carpeta);
+        $fisica = tarea_carpeta_nueva($carpeta);
         if (!mkdir($fisica, 0755, true)) {
             throw new RuntimeException("No se pudo crear la carpeta $carpeta");
         }
@@ -49,19 +49,15 @@ final class DocumentosTarea implements AlmacenDocumentos
     public function borrar(string $ruta): void
     {
         $carpeta = carpeta_tarea_valida($ruta);
-        if ($carpeta === null || !is_dir(self::fisica($carpeta))) {
+        $fisica = $carpeta !== null ? tarea_carpeta_fisica($carpeta) : null;
+        if ($fisica === null) {
             return;
         }
-        foreach (glob(self::fisica($carpeta) . '/*') ?: [] as $archivo) {
+        foreach (glob($fisica . '/*') ?: [] as $archivo) {
             if (is_file($archivo)) {
                 unlink($archivo);
             }
         }
-        @rmdir(self::fisica($carpeta));
-    }
-
-    private static function fisica(string $carpeta): string
-    {
-        return __DIR__ . '/../../controller/tareas/' . self::RUTA_BD . $carpeta;
+        @rmdir($fisica);
     }
 }

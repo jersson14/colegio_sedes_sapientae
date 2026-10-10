@@ -76,7 +76,7 @@ if ($row1 = $filas[0]) {
         th { background-color: #f2f2f2; }
     </style>
     <div class="header">
-        <img src="../../../'.$row1['emp_logo'].'" alt="Logo">
+        <img src="' . Pdf::imagen((string) $row1['emp_logo']) . '" alt="Logo">
         <h2><u>KARDEX DE PAGOS</u></h2>
     </div>
     <table>

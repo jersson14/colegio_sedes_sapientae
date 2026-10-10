@@ -15,6 +15,10 @@ RedirectMatch 404 "/\.(?!well-known/)"
     RewriteRule ^(vendor|node_modules|tests|database|storage|src|tools|config)(/|$) - [R=404,L]
     # En hosting compartido el proyecto ES public_html: las herramientas de consola y Phinx tampoco se sirven.
     RewriteRule ^phinx(_maestro)?\.php$ - [R=404,L]
+    # Fase 4.6: las fotos subidas están en el almacén de cada institución, no en estas carpetas. Si la
+    # URL no es un archivo real (los de antes de la Fase 4 y VACIO.png sí lo son), se sirve con sesión.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^controller/((alumnos|docentes|personal_administrativo|comunicados)/fotos|(empleado|empresa)/FOTOS)/[^/]+$ controller/archivo/controlador_ver_archivo.php?ruta=$0 [L,QSA]
 </IfModule>
 
 # Dumps, documentación interna, manuales y metadatos de dependencias.

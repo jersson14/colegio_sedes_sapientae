@@ -133,7 +133,7 @@ if ($row1 = $filas_aula[0] ?? null) {
         th { background-color: #f2f2f2; }
     </style>
     <div class="header">
-        <img src="../../../' . $row1['emp_logo'] . '" alt="Logo">
+        <img src="' . Pdf::imagen((string) $row1['emp_logo']) . '" alt="Logo">
         <h2><u>HORARIOS POR AULA</u></h2>
     </div>
     <h3>Datos de Horaio</h3>
