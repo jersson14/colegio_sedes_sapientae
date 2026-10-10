@@ -171,7 +171,66 @@ comercial_comprobar(comercial_pedir('controller/exportacion/controlador_exportar
 comercial_condiciones_a($maestro, 'SUSPENDIDO', null, null, '40');
 comercial_comprobar(comercial_pedir('index.php', "$tmp/fuera.txt")['codigo'] === 404, 'pasada la ventana de exportación, la institución ya no responde (404)');
 
+// 4B.5: cobro emitido por el cron, aviso en el panel, MOROSO pasada la gracia y vuelta a ACTIVO al pagar.
+$herramienta = static function (string ...$argumentos): string {
+    $proceso = proc_open(array_merge([PHP_BINARY], $argumentos), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $t, dirname(__DIR__, 2));
+    $salida = is_resource($proceso) ? (string) stream_get_contents($t[1]) . (string) stream_get_contents($t[2]) : '';
+    if (is_resource($proceso)) {
+        proc_close($proceso);
+    }
+    return $salida;
+};
+comercial_condiciones_a($maestro, 'ACTIVO', null, null);
+$maestro->exec("UPDATE planes SET precio_mensual = 50.00, precio_por_alumno = 1.50 WHERE codigo = 'E2E_COMERCIAL'");
+$maestro->exec("DELETE c FROM consumos c JOIN tenants t ON t.id = c.tenant_id WHERE t.slug = 'colegio-a'");
+$maestro->exec("INSERT INTO consumos (tenant_id, fecha, alumnos, usuarios, almacenamiento_mb) SELECT id, '2031-05-01', 20, 5, 1 FROM tenants WHERE slug = 'colegio-a'");
+$emitidos = $herramienta('tools/facturacion.php', '--fecha=2031-05-02');
+$cobro = $maestro->query("SELECT f.numero, f.monto, f.vencimiento FROM facturas f JOIN tenants t ON t.id = f.tenant_id
+    WHERE t.slug = 'colegio-a' AND f.periodo_inicio = '2031-05-01'")->fetch(PDO::FETCH_ASSOC);
+comercial_comprobar(
+    is_array($cobro) && $cobro['monto'] === '80.00' && str_contains($emitidos, (string) $cobro['numero']),
+    'el cron emite el cobro del periodo con el consumo (50 + 1,50 × 20 alumnos)',
+    $emitidos
+);
+$numero = is_array($cobro) ? (string) $cobro['numero'] : '';
+// El aviso se ve con la fecha real: se adelanta el vencimiento para que caiga dentro de la semana.
+$maestro->prepare('UPDATE facturas SET vencimiento = CURDATE() + INTERVAL 3 DAY WHERE numero = ?')->execute([$numero]);
+comercial_entrar('usuario9', $g);
+comercial_comprobar(str_contains(comercial_pedir('view/index.php', $g)['cuerpo'], "id=\"aviso_cobro\""), 'el administrador del colegio ve el próximo pago');
+$maestro->prepare("UPDATE facturas SET vencimiento = '2031-05-12' WHERE numero = ?")->execute([$numero]);
+$morosos = $herramienta('tools/facturacion.php', '--fecha=2031-05-18');
+comercial_comprobar(
+    str_contains($morosos, 'colegio-a') && (string) $maestro->query("SELECT estado FROM tenants WHERE slug = 'colegio-a'")->fetchColumn() === 'MOROSO',
+    'pasada la gracia (vencía el 12, gracia de 5 días), el cron lo pasa a MOROSO',
+    $morosos
+);
+
+$cuenta = 'cobros-' . getmypid();
+$claveCuenta = preg_match('/Contraseña:\s+(\S+)/', $herramienta('tools/crear_superadmin.php', "--usuario=$cuenta", '--nombre=Cobros E2E'), $m) === 1 ? $m[1] : '';
+$panel = "$tmp/panel.txt";
+$panelPedir = static function (string $host, ?array $post) use ($panel, $puerto): string {
+    $c = curl_init("http://$host:$puerto/superadmin/");
+    curl_setopt_array($c, [CURLOPT_RETURNTRANSFER => true, CURLOPT_RESOLVE => ["$host:$puerto:127.0.0.1"], CURLOPT_COOKIEFILE => $panel,
+        CURLOPT_COOKIEJAR => $panel, CURLOPT_FOLLOWLOCATION => true, CURLOPT_TIMEOUT => 60]);
+    if ($post !== null) {
+        curl_setopt($c, CURLOPT_POSTFIELDS, http_build_query($post));
+    }
+    return (string) curl_exec($c);
+};
+$token = static fn (string $html): string => preg_match('/name="csrf" value="([^"]+)"/', $html, $m) === 1 ? $m[1] : '';
+$html = $panelPedir('panel.prueba.test', null);
+$html = $panelPedir('panel.prueba.test', ['csrf' => $token($html), 'accion' => 'entrar', 'usuario' => $cuenta, 'clave' => $claveCuenta]);
+comercial_comprobar(str_contains($html, "data-cobro=\"$numero\""), 'el cobro aparece en el panel de superadministrador');
+$html = $panelPedir('panel.prueba.test', ['csrf' => $token($html), 'accion' => 'cobro_pagado', 'numero' => $numero, 'medio' => 'Transferencia', 'referencia' => 'OP-E2E']);
+comercial_comprobar(
+    str_contains($html, 'vuelve a ACTIVO') && (string) $maestro->query("SELECT estado FROM tenants WHERE slug = 'colegio-a'")->fetchColumn() === 'ACTIVO',
+    'al registrar el pago vuelve a ACTIVO y queda auditado'
+);
+$maestro->prepare('DELETE FROM superadmins WHERE usuario = ?')->execute([$cuenta]);
+
 // Se deja como estaba.
+$maestro->exec("DELETE f FROM facturas f JOIN tenants t ON t.id = f.tenant_id WHERE t.slug = 'colegio-a'");
+$maestro->exec("DELETE c FROM consumos c JOIN tenants t ON t.id = c.tenant_id WHERE t.slug = 'colegio-a' AND c.fecha > '2030-01-01'");
 $maestro->exec("DELETE s FROM suscripciones s JOIN tenants t ON t.id = s.tenant_id WHERE t.slug = 'colegio-a'");
 $maestro->exec("UPDATE tenants SET estado = 'ACTIVO', prueba_hasta = NULL, suspendido_desde = NULL WHERE slug = 'colegio-a'");
 $maestro->exec("DELETE FROM planes WHERE codigo = 'E2E_COMERCIAL'");

@@ -266,7 +266,7 @@ jobs:
           done
 
       - name: Pruebas de integración de la BD maestra
-        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter 'TenantsMaestroTest|AltaInstitucionTest|SuperadminTest|ComercialTest'
+        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter 'TenantsMaestroTest|AltaInstitucionTest|SuperadminTest|ComercialTest|FacturacionTest'
 
       - name: Alta de un colegio con la herramienta (tools/alta_tenant.php)
         env:
@@ -289,7 +289,9 @@ jobs:
           for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
           php tests/E2E/aislamiento.php
 
-      - name: Planes, estados y exportación (tests/E2E/comercial.php)
+      - name: Planes, estados, exportación y cobros (tests/E2E/comercial.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
         run: php tests/E2E/comercial.php
 
       - name: Panel de superadministrador (tests/E2E/superadmin.php)

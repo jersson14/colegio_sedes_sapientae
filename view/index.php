@@ -825,7 +825,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <b>Versión de prueba</b><?= $avisoComercial->pruebaHasta !== null ? ' hasta el ' . marca_html($avisoComercial->pruebaHasta->format('d/m/Y')) : '' ?>.
           Los reportes PDF llevan marca de agua.
         </div>
-      <?php } elseif (!$avisoComercial->permiteAltas()) { ?>
+      <?php }
+      $avisoCobro = ($_SESSION['S_ROL'] ?? '') === 'ADMINISTRADOR' ? comercial_aviso_cobro() : null;
+      if ($avisoCobro !== null) { ?>
+        <div class="alert alert-<?= $avisoCobro['vencido'] ? 'danger' : 'secondary' ?> m-2 mb-0" id="aviso_cobro" role="status">
+          <b><?= $avisoCobro['vencido'] ? 'Pago vencido' : 'Próximo pago' ?>:</b> cobro <?= marca_html($avisoCobro['numero']) ?> por
+          <?= marca_html($avisoCobro['moneda'] . ' ' . $avisoCobro['monto']) ?>, vence el <?= marca_html(date('d/m/Y', (int) strtotime($avisoCobro['vencimiento']))) ?>.
+        </div>
+      <?php }
+      if (!$avisoComercial->esPrueba() && !$avisoComercial->permiteAltas()) { ?>
         <div class="alert alert-warning m-2 mb-0" id="aviso_moroso" role="status">
           <b>Hay un pago pendiente.</b> Puedes consultar e imprimir, pero no registrar altas ni matrículas hasta regularizarlo.
         </div>

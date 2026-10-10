@@ -28,13 +28,15 @@ final class PanelInstituciones
 
     /**
      * @return list<array{slug: string, razon_social: string, tipo: string, estado: string, base_datos: string,
-     *     dominio: ?string, fecha_alta: string, prueba_hasta: ?string, plan: ?string, alumnos: ?int, usuarios: ?int,
+     *     dominio: ?string, fecha_alta: string, prueba_hasta: ?string, plan: ?string, max_alumnos: ?int, max_usuarios: ?int,
+     *     alumnos: ?int, usuarios: ?int,
      *     migracion: ?string, error: ?string}>
      */
     public function listar(): array
     {
         $filas = $this->maestro->query(
-            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, p.codigo AS plan
+            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, p.codigo AS plan,
+                    p.max_alumnos, p.max_usuarios
                FROM tenants t
                LEFT JOIN suscripciones s ON s.tenant_id = t.id AND s.vigente = 1
                LEFT JOIN planes p ON p.id = s.plan_id
@@ -62,6 +64,8 @@ final class PanelInstituciones
                 'fecha_alta' => (string) $f['fecha_alta'],
                 'prueba_hasta' => $f['prueba_hasta'] !== null ? (string) $f['prueba_hasta'] : null,
                 'plan' => $f['plan'] !== null ? (string) $f['plan'] : null,
+                'max_alumnos' => $f['max_alumnos'] !== null ? (int) $f['max_alumnos'] : null,
+                'max_usuarios' => $f['max_usuarios'] !== null ? (int) $f['max_usuarios'] : null,
             ] + $cifras;
         }
         return $lista;

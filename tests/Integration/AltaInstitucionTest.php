@@ -45,7 +45,7 @@ final class AltaInstitucionTest extends TestCase
 
     private function limpiar(): void
     {
-        foreach (['facturas', 'suscripciones'] as $dependiente) {
+        foreach (['facturas', 'consumos', 'suscripciones'] as $dependiente) {
             $this->maestro->exec("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug LIKE 'prueba-alta-%'");
         }
         $this->maestro->exec("DELETE FROM tenants WHERE slug LIKE 'prueba-alta-%'");

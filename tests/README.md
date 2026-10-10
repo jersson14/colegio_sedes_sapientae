@@ -80,7 +80,9 @@ de los 269 endpoints con la sesión de A presentada en B (GET y POST): todos deb
 
 `tests/E2E/comercial.php` (mismo trabajo, sobre colegio-a): el límite de alumnos y el de espacio frenan
 con 402, MOROSO consulta e imprime pero no da altas, PRUEBA avisa, SUSPENDIDO solo deja exportar (zip con
-todos los alumnos y sin contraseñas, auditado) y pasada la ventana responde 404.
+todos los alumnos y sin contraseñas, auditado) y pasada la ventana responde 404. También el ciclo de cobro:
+`tools/facturacion.php` emite el cobro con el consumo, el panel del colegio avisa, pasada la gracia pasa a
+MOROSO y el pago registrado en el panel de superadministrador lo devuelve a ACTIVO.
 
 `tests/E2E/superadmin.php` (mismo trabajo, con `SUPERADMIN_HOST=panel.prueba.test`) recorre el panel de
 superadministrador: solo existe en su host, CSRF, contraseña mala, la sesión de un colegio no lo abre,

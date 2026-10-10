@@ -167,7 +167,7 @@ $bloqueada = panel_pedir(PANEL, 'superadmin/', $h, ['csrf' => panel_csrf($pagina
 panel_comprobar(str_contains($bloqueada['cuerpo'], 'Demasiados intentos') && !str_contains($bloqueada['cuerpo'], 'tabla_instituciones'), 'cinco fallos bloquean la cuenta un rato');
 
 // Limpieza: la institución de prueba, sus cuentas y su base.
-foreach (['facturas', 'suscripciones'] as $dependiente) {
+foreach (['facturas', 'consumos', 'suscripciones'] as $dependiente) {
     $maestro->prepare("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug = ?")->execute([$slugNuevo]);
 }
 $maestro->prepare('DELETE FROM tenants WHERE slug = ?')->execute([$slugNuevo]);

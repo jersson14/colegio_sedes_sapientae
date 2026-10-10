@@ -37,6 +37,19 @@ function comercial_consumo(): Consumo
     return new Consumo(Conexion::crear(), almacen_raiz());
 }
 
+/**
+ * El cobro pendiente que conviene recordar en el panel (vence en una semana o ya venció), o null.
+ *
+ * @return array{numero: string, monto: string, moneda: string, vencimiento: string, vencido: bool}|null
+ */
+function comercial_aviso_cobro(): ?array
+{
+    if (ResolverTenant::desdeConfig()->modo() === ModoTenant::Unico) {
+        return null;
+    }
+    return (new \App\Comercial\Facturacion(Conexion::maestro()))->aviso(tenant_actual()->slug, new DateTimeImmutable('today'));
+}
+
 /** Lo llama core/guard.php con el script pedido: corta con 402/403 si el estado o el plan no lo permiten. */
 function comercial_verificar_peticion(string $script): void
 {

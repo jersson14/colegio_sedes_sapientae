@@ -462,6 +462,10 @@ es manual.
    Planes: se crean en el panel (límites de alumnos, usuarios y MB; precio mensual y/o por alumno). Un
    colegio nuevo empieza con el plan PRUEBA (50 alumnos, 15 usuarios, 200 MB, 30 días); los límites se
    aplican en el servidor. En modo único no hay restricciones comerciales.
+   Cobros: `0 6 * * * php /var/www/colegio/tools/facturacion.php` emite el cobro de cada periodo (tarifa plana
+   y/o por alumno, con el consumo que mide `tareas_programadas.php`) y pasa a MOROSO a quien no paga pasados
+   `FACTURA_DIAS_PAGO` + `FACTURA_DIAS_GRACIA`. El pago se registra en el panel y lo devuelve a ACTIVO.
+   **Son cobros internos:** la factura o boleta electrónica válida ante SUNAT se emite aparte con un OSE/PSE.
 10. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
    --aplicar` (lleva al almacén lo subido antes de la Fase 4); después `mysqldump` de su base, importarla
    como `sge_<slug>`, registrar la fila, migrar y copiar su `storage/tenants/<slug>/` al VPS con el slug

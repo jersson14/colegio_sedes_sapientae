@@ -14,6 +14,7 @@ require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/autoload.php';
 require_once __DIR__ . '/../core/limite_login.php';
 
+use App\Comercial\Facturacion;
 use App\Comercial\Plan;
 use App\Comercial\Recurso;
 use App\Core\Conexion;
@@ -155,6 +156,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $panel->guardarPlan($plan, $actor, $ip);
                 sa_aviso('success', "Plan {$plan->codigo} guardado.");
+            } elseif ($accion === 'cobro_pagado' || $accion === 'cobro_anulado') {
+                $facturacion = new Facturacion($maestro, (int) config('FACTURA_DIAS_PAGO', '10'), (int) config('FACTURA_DIAS_GRACIA', '5'));
+                $numero = (string) ($_POST['numero'] ?? '');
+                $hoy = new DateTimeImmutable('today');
+                $resultado = $accion === 'cobro_pagado'
+                    ? $facturacion->registrarPago($numero, trim((string) ($_POST['medio'] ?? '')), trim((string) ($_POST['referencia'] ?? '')), $hoy)
+                    : $facturacion->anular($numero, $hoy);
+                $auditoria->registrar(
+                    $actor,
+                    $accion === 'cobro_pagado' ? 'COBRO_PAGADO' : 'COBRO_ANULADO',
+                    $resultado['slug'],
+                    $numero . ($resultado['reactivado'] ? '; MOROSO → ACTIVO' : ''),
+                    $ip
+                );
+                sa_aviso('success', "Cobro $numero " . ($accion === 'cobro_pagado' ? 'pagado' : 'anulado') . '.'
+                    . ($resultado['reactivado'] ? " «{$resultado['slug']}» vuelve a ACTIVO." : ''));
             } elseif ($accion === 'asignar_plan') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $hasta = trim((string) ($_POST['prueba_hasta'] ?? ''));
@@ -193,6 +210,7 @@ unset($_SESSION['aviso']);
 $csrf = $e((string) $_SESSION['csrf']);
 $panel = $actor !== null ? new PanelInstituciones($maestro, static fn (string $base): PDO => Conexion::administracion($base), $auditoria) : null;
 $planes = $panel?->planes() ?? [];
+$cobros = $panel !== null ? (new Facturacion($maestro))->recientes() : [];
 $dominio = (string) config('TENANT_DOMINIO', '');
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -245,7 +263,9 @@ header('Content-Type: text/html; charset=utf-8');
               <?php if ($t['error'] !== null) { ?>
                 <td colspan="3" class="text-danger"><?= $e($t['error']) ?></td>
               <?php } else { ?>
-                <td><?= (int) $t['alumnos'] ?></td><td><?= (int) $t['usuarios'] ?></td><td><small><?= $e($t['migracion']) ?></small></td>
+                <td><?= (int) $t['alumnos'] ?><?= $t['max_alumnos'] !== null ? ' / ' . (int) $t['max_alumnos'] : '' ?></td>
+                <td><?= (int) $t['usuarios'] ?><?= $t['max_usuarios'] !== null ? ' / ' . (int) $t['max_usuarios'] : '' ?></td>
+                <td><small><?= $e($t['migracion']) ?></small></td>
               <?php } ?>
               <td><small><?= $e($t['fecha_alta']) ?></small></td>
               <td>
@@ -314,6 +334,37 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
         <button class="btn btn-success" type="submit">Guardar plan</button> <small class="text-muted">Con un código existente, lo modifica.</small>
       </form>
+    </div>
+
+    <div class="card"><div class="card-header"><b>Cobros</b> <small class="text-muted">— los emite cada día tools/facturacion.php; son
+      cobros internos, no comprobantes SUNAT (esos se emiten con un OSE/PSE)</small></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm mb-0" id="tabla_cobros">
+          <thead><tr><th>Número</th><th>Institución</th><th>Periodo</th><th>Vence</th><th>Monto</th><th>Detalle</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+          <?php foreach ($cobros as $c) { ?>
+            <tr data-cobro="<?= $e($c['numero']) ?>">
+              <td><?= $e($c['numero']) ?></td><td><?= $e($c['slug']) ?></td>
+              <td><small><?= $e($c['periodo_inicio']) ?> – <?= $e($c['periodo_fin']) ?></small></td><td><?= $e($c['vencimiento']) ?></td>
+              <td><?= $e($c['moneda']) ?> <?= $e($c['monto']) ?></td><td><small><?= $e($c['detalle']) ?></small></td>
+              <td><?= $e($c['estado']) ?><?= $c['estado'] === 'PAGADA' ? '<br><small>' . $e($c['pagada_en']) . ' · ' . $e($c['medio_pago']) . ' ' . $e($c['referencia_pago']) . '</small>' : '' ?></td>
+              <td>
+                <?php if ($c['estado'] === 'PENDIENTE') { ?>
+                  <form method="post" class="form-inline">
+                    <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                    <input type="hidden" name="numero" value="<?= $e($c['numero']) ?>">
+                    <input name="medio" class="form-control form-control-sm mr-1" placeholder="Medio (transferencia…)" maxlength="40" style="width:150px">
+                    <input name="referencia" class="form-control form-control-sm mr-1" placeholder="N.º de operación" maxlength="100" style="width:130px">
+                    <button class="btn btn-sm btn-success mr-1" type="submit" name="accion" value="cobro_pagado">Pagado</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="accion" value="cobro_anulado">Anular</button>
+                  </form>
+                <?php } ?>
+              </td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="card"><div class="card-header"><b>Dar de alta una institución</b> <small class="text-muted">— crea la base, la migra y crea su administrador (unos segundos)</small></div>

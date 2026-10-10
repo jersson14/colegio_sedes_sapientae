@@ -38,7 +38,7 @@ $pdo = static fn (string $bd): PDO => new PDO(
 );
 $maestro = $pdo($entorno('MAESTRO_DB_NAME'));
 // Lo que cuelga de cada colegio (planes, facturas) antes que el colegio: las claves foráneas lo exigen.
-foreach (['facturas', 'suscripciones'] as $dependiente) {
+foreach (['facturas', 'consumos', 'suscripciones'] as $dependiente) {
     $maestro->exec("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug IN ('colegio-a', 'colegio-b', 'suspendido')");
 }
 $maestro->exec("DELETE FROM tenants WHERE slug IN ('colegio-a', 'colegio-b', 'suspendido')");
