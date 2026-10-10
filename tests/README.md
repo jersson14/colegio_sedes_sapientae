@@ -89,6 +89,10 @@ superadministrador: solo existe en su host, CSRF, contraseña mala, la sesión d
 cifras de cada colegio, suspender/reactivar (404/200), alta desde el panel con login del administrador
 nuevo, auditoría, cuenta desactivada y bloqueo tras cinco fallos.
 
+`tests/E2E/baja.php` da de baja un colegio creado para la prueba con las herramientas reales: no se borra
+activo, ni en la retención, ni sin exportación final, ni sin confirmar el slug; después desaparecen su base,
+sus archivos y sus respaldos (no los de otro colegio con nombre parecido) y queda la constancia auditada.
+
 El mismo trabajo del CI ensaya además el alta de un colegio (`tools/alta_tenant.php`) y el ciclo de
 respaldo: respaldar B, borrar sus alumnos, restaurar con `--activar` y comprobar que vuelven; un
 respaldo alterado no se restaura.

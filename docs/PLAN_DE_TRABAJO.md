@@ -13,7 +13,7 @@
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
 | 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
 | 4 — Multi-tenant | ✅ Completa: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hitos 4.1–4.10 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando; nombre, logo, color y página pública de cada colegio. copias de seguridad por colegio con restauración verificada; panel de superadministrador con auditoría. Siguiente: Fase 4B (empaquetado comercial) |
-| 4B — Empaquetado comercial | 🔄 En curso: hechos 4B.1 (planes y suscripciones en la maestra, editables en el panel), 4B.2 (límites de alumnos, usuarios y espacio aplicados en el servidor), 4B.3 (PRUEBA con aviso y marca de agua; MOROSO sin altas; SUSPENDIDO solo exporta, 30 días) 4B.4 (consumo diario), 4B.5 (cobros, MOROSO automático tras la gracia, pago que reactiva) y 4B.7 (exportación en CSV + archivos). Los precios los decide el responsable: el sistema no trae ninguno |
+| 4B — Empaquetado comercial | 🔄 En curso: hechos 4B.1 (planes y suscripciones en la maestra, editables en el panel), 4B.2 (límites de alumnos, usuarios y espacio aplicados en el servidor), 4B.3 (PRUEBA con aviso y marca de agua; MOROSO sin altas; SUSPENDIDO solo exporta, 30 días) 4B.4 (consumo diario), 4B.5 (cobros, MOROSO automático tras la gracia, pago que reactiva) 4B.7 (exportación en CSV + archivos) y 4B.8 (baja con borrado verificable). Los precios los decide el responsable: el sistema no trae ninguno |
 | 5 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
@@ -454,7 +454,7 @@ lo que consumen, ni saber quién está al día.
 | 4B.5 ✅ | Facturación: emisión, registro de pagos y aviso de vencimiento (`tools/facturacion.php` diario; cobros internos — el comprobante SUNAT se emite con un OSE/PSE) |
 | 4B.6 | Flujo de alta comercial: demo con datos de ejemplo → conversión a cliente |
 | 4B.7 ✅ | Exportación completa de los datos de un tenant (portabilidad; exigible por Ley 29733): «Empresa → Exportar datos», un CSV por tabla + archivos, sin contraseñas |
-| 4B.8 | Baja de tenant: exportación, retención pactada y borrado verificable |
+| 4B.8 ✅ | Baja de tenant: exportación, retención pactada y borrado verificable (`tools/baja_tenant.php`: exportación final auditada; borra base, archivos y respaldos solo cancelada, vencida la retención y confirmando el slug; constancia con SHA-256) |
 | 4B.9 | Runbook de provisión de instancia dedicada (P2): VPS, despliegue, DNS, TLS, backup |
 | 4B.10 | Documentación de operación y manual de la institución |
 

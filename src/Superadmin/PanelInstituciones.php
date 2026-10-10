@@ -23,6 +23,7 @@ final class PanelInstituciones
         private readonly \Closure $conectar,
         private readonly Auditoria $auditoria,
         private readonly ?AltaInstitucion $alta = null,
+        private readonly int $diasRetencion = 90,
     ) {
     }
 
@@ -35,7 +36,8 @@ final class PanelInstituciones
     public function listar(): array
     {
         $filas = $this->maestro->query(
-            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, p.codigo AS plan,
+            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, t.retencion_hasta, t.borrado_en,
+                    p.codigo AS plan,
                     p.max_alumnos, p.max_usuarios
                FROM tenants t
                LEFT JOIN suscripciones s ON s.tenant_id = t.id AND s.vigente = 1
@@ -45,14 +47,20 @@ final class PanelInstituciones
         $lista = [];
         foreach ($filas as $f) {
             $cifras = ['alumnos' => null, 'usuarios' => null, 'migracion' => null, 'error' => null];
-            try {
-                $pdo = ($this->conectar)((string) $f['base_datos']);
-                $cifras['alumnos'] = (int) $pdo->query("SELECT COUNT(*) FROM alumnos WHERE alum_estatus = 'SI'")->fetchColumn();
-                $cifras['usuarios'] = (int) $pdo->query("SELECT COUNT(*) FROM usuario WHERE usu_estatus = 'ACTIVO'")->fetchColumn();
-                $cifras['migracion'] = (string) $pdo->query('SELECT MAX(version) FROM phinxlog')->fetchColumn();
-            } catch (\PDOException) {
-                // Una base que no responde no debe tumbar el panel: se marca y se sigue.
-                $cifras['error'] = 'La base no responde';
+            if ($f['borrado_en'] !== null) {
+                $cifras['error'] = "Datos borrados el {$f['borrado_en']}";
+            } elseif ($f['estado'] === 'CANCELADO' && $f['retencion_hasta'] !== null) {
+                $cifras['error'] = "Cancelada: datos conservados hasta el {$f['retencion_hasta']}";
+            } else {
+                try {
+                    $pdo = ($this->conectar)((string) $f['base_datos']);
+                    $cifras['alumnos'] = (int) $pdo->query("SELECT COUNT(*) FROM alumnos WHERE alum_estatus = 'SI'")->fetchColumn();
+                    $cifras['usuarios'] = (int) $pdo->query("SELECT COUNT(*) FROM usuario WHERE usu_estatus = 'ACTIVO'")->fetchColumn();
+                    $cifras['migracion'] = (string) $pdo->query('SELECT MAX(version) FROM phinxlog')->fetchColumn();
+                } catch (\PDOException) {
+                    // Una base que no responde no debe tumbar el panel: se marca y se sigue.
+                    $cifras['error'] = 'La base no responde';
+                }
             }
             $lista[] = [
                 'slug' => (string) $f['slug'],
@@ -81,13 +89,16 @@ final class PanelInstituciones
         }
         // Las fechas antes que el estado: MySQL evalúa el SET en orden y debe comparar con el estado anterior.
         // suspendido_desde abre la ventana de exportación (Fase 4B.3); salir de SUSPENDIDO la cierra.
+        // retencion_hasta (Fase 4B.8): hasta cuándo se conservan los datos de un colegio cancelado; después
+        // tools/baja_tenant.php los puede borrar. Uno ya borrado no cambia de estado.
         $this->maestro->prepare(
             "UPDATE tenants SET
                 suspendido_desde = CASE WHEN ? = 'SUSPENDIDO' THEN IF(estado = 'SUSPENDIDO', suspendido_desde, NOW()) ELSE NULL END,
                 cancelado_en = CASE WHEN ? = 'CANCELADO' THEN IF(estado = 'CANCELADO', cancelado_en, NOW()) ELSE NULL END,
+                retencion_hasta = CASE WHEN ? = 'CANCELADO' THEN IF(estado = 'CANCELADO', retencion_hasta, CURDATE() + INTERVAL ? DAY) ELSE NULL END,
                 estado = ?
-              WHERE slug = ?"
-        )->execute([$estado->value, $estado->value, $estado->value, $slug]);
+              WHERE slug = ? AND borrado_en IS NULL"
+        )->execute([$estado->value, $estado->value, $estado->value, $this->diasRetencion, $estado->value, $slug]);
         $this->auditoria->registrar($actor, 'ESTADO', $slug, "$antes → {$estado->value}", $ip);
         return true;
     }

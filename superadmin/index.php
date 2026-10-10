@@ -127,7 +127,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             static fn (string $base): PDO => Conexion::administracion($base),
             static fn (string $base): bool => MigradorPhinx::ejecutar('migrate', $base),
         );
-        $panel = new PanelInstituciones($maestro, static fn (string $base): PDO => Conexion::administracion($base), $auditoria, $alta);
+        $panel = new PanelInstituciones(
+            $maestro,
+            static fn (string $base): PDO => Conexion::administracion($base),
+            $auditoria,
+            $alta,
+            (int) config('RETENCION_DIAS_BAJA', '90')
+        );
         try {
             if ($accion === 'estado') {
                 $estado = EstadoTenant::tryFrom((string) ($_POST['estado'] ?? '')) ?? throw new InvalidArgumentException('Estado inválido.');

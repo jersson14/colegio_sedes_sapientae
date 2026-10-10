@@ -26,7 +26,8 @@ final class PdoRepositorioTenants implements RepositorioTenants
 
     public function todos(): array
     {
-        $filas = $this->maestro->query('SELECT ' . self::COLUMNAS . ' FROM tenants ORDER BY slug')->fetchAll(PDO::FETCH_ASSOC);
+        // Sin las ya borradas (Fase 4B.8): su fila se conserva, pero su base no existe y nada debe recorrerla.
+        $filas = $this->maestro->query('SELECT ' . self::COLUMNAS . ' FROM tenants WHERE borrado_en IS NULL ORDER BY slug')->fetchAll(PDO::FETCH_ASSOC);
         return array_map(self::tenant(...), $filas);
     }
 
