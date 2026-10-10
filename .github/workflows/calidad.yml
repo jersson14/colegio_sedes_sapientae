@@ -306,7 +306,7 @@ jobs:
           mysql -h 127.0.0.1 -uroot -proot -e "SET FOREIGN_KEY_CHECKS=0; DELETE FROM \`$DB_NAME_B\`.alumnos"
           respaldo_tenant restaurar --desde="$respaldo" --activar
           nueva=$(mysql -h 127.0.0.1 -uroot -proot -N -e "SELECT base_datos FROM \`$MAESTRO_DB_NAME\`.tenants WHERE slug='colegio-b'")
-          [ "$nueva" != "$DB_NAME_B" ] && [ "$(contar "$nueva")" = "$antes" ] || { echo "::error title=Restauración::$nueva tiene $(contar "$nueva") alumnos, se esperaban $antes"; exit 1; }
+          [ "$nueva" != "$DB_NAME_B" ] && [ "$(contar "$nueva")" = "$antes" ] || { echo "::error title=Restauración::$nueva tiene $(contar "$nueva") alumnos, se esperaban $antes. $(tail -c 700 "$registro" | tr '\n' ' ')"; exit 1; }
           # Un respaldo alterado no se restaura.
           echo "-- alterado" >> "$respaldo/base.sql"
           if php tools/respaldo_tenant.php restaurar --desde="$respaldo" >> "$registro" 2>&1; then echo "::error title=Respaldo::se restauró un respaldo alterado"; exit 1; fi
