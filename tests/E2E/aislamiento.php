@@ -173,16 +173,26 @@ foreach ($endpoints as $ep) {
         $filtrados[] = "$ep ({$get['codigo']}/{$post['codigo']})";
     }
 }
-comprobar(count($endpoints) > 250 && $filtrados === [], 'ningún endpoint (' . count($endpoints) . ') acepta en B la sesión de A, ni por GET ni por POST',
-    implode(', ', array_slice($filtrados, 0, 5)));
+comprobar(
+    count($endpoints) > 250 && $filtrados === [],
+    'ningún endpoint (' . count($endpoints) . ') acepta en B la sesión de A, ni por GET ni por POST',
+    implode(', ', array_slice($filtrados, 0, 5))
+);
 
 // Formulario público: cada solicitud queda en la base del colegio cuya página la envió.
 $marcaSolicitud = 'Solicitud B ' . getmypid();
-$enviada = pedir($hostB, 'controller/controlador_solicitudes.php', "$tmp/vacia.txt",
-    ['nombre' => $marcaSolicitud, 'email' => 'familia@example.com', 'telefono' => '987654321', 'nivel' => 'primaria', 'mensaje' => 'Información, por favor']);
+$enviada = pedir(
+    $hostB,
+    'controller/controlador_solicitudes.php',
+    "$tmp/vacia.txt",
+    ['nombre' => $marcaSolicitud, 'email' => 'familia@example.com', 'telefono' => '987654321', 'nivel' => 'primaria', 'mensaje' => 'Información, por favor']
+);
 $contar = static fn (string $bd): int => (int) $pdo($bd)->query('SELECT COUNT(*) FROM solicitudes_informacion WHERE nombre_completo LIKE ' . $pdo($bd)->quote("%$marcaSolicitud%"))->fetchColumn();
-comprobar(str_contains($enviada['cuerpo'], 'success') && $contar($entorno('DB_NAME_B')) === 1 && $contar($entorno('DB_NAME_A')) === 0,
-    'una solicitud de la página de B queda en la base de B y no en la de A', "({$enviada['codigo']}: " . mb_substr($enviada['cuerpo'], 0, 80) . ')');
+comprobar(
+    str_contains($enviada['cuerpo'], 'success') && $contar($entorno('DB_NAME_B')) === 1 && $contar($entorno('DB_NAME_A')) === 0,
+    'una solicitud de la página de B queda en la base de B y no en la de A',
+    "({$enviada['codigo']}: " . mb_substr($enviada['cuerpo'], 0, 80) . ')'
+);
 
 // Quien presentó la galleta en otro colegio no cierra la sesión legítima de A.
 $sigue = pedir($hostA, LISTAR, $galletaA, [], ["X-CSRF-Token: $tokenA"]);
