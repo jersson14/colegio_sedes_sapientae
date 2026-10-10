@@ -18,6 +18,7 @@ $publicos = [
     'controller/usuario/controlador_iniciar_sesion.php', // login
     'controller/usuario/controlador_cerrar_sesion.php',  // logout
     'controller/controlador_solicitudes.php',            // formulario de la landing
+    'controller/archivo/controlador_logo.php',           // logo de la institución en la página de acceso (sin parámetros)
 ];
 // Carpeta de subidas: no contiene controladores (se trata en la Fase 0.3).
 $excluir = 'controller/tareas/controller/';

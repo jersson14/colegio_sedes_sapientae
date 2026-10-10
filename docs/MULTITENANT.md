@@ -237,6 +237,14 @@ archivo coincida con el tenant de la sesión. Esto resuelve además H-03 de
 
 ### 4.3 Personalización por tenant
 
+> **Implementado (Fase 4.7):** `App\Tenancy\Marca` + `core/marca.php`. El nombre sale siempre de la
+> `empresa` de la base de la institución. En **modo único** las imágenes son las de `img/` (la marca de
+> la instalación: el colegio en producción no ve ningún cambio; otra instalación las reemplaza o sube
+> su logo). En **modo múltiple**, el logo que cada colegio sube en «Empresa», servido en el acceso por
+> `controller/archivo/controlador_logo.php` (público, sin parámetros: solo el logo de la institución
+> del host); sin logo, `img/marca_neutra.svg`. Los PDF ya usaban la `empresa` de cada base. Pendiente:
+> colores por colegio y el texto de `landing.html` (página pública de un solo colegio).
+
 Logo, razón social, colores y datos de cabecera de los PDF deben leerse de `empresa`
 del tenant activo, no estar en el HTML. Hoy `view/index.php` e `index.php` tienen
 rutas fijas (`img/logo1.png`, `img/fondo.jpeg`) y el título "SEDES SAPIENTIAE" escrito

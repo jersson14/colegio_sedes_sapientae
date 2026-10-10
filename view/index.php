@@ -1,5 +1,6 @@
 <?php
 require '../core/sesion.php';
+require '../core/marca.php'; // Fase 4.7: nombre y logo de la institución
 if (!sesion_activa()) {
   header('Location: ../index.php');
   exit;
@@ -28,14 +29,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
-  <title>SEDES SAPIENTIAE</title>
+  <title><?= marca_html(marca()->nombre) ?></title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../plantilla/plugins//fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="icon" href="../img/icono.jpeg" type="image/jpeg">
+  <link rel="icon" href="../<?= marca_html(marca()->icono) ?>">
 
   <link rel="stylesheet" href="../plantilla/dist//css/adminlte.min.css">
   <link href="../utilitario/DataTables/datatables.min.css" type="text/css" rel="stylesheet" />
@@ -144,7 +145,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="index.php" class="brand-link">
-        <img src="../img/logo.jpeg" alt="AdminLTE Logo" width="100%" height="80">
+        <img src="../<?= marca_html(marca()->logoPanel) ?>" alt="<?= marca_html(marca()->nombre) ?>" width="100%" height="80" style="object-fit: contain;">
       </a>
 
       <!-- Sidebar -->
@@ -1198,7 +1199,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
             <!-- Imagen centrada -->
-            <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
+            <img src="../<?= marca_html(marca()->logoPanel) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="display:block; margin: 20px auto; max-width: 100%;" width="auto"><br>
           </div>
           <!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -1259,7 +1260,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
             <div class="card-body" style="display: block;">
-              <div style="background-image: url('../img//fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
+              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
                 <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
@@ -1287,7 +1288,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <hr>
                 </div>
                 <div style="flex: 0 0 280px; text-align: right; position: relative; z-index: 1;">
-                  <img src="../img/icono.jpeg" alt="Logo Instituto Prueba" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
+                  <img src="../<?= marca_html(marca()->icono) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
                 </div>
               </div>
             </div>
@@ -1403,7 +1404,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
           </div>
           <!-- Imagen centrada -->
-          <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
+          <img src="../<?= marca_html(marca()->logoPanel) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="display:block; margin: 20px auto; max-width: 100%;" width="auto"><br>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -1499,7 +1500,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
             <div class="card-body" style="display: block;">
-              <div style="background-image: url('../img/fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
+              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
 
                 <!-- Contenedor de la imagen y el botón -->
@@ -1549,7 +1550,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 <!-- Logo -->
                 <div style="flex: 0 0 280px; text-align: right; position: relative; z-index: 1;">
-                  <img src="../img/icono.jpeg" alt="Logo Instituto Prueba" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
+                  <img src="../<?= marca_html(marca()->icono) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
                 </div>
               </div>
 
@@ -1703,7 +1704,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
           </div>
           <!-- Imagen centrada -->
-          <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
+          <img src="../<?= marca_html(marca()->logoPanel) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="display:block; margin: 20px auto; max-width: 100%;" width="auto"><br>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->

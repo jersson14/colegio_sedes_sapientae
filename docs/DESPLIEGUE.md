@@ -394,6 +394,9 @@ Pasos (por cada colegio: un dominio o subdominio con su propia base):
 2. **hPanel → PHP:** versión 8.2 o superior, con `pdo_mysql`, `mysqli`, `mbstring`, `intl`, `gd`, `fileinfo`.
 3. **Subir el código** a `public_html` (o a una subcarpeta), sin `vendor/` de la raíz ni `.git`.
    `view/MPDF/vendor/` sí va: lo necesitan los reportes. La aplicación no necesita Composer para funcionar.
+   La marca de una instalación en modo único son los archivos de `img/` (`logo1.png` en el acceso,
+   `logo.jpeg` en el panel, `icono.jpeg`, `fondo.jpeg`): para otro colegio, reemplázalos al subir el
+   código. El nombre se toma de «Empresa».
 4. **Configuración fuera de `public_html`**, con el administrador de archivos o por SSH:
    `/home/<usuario>/domains/<dominio>/colegio_config/colegio.env`. La aplicación lo busca ahí sola, tanto
    si el proyecto es `public_html` como si está en `public_html/<carpeta>/` (no hace falta `SetEnv`).
@@ -437,7 +440,8 @@ es manual.
        --admin-dni=12345678 --admin-nombres="Ana" --admin-apellidos="Pérez Soto" [--estado=ACTIVO]
    ```
 
-   Muestra una sola vez la contraseña del administrador (usuario `admin`). El colegio entra por
+   Muestra una sola vez la contraseña del administrador (usuario `admin`). El colegio se presenta con
+   su razón social y, cuando suba su logo en «Empresa», con su logo (hasta entonces, una marca neutra). El colegio entra por
    `https://colegio-x.midominio.pe` en estado `PRUEBA` salvo que se indique otro. Nunca reutiliza una
    base existente. Requiere `DB_MIGRACION_USER` con permiso `CREATE` en el servidor.
 8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php`.

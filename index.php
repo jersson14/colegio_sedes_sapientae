@@ -1,5 +1,6 @@
 <?php
   require 'core/sesion.php';
+  require 'core/marca.php'; // Fase 4.7: nombre y logo de la institución del host
   if(sesion_activa()){
     header('Location: view/index.php');
     exit;
@@ -10,7 +11,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iniciar Sesión</title>
+  <title>Iniciar sesión · <?= marca_html(marca()->nombre) ?></title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -20,7 +21,7 @@
   <link rel="stylesheet" href="plantilla/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="plantilla/dist/css/adminlte.min.css">
-  <link rel="icon" href="img/icono.jpeg" type="image/jpeg">
+  <link rel="icon" href="<?= marca_html(marca()->icono) ?>">
 
   <style>
     .input-group-text {
@@ -29,7 +30,7 @@
   </style>
 
 </head>
-<body class="hold-transition login-page" style="background-image: url('img/fondo.jpeg'); background-size: 25px 50px; background-size: 100% 100%;"  >
+<?php $fondo = marca()->fondoAcceso; ?><body class="hold-transition login-page" style="<?= $fondo !== null ? "background-image: url('" . marca_html($fondo) . "'); background-size: 100% 100%;" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?>">
 <div class="login-box">
   <div class="login-logo">
     <a href="index.php"><b style="font-family:'arial black'; font-size:28px; color:black"></b></a>
@@ -37,7 +38,7 @@
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-    <img src="img/logo1.png" alt="" width="100%" height="100%">		      	
+    <img src="<?= marca_html(marca()->logoAcceso) ?>" alt="<?= marca_html(marca()->nombre) ?>" style="width: 100%; height: auto;">		      	
       <p class="login-box-msg" style="font-family:Arial black; font-size:15px; color:black"><b>DATOS DEL USUARIO</b></p>
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Ingrese su usuario" id="txt_usuario">

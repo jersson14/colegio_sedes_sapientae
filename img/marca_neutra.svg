@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Institución">
+  <rect width="200" height="200" rx="28" fill="#1f4e79"/>
+  <path d="M100 42 30 76l70 34 58-28v40h12V76z" fill="#ffffff"/>
+  <path d="M58 106v28c0 12 19 24 42 24s42-12 42-24v-28l-42 20z" fill="#cfe0f1"/>
+</svg>

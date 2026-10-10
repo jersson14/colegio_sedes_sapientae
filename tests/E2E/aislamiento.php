@@ -173,6 +173,25 @@ comprobar($enComun['codigo'] === 404, 'en modo múltiple no se sirve nada de la 
 @unlink("$almacen/colegio-a/$fotoA");
 @unlink($comun);
 
+// Marca (Fase 4.7): cada colegio se presenta con su nombre y su logo; sin logo, la marca neutra.
+$baseB = $pdo($entorno('DB_NAME_B'));
+$baseB->exec("UPDATE empresa SET emp_razon = 'COLEGIO B DE PRUEBA', emp_logo = 'controller/empresa/FOTOS/IMG_logo_b.png'");
+$pdo($entorno('DB_NAME_A'))->exec("UPDATE empresa SET emp_razon = 'COLEGIO A DE PRUEBA', emp_logo = ''");
+@mkdir("$almacen/colegio-b/controller/empresa/FOTOS", 0755, true);
+file_put_contents("$almacen/colegio-b/controller/empresa/FOTOS/IMG_logo_b.png", $png);
+$accesoA = pedir($hostA, 'index.php', "$tmp/marca_a.txt")['cuerpo'];
+$accesoB = pedir($hostB, 'index.php', "$tmp/marca_b.txt")['cuerpo'];
+comprobar(str_contains($accesoA, 'COLEGIO A DE PRUEBA') && !str_contains($accesoA, 'COLEGIO B'), 'la página de acceso de A lleva su nombre y no el de B');
+comprobar(str_contains($accesoB, 'COLEGIO B DE PRUEBA') && str_contains($accesoB, 'controlador_logo.php?v='), 'la de B, su nombre y su logo');
+comprobar(str_contains($accesoA, 'img/marca_neutra.svg') && !str_contains($accesoA, 'img/logo1.png'), 'A sin logo: marca neutra, nunca la de la instalación original');
+$logoB = pedir($hostB, 'controller/archivo/controlador_logo.php', "$tmp/vacia.txt");
+$logoA = pedir($hostA, 'controller/archivo/controlador_logo.php', "$tmp/vacia.txt");
+comprobar($logoB['codigo'] === 200 && $logoB['cuerpo'] === $png, 'el logo de B se ve sin sesión en el acceso de B');
+comprobar($logoA['codigo'] === 200 && $logoA['cuerpo'] !== $png && str_contains($logoA['cuerpo'], '<svg'), 'el mismo endpoint en A no entrega el logo de B');
+$panelB = pedir($hostB, 'view/index.php', $galletaB)['cuerpo'];
+comprobar(str_contains($panelB, '<title>COLEGIO B DE PRUEBA</title>'), 'el panel de B lleva su nombre');
+@unlink("$almacen/colegio-b/controller/empresa/FOTOS/IMG_logo_b.png");
+
 // Hosts sin institución: la misma respuesta para el inexistente, el suspendido, la IP y el dominio base.
 $respuestas = [];
 foreach (['nadie.' . DOMINIO, 'suspendido.' . DOMINIO, '127.0.0.1', DOMINIO, 'colegio-a.otro.' . DOMINIO] as $host) {
