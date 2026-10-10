@@ -64,13 +64,14 @@ backups del proveedor, cero administración de sistemas.
   instalar Composer en muchos casos, ni configurar cron con libertad.
 - `max_execution_time` suele estar capado a 30 s → los reportes masivos con mPDF fallan.
 - Recursos compartidos: un vecino ruidoso degrada el rendimiento.
-- **No sirve para multi-tenant**: no se pueden crear bases de datos por API.
+- **No sirve para el SaaS multi-tenant**: no se pueden crear bases de datos por API, así que cada
+  alta sería manual. Sí sirve en `MODO_TENANT=unico` (un colegio por cuenta o por base): ver §7.
 
 **Proveedores viables en Perú/LatAm:** Hostinger (permite SPs en planes Premium+),
 SiteGround, A2 Hosting. Evitar los planes "starter" con límite de 1 base de datos.
 
-**Veredicto:** aceptable solo como continuación del estado actual (un colegio).
-Es un callejón sin salida para el plan multi-tenant.
+**Veredicto:** adecuado para vender a uno o pocos colegios en `MODO_TENANT=unico` (§7). El mismo
+código pasa a un VPS en `MODO_TENANT=multiple` cuando haya varios: no hay rama ni versión aparte.
 
 ---
 
@@ -234,8 +235,10 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
 - [ ] `ServerTokens Prod` y `ServerSignature Off` en `httpd.conf` (no se puede desde `.htaccess`)
 - [ ] `colegio.env` fuera del docroot (`/var/www/colegio_config/colegio.env`, `chmod 640`,
       dueño `root:www-data`) con `APP_DEBUG=false` — plantilla en `config/colegio.env.example`
-- [ ] **`event_scheduler = ON`** en MySQL/MariaDB: 4 eventos de la BD pasan tareas y exámenes
-      vencidos a FINALIZADO/REALIZADO y actualizan alumnos al cerrar el año
+- [ ] **Tareas programadas**: `event_scheduler = ON` en MySQL/MariaDB (4 eventos pasan tareas y
+      exámenes vencidos a FINALIZADO/REALIZADO y desactivan alumnos al cerrar el año) **o**, donde no
+      exista (hosting compartido, modo múltiple), el cron `php tools/tareas_programadas.php` cada minuto.
+      Las dos cosas a la vez no duplican nada
 - [ ] Usuario de MySQL sin privilegios de `root`: `colegio_app` según `config/usuario_bd.sql`
       (EXECUTE + SELECT; INSERT/UPDATE solo en `solicitudes_informacion`), y un usuario de
       migraciones aparte (`DB_MIGRACION_USER`) con DDL, que la aplicación nunca usa
@@ -347,8 +350,92 @@ Las migraciones de BD deben ser reversibles o compatibles hacia atrás.
 
 | Pregunta | Respuesta |
 |---|---|
-| ¿Se puede levantar en hosting compartido? | 🟡 Sí, para **un** colegio, si el proveedor permite stored procedures. Sin futuro multi-tenant. |
+| ¿Se puede levantar en hosting compartido? | 🟢 Sí, en `MODO_TENANT=unico` (un colegio por base), si el proveedor permite stored procedures (§7). |
 | ¿Se puede levantar en VPS? | 🟢 **Sí, y es lo recomendado.** Desde $6/mes. Cubre las fases 0 a 4. |
 | ¿Se puede levantar en AWS? | 🟢 Sí, sin obstáculo técnico. Desde ~$90/mes en instancia única; ~$290 con alta disponibilidad. Justificado a partir de ~50 instituciones. |
 | ¿Se puede levantar en servidor propio? | 🟠 Técnicamente sí, operativamente desaconsejado. |
-| ¿Está listo para producción pública hoy? | 🔴 **No.** Requiere la Fase 0 de seguridad. La infraestructura no es el cuello de botella; el código lo es. |
+| ¿Está listo para producción pública hoy? | 🟢 En modo único, sí, tras el checklist del §4 (la Fase 0 de seguridad está cerrada). En modo múltiple, cuando la Fase 4 esté completa (alta automatizada, archivos por tenant). |
+
+---
+
+## 7. Hostinger: un colegio (modo único) o varios (modo múltiple)
+
+Es **el mismo código y la misma rama**. Lo único que cambia es `MODO_TENANT` en `colegio.env`:
+
+| | Modo `unico` | Modo `multiple` |
+|---|---|---|
+| Para qué | Vender a uno o pocos colegios | SaaS con varios colegios |
+| Dónde | Hosting compartido (Premium/Business) o VPS | VPS de Hostinger |
+| Qué base se abre | `DB_NAME` | La que la BD maestra asigna al subdominio (`<slug>.TENANT_DOMINIO`) |
+| Alta de un colegio | Una cuenta/sitio con su base, manual | Una fila en `tenants` + una base migrada (hito 4.5 la automatiza) |
+| Tareas programadas | Cron de hPanel con `tools/tareas_programadas.php` | Un solo cron que recorre todos los colegios |
+| Migraciones | `vendor/bin/phinx migrate` | `php tools/migrar_tenants.php` (maestra y cada colegio, en orden) |
+
+> **Aislamiento (modo múltiple):** cada colegio tiene su base; la sesión queda atada al colegio en que
+> se inició (una cookie copiada a otro subdominio da 401) y el límite de intentos de login es por
+> colegio. Lo comprueba `tests/E2E/aislamiento.php` en cada push (CI, trabajo «Modo multiple»).
+
+### 7.1 Hosting compartido (modo único)
+
+**Antes de contratar o de subir nada**, en phpMyAdmin de la base creada en hPanel:
+
+```sql
+SHOW GRANTS FOR CURRENT_USER();
+```
+
+Debe aparecer `ALL PRIVILEGES` o, como mínimo, `CREATE ROUTINE` y `ALTER ROUTINE` (los 254 procedimientos son
+la lógica del sistema). Sin eso, **no funciona**: elegir otro plan. `EVENT` no hace falta: si falta, la
+migración inicial omite los 4 eventos y el cron hace su trabajo.
+
+Pasos (por cada colegio: un dominio o subdominio con su propia base):
+
+1. **hPanel → Bases de datos:** crear la base y su usuario. Anotar host, nombre, usuario y contraseña.
+2. **hPanel → PHP:** versión 8.2 o superior, con `pdo_mysql`, `mysqli`, `mbstring`, `intl`, `gd`, `fileinfo`.
+3. **Subir el código** a `public_html` (o a una subcarpeta), sin `vendor/` de la raíz ni `.git`.
+   `view/MPDF/vendor/` sí va: lo necesitan los reportes. La aplicación no necesita Composer para funcionar.
+4. **Configuración fuera de `public_html`**, con el administrador de archivos o por SSH:
+   `/home/<usuario>/domains/<dominio>/colegio_config/colegio.env`. La aplicación lo busca ahí sola, tanto
+   si el proyecto es `public_html` como si está en `public_html/<carpeta>/` (no hace falta `SetEnv`).
+   Contenido: la plantilla `config/colegio.env.example` con `MODO_TENANT=unico` y los datos del paso 1.
+5. **Crear el esquema** (`composer install --no-dev` + `vendor/bin/phinx migrate`). Dos caminos:
+   - Por **SSH** en el servidor (planes con SSH), desde la carpeta del proyecto.
+   - Desde tu PC contra la base remota: **hPanel → MySQL remoto**, autorizar tu IP, y en local
+     `DB_HOST=<host remoto> DB_PORT=3306 DB_NAME=… DB_MIGRACION_USER=… DB_MIGRACION_PASS=… vendor/bin/phinx migrate`.
+   En cada actualización del código, el mismo comando: solo aplica las migraciones nuevas.
+6. **hPanel → Avanzado → Cron Jobs**, cada minuto:
+   `/usr/bin/php /home/<usuario>/domains/<dominio>/public_html/tools/tareas_programadas.php`
+   (comprobar la ruta de PHP que muestra hPanel). Solo escribe una línea cuando cierra algo.
+7. **SSL** gratuito desde hPanel y **forzar HTTPS**.
+8. Verificar la protección del `.htaccess` (Hostinger usa LiteSpeed, compatible con él):
+   `curl -I https://<dominio>/.git/config` → 404, `curl -I https://<dominio>/tools/migrar_tenants.php` → 404,
+   `curl -I https://<dominio>/colegio.sql` → 403.
+
+Lo que el hosting compartido **no** permite y por qué no conviene para el SaaS: crear bases por API,
+certificado wildcard automático para `*.midominio.pe` y control del servidor. Varios colegios en una
+misma cuenta compartida son posibles en modo único (un sitio y una base por colegio), pero cada alta
+es manual.
+
+### 7.2 VPS de Hostinger (modo múltiple)
+
+1. Ubuntu 24.04 + Apache (o Nginx con las reglas del `.htaccess` traducidas) + PHP 8.2+ + MariaDB/MySQL.
+2. DNS: registro **wildcard** `*.midominio.pe` → IP del VPS, y certificado wildcard (Certbot con
+   desafío DNS).
+3. Un `VirtualHost` con `ServerAlias *.midominio.pe` y `AllowOverride All` apuntando al proyecto.
+4. Usuarios de MySQL: `colegio_app` con `EXECUTE`/`SELECT` sobre las bases de colegios (todas las `sge_*`),
+   uno de migraciones con DDL y, opcionalmente, uno de solo lectura de la maestra (`MAESTRO_DB_USER`).
+5. `colegio.env` en `/var/www/colegio_config/` con `MODO_TENANT=multiple`, `TENANT_DOMINIO=midominio.pe`
+   y `MAESTRO_DB_NAME=sge_maestro`.
+6. Crear la maestra y migrar todo: `CREATE DATABASE sge_maestro;` y `php tools/migrar_tenants.php`.
+7. Alta de un colegio (manual hasta el hito 4.5): crear su base, registrar la fila y migrar:
+
+   ```sql
+   CREATE DATABASE sge_colegio_x CHARACTER SET utf8mb4;
+   INSERT INTO sge_maestro.tenants (slug, razon_social, base_datos, estado)
+   VALUES ('colegio-x', 'Colegio X', 'sge_colegio_x', 'ACTIVO');
+   ```
+
+   `php tools/migrar_tenants.php --solo=colegio-x`, y el colegio entra por `https://colegio-x.midominio.pe`.
+8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php`.
+   `event_scheduler` puede quedar apagado.
+9. Para pasar un colegio del hosting compartido al VPS: `mysqldump` de su base, importarla como
+   `sge_<slug>`, registrar la fila y migrar. Los usuarios y contraseñas siguen valiendo.

@@ -8,8 +8,10 @@ declare(strict_types=1);
  * Ubicación, en este orden:
  *   1. Variable de entorno COLEGIO_ENV (ruta absoluta), p. ej. con SetEnv en Apache.
  *   2. <carpeta padre del docroot>/colegio_config/colegio.env
- *      XAMPP:  C:\xampp\colegio_config\colegio.env
- *      Linux:  /var/www/colegio_config/colegio.env  (si el proyecto está en /var/www/html/…)
+ *      XAMPP:      C:\xampp\colegio_config\colegio.env
+ *      Linux:      /var/www/colegio_config/colegio.env  (si el proyecto está en /var/www/html/…)
+ *      Hostinger:  /home/<usuario>/domains/<dominio>/colegio_config/colegio.env, tanto si el proyecto
+ *                  ES public_html como si está en una subcarpeta (public_html/colegio/).
  *
  * Plantilla: config/colegio.env.example (versionada, sin secretos).
  */
@@ -20,8 +22,12 @@ function config_ruta_env(): string
     if (is_string($porEntorno) && $porEntorno !== '') {
         return $porEntorno;
     }
-    // core/ → proyecto → docroot (htdocs) → carpeta padre
-    return dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'colegio_config' . DIRECTORY_SEPARATOR . 'colegio.env';
+    // Hosting compartido: el proyecto suele ser el propio docroot (public_html), y no se puede
+    // configurar SetEnv. El archivo va al lado de public_html, nunca dentro.
+    $proyecto = dirname(__DIR__);
+    $docroot = basename($proyecto) === 'public_html' ? $proyecto : dirname($proyecto);
+    // core/ → proyecto → docroot (htdocs, public_html) → carpeta padre
+    return dirname($docroot) . DIRECTORY_SEPARATOR . 'colegio_config' . DIRECTORY_SEPARATOR . 'colegio.env';
 }
 
 /** Lee KEY=valor; admite comentarios (#), líneas vacías y valores entre comillas. */

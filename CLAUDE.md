@@ -65,13 +65,17 @@ mezclar inglés rompe la coherencia con los 254 SPs.
 
 ## Cosas que NO debes asumir
 
-- **Hay 4 eventos programados en la BD** (no en PHP): cada minuto pasan tareas y exámenes vencidos a
+- **Hay 4 eventos programados en la BD**: cada minuto pasan tareas y exámenes vencidos a
   `FINALIZADO`/`REALIZADO`, y cada año actualizan el estado de los alumnos. Requieren
-  `event_scheduler=ON`; en el XAMPP local está **OFF**, así que esas transiciones no ocurren en local.
+  `event_scheduler=ON`; en el XAMPP local está **OFF**. Donde no hay scheduler (hosting compartido,
+  modo múltiple) hace lo mismo el cron `php tools/tareas_programadas.php` (`App\Services\TareasProgramadas`).
 - **El código heredado sigue fuera de `src/`.** `controller/`, `model/` y `view/` no se han movido a
   `legacy/` ni el docroot a `public/`: las URLs dependen de las rutas físicas (migración progresiva).
-- **`empresa_id` existe pero no se usa.** Solo en `usuario` y `empresa`; las otras 34 tablas no
-  tienen discriminador de tenant. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md).
+- **Multi-tenant = una base por institución** (Fase 4, en curso). `MODO_TENANT=unico` (por defecto)
+  abre `DB_NAME`; `MODO_TENANT=multiple` resuelve el subdominio en la BD maestra. Toda conexión pasa por
+  `core/tenant.php` / `App\Tenancy\TenantContext` (sin tenant no hay conexión) y la sesión lleva
+  `S_TENANT`. `empresa_id` (en `usuario`/`empresa`) **no** es el discriminador. Una sola rama: nunca
+  bifurcar por modo. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md) y [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) §7.
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
   versionan y leen `colegio.env` vía `config()`. Nunca pongas secretos en archivos del repo.
 - **`*.sql` está en `.gitignore`**, pero `colegio.sql` y `tabla_solicitudes.sql` ya están

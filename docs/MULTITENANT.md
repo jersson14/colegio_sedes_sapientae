@@ -126,6 +126,12 @@ final class TenantContext {
 **Regla de oro:** `model_conexion.php` **nunca** debe poder abrir una conexión sin
 un tenant resuelto. Que lance excepción, no que use un valor por defecto.
 
+> **Implementado (Fase 4):** `src/Tenancy/` y `core/tenant.php`. Hay dos modos con el mismo código,
+> `MODO_TENANT=unico` (la institución de `colegio.env`, base `DB_NAME`: hosting compartido o instancia
+> dedicada) y `MODO_TENANT=multiple` (este diseño). En modo único el tenant también se resuelve, así
+> que el código no distingue los dos casos más allá de la configuración. Despliegue en
+> [DESPLIEGUE.md](DESPLIEGUE.md) §7.
+
 ---
 
 ## 3. Colegio vs Instituto: las diferencias reales de dominio
@@ -189,12 +195,18 @@ que hace sostenible un SaaS.
 
 ### 4.1 Infraestructura de tenancy
 
-- [ ] BD maestra `sge_maestro` con `tenants`, `planes`, `suscripciones`, `migraciones_aplicadas`.
-- [ ] `TenantResolver` por subdominio + caché.
-- [ ] `TenantContext` como única fuente del tenant activo.
-- [ ] `model_conexion.php` que exige tenant resuelto (lanza excepción si no lo hay).
-- [ ] Unificar la conexión MySQLi de `view/MPDF/` con la de PDO (hoy son dos configuraciones).
-- [ ] Motor de migraciones (Phinx) capaz de aplicar a N bases.
+- [x] BD maestra `sge_maestro` con `tenants` (`database/maestro/`, `phinx_maestro.php`). `planes` y
+      `suscripciones` van con la Fase 4B; las migraciones aplicadas quedan en el `phinxlog` de cada base.
+- [x] Resolución por subdominio o dominio propio: `App\Tenancy\ResolverTenant` (sin caché: una consulta
+      indexada por petición; APCu si algún día pesa).
+- [x] `App\Tenancy\TenantContext` como única fuente del tenant activo; no cambia a mitad de petición.
+- [x] Ninguna conexión sin tenant: `App\Core\Conexion::crear()` lanza `TenantNoResuelto`; `core/tenant.php`
+      lo resuelve en cada petición (404 sin detalles si el host no es de ninguna institución activa).
+- [x] La conexión MySQLi de `view/MPDF/` usa la base del tenant (los reportes en uso ya van por PDO).
+- [x] Migraciones en N bases: `php tools/migrar_tenants.php` (maestra y cada colegio, se detiene al primer fallo).
+- [x] Sesión atada a la institución (`S_TENANT`) y límite de intentos de login por institución.
+- [x] Los 4 eventos de la BD, también por cron: `tools/tareas_programadas.php` (hosting sin `event_scheduler`).
+- [x] Suite de aislamiento en el CI: `tests/E2E/aislamiento.php`.
 - [ ] Proceso automatizado de alta de tenant: crear base → aplicar esquema → sembrar
       catálogos → crear usuario administrador → enviar credenciales.
 - [ ] Backup por tenant, con restauración individual probada.

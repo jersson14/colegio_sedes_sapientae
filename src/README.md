@@ -25,6 +25,14 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 - Los repositorios llaman a los procedimientos existentes: la lógica SQL sigue en la BD. Las
   correcciones de un SP van en una migración (`database/esquema/RecreaProcedimientos.php`).
 
+## Instituciones (Fase 4)
+
+`Tenancy/`: `ModoTenant` (`unico`/`multiple`), `Tenant`, `EstadoTenant`, `ResolverTenant` (host → institución),
+`TenantContext` (la de la petición; sin ella `Core\Conexion::crear()` lanza `TenantNoResuelto`) y el registro
+`PdoRepositorioTenants` sobre la BD maestra (`Core\Conexion::maestro()`). El código heredado lo usa a través
+de `core/tenant.php` (`tenant_actual()`). `Services\TareasProgramadas` hace el trabajo de los eventos de la BD
+para el cron.
+
 ## Migrado
 
 | Módulo | Servicios | Endpoints adaptados | Pruebas |

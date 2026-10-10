@@ -190,3 +190,93 @@ jobs:
         run: |
           tail -100 "$RUNNER_TEMP/servidor.log"
           grep -iE "error|warning|fatal|exception" "$RUNNER_TEMP/servidor.log" | tail -20 | cut -c1-900 | sed 's/^/::warning title=Servidor PHP::/'
+
+  multitenant:
+    name: Modo multiple (migraciones en N bases y aislamiento entre colegios)
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_USER: root
+      DB_PASS: root
+      MAESTRO_DB_NAME: sge_maestro_ci
+      DB_NAME_A: prueba_tenant_a
+      DB_NAME_B: prueba_tenant_b
+      BASE_URL: http://127.0.0.1:8098/
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mysqli, mbstring, fileinfo, intl, curl
+          coverage: none
+          tools: composer:v2
+
+      - name: Dependencias
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Configuración en modo multiple
+        run: |
+          mkdir -p "$RUNNER_TEMP/sesiones" "$RUNNER_TEMP/intentos"
+          cat > "$RUNNER_TEMP/colegio.env" <<EOF
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_NAME=no_se_usa
+          DB_USER=root
+          DB_PASS=root
+          APP_DEBUG=false
+          APP_ENTORNO=prueba
+          DB_FECHA_PRUEBA=2025-12-26 12:00:00
+          LOGIN_LIMITE_DIR=$RUNNER_TEMP/intentos
+          MODO_TENANT=multiple
+          TENANT_DOMINIO=prueba.test
+          MAESTRO_DB_NAME=$MAESTRO_DB_NAME
+          EOF
+          for bd in "$MAESTRO_DB_NAME" "$DB_NAME_A" "$DB_NAME_B"; do
+            mysql -h 127.0.0.1 -uroot -proot -e "CREATE DATABASE \`$bd\` CHARACTER SET utf8mb4"
+          done
+
+      - name: Migraciones en la maestra y en cada colegio (tools/migrar_tenants.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
+        run: |
+          php tools/migrar_tenants.php
+          mysql -h 127.0.0.1 -uroot -proot "$MAESTRO_DB_NAME" -e "INSERT INTO tenants (slug, razon_social, base_datos, estado)
+            VALUES ('colegio-a', 'Colegio A', '$DB_NAME_A', 'ACTIVO'), ('colegio-b', 'Colegio B', '$DB_NAME_B', 'ACTIVO')"
+          php tools/migrar_tenants.php
+          php tools/migrar_tenants.php status | grep -q " down " && { echo "::error title=Migraciones::quedaron migraciones sin aplicar"; exit 1; } || true
+
+      - name: Los mismos datos de prueba en los dos colegios
+        run: |
+          for bd in "$DB_NAME_A" "$DB_NAME_B"; do
+            DB_NAME="$bd" DB_MIGRACION_USER=root DB_MIGRACION_PASS=root PERMITIR_DATOS_PRUEBA=1               vendor/bin/phinx seed:run -s DatosPrueba -c phinx.php
+          done
+
+      - name: Pruebas de integración de la BD maestra
+        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter TenantsMaestroTest
+
+      - name: Tareas programadas por cron en cada colegio (tools/tareas_programadas.php)
+        run: COLEGIO_ENV="$RUNNER_TEMP/colegio.env" php tools/tareas_programadas.php
+
+      - name: Aislamiento entre colegios (tests/E2E/aislamiento.php)
+        run: |
+          COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8098 -t . > "$RUNNER_TEMP/servidor.log" 2>&1 &
+          for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
+          php tests/E2E/aislamiento.php
+
+      - name: Log del servidor si algo falló
+        if: failure()
+        run: |
+          tail -60 "$RUNNER_TEMP/servidor.log" || true
+          grep -iE "error|warning|fatal|exception" "$RUNNER_TEMP/servidor.log" | tail -10 | cut -c1-900 | sed 's/^/::warning title=Servidor PHP::/' || true

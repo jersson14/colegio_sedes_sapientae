@@ -5,6 +5,7 @@
 | Unitarias | `tests/Unit/` (PHPUnit) | Código de seguridad: subidas, borrado de fotos, `colegio.env`, límite de intentos | No |
 | Integración | `tests/Integration/` (PHPUnit) | Esquema, pertenencia del dato (IDOR) y procedimientos de escritura críticos (pagos, matrícula, notas) | Sí, con transacción revertida |
 | Caracterización | `tests/E2E/caracterizacion.mjs` + `tests/Caracterizacion/grabacion.json` | Las 124 respuestas que la interfaz de los 6 roles recibe hoy (columnas por índice incluidas) | Sí, solo lectura |
+| Aislamiento | `tests/E2E/aislamiento.php` | Modo múltiple: dos colegios con los mismos usuarios; cada uno ve solo su base, la sesión de uno no vale en otro, host desconocido o suspendido → 404 idéntico, límite de login por colegio | Sí, dos bases + la maestra |
 | E2E | `tests/E2E/flujos.mjs` | Login, autorización, pago + boleta, matrícula, notas, tarea publicada y entregada, asistencia, cuentas de usuario, alumnos (alta, cambios, baja, foto), matrícula (alta, cambios, baja), notas (registro, edición, notas de padres), asistencia (días pasados, edición), anulación de ingresos, asignaturas y horarios, pensiones, pagos e ingresos diversos, tareas y exámenes, atenciones de salud y comunicados | Sí, **escribe** |
 
 Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mergea.
@@ -62,6 +63,19 @@ generación y compresión). Con los datos de prueba recién cargados:
 ```bash
 COLEGIO_ENV=/ruta/prueba.env php tools/caracterizar_reportes.php verificar   # o «grabar» tras un cambio intencionado
 ```
+
+## Aislamiento entre colegios (modo múltiple)
+
+Servidor con `MODO_TENANT=multiple` y `TENANT_DOMINIO=prueba.test` (el trabajo «Modo multiple» del CI lo
+monta entero: maestra, dos bases migradas con `tools/migrar_tenants.php` y los mismos datos de prueba):
+
+```bash
+BASE_URL=http://127.0.0.1:8098/ DB_HOST=127.0.0.1 DB_PORT=3307 DB_USER=root DB_PASS= \
+  MAESTRO_DB_NAME=sge_maestro_prueba DB_NAME_A=prueba_tenant_a DB_NAME_B=prueba_tenant_b php tests/E2E/aislamiento.php
+```
+
+Las peticiones van a `colegio-a.prueba.test` / `colegio-b.prueba.test` resueltos a 127.0.0.1 (sin tocar
+el archivo hosts). Comprobado que falla si se quita la marca `S_TENANT` de la sesión.
 
 ## Regrabar la caracterización
 

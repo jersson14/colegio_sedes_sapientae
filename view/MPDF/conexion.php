@@ -2,13 +2,14 @@
 // Las credenciales viven en colegio.env, fuera de htdocs (ver core/config.php).
 // Este archivo ya no contiene secretos y se versiona.
 require_once __DIR__ . '/../../core/config.php';
+require_once __DIR__ . '/../../core/tenant.php';
 
 try {
     $mysqli = new mysqli(
         config('DB_HOST', 'localhost'),
         config('DB_USER', ''),
         config('DB_PASS', ''),
-        config('DB_NAME', 'colegio'),
+        tenant_actual()->baseDatos, // Fase 4: la base de la institución, igual que el PDO
         (int) config('DB_PORT', '3306')
     );
     // Charset explícito, como el PDO («set names utf8»): con el latin1 por defecto de otros servidores,

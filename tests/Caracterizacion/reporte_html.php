@@ -66,7 +66,11 @@ namespace {
     // Sesión ya iniciada: core/sesion.php no la vuelve a abrir y el guard ve el rol pedido.
     session_save_path(sys_get_temp_dir());
     session_start();
-    $_SESSION = ['S_ID' => (string) $usuario, 'S_ROL' => (string) $rol, 'S_DNI' => '', 'csrf_token' => 'x', 'ultima_actividad' => time()];
+    require_once __DIR__ . '/../../core/tenant.php';
+    $_SESSION = [
+        'S_ID' => (string) $usuario, 'S_ROL' => (string) $rol, 'S_DNI' => '', 'csrf_token' => 'x',
+        'ultima_actividad' => time(), 'S_TENANT' => tenant_actual()->slug,
+    ];
 
     $carpeta = __DIR__ . '/../../view/MPDF/REPORTE';
     chdir($carpeta); // los reportes cargan '../conexion.php' relativo a su carpeta

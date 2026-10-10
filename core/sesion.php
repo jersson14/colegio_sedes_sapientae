@@ -10,6 +10,8 @@ declare(strict_types=1);
  * (y en especial el rol) se acepta desde el cliente.
  */
 
+require_once __DIR__ . '/tenant.php';
+
 const SESION_INACTIVIDAD_MAX = 1800; // 30 minutos
 
 function sesion_iniciar(): void
@@ -17,6 +19,7 @@ function sesion_iniciar(): void
     if (session_status() !== PHP_SESSION_NONE) {
         return;
     }
+    tenant_actual(); // un host que no es de ninguna institución no llega a abrir sesión
     $https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
     session_set_cookie_params([
         'lifetime' => 0,
@@ -53,6 +56,9 @@ function sesion_crear(array $fila): void
     $_SESSION['S_FECHANACIMIENTO'] = $texto($fila['fechana']);
     $_SESSION['S_EMAIL']           = $texto($fila['usu_email']);
     $_SESSION['S_DNI']             = $texto($fila['docente_dni']);
+    // Fase 4: la sesión pertenece a una institución. Los archivos de sesión son comunes a todo el
+    // servidor; sin esta marca, una cookie copiada de un colegio abriría la sesión en otro.
+    $_SESSION['S_TENANT']          = tenant_actual()->slug;
 
     $_SESSION['csrf_token']       = bin2hex(random_bytes(32));
     $_SESSION['ultima_actividad'] = time();
@@ -83,6 +89,11 @@ function sesion_activa(): bool
 {
     sesion_iniciar();
     if (!isset($_SESSION['S_ID'])) {
+        return false;
+    }
+    // Sesión de otra institución (cookie copiada a otro subdominio): no vale aquí. No se destruye:
+    // pertenece a su colegio, y quien la presenta en otro no debe poder cerrarla.
+    if (($_SESSION['S_TENANT'] ?? null) !== tenant_actual()->slug) {
         return false;
     }
     if (isset($_SESSION['ultima_actividad'])

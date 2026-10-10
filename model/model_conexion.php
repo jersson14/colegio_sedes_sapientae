@@ -6,6 +6,7 @@
 // controlador lo necesita desde el principio (si no, un aviso muestra rutas del servidor).
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/autoload.php';
+require_once __DIR__ . '/../core/tenant.php';
 
 class conexionBD {
     private $pdo;
@@ -13,6 +14,7 @@ class conexionBD {
     public function conexionPDO() {
         $this->pdo = null;
         try {
+            tenant_actual(); // Fase 4: la base es la de la institución de la petición
             $this->pdo = \App\Core\Conexion::crear();
             return $this->pdo;
         } catch (PDOException $e) {

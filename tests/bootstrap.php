@@ -17,9 +17,11 @@ file_put_contents($dir . DIRECTORY_SEPARATOR . 'colegio.env', implode("\n", [
     '  CON_ESPACIOS  =  valor  ',
     // Suite Integration: la BD llega por variables de entorno (CI o local).
     'DB_PORT=' . (getenv('DB_PORT') ?: '3306'),
-    'DB_NAME=' . (getenv('DB_NAME') ?: ''),
+    // Sin BD, un nombre válido: el tenant único se resuelve igual (core/tenant.php) aunque no se conecte.
+    'DB_NAME=' . (getenv('DB_NAME') ?: 'sin_bd'),
     'DB_USER=' . (getenv('DB_USER') ?: ''),
     'DB_PASS=' . (getenv('DB_PASS') ?: ''),
+    'MAESTRO_DB_NAME=' . (getenv('MAESTRO_DB_NAME') ?: 'sge_maestro'),
     '',
 ]));
 putenv('COLEGIO_ENV=' . $dir . DIRECTORY_SEPARATOR . 'colegio.env');

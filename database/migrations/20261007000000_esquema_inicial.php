@@ -19,8 +19,23 @@ final class EsquemaInicial extends AbstractMigration
             $this->output->writeln('  <comment>Esquema existente detectado: se registra sin ejecutar.</comment>');
             return;
         }
+        $sinEventos = false;
         foreach (self::sentencias(__DIR__ . '/../esquema/esquema_inicial.sql') as $sql) {
+            // Los 4 eventos programados exigen el privilegio EVENT, que el hosting compartido puede no
+            // dar. Su trabajo lo hace igual tools/tareas_programadas.php por cron (Fase 4): sin ese
+            // privilegio se omiten y el resto del esquema se crea completo.
+            if (preg_match('/\bEVENT\b/', $sql) === 1) {
+                try {
+                    $this->execute($sql);
+                } catch (\PDOException $e) {
+                    $sinEventos = true;
+                }
+                continue;
+            }
             $this->execute($sql);
+        }
+        if ($sinEventos) {
+            $this->output->writeln('  <comment>Sin privilegio EVENT: eventos omitidos. Programa tools/tareas_programadas.php en el cron.</comment>');
         }
     }
 

@@ -4,15 +4,16 @@
 > "plataforma SaaS multi-tenant para colegios e institutos", sin detener su
 > operación y sin reescribirlo desde cero.
 
-## Estado — 2026-10-07
+## Estado — 2026-10-10
 
 | Fase | Estado |
 |---|---|
 | 0 — Seguridad crítica | ✅ Cerrada: OWASP ZAP sin hallazgos altos explotables ([SEGURIDAD.md](SEGURIDAD.md) §0) |
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
-| 3 — Refactor | 🔄 En curso: ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
-| 4 en adelante | Pendiente |
+| 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
+| 4 — Multi-tenant | 🔄 En curso: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hechos 4.1–4.4 y 4.9 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron. Faltan 4.5–4.8 y 4.10 |
+| 4B en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
 
@@ -401,15 +402,15 @@ Diseño completo en [MULTITENANT.md](MULTITENANT.md). Resumen de hitos:
 
 | Hito | Entregable |
 |---|---|
-| 4.1 | BD maestra `sge_maestro` + tabla `tenants` |
-| 4.2 | `TenantResolver` por subdominio + `TenantContext` |
-| 4.3 | `model_conexion` que exige tenant resuelto (excepción si falta) |
-| 4.4 | Phinx aplicando migraciones a N bases |
+| 4.1 ✅ | BD maestra `sge_maestro` + tabla `tenants` |
+| 4.2 ✅ | `TenantResolver` por subdominio + `TenantContext` |
+| 4.3 ✅ | `model_conexion` que exige tenant resuelto (excepción si falta) |
+| 4.4 ✅ | Phinx aplicando migraciones a N bases |
 | 4.5 | Alta automatizada de tenant (crear base, sembrar, admin inicial) |
 | 4.6 | Almacenamiento de archivos aislado por tenant, fuera del docroot |
 | 4.7 | Personalización (logo, razón social, colores, cabecera de PDF) por tenant |
 | 4.8 | Panel de superadministrador |
-| 4.9 | **Suite de pruebas de aislamiento** — el tenant A nunca ve datos del B |
+| 4.9 ✅ | **Suite de pruebas de aislamiento** — el tenant A nunca ve datos del B (`tests/E2E/aislamiento.php`, en el CI; ampliarla con cada hito) |
 | 4.10 | Backup y restauración por tenant, probados |
 
 **Puerta de salida:** el hito 4.9 en verde es condición para dar de alta el segundo tenant.

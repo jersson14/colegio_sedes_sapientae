@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/tenant.php';
 
 const LIMITE_VENTANA        = 900;    // 15 min
 const LIMITE_FALLOS_USUARIO = 5;
@@ -29,6 +30,12 @@ function limite_dir(): string
         @mkdir($dir, 0700, true);
     }
     return $dir;
+}
+
+/** Usuario + institución + IP: «ana» de un colegio no bloquea a «ana» de otro (Fase 4). */
+function limite_clave_usuario(string $usuario): string
+{
+    return 'u|' . tenant_actual()->slug . '|' . strtolower($usuario) . '|' . limite_ip();
 }
 
 function limite_ip(): string
@@ -64,7 +71,7 @@ function limite_bloqueo_restante(string $usuario): int
 {
     $ahora = time();
     $max = 0;
-    foreach (['u|' . strtolower($usuario) . '|' . limite_ip(), 'ip|' . limite_ip()] as $clave) {
+    foreach ([limite_clave_usuario($usuario), 'ip|' . limite_ip()] as $clave) {
         $e = limite_actualizar($clave, fn ($e) => $e);
         $max = max($max, $e['bloqueado_hasta'] - $ahora);
     }
@@ -88,7 +95,7 @@ function limite_registrar_fallo(string $usuario): void
             return $e;
         };
     };
-    limite_actualizar('u|' . strtolower($usuario) . '|' . limite_ip(), $registrar(LIMITE_FALLOS_USUARIO, true));
+    limite_actualizar(limite_clave_usuario($usuario), $registrar(LIMITE_FALLOS_USUARIO, true));
     limite_actualizar('ip|' . limite_ip(), $registrar(LIMITE_FALLOS_IP, false));
 }
 
@@ -114,7 +121,7 @@ function limite_publico(string $accion, int $max, int $ventana): bool
 function limite_registrar_exito(string $usuario): void
 {
     limite_actualizar(
-        'u|' . strtolower($usuario) . '|' . limite_ip(),
+        limite_clave_usuario($usuario),
         fn ($e) => ['fallos' => [], 'bloqueado_hasta' => 0, 'reincidencias' => 0]
     );
 }
