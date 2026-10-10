@@ -1,8 +1,13 @@
 <?php
 require '../core/sesion.php';
 require '../core/marca.php'; // Fase 4.7: nombre y logo de la institución
+require_once '../core/comercial.php'; // Fase 4B: estado y plan de la institución
 if (!sesion_activa()) {
   header('Location: ../index.php');
+  exit;
+}
+if (comercial_condiciones()->soloExportacion()) {
+  require __DIR__ . '/suspendido.php';
   exit;
 }
 ?>
@@ -813,6 +818,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
     <div class="content-wrapper" id="contenido_principal">
+      <?php // Fase 4B.3: avisos del estado de la institución (PRUEBA, MOROSO).
+      $avisoComercial = comercial_condiciones();
+      if ($avisoComercial->esPrueba()) { ?>
+        <div class="alert alert-info m-2 mb-0" id="aviso_prueba" role="status">
+          <b>Versión de prueba</b><?= $avisoComercial->pruebaHasta !== null ? ' hasta el ' . marca_html($avisoComercial->pruebaHasta->format('d/m/Y')) : '' ?>.
+          Los reportes PDF llevan marca de agua.
+        </div>
+      <?php } elseif (!$avisoComercial->permiteAltas()) { ?>
+        <div class="alert alert-warning m-2 mb-0" id="aviso_moroso" role="status">
+          <b>Hay un pago pendiente.</b> Puedes consultar e imprimir, pero no registrar altas ni matrículas hasta regularizarlo.
+        </div>
+      <?php } ?>
 
 
       <!-- Content Wrapper. Contains page content -->
@@ -1984,6 +2001,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
       // El token cambió (p. ej. se inició sesión en otra pestaña): recargar lo renueva.
       Swal.fire('Sesión actualizada', 'La página se recargará para continuar.', 'info')
         .then(function() { window.location.reload(); });
+    } else if (jqXHR.status === 402) {
+      // Fase 4B: el plan o un pago pendiente no permite esta alta. (Los 403 por rol no avisan: el panel
+      // pide algunas tarjetas que solo ve el administrador.)
+      var motivo = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'El plan no permite esta acción.';
+      Swal.fire('Límite del plan', motivo, 'warning');
     } else if (jqXHR.status === 422) {
       // Fase 0.3: archivo rechazado por el servidor (tipo o tamaño no permitido).
       var msg = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'Archivo no permitido.';

@@ -8,7 +8,7 @@ use PDO;
 
 final class PdoRepositorioTenants implements RepositorioTenants
 {
-    private const COLUMNAS = 'slug, base_datos, estado, razon_social';
+    private const COLUMNAS = 'slug, base_datos, estado, razon_social, suspendido_desde';
 
     public function __construct(private readonly PDO $maestro)
     {
@@ -46,6 +46,7 @@ final class PdoRepositorioTenants implements RepositorioTenants
             (string) $fila['base_datos'],
             EstadoTenant::from((string) $fila['estado']),
             (string) $fila['razon_social'],
+            isset($fila['suspendido_desde']) ? new \DateTimeImmutable((string) $fila['suspendido_desde']) : null,
         );
     }
 }

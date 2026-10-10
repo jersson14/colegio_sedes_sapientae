@@ -38,6 +38,7 @@ final class AltaInstitucion
         private readonly PDO $maestro,
         private readonly \Closure $conectar,
         private readonly \Closure $migrar,
+        private readonly int $diasPrueba = 30,
     ) {
     }
 
@@ -52,12 +53,38 @@ final class AltaInstitucion
             }
             $clave = self::claveInicial();
             $this->sembrar(($this->conectar)($s->baseDatos), $s, $clave);
-            $this->maestro->prepare('INSERT INTO tenants (slug, dominio, razon_social, tipo, base_datos, estado) VALUES (?, ?, ?, ?, ?, ?)')
-                ->execute([$s->slug, $s->dominio, $s->razonSocial, $s->tipo, $s->baseDatos, $s->estado->value]);
+            // Registro y plan inicial juntos: o queda el colegio completo o nada.
+            $this->maestro->beginTransaction();
+            try {
+                $this->maestro->prepare('INSERT INTO tenants (slug, dominio, razon_social, tipo, base_datos, estado) VALUES (?, ?, ?, ?, ?, ?)')
+                    ->execute([$s->slug, $s->dominio, $s->razonSocial, $s->tipo, $s->baseDatos, $s->estado->value]);
+                $this->planInicial($s);
+                $this->maestro->commit();
+            } catch (\Throwable $e) {
+                $this->maestro->rollBack();
+                throw $e;
+            }
             return $clave;
         } catch (\Throwable $e) {
             $this->servidor->exec("DROP DATABASE IF EXISTS `{$s->baseDatos}`");
             throw $e;
+        }
+    }
+
+    /**
+     * Fase 4B: un colegio nuevo empieza con el plan PRUEBA (si la maestra lo tiene) y, si está en PRUEBA,
+     * con fecha de fin. Así nunca queda un colegio sin límites por olvido.
+     */
+    private function planInicial(SolicitudAlta $s): void
+    {
+        $plan = $this->maestro->query("SELECT id FROM planes WHERE codigo = 'PRUEBA' AND activo = 1")->fetchColumn();
+        if ($plan === false) {
+            return;
+        }
+        $this->maestro->prepare('INSERT INTO suscripciones (tenant_id, plan_id, inicio) SELECT id, ?, CURDATE() FROM tenants WHERE slug = ?')
+            ->execute([$plan, $s->slug]);
+        if ($s->estado === EstadoTenant::Prueba) {
+            $this->maestro->prepare('UPDATE tenants SET prueba_hasta = CURDATE() + INTERVAL ? DAY WHERE slug = ?')->execute([$this->diasPrueba, $s->slug]);
         }
     }
 

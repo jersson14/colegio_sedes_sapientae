@@ -163,6 +163,9 @@ ESPERADOS_DE_MENOS = {
     # listar_tareas_menu() corre en el panel común, pero su tabla solo existe para el docente.
     ('ENFERMERA', 'controller/tareas/controlador_descargar_tarea.php'),
     ('PSICOLOGA', 'controller/tareas/controlador_descargar_tarea.php'),
+    # Fase 4B.7: el botón «Exportar datos» está en la tabla de Empresa, que solo existe para el administrador
+    # (console_empresa.js se carga en el panel de todos los roles).
+    *[(r, 'controller/exportacion/controlador_exportar_datos.php') for r in ROLES if r != 'ADMINISTRADOR'],
 }
 if '--estricto' in sys.argv:
     problemas = [f'DE MÁS   {r}: {k}' for r in ROLES for k in de_mas[r]]

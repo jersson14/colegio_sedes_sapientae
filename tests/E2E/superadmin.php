@@ -115,9 +115,24 @@ panel_comprobar(preg_match('#data-slug="colegio-a".*?<td>' . $activosA . '</td>#
 // Suspender corta el acceso al colegio; reactivar lo devuelve. Los datos no se tocan.
 $token = panel_csrf($panel['cuerpo']);
 panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'estado', 'slug' => 'colegio-b', 'estado' => 'SUSPENDIDO']);
-panel_comprobar(panel_pedir('colegio-b.prueba.test', 'index.php', "$tmp/b.txt")['codigo'] === 404, 'al suspender colegio-b, su dirección responde 404');
+// Fase 4B.3: suspendido no es «borrado»: su administrador entra, pero solo a descargar sus datos.
+panel_pedir('colegio-b.prueba.test', '', "$tmp/b.txt");
+// Con un docente: aislamiento.php deja bloqueado a usuario9 en colegio-b (prueba del límite de intentos).
+panel_pedir('colegio-b.prueba.test', 'controller/usuario/controlador_iniciar_sesion.php', "$tmp/b.txt", ['u' => 'usuario10', 'c' => 'Prueba.2026']);
+panel_comprobar(
+    str_contains(panel_pedir('colegio-b.prueba.test', 'view/index.php', "$tmp/b.txt")['cuerpo'], 'id="suspendido"'),
+    'al suspender colegio-b, quien entra solo ve el aviso de suspensión'
+);
+panel_comprobar(
+    (string) $maestro->query("SELECT suspendido_desde IS NOT NULL FROM tenants WHERE slug = 'colegio-b'")->fetchColumn() === '1',
+    'y la ventana de exportación empieza a contar'
+);
 $reactivado = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'estado', 'slug' => 'colegio-b', 'estado' => 'ACTIVO']);
-panel_comprobar(panel_pedir('colegio-b.prueba.test', 'index.php', "$tmp/b2.txt")['codigo'] === 200, 'al reactivarlo vuelve a abrir');
+panel_comprobar(
+    !str_contains(panel_pedir('colegio-b.prueba.test', 'view/index.php', "$tmp/b.txt")['cuerpo'], 'id="suspendido"')
+    && (string) $maestro->query("SELECT suspendido_desde IS NULL FROM tenants WHERE slug = 'colegio-b'")->fetchColumn() === '1',
+    'al reactivarlo vuelve el panel completo y se cierra la ventana'
+);
 $inexistente = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'estado', 'slug' => 'no-existe', 'estado' => 'ACTIVO']);
 panel_comprobar(str_contains($inexistente['cuerpo'], 'No existe la institución'), 'un colegio inexistente se informa, no se crea');
 panel_comprobar(substr_count($reactivado['cuerpo'], '<td>ESTADO</td>') >= 2 && str_contains($reactivado['cuerpo'], 'SUSPENDIDO → ACTIVO')
@@ -152,6 +167,9 @@ $bloqueada = panel_pedir(PANEL, 'superadmin/', $h, ['csrf' => panel_csrf($pagina
 panel_comprobar(str_contains($bloqueada['cuerpo'], 'Demasiados intentos') && !str_contains($bloqueada['cuerpo'], 'tabla_instituciones'), 'cinco fallos bloquean la cuenta un rato');
 
 // Limpieza: la institución de prueba, sus cuentas y su base.
+foreach (['facturas', 'suscripciones'] as $dependiente) {
+    $maestro->prepare("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug = ?")->execute([$slugNuevo]);
+}
 $maestro->prepare('DELETE FROM tenants WHERE slug = ?')->execute([$slugNuevo]);
 $maestro->exec('DROP DATABASE IF EXISTS `sge_' . str_replace('-', '_', $slugNuevo) . '`');
 $maestro->prepare('DELETE FROM superadmins WHERE usuario IN (?, ?)')->execute([$usuario, $cuentaBloqueo]);

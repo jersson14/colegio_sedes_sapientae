@@ -459,6 +459,9 @@ es manual.
    certificado wildcard), una cuenta con `php tools/crear_superadmin.php --usuario=… --nombre="…"` y se entra
    por `https://panel.midominio.pe/superadmin/`. Desde ahí: estado de cada colegio, altas y auditoría.
    Conviene limitarlo además por IP en el VirtualHost (`Require ip …`).
+   Planes: se crean en el panel (límites de alumnos, usuarios y MB; precio mensual y/o por alumno). Un
+   colegio nuevo empieza con el plan PRUEBA (50 alumnos, 15 usuarios, 200 MB, 30 días); los límites se
+   aplican en el servidor. En modo único no hay restricciones comerciales.
 10. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
    --aplicar` (lleva al almacén lo subido antes de la Fase 4); después `mysqldump` de su base, importarla
    como `sge_<slug>`, registrar la fila, migrar y copiar su `storage/tenants/<slug>/` al VPS con el slug

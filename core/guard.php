@@ -17,6 +17,7 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/sesion.php';
+require_once __DIR__ . '/comercial.php';
 
 function responder_error(int $codigo, string $mensaje): never
 {
@@ -55,3 +56,6 @@ session_write_close();
 // CSRF (Fase 0.5): toda petición que no sea GET debe traer el token de la sesión.
 // El panel lo envía en la cabecera X-CSRF-Token (ver $.ajaxPrefilter en view/index.php).
 verificar_csrf();
+
+// Fase 4B: el estado y el plan de la institución (MOROSO no da altas; SUSPENDIDO solo exporta; límites).
+comercial_verificar_peticion((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));

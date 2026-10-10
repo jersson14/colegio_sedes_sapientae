@@ -30,6 +30,12 @@ final class Pdf
     {
         require_once __DIR__ . '/../../view/MPDF/vendor/autoload.php';
         $mpdf = new \Mpdf\Mpdf($config);
+        // Fase 4B.3: los PDF de una institución en prueba llevan marca de agua.
+        require_once __DIR__ . '/../../core/comercial.php';
+        if (comercial_condiciones()->esPrueba()) {
+            $mpdf->SetWatermarkText('VERSIÓN DE PRUEBA', 0.08);
+            $mpdf->showWatermarkText = true;
+        }
         if ($titulo !== null) {
             $mpdf->SetTitle($titulo);
         }

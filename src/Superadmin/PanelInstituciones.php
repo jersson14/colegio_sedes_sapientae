@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Superadmin;
 
+use App\Comercial\PdoRepositorioComercial;
+use App\Comercial\Plan;
 use App\Tenancy\AltaInstitucion;
 use App\Tenancy\EstadoTenant;
 use App\Tenancy\SolicitudAlta;
@@ -26,12 +28,18 @@ final class PanelInstituciones
 
     /**
      * @return list<array{slug: string, razon_social: string, tipo: string, estado: string, base_datos: string,
-     *     dominio: ?string, fecha_alta: string, alumnos: ?int, usuarios: ?int, migracion: ?string, error: ?string}>
+     *     dominio: ?string, fecha_alta: string, prueba_hasta: ?string, plan: ?string, alumnos: ?int, usuarios: ?int,
+     *     migracion: ?string, error: ?string}>
      */
     public function listar(): array
     {
-        $filas = $this->maestro->query('SELECT slug, razon_social, tipo, estado, base_datos, dominio, fecha_alta FROM tenants ORDER BY slug')
-            ->fetchAll(PDO::FETCH_ASSOC);
+        $filas = $this->maestro->query(
+            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, p.codigo AS plan
+               FROM tenants t
+               LEFT JOIN suscripciones s ON s.tenant_id = t.id AND s.vigente = 1
+               LEFT JOIN planes p ON p.id = s.plan_id
+              ORDER BY t.slug'
+        )->fetchAll(PDO::FETCH_ASSOC);
         $lista = [];
         foreach ($filas as $f) {
             $cifras = ['alumnos' => null, 'usuarios' => null, 'migracion' => null, 'error' => null];
@@ -52,6 +60,8 @@ final class PanelInstituciones
                 'base_datos' => (string) $f['base_datos'],
                 'dominio' => $f['dominio'] !== null ? (string) $f['dominio'] : null,
                 'fecha_alta' => (string) $f['fecha_alta'],
+                'prueba_hasta' => $f['prueba_hasta'] !== null ? (string) $f['prueba_hasta'] : null,
+                'plan' => $f['plan'] !== null ? (string) $f['plan'] : null,
             ] + $cifras;
         }
         return $lista;
@@ -65,9 +75,56 @@ final class PanelInstituciones
         if ($antes === false) {
             throw new \DomainException("No existe la institución «{$slug}».");
         }
-        $this->maestro->prepare('UPDATE tenants SET estado = ? WHERE slug = ?')->execute([$estado->value, $slug]);
+        // Las fechas antes que el estado: MySQL evalúa el SET en orden y debe comparar con el estado anterior.
+        // suspendido_desde abre la ventana de exportación (Fase 4B.3); salir de SUSPENDIDO la cierra.
+        $this->maestro->prepare(
+            "UPDATE tenants SET
+                suspendido_desde = CASE WHEN ? = 'SUSPENDIDO' THEN IF(estado = 'SUSPENDIDO', suspendido_desde, NOW()) ELSE NULL END,
+                cancelado_en = CASE WHEN ? = 'CANCELADO' THEN IF(estado = 'CANCELADO', cancelado_en, NOW()) ELSE NULL END,
+                estado = ?
+              WHERE slug = ?"
+        )->execute([$estado->value, $estado->value, $estado->value, $slug]);
         $this->auditoria->registrar($actor, 'ESTADO', $slug, "$antes → {$estado->value}", $ip);
         return true;
+    }
+
+    /** @return list<Plan> */
+    public function planes(): array
+    {
+        return (new PdoRepositorioComercial($this->maestro))->planes();
+    }
+
+    public function guardarPlan(Plan $plan, string $actor, string $ip): void
+    {
+        (new PdoRepositorioComercial($this->maestro))->guardarPlan($plan);
+        $this->auditoria->registrar($actor, 'PLAN', null, sprintf(
+            '%s «%s»: %s alumnos, %s usuarios, %s MB, %s/mes + %s/alumno %s',
+            $plan->codigo,
+            $plan->nombre,
+            ...array_map(static fn (?string $v): string => $v ?? '—', [
+                self::texto($plan->limite(\App\Comercial\Recurso::Alumnos)),
+                self::texto($plan->limite(\App\Comercial\Recurso::Usuarios)),
+                self::texto($plan->limite(\App\Comercial\Recurso::AlmacenamientoMb)),
+                $plan->precioMensual,
+                $plan->precioPorAlumno,
+                $plan->moneda,
+            ]),
+        ), $ip);
+    }
+
+    public function asignarPlan(string $slug, string $codigo, ?string $pruebaHasta, string $actor, string $ip): void
+    {
+        if ($pruebaHasta !== null && \DateTimeImmutable::createFromFormat('!Y-m-d', $pruebaHasta) === false) {
+            throw new \InvalidArgumentException('Fecha de fin de prueba inválida.');
+        }
+        (new PdoRepositorioComercial($this->maestro))->asignarPlan($slug, $codigo);
+        $this->maestro->prepare('UPDATE tenants SET prueba_hasta = ? WHERE slug = ?')->execute([$pruebaHasta, $slug]);
+        $this->auditoria->registrar($actor, 'PLAN_ASIGNADO', $slug, $codigo . ($pruebaHasta !== null ? ", prueba hasta $pruebaHasta" : ''), $ip);
+    }
+
+    private static function texto(?int $n): ?string
+    {
+        return $n === null ? null : (string) $n;
     }
 
     /** @return string la contraseña inicial del administrador del colegio */

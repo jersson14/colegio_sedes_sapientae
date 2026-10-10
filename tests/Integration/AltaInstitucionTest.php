@@ -45,6 +45,9 @@ final class AltaInstitucionTest extends TestCase
 
     private function limpiar(): void
     {
+        foreach (['facturas', 'suscripciones'] as $dependiente) {
+            $this->maestro->exec("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug LIKE 'prueba-alta-%'");
+        }
         $this->maestro->exec("DELETE FROM tenants WHERE slug LIKE 'prueba-alta-%'");
         foreach ($this->servidor->query("SHOW DATABASES LIKE 'prueba\\_alta\\_%'")->fetchAll(PDO::FETCH_COLUMN) as $base) {
             $this->servidor->exec("DROP DATABASE `$base`");

@@ -12,6 +12,8 @@ final class Tenant
         public readonly string $baseDatos,
         public readonly EstadoTenant $estado,
         public readonly string $razonSocial = '',
+        /** Desde cuándo está SUSPENDIDO (abre la ventana de exportación de sus datos, Fase 4B.3). */
+        public readonly ?\DateTimeImmutable $suspendidoDesde = null,
     ) {
         if (!self::slugValido($slug)) {
             throw new \InvalidArgumentException("Slug de tenant inválido: «{$slug}».");

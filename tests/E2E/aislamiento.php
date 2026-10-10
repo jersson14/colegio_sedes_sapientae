@@ -37,6 +37,10 @@ $pdo = static fn (string $bd): PDO => new PDO(
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
 );
 $maestro = $pdo($entorno('MAESTRO_DB_NAME'));
+// Lo que cuelga de cada colegio (planes, facturas) antes que el colegio: las claves foráneas lo exigen.
+foreach (['facturas', 'suscripciones'] as $dependiente) {
+    $maestro->exec("DELETE x FROM $dependiente x JOIN tenants t ON t.id = x.tenant_id WHERE t.slug IN ('colegio-a', 'colegio-b', 'suspendido')");
+}
 $maestro->exec("DELETE FROM tenants WHERE slug IN ('colegio-a', 'colegio-b', 'suspendido')");
 $alta = $maestro->prepare('INSERT INTO tenants (slug, razon_social, base_datos, estado) VALUES (?, ?, ?, ?)');
 $alta->execute(['colegio-a', 'Colegio A', $entorno('DB_NAME_A'), 'ACTIVO']);

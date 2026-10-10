@@ -102,6 +102,9 @@ function subida_comprobar(array $f, int $maxBytes): void
     if ($f['size'] > $maxBytes) {
         subida_rechazar('El archivo supera el tamaño máximo de ' . intdiv($maxBytes, 1048576) . ' MB.');
     }
+    // Fase 4B.2: el almacenamiento del plan de la institución.
+    require_once __DIR__ . '/comercial.php';
+    comercial_exigir_espacio((int) $f['size']);
 }
 
 /**

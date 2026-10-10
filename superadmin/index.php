@@ -14,6 +14,8 @@ require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/autoload.php';
 require_once __DIR__ . '/../core/limite_login.php';
 
+use App\Comercial\Plan;
+use App\Comercial\Recurso;
 use App\Core\Conexion;
 use App\Superadmin\Auditoria;
 use App\Superadmin\CuentasSuperadmin;
@@ -131,6 +133,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $panel->cambiarEstado($slug, $estado, $actor, $ip);
                 sa_aviso('success', "«{$slug}» pasa a {$estado->value}.");
+            } elseif ($accion === 'plan') {
+                $campo = static fn (string $c): ?string => trim((string) ($_POST[$c] ?? '')) !== '' ? trim((string) $_POST[$c]) : null;
+                $entero = static function (?string $v): ?int {
+                    if ($v !== null && preg_match('/^\d{1,9}$/', $v) !== 1) {
+                        throw new InvalidArgumentException("Límite inválido: «{$v}» (un número, o vacío = sin límite).");
+                    }
+                    return $v === null ? null : (int) $v;
+                };
+                $plan = new Plan(
+                    strtoupper((string) $campo('codigo')),
+                    (string) $campo('nombre'),
+                    [
+                        Recurso::Alumnos->value => $entero($campo('max_alumnos')),
+                        Recurso::Usuarios->value => $entero($campo('max_usuarios')),
+                        Recurso::AlmacenamientoMb->value => $entero($campo('max_almacenamiento_mb')),
+                    ],
+                    $campo('precio_mensual'),
+                    $campo('precio_por_alumno'),
+                    strtoupper($campo('moneda') ?? 'PEN'),
+                );
+                $panel->guardarPlan($plan, $actor, $ip);
+                sa_aviso('success', "Plan {$plan->codigo} guardado.");
+            } elseif ($accion === 'asignar_plan') {
+                $slug = (string) ($_POST['slug'] ?? '');
+                $hasta = trim((string) ($_POST['prueba_hasta'] ?? ''));
+                $panel->asignarPlan($slug, (string) ($_POST['plan'] ?? ''), $hasta !== '' ? $hasta : null, $actor, $ip);
+                sa_aviso('success', "«{$slug}» tiene el plan " . (string) ($_POST['plan'] ?? '') . '.');
             } elseif ($accion === 'alta') {
                 $campo = static fn (string $c): string => trim((string) ($_POST[$c] ?? ''));
                 $solicitud = new SolicitudAlta(
@@ -163,6 +192,7 @@ $aviso = $_SESSION['aviso'] ?? null;
 unset($_SESSION['aviso']);
 $csrf = $e((string) $_SESSION['csrf']);
 $panel = $actor !== null ? new PanelInstituciones($maestro, static fn (string $base): PDO => Conexion::administracion($base), $auditoria) : null;
+$planes = $panel?->planes() ?? [];
 $dominio = (string) config('TENANT_DOMINIO', '');
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -204,7 +234,7 @@ header('Content-Type: text/html; charset=utf-8');
     <div class="card"><div class="card-header"><b>Instituciones</b></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-sm table-striped mb-0" id="tabla_instituciones">
-          <thead><tr><th>Slug</th><th>Institución</th><th>Tipo</th><th>Estado</th><th>Alumnos</th><th>Usuarios</th><th>Migración</th><th>Alta</th><th>Cambiar estado</th></tr></thead>
+          <thead><tr><th>Slug</th><th>Institución</th><th>Tipo</th><th>Estado</th><th>Alumnos</th><th>Usuarios</th><th>Migración</th><th>Alta</th><th>Plan</th><th>Cambiar estado</th></tr></thead>
           <tbody>
           <?php foreach ($panel->listar() as $t) { ?>
             <tr data-slug="<?= $e($t['slug']) ?>">
@@ -218,6 +248,21 @@ header('Content-Type: text/html; charset=utf-8');
                 <td><?= (int) $t['alumnos'] ?></td><td><?= (int) $t['usuarios'] ?></td><td><small><?= $e($t['migracion']) ?></small></td>
               <?php } ?>
               <td><small><?= $e($t['fecha_alta']) ?></small></td>
+              <td>
+                <form method="post" class="form-inline">
+                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                  <input type="hidden" name="accion" value="asignar_plan">
+                  <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
+                  <select name="plan" class="form-control form-control-sm mr-1" aria-label="Plan de <?= $e($t['slug']) ?>">
+                    <?php if ($t['plan'] === null) { ?><option value="">(sin plan)</option><?php } ?>
+                    <?php foreach ($planes as $p) { ?>
+                      <option value="<?= $e($p->codigo) ?>"<?= $p->codigo === $t['plan'] ? ' selected' : '' ?>><?= $e($p->codigo) ?></option>
+                    <?php } ?>
+                  </select>
+                  <input type="date" name="prueba_hasta" class="form-control form-control-sm mr-1" value="<?= $e($t['prueba_hasta']) ?>" title="Fin de la prueba (vacío si no está en prueba)">
+                  <button class="btn btn-sm btn-outline-primary" type="submit">Asignar</button>
+                </form>
+              </td>
               <td>
                 <form method="post" class="form-inline">
                   <input type="hidden" name="csrf" value="<?= $csrf ?>">
@@ -236,7 +281,39 @@ header('Content-Type: text/html; charset=utf-8');
           </tbody>
         </table>
       </div>
-      <div class="card-footer"><small>PRUEBA, ACTIVO y MOROSO entran; SUSPENDIDO y CANCELADO responden 404 (sus datos no se borran).</small></div>
+      <div class="card-footer"><small>PRUEBA, ACTIVO y MOROSO entran (MOROSO sin altas ni matrículas); SUSPENDIDO: solo su
+        administrador, para descargar sus datos, durante la ventana de exportación; CANCELADO responde 404. Nada se borra.</small></div>
+    </div>
+
+    <div class="card"><div class="card-header"><b>Planes</b> <small class="text-muted">— límites vacíos = sin límite; precios vacíos = no se cobra por ese concepto</small></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm mb-0" id="tabla_planes">
+          <thead><tr><th>Código</th><th>Nombre</th><th>Alumnos</th><th>Usuarios</th><th>MB</th><th>Mensual</th><th>Por alumno</th><th>Moneda</th></tr></thead>
+          <tbody>
+          <?php foreach ($planes as $p) { ?>
+            <tr data-plan="<?= $e($p->codigo) ?>"><td><?= $e($p->codigo) ?></td><td><?= $e($p->nombre) ?></td>
+              <td><?= $e((string) ($p->limite(Recurso::Alumnos) ?? '—')) ?></td><td><?= $e((string) ($p->limite(Recurso::Usuarios) ?? '—')) ?></td>
+              <td><?= $e((string) ($p->limite(Recurso::AlmacenamientoMb) ?? '—')) ?></td><td><?= $e($p->precioMensual ?? '—') ?></td>
+              <td><?= $e($p->precioPorAlumno ?? '—') ?></td><td><?= $e($p->moneda) ?></td></tr>
+          <?php } ?>
+          </tbody>
+        </table>
+      </div>
+      <form method="post" class="card-body border-top" autocomplete="off">
+        <input type="hidden" name="csrf" value="<?= $csrf ?>">
+        <input type="hidden" name="accion" value="plan">
+        <div class="form-row">
+          <div class="col-md-2 mb-2"><label for="plan_codigo">Código</label><input class="form-control" id="plan_codigo" name="codigo" required pattern="[A-Za-z0-9_]{2,30}" placeholder="BASICO"></div>
+          <div class="col-md-3 mb-2"><label for="plan_nombre">Nombre</label><input class="form-control" id="plan_nombre" name="nombre" required maxlength="100"></div>
+          <div class="col-md-1 mb-2"><label for="plan_alumnos">Alumnos</label><input class="form-control" id="plan_alumnos" name="max_alumnos" inputmode="numeric"></div>
+          <div class="col-md-1 mb-2"><label for="plan_usuarios">Usuarios</label><input class="form-control" id="plan_usuarios" name="max_usuarios" inputmode="numeric"></div>
+          <div class="col-md-1 mb-2"><label for="plan_mb">MB</label><input class="form-control" id="plan_mb" name="max_almacenamiento_mb" inputmode="numeric"></div>
+          <div class="col-md-1 mb-2"><label for="plan_mensual">Mensual</label><input class="form-control" id="plan_mensual" name="precio_mensual" inputmode="decimal"></div>
+          <div class="col-md-1 mb-2"><label for="plan_por_alumno">Por alumno</label><input class="form-control" id="plan_por_alumno" name="precio_por_alumno" inputmode="decimal"></div>
+          <div class="col-md-1 mb-2"><label for="plan_moneda">Moneda</label><input class="form-control" id="plan_moneda" name="moneda" value="PEN" maxlength="3"></div>
+        </div>
+        <button class="btn btn-success" type="submit">Guardar plan</button> <small class="text-muted">Con un código existente, lo modifica.</small>
+      </form>
     </div>
 
     <div class="card"><div class="card-header"><b>Dar de alta una institución</b> <small class="text-muted">— crea la base, la migra y crea su administrador (unos segundos)</small></div>

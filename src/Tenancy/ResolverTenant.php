@@ -22,6 +22,7 @@ final class ResolverTenant
         private readonly ?Tenant $tenantUnico = null,
         private readonly ?\Closure $repositorio = null,
         private readonly string $dominioBase = '',
+        private readonly int $diasExportacion = 30,
     ) {
         if ($modo === ModoTenant::Unico && $tenantUnico === null) {
             throw new \InvalidArgumentException('El modo único necesita su tenant.');
@@ -47,6 +48,7 @@ final class ResolverTenant
             $modo,
             repositorio: static fn (): RepositorioTenants => new PdoRepositorioTenants(Conexion::maestro()),
             dominioBase: (string) config('TENANT_DOMINIO', ''),
+            diasExportacion: (int) config('SUSPENSION_DIAS_EXPORTACION', '30'),
         );
     }
 
@@ -68,10 +70,23 @@ final class ResolverTenant
         $repositorio = ($this->repositorio ?? throw new \LogicException('Sin registro de tenants.'))();
         $slug = self::slugDesdeHost($host, $this->dominioBase);
         $tenant = $slug !== null ? $repositorio->porSlug($slug) : $repositorio->porDominio($host);
-        if ($tenant === null || !$tenant->estado->permiteAcceso()) {
+        if ($tenant === null || !$this->puedeEntrar($tenant)) {
             throw new TenantNoEncontrado('Institución no disponible.');
         }
         return $tenant;
+    }
+
+    /**
+     * PRUEBA, ACTIVO y MOROSO entran. SUSPENDIDO, solo durante la ventana de exportación (Fase 4B.3: su
+     * administrador descarga sus datos); pasada, o sin fecha de suspensión, como CANCELADO: no existe.
+     */
+    private function puedeEntrar(Tenant $tenant): bool
+    {
+        if ($tenant->estado->permiteAcceso()) {
+            return true;
+        }
+        return $tenant->estado === EstadoTenant::Suspendido && $tenant->suspendidoDesde !== null
+            && $tenant->suspendidoDesde > new \DateTimeImmutable("-{$this->diasExportacion} days");
     }
 
     /** Minúsculas, sin puerto ni punto final; null si no es un nombre de host. */
