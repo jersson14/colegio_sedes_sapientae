@@ -150,6 +150,40 @@ comprobar($reporte['codigo'] === 401, 'tampoco abre reportes PDF de B (401)', "(
 $panel = pedir($hostB, 'view/index.php', "$tmp/a_en_b.txt");
 comprobar(!str_contains($panel['cuerpo'], 'csrf-token'), 'ni el panel de B');
 
+// Barrido (Fase 4.9): TODOS los endpoints con sesión, con la sesión de A presentada en B, por GET y por
+// POST con el token CSRF de A. Ninguno puede responder otra cosa que 401: ni datos, ni un 200 vacío.
+$publicos = ['controller/usuario/controlador_iniciar_sesion.php', 'controller/usuario/controlador_cerrar_sesion.php',
+    'controller/controlador_solicitudes.php', 'controller/archivo/controlador_logo.php'];
+$raizProyecto = dirname(__DIR__, 2);
+$endpoints = [];
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator("$raizProyecto/controller", FilesystemIterator::SKIP_DOTS)) as $f) {
+    $rel = str_replace('\\', '/', substr((string) $f, strlen($raizProyecto) + 1));
+    if (str_ends_with($rel, '.php') && !str_contains($rel, 'controller/tareas/controller/') && !in_array($rel, $publicos, true)) {
+        $endpoints[] = $rel;
+    }
+}
+foreach (glob("$raizProyecto/view/MPDF/REPORTE/*.php") ?: [] as $f) {
+    $endpoints[] = 'view/MPDF/REPORTE/' . basename($f);
+}
+$filtrados = [];
+foreach ($endpoints as $ep) {
+    $get = pedir($hostB, $ep, "$tmp/a_en_b.txt");
+    $post = pedir($hostB, $ep, "$tmp/a_en_b.txt", ['id' => '1', 'codigo' => '1'], ["X-CSRF-Token: $tokenA"]);
+    if ($get['codigo'] !== 401 || $post['codigo'] !== 401) {
+        $filtrados[] = "$ep ({$get['codigo']}/{$post['codigo']})";
+    }
+}
+comprobar(count($endpoints) > 250 && $filtrados === [], 'ningún endpoint (' . count($endpoints) . ') acepta en B la sesión de A, ni por GET ni por POST',
+    implode(', ', array_slice($filtrados, 0, 5)));
+
+// Formulario público: cada solicitud queda en la base del colegio cuya página la envió.
+$marcaSolicitud = 'Solicitud B ' . getmypid();
+$enviada = pedir($hostB, 'controller/controlador_solicitudes.php', "$tmp/vacia.txt",
+    ['nombre' => $marcaSolicitud, 'email' => 'familia@example.com', 'telefono' => '987654321', 'nivel' => 'primaria', 'mensaje' => 'Información, por favor']);
+$contar = static fn (string $bd): int => (int) $pdo($bd)->query('SELECT COUNT(*) FROM solicitudes_informacion WHERE nombre_completo LIKE ' . $pdo($bd)->quote("%$marcaSolicitud%"))->fetchColumn();
+comprobar(str_contains($enviada['cuerpo'], 'success') && $contar($entorno('DB_NAME_B')) === 1 && $contar($entorno('DB_NAME_A')) === 0,
+    'una solicitud de la página de B queda en la base de B y no en la de A', "({$enviada['codigo']}: " . mb_substr($enviada['cuerpo'], 0, 80) . ')');
+
 // Quien presentó la galleta en otro colegio no cierra la sesión legítima de A.
 $sigue = pedir($hostA, LISTAR, $galletaA, [], ["X-CSRF-Token: $tokenA"]);
 comprobar($sigue['codigo'] === 200 && str_contains($sigue['cuerpo'], '70000001'), 'la sesión de A sigue activa en A');

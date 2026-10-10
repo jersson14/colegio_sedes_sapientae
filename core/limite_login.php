@@ -102,11 +102,12 @@ function limite_registrar_fallo(string $usuario): void
 /**
  * Límite simple por IP para formularios públicos (H-14): true si se permite
  * y registra el uso; false si la IP superó $max usos en $ventana segundos.
+ * Por institución (Fase 4): el formulario de un colegio no agota el de otro.
  */
 function limite_publico(string $accion, int $max, int $ventana): bool
 {
     $permitido = true;
-    limite_actualizar('pub|' . $accion . '|' . limite_ip(), function (array $e, int $ahora) use ($max, $ventana, &$permitido) {
+    limite_actualizar('pub|' . tenant_actual()->slug . '|' . $accion . '|' . limite_ip(), function (array $e, int $ahora) use ($max, $ventana, &$permitido) {
         $e['usos'] = array_values(array_filter($e['usos'] ?? [], fn ($t) => $t > $ahora - $ventana));
         if (count($e['usos']) >= $max) {
             $permitido = false;
