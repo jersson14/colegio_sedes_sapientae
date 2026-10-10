@@ -44,11 +44,14 @@ if ((getenv('COLEGIO_ENV') ?: '') === '') {
     exit(2);
 }
 
-/** Fechas que dependen del reloj de PHP, no de la BD. */
+/**
+ * Lo que depende de la máquina y no del reporte: las fechas del reloj de PHP y los finales de línea
+ * (en Windows git deja los .php en CRLF y el HTML escrito en ellos lleva \r\n; en el CI, \n).
+ */
 function normalizar(string $texto): string
 {
     $hoy = [date('d/m/Y'), date('d-m-Y'), date('Y-m-d')];
-    return str_replace($hoy, '«HOY»', $texto);
+    return str_replace([...$hoy, "\r\n", '\r\n'], ['«HOY»', '«HOY»', '«HOY»', "\n", '\n'], $texto);
 }
 
 function ejecutar(array $caso): array
