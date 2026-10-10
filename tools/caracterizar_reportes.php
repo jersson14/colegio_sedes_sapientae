@@ -82,13 +82,30 @@ if (!is_array($grabados)) {
     fwrite(STDERR, "No hay grabación: ejecuta primero «grabar».\n");
     exit(2);
 }
+/** Primera diferencia legible entre la grabación y el resultado (campo y línea). */
+function primeraDiferencia(array $antes, array $ahora): string
+{
+    if ($antes['salida'] !== $ahora['salida']) {
+        return 'salida: «' . mb_substr($ahora['salida'], 0, 200) . '»';
+    }
+    $a = explode("\n", implode('', $antes['registro']['html'] ?? []));
+    $b = explode("\n", implode('', $ahora['registro']['html'] ?? []));
+    foreach ($b as $n => $linea) {
+        if (($a[$n] ?? null) !== $linea) {
+            return "html línea $n: grabado «" . trim(mb_substr($a[$n] ?? '(nada)', 0, 120)) . '» ahora «' . trim(mb_substr($linea, 0, 120)) . '»';
+        }
+    }
+    return count($a) !== count($b) ? 'html: ' . count($a) . ' líneas grabadas, ' . count($b) . ' ahora' : 'config, pie o archivo';
+}
+
 $cambios = 0;
 foreach ($resultados as $i => $r) {
     if (($grabados[$i] ?? null) !== $r) {
         $cambios++;
-        echo "CAMBIO  {$r['reporte']} " . json_encode($r['parametros']) . "\n";
+        $detalle = is_array($grabados[$i] ?? null) ? primeraDiferencia($grabados[$i], $r) : 'caso nuevo';
+        echo "CAMBIO  {$r['reporte']} " . json_encode($r['parametros']) . "\n        $detalle\n";
         if (getenv('GITHUB_ACTIONS')) {
-            echo "::error title=Reporte PDF::{$r['reporte']} cambió respecto a la grabación\n";
+            echo "::error title=Reporte PDF::{$r['reporte']} " . json_encode($r['parametros']) . ' ' . str_replace("\n", ' ', $detalle) . "\n";
         }
     }
 }
