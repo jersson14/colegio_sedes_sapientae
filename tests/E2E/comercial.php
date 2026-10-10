@@ -143,6 +143,8 @@ comercial_comprobar(str_contains($suspendido, 'id="suspendido"') && str_contains
 // Por GET: la página de suspensión no lleva token CSRF (un POST sin él daría 419 antes de llegar aquí).
 comercial_comprobar(comercial_pedir($listar, $g)['codigo'] === 403, 'SUSPENDIDO: nada más responde (403)');
 comercial_comprobar(comercial_pedir('view/MPDF/REPORTE/kardex.php?codigo=38', $g)['codigo'] === 403, 'SUSPENDIDO: tampoco los reportes');
+// Por id, no por hora: la aplicación escribe en hora de Perú y esta conexión puede estar en UTC.
+$ultimaAuditoria = (int) $maestro->query('SELECT COALESCE(MAX(id), 0) FROM auditoria')->fetchColumn();
 $exportacion = comercial_pedir('controller/exportacion/controlador_exportar_datos.php', $g);
 file_put_contents("$tmp/datos.zip", $exportacion['cuerpo']);
 $zip = new ZipArchive();
@@ -159,7 +161,7 @@ comercial_comprobar(str_contains($usuarios, 'usu_usuario') && !str_contains($usu
 if ($abierto) {
     $zip->close();
 }
-$auditada = (int) $maestro->query("SELECT COUNT(*) FROM auditoria WHERE accion = 'EXPORTACION' AND tenant = 'colegio-a' AND fecha > NOW() - INTERVAL 5 MINUTE")->fetchColumn();
+$auditada = (int) $maestro->query("SELECT COUNT(*) FROM auditoria WHERE accion = 'EXPORTACION' AND tenant = 'colegio-a' AND id > $ultimaAuditoria")->fetchColumn();
 comercial_comprobar($auditada >= 1, 'la exportación queda en la auditoría');
 comercial_entrar('usuario10', "$tmp/docente.txt");
 $docente = comercial_pedir('view/index.php', "$tmp/docente.txt")['cuerpo'];
