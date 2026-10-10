@@ -274,6 +274,13 @@ los 17 bloques `if ($_SESSION['S_ROL'] == "...")` actuales.
 
 ### 4.5 Panel de superadministrador
 
+> **Implementado (Fase 4.8):** `superadmin/index.php` en `https://SUPERADMIN_HOST/superadmin/`, solo en modo
+> múltiple (en otro host, el mismo 404 que un colegio inexistente). Cuentas propias en la maestra
+> (`tools/crear_superadmin.php`), sesión propia, CSRF y límite de intentos. Lista los colegios con sus
+> cifras, cambia su estado (SUSPENDIDO/CANCELADO dejan de resolverse sin borrar datos) y da de alta
+> colegios nuevos; todo queda en `auditoria` (quién, qué, colegio, cuándo, IP). Pendiente: el «acceso de
+> soporte» a un colegio (entrar como él con registro), que conviene diseñar junto con los permisos (4.4).
+
 Alta/baja/suspensión de tenants, uso y cuotas, estado de suscripción, métricas
 agregadas, acceso de soporte con registro de auditoría (quién entró a qué tenant y cuándo).
 

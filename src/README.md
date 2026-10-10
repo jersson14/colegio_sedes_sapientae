@@ -32,7 +32,10 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 `PdoRepositorioTenants` sobre la BD maestra (`Core\Conexion::maestro()`). `AltaInstitucion` + `SolicitudAlta`
 dan de alta un colegio (`tools/alta_tenant.php`); `MigradorPhinx` migra una base concreta. `Marca` reúne
 nombre, logo, color y página pública (`Domain\Empresa\PaginaPublica`, `ColorInstitucion`), que el
-administrador edita con `Services\GestionarPersonalizacion` («Empresa → Personalizar»). El código heredado lo usa a través
+administrador edita con `Services\GestionarPersonalizacion` («Empresa → Personalizar»).
+
+`Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
+`superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través
 de `core/tenant.php` (`tenant_actual()`). `Services\TareasProgramadas` hace el trabajo de los eventos de la BD
 para el cron.
 

@@ -8,6 +8,7 @@ parameters:
         - tools
         - tests
         - database
+        - superadmin
     excludePaths:
         analyseAndScan:
             - tests/*/.gitkeep

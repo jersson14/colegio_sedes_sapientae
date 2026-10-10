@@ -455,7 +455,11 @@ es manual.
    `0 2 * * * php /var/www/colegio/tools/respaldo_tenant.php respaldar --todos` (copiar `RESPALDO_DIR` fuera
    del VPS).
    `event_scheduler` puede quedar apagado.
-9. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
+9. Panel de superadministrador: `SUPERADMIN_HOST=panel.midominio.pe` en `colegio.env` (cubierto por el
+   certificado wildcard), una cuenta con `php tools/crear_superadmin.php --usuario=… --nombre="…"` y se entra
+   por `https://panel.midominio.pe/superadmin/`. Desde ahí: estado de cada colegio, altas y auditoría.
+   Conviene limitarlo además por IP en el VirtualHost (`Require ip …`).
+10. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
    --aplicar` (lleva al almacén lo subido antes de la Fase 4); después `mysqldump` de su base, importarla
    como `sge_<slug>`, registrar la fila, migrar y copiar su `storage/tenants/<slug>/` al VPS con el slug
    nuevo. Los usuarios y contraseñas siguen valiendo.

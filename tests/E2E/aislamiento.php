@@ -185,7 +185,7 @@ $enviada = pedir(
     $hostB,
     'controller/controlador_solicitudes.php',
     "$tmp/vacia.txt",
-    ['nombre' => $marcaSolicitud, 'email' => 'familia@example.com', 'telefono' => '987654321', 'nivel' => 'primaria', 'mensaje' => 'Información, por favor']
+    ['nombre' => $marcaSolicitud, 'email' => 'familia' . getmypid() . '@example.com', 'telefono' => '987654321', 'nivel' => 'primaria', 'mensaje' => 'Información, por favor']
 );
 $contar = static fn (string $bd): int => (int) $pdo($bd)->query('SELECT COUNT(*) FROM solicitudes_informacion WHERE nombre_completo LIKE ' . $pdo($bd)->quote("%$marcaSolicitud%"))->fetchColumn();
 comprobar(

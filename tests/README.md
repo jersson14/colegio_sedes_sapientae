@@ -78,6 +78,11 @@ Las peticiones van a `colegio-a.prueba.test` / `colegio-b.prueba.test` resueltos
 el archivo hosts). Comprobado que falla si se quita la marca `S_TENANT` de la sesión. Incluye un barrido
 de los 269 endpoints con la sesión de A presentada en B (GET y POST): todos deben dar 401.
 
+`tests/E2E/superadmin.php` (mismo trabajo, con `SUPERADMIN_HOST=panel.prueba.test`) recorre el panel de
+superadministrador: solo existe en su host, CSRF, contraseña mala, la sesión de un colegio no lo abre,
+cifras de cada colegio, suspender/reactivar (404/200), alta desde el panel con login del administrador
+nuevo, auditoría, cuenta desactivada y bloqueo tras cinco fallos.
+
 El mismo trabajo del CI ensaya además el alta de un colegio (`tools/alta_tenant.php`) y el ciclo de
 respaldo: respaldar B, borrar sus alumnos, restaurar con `--activar` y comprobar que vuelven; un
 respaldo alterado no se restaura.

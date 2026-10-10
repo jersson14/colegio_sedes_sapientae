@@ -76,6 +76,8 @@ mezclar inglés rompe la coherencia con los 254 SPs.
   `core/tenant.php` / `App\Tenancy\TenantContext` (sin tenant no hay conexión) y la sesión lleva
   `S_TENANT`. `empresa_id` (en `usuario`/`empresa`) **no** es el discriminador. Una sola rama: nunca
   bifurcar por modo. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md) y [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) §7.
+  Herramientas: `tools/alta_tenant.php`, `migrar_tenants.php`, `respaldo_tenant.php`, `tareas_programadas.php`,
+  `crear_superadmin.php`; panel en `superadmin/` (solo `SUPERADMIN_HOST`). Zona horaria: `APP_ZONA_HORARIA`.
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
   versionan y leen `colegio.env` vía `config()`. Nunca pongas secretos en archivos del repo.
 - **`*.sql` está en `.gitignore`**, pero `colegio.sql` y `tabla_solicitudes.sql` ya están

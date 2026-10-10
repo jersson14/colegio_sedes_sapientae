@@ -34,7 +34,16 @@ final class MigradorPhinx
             self::RAIZ . ($maestra ? '/phinx_maestro.php' : '/phinx.php'),
             '--no-interaction',
         ];
-        $proceso = proc_open($comando, [1 => STDOUT, 2 => STDERR], $tuberias, self::RAIZ, $entorno);
-        return is_resource($proceso) && proc_close($proceso) === 0;
+        // En consola la salida de Phinx se ve; desde la web (panel de superadministrador) STDOUT no existe:
+        // va a un temporal, y al log si la migración falla.
+        $salida = PHP_SAPI === 'cli' ? null : tmpfile();
+        $descriptores = $salida === null || $salida === false ? [1 => STDOUT, 2 => STDERR] : [1 => $salida, 2 => $salida];
+        $proceso = proc_open($comando, $descriptores, $tuberias, self::RAIZ, $entorno);
+        $ok = is_resource($proceso) && proc_close($proceso) === 0;
+        if (!$ok && is_resource($salida)) {
+            rewind($salida);
+            error_log("Phinx falló en $base: " . mb_substr((string) stream_get_contents($salida), -2000));
+        }
+        return $ok;
     }
 }

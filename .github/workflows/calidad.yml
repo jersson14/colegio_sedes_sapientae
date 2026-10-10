@@ -243,6 +243,7 @@ jobs:
           TENANT_DOMINIO=prueba.test
           MAESTRO_DB_NAME=$MAESTRO_DB_NAME
           RESPALDO_DIR=$RUNNER_TEMP/respaldos
+          SUPERADMIN_HOST=panel.prueba.test
           EOF
           for bd in "$MAESTRO_DB_NAME" "$DB_NAME_A" "$DB_NAME_B"; do
             mysql -h 127.0.0.1 -uroot -proot -e "CREATE DATABASE \`$bd\` CHARACTER SET utf8mb4"
@@ -265,7 +266,7 @@ jobs:
           done
 
       - name: Pruebas de integración de la BD maestra
-        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter 'TenantsMaestroTest|AltaInstitucionTest'
+        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter 'TenantsMaestroTest|AltaInstitucionTest|SuperadminTest'
 
       - name: Alta de un colegio con la herramienta (tools/alta_tenant.php)
         env:
@@ -287,6 +288,11 @@ jobs:
           COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8098 -t . tests/E2E/router.php > "$RUNNER_TEMP/servidor.log" 2>&1 &
           for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
           php tests/E2E/aislamiento.php
+
+      - name: Panel de superadministrador (tests/E2E/superadmin.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
+        run: php tests/E2E/superadmin.php
 
       # El mysqldump de MySQL 8 de la imagen estropea contra MariaDB los nombres con «ñ» (SP_CARGAR_AÑO):
       # se usa el cliente de MariaDB, como en XAMPP y en el hosting.
