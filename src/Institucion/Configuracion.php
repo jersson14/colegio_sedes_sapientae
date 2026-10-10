@@ -21,6 +21,8 @@ final class Configuracion
         'periodo.tipo' => ['enum', ['BIMESTRE', 'TRIMESTRE', 'CUATRIMESTRE', 'SEMESTRE']],
         'evaluacion.nota_minima' => ['entero', [0, 20]],
         'evaluacion.ponderacion' => ['enum', ['SIMPLE', 'POR_CREDITOS']],
+        // Desde qué nota una unidad desaprobada tiene evaluación de recuperación (igual a la mínima = sin recuperación).
+        'evaluacion.recuperacion_desde' => ['entero', [0, 20]],
         'apoderado.obligatorio' => ['booleano', []],
         'matricula.modo' => ['enum', ['POR_AULA', 'POR_UNIDAD']],
     ];
@@ -30,6 +32,7 @@ final class Configuracion
             'periodo.tipo' => 'BIMESTRE',
             'evaluacion.nota_minima' => '11',
             'evaluacion.ponderacion' => 'SIMPLE',
+            'evaluacion.recuperacion_desde' => '11',
             'apoderado.obligatorio' => '1',
             'matricula.modo' => 'POR_AULA',
         ],
@@ -37,6 +40,7 @@ final class Configuracion
             'periodo.tipo' => 'SEMESTRE',
             'evaluacion.nota_minima' => '13',
             'evaluacion.ponderacion' => 'POR_CREDITOS',
+            'evaluacion.recuperacion_desde' => '10',
             'apoderado.obligatorio' => '0',
             'matricula.modo' => 'POR_UNIDAD',
         ],
@@ -44,6 +48,7 @@ final class Configuracion
             'periodo.tipo' => 'SEMESTRE',
             'evaluacion.nota_minima' => '13',
             'evaluacion.ponderacion' => 'POR_CREDITOS',
+            'evaluacion.recuperacion_desde' => '10',
             'apoderado.obligatorio' => '0',
             'matricula.modo' => 'POR_UNIDAD',
         ],
@@ -141,6 +146,12 @@ final class Configuracion
         return (int) $this->valor('evaluacion.nota_minima');
     }
 
+    /** Desde qué nota hay recuperación (nunca por encima de la mínima: sería un rango vacío al revés). */
+    public function recuperacionDesde(): int
+    {
+        return min((int) $this->valor('evaluacion.recuperacion_desde'), $this->notaMinima());
+    }
+
     public function ponderaPorCreditos(): bool
     {
         return $this->valor('evaluacion.ponderacion') === 'POR_CREDITOS';
@@ -165,6 +176,7 @@ final class Configuracion
             'etiquetaPeriodo' => $this->etiquetaPeriodo(),
             'cantidadPeriodos' => $this->cantidadPeriodos(),
             'notaMinima' => $this->notaMinima(),
+            'recuperacionDesde' => $this->recuperacionDesde(),
             'apoderadoObligatorio' => $this->apoderadoObligatorio(),
             'matriculaPorUnidad' => $this->matriculaPorUnidad(),
         ];

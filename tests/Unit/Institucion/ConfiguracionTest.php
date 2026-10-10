@@ -82,7 +82,7 @@ final class ConfiguracionTest extends TestCase
     {
         self::assertSame(
             ['tipo' => 'CETPRO', 'tipoPeriodo' => 'SEMESTRE', 'etiquetaPeriodo' => 'Semestre', 'cantidadPeriodos' => 2,
-                'notaMinima' => 13, 'apoderadoObligatorio' => false, 'matriculaPorUnidad' => true],
+                'notaMinima' => 13, 'recuperacionDesde' => 10, 'apoderadoObligatorio' => false, 'matriculaPorUnidad' => true],
             (new Configuracion(['institucion.tipo' => 'CETPRO']))->paraInterfaz(),
         );
     }

@@ -6,6 +6,7 @@ var MatriculaUnidades = (function () {
     APROBADA: ['success', 'Aprobada'],
     MATRICULADO: ['primary', 'Matriculado'],
     DESAPROBADO: ['danger', 'Desaprobada'],
+    CARGO: ['danger', 'Cargo pendiente'],
     RETIRADO: ['secondary', 'Retirado'],
     INACTIVA: ['light', 'Inactiva'],
     FALTA_REQUISITO: ['warning', 'Falta prerrequisito'],
@@ -33,18 +34,31 @@ var MatriculaUnidades = (function () {
         var sit = SITUACION[u.situacion] || ['light', u.situacion];
         if (u.situacion === 'MATRICULADO') { creditos += parseFloat(u.creditos); }
         var detalle = u.situacion === 'FALTA_REQUISITO' ? '<br><small>Falta: ' + e(u.faltan.join(', ')) + '</small>'
-          : (u.nota_final != null ? '<br><small>Nota: ' + e(u.nota_final) + '</small>' : '');
+          : (u.nota_final != null ? '<br><small>Nota: ' + e(u.nota_final) + (u.nota_recuperacion != null ? ' · recuperación: ' + e(u.nota_recuperacion) : '') + '</small>' : '');
         var accion = '';
-        if (u.situacion === 'DISPONIBLE' || u.situacion === 'DESAPROBADO' || u.situacion === 'RETIRADO') {
+        var cfg = window.INSTITUCION || { notaMinima: 13, recuperacionDesde: 10 };
+        if (u.situacion === 'DISPONIBLE' || u.situacion === 'CARGO' || u.situacion === 'RETIRADO') {
           accion = '<button class="btn btn-xs btn-success matricular" onclick="MatriculaUnidades.matricular(' + u.id_unidad + ')">Matricular</button>';
         } else if (u.situacion === 'MATRICULADO') {
-          accion = '<button class="btn btn-xs btn-outline-danger retirar" onclick="MatriculaUnidades.retirar(' + u.id_matricula_unidad + ')">Retirar</button>';
+          accion = '<button class="btn btn-xs btn-primary calificar mr-1" onclick="MatriculaUnidades.calificar(' + u.id_matricula_unidad + ')">Calificar</button>'
+            + '<button class="btn btn-xs btn-outline-danger retirar" onclick="MatriculaUnidades.retirar(' + u.id_matricula_unidad + ')">Retirar</button>';
+        } else if (u.situacion === 'DESAPROBADO' && u.nota_recuperacion == null
+            && parseFloat(u.nota_final) >= cfg.recuperacionDesde && parseFloat(u.nota_final) < cfg.notaMinima) {
+          accion = '<button class="btn btn-xs btn-warning recuperar" onclick="MatriculaUnidades.recuperar(' + u.id_matricula_unidad + ')">Recuperación</button>';
         }
         return '<tr data-unidad="' + u.id_unidad + '" data-situacion="' + e(u.situacion) + '"><td>' + ROMANOS[u.periodo_academico] + '</td><td>' + e(u.codigo) + '</td><td>' + e(u.nombre)
           + '</td><td>' + e(u.modulo) + '</td><td>' + e(u.creditos) + '</td><td><span class="badge badge-' + sit[0] + '">' + sit[1] + '</span>' + detalle + '</td><td>' + accion + '</td></tr>';
       });
       $('#tabla_matricula_unidades tbody').html(filas.length ? filas.join('') : '<tr><td colspan="7" class="text-muted">El programa no tiene unidades didácticas.</td></tr>');
       $('#mu_creditos').text(creditos.toFixed(1));
+    });
+    $.ajax({ url: URL, type: 'GET', data: { record: 1, alumno: s.alumno, programa: s.programa }, dataType: 'json' }).done(function (r) {
+      var cargos = r.cargos.length
+        ? r.cargos.map(function (c) { return e(c.codigo) + ' (' + e(c.nota) + (c.recuperable ? ', con recuperación' : '') + ')'; }).join(', ')
+        : 'ninguno';
+      $('#mu_record').prop('hidden', false).html('<b>' + e(r.estrategia) + ':</b> ' + (r.promedio == null ? '—' : e(r.promedio))
+        + ' &nbsp;·&nbsp; <b>Créditos aprobados:</b> ' + e(r.creditos_aprobados) + ' (' + e(r.unidades_aprobadas) + ' unidades)'
+        + ' &nbsp;·&nbsp; <b>Cargos:</b> <span id="mu_cargos">' + cargos + '</span>');
     });
   }
 
@@ -73,6 +87,18 @@ var MatriculaUnidades = (function () {
     },
     retirar: function (id) {
       enviar({ accion: 'retirar', id: id });
+    },
+    calificar: function (id) { this.nota('calificar', id); },
+    recuperar: function (id) { this.nota('recuperar', id); },
+    // Fase 5.5 y 5.6: nota final de la unidad o de su evaluación de recuperación.
+    nota: function (que, id) {
+      Swal.fire({
+        title: que === 'calificar' ? 'Nota final de la unidad' : 'Nota de la evaluación de recuperación',
+        input: 'text', inputPlaceholder: 'De 0 a 20 (p. ej. 14 o 13.5)', showCancelButton: true,
+        confirmButtonText: 'Registrar', cancelButtonText: 'Cancelar'
+      }).then(function (r) {
+        if (r.isConfirmed) { enviar({ accion: que, id: id, nota: String(r.value).replace(',', '.').trim() }); }
+      });
     },
     recargar: cargar
   };

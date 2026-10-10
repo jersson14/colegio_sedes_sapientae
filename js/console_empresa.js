@@ -259,7 +259,7 @@ function Guardar_Personalizacion() {
 }
 
 // Fase 5.1: configuración académica de la institución.
-const CAMPOS_CONFIGURACION = ['periodo.tipo', 'evaluacion.nota_minima', 'evaluacion.ponderacion', 'apoderado.obligatorio', 'matricula.modo'];
+const CAMPOS_CONFIGURACION = ['periodo.tipo', 'evaluacion.nota_minima', 'evaluacion.recuperacion_desde', 'evaluacion.ponderacion', 'apoderado.obligatorio', 'matricula.modo'];
 $('#tabla_empresa').on('click', '.configuracion', function () {
   $.ajax({ url: '../controller/institucion/controlador_obtener_configuracion.php', type: 'GET', dataType: 'json' })
     .done(function (datos) {

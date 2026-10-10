@@ -42,6 +42,8 @@ en MOROSO, todo menos la exportación en SUSPENDIDO, límites del plan), `Consum
 tipo) y `PdoConfiguracionRepositorio`; `core/institucion.php` la pasa al panel como `window.INSTITUCION`.
 `PlanDeEstudios` (programas, módulos, `UnidadDidactica`, prerrequisitos sin ciclos) y `MatriculaPorUnidad` (matrícula
 y situación del alumno en cada unidad); escriben por los procedimientos de la migración 20261029000000.
+`Evaluacion/`: `EstrategiaEvaluacion` (`PromedioSimple`, `PromedioPorCreditos`) y `RecordAcademico` (último intento
+por unidad, nota de recuperación, créditos aprobados, cargos); notas por `SP_CALIFICAR_UNIDAD` y `SP_RECUPERAR_UNIDAD`.
 
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
 `superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través

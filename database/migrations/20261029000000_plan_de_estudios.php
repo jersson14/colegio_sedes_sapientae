@@ -174,14 +174,16 @@ final class PlanDeEstudios extends AbstractMigration
                 SELECT ROW_COUNT() > 0;
             END');
         // 1 matriculado; 2 ya matriculado en ese periodo; 3 ya aprobó la unidad; 4 le falta un prerrequisito aprobado;
-        // 0 alumno, unidad o periodo inexistente, o unidad inactiva.
+        // 0 alumno, unidad o periodo inexistente, o unidad inactiva. Quien se retiró puede volver en el mismo periodo
+        // (se reactiva su fila: la clave alumno-unidad-periodo es única).
         $this->execute("CREATE PROCEDURE SP_MATRICULAR_UNIDAD(IN ALUMNO INT, IN UNIDAD INT, IN PERIODO INT)
             BEGIN
                 IF NOT EXISTS (SELECT 1 FROM alumnos a WHERE a.Id_alumno = ALUMNO)
                     OR NOT EXISTS (SELECT 1 FROM unidades_didacticas u WHERE u.id_unidad = UNIDAD AND u.estado = 'ACTIVO')
                     OR NOT EXISTS (SELECT 1 FROM periodos p WHERE p.id_periodo = PERIODO) THEN
                     SELECT 0;
-                ELSEIF EXISTS (SELECT 1 FROM matricula_unidades mu WHERE mu.id_alumno = ALUMNO AND mu.id_unidad = UNIDAD AND mu.id_periodo = PERIODO) THEN
+                ELSEIF EXISTS (SELECT 1 FROM matricula_unidades mu WHERE mu.id_alumno = ALUMNO AND mu.id_unidad = UNIDAD AND mu.id_periodo = PERIODO
+                        AND mu.estado <> 'RETIRADO') THEN
                     SELECT 2;
                 ELSEIF EXISTS (SELECT 1 FROM matricula_unidades mu WHERE mu.id_alumno = ALUMNO AND mu.id_unidad = UNIDAD AND mu.estado = 'APROBADO') THEN
                     SELECT 3;
@@ -192,7 +194,8 @@ final class PlanDeEstudios extends AbstractMigration
                 ) THEN
                     SELECT 4;
                 ELSE
-                    INSERT INTO matricula_unidades (id_alumno, id_unidad, id_periodo) VALUES (ALUMNO, UNIDAD, PERIODO);
+                    INSERT INTO matricula_unidades (id_alumno, id_unidad, id_periodo) VALUES (ALUMNO, UNIDAD, PERIODO)
+                        ON DUPLICATE KEY UPDATE estado = 'MATRICULADO', nota_final = NULL;
                     SELECT 1;
                 END IF;
             END");

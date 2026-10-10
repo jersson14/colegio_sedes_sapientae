@@ -27,8 +27,8 @@ final class EsquemaTest extends BaseDatosTestCase
     public function testProcedimientosAlmacenados(): void
     {
         // 254 del esquema inicial + 2 de personalización (Fase 4.7) + 1 de configuración (Fase 5.1)
-        // + 10 del plan de estudios y la matrícula por unidades (Fase 5.3 y 5.4).
-        self::assertSame(267, $this->contar(
+        // + 10 del plan de estudios y la matrícula por unidades (Fase 5.3 y 5.4) + 2 de calificación (Fase 5.5 y 5.6).
+        self::assertSame(269, $this->contar(
             "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = ? AND routine_type = 'PROCEDURE'"
         ));
     }

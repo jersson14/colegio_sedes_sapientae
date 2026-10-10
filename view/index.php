@@ -1274,6 +1274,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <input type="number" min="0" max="20" class="form-control" id="cfg_evaluacion_nota_minima" name="evaluacion_nota_minima">
             </div>
             <div class="form-group">
+              <label for="cfg_evaluacion_recuperacion_desde">Evaluación de recuperación desde la nota</label>
+              <input type="number" min="0" max="20" class="form-control" id="cfg_evaluacion_recuperacion_desde" name="evaluacion_recuperacion_desde">
+              <small class="text-muted">Una unidad desaprobada con esta nota o más (y menos que la mínima) puede recuperarse una vez. Igual a la mínima = sin recuperación.</small>
+            </div>
+            <div class="form-group">
               <label for="cfg_evaluacion_ponderacion">Promedio</label>
               <select class="form-control" id="cfg_evaluacion_ponderacion" name="evaluacion_ponderacion">
                 <option value="SIMPLE">Simple (todas las asignaturas pesan igual)</option>

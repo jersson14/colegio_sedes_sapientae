@@ -38,6 +38,16 @@ Con la matrícula «por unidad didáctica» aparece el menú **Plan de estudios*
   matriculada, disponible o bloqueada (y por qué prerrequisito). Solo se puede matricular en lo disponible, o
   en lo que desaprobó para volver a llevarlo.
 
+En la misma pantalla se registran las notas:
+
+- **Calificar** registra la nota final de una unidad en curso. Con la nota mínima o más, queda aprobada; si no,
+  desaprobada.
+- **Recuperación** aparece si la nota desaprobada está dentro del rango de recuperación (por ejemplo de 10 a 12
+  con mínima 13). Se rinde una sola vez.
+- Una unidad desaprobada queda como **cargo pendiente**: en un periodo siguiente se matricula solo esa unidad, sin
+  repetir el resto.
+- Arriba se ven el **promedio** (ponderado por créditos en institutos), los créditos aprobados y los cargos.
+
 Lo que ya tiene alumnos o historial no se borra: se desactiva.
 
 ## Usuarios y permisos

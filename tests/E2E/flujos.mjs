@@ -712,7 +712,8 @@ try {
     const adm = await entrar(browser, ESC.admin);
     const cfg = 'controller/institucion/controlador_modificar_configuracion.php';
     check(!(await adm.page.isVisible('#menu_instituto')), 'en un colegio no aparece el menú del plan de estudios');
-    await pedir(adm.page, cfg, { matricula_modo: 'POR_UNIDAD' });
+    // Reglas de instituto: mínima 13, recuperación desde 10, promedio por créditos.
+    await pedir(adm.page, cfg, { matricula_modo: 'POR_UNIDAD', evaluacion_nota_minima: '13', evaluacion_recuperacion_desde: '10', evaluacion_ponderacion: 'POR_CREDITOS' });
     await adm.page.reload();
     await adm.page.waitForLoadState('networkidle').catch(() => {});
     check(await adm.page.isVisible('#menu_instituto'), 'con matrícula por unidades aparece «Plan de estudios»');
@@ -759,10 +760,44 @@ try {
     await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
     check((await adm.page.textContent('.swal2-popup')).includes('Retirado'), 'y se retira de A');
     await adm.page.click('.swal2-confirm');
+
+    // Fase 5.5 y 5.6: nota, recuperación, cargo y promedio ponderado.
+    const fila = (u) => `#tabla_matricula_unidades tr[data-unidad="${u}"]`;
+    const conNota = async (boton, u, nota) => {
+      await adm.page.waitForSelector(`${fila(u)} ${boton}`, { timeout: 10000 });
+      await adm.page.click(`${fila(u)} ${boton}`);
+      await adm.page.waitForSelector('.swal2-input', { timeout: 10000 });
+      await adm.page.fill('.swal2-input', nota);
+      await adm.page.click('.swal2-confirm');
+      await adm.page.waitForSelector('.swal2-popup:not(:has(.swal2-input:visible))', { timeout: 10000 });
+      const texto = await adm.page.textContent('.swal2-popup');
+      await adm.page.click('.swal2-confirm');
+      return texto;
+    };
+    await adm.page.click(`${fila(u1)} .matricular`);
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    check((await adm.page.textContent('.swal2-popup')).includes('Matriculado'), 'quien se retiró puede volver a la unidad en el mismo periodo');
+    await adm.page.click('.swal2-confirm');
+    check((await conNota('.calificar', u1, '12')).includes('Nota registrada'), 'A se califica con 12');
+    await adm.page.waitForSelector(`${fila(u1)}[data-situacion="DESAPROBADO"]`, { timeout: 10000 });
+    check(true, '12 < 13: A queda desaprobada');
+    check((await conNota('.recuperar', u1, '14')).includes('Aprobada en la evaluación de recuperación'), 'con 12 tiene recuperación: 14 la aprueba');
+    await adm.page.waitForSelector(`${fila(u2)}[data-situacion="DISPONIBLE"] .matricular`, { timeout: 10000 });
+    check(true, 'aprobada A, B deja de estar bloqueada');
+    await adm.page.click(`${fila(u2)} .matricular`);
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    await adm.page.click('.swal2-confirm');
+    await conNota('.calificar', u2, '9');
+    await adm.page.waitForSelector(`${fila(u2)}[data-situacion="DESAPROBADO"]`, { timeout: 10000 });
+    check(!(await adm.page.isVisible(`${fila(u2)} .recuperar`)), 'con 9 no hay recuperación (fuera del rango 10–12)');
+    await adm.page.waitForFunction(() => /11\.5/.test(document.querySelector('#mu_record')?.textContent || ''), null, { timeout: 10000 }).catch(() => {});
+    const record = await adm.page.textContent('#mu_record');
+    check(/ponderado/i.test(record) && record.includes('11.5') && (await adm.page.textContent('#mu_cargos')).includes(`B${sufijo}`),
+      'el récord muestra el promedio ponderado (14 y 9, 3 créditos cada una → 11.5) y B como cargo', record);
     const docente = await entrar(browser, ESC.docente);
     check((await pedir(docente.page, plan, null, 'GET')).estado === 403, 'el plan de estudios es del administrador (403)');
     await docente.ctx.close();
-    await pedir(adm.page, cfg, { matricula_modo: '' });
+    await pedir(adm.page, cfg, { matricula_modo: '', evaluacion_nota_minima: '', evaluacion_recuperacion_desde: '', evaluacion_ponderacion: '' });
     await adm.ctx.close();
   }
 } finally {

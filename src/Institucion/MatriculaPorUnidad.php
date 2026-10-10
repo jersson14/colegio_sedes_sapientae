@@ -34,6 +34,31 @@ final class MatriculaPorUnidad
         return $resultado;
     }
 
+    /** Lo que responden SP_CALIFICAR_UNIDAD y SP_RECUPERAR_UNIDAD. */
+    public const RESULTADOS_NOTA = [
+        'calificar' => [1 => 'Nota registrada.', 0 => 'Solo se califica una unidad en curso.', 2 => 'La nota debe estar entre 0 y 20.'],
+        'recuperar' => [1 => 'Aprobada en la evaluación de recuperación.', 3 => 'Rindió la recuperación, pero sigue desaprobada: queda como cargo.',
+            0 => 'No procede: la unidad no está desaprobada, ya tuvo recuperación o su nota está fuera del rango de recuperación.',
+            2 => 'La nota debe estar entre 0 y 20.'],
+    ];
+
+    /** @param 'calificar'|'recuperar' $que */
+    public function registrarNota(string $que, int $idMatriculaUnidad, string $nota, Configuracion $c): int
+    {
+        if (preg_match('/^\d{1,2}(\.\d)?$/', $nota) !== 1) {
+            return 2;
+        }
+        $consulta = $que === 'calificar'
+            ? $this->pdo->prepare('CALL SP_CALIFICAR_UNIDAD(?, ?, ?)')
+            : $this->pdo->prepare('CALL SP_RECUPERAR_UNIDAD(?, ?, ?, ?)');
+        $consulta->execute($que === 'calificar'
+            ? [$idMatriculaUnidad, $nota, $c->notaMinima()]
+            : [$idMatriculaUnidad, $nota, $c->notaMinima(), $c->recuperacionDesde()]);
+        $resultado = (int) $consulta->fetchColumn();
+        $consulta->closeCursor();
+        return $resultado;
+    }
+
     public function retirar(int $idMatriculaUnidad): bool
     {
         $consulta = $this->pdo->prepare('CALL SP_RETIRAR_UNIDAD(?)');
@@ -57,13 +82,17 @@ final class MatriculaPorUnidad
               WHERE m.id_programa = ? ORDER BY u.periodo_academico, u.codigo"
         );
         $unidades->execute([$programa]);
-        $historial = $this->pdo->prepare('SELECT id_matricula_unidad, id_unidad, id_periodo, estado, nota_final FROM matricula_unidades WHERE id_alumno = ? ORDER BY id_matricula_unidad');
+        $historial = $this->pdo->prepare('SELECT id_matricula_unidad, id_unidad, id_periodo, estado, nota_final, nota_recuperacion FROM matricula_unidades WHERE id_alumno = ? ORDER BY id_matricula_unidad');
         $historial->execute([$alumno]);
         $aprobadas = [];
         $enPeriodo = [];
+        $ultimoEstado = [];
         foreach ($historial->fetchAll(PDO::FETCH_ASSOC) as $h) {
             if ($h['estado'] === 'APROBADO') {
                 $aprobadas[(int) $h['id_unidad']] = $h;
+            }
+            if ($h['estado'] !== 'RETIRADO') {
+                $ultimoEstado[(int) $h['id_unidad']] = $h['estado'];
             }
             if ((int) $h['id_periodo'] === $periodo) {
                 $enPeriodo[(int) $h['id_unidad']] = $h;
@@ -80,6 +109,8 @@ final class MatriculaPorUnidad
             $estado = match (true) {
                 isset($aprobadas[$id]) => 'APROBADA',
                 isset($enPeriodo[$id]) => $enPeriodo[$id]['estado'],
+                // Fase 5.6: desaprobada en un periodo anterior y aún sin aprobar: se vuelve a llevar solo esa unidad.
+                ($ultimoEstado[$id] ?? null) === 'DESAPROBADO' => 'CARGO',
                 $u['estado_unidad'] !== 'ACTIVO' => 'INACTIVA',
                 $faltan !== [] => 'FALTA_REQUISITO',
                 default => 'DISPONIBLE',
@@ -89,6 +120,7 @@ final class MatriculaPorUnidad
                 'faltan' => $faltan,
                 'id_matricula_unidad' => isset($enPeriodo[$id]) ? (int) $enPeriodo[$id]['id_matricula_unidad'] : null,
                 'nota_final' => $aprobadas[$id]['nota_final'] ?? ($enPeriodo[$id]['nota_final'] ?? null),
+                'nota_recuperacion' => $aprobadas[$id]['nota_recuperacion'] ?? ($enPeriodo[$id]['nota_recuperacion'] ?? null),
             ];
         }
         return $situacion;

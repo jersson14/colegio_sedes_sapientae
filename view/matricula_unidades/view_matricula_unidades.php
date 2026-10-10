@@ -23,6 +23,7 @@
           <div class="col-md-4 form-group"><label for="mu_programa">Programa de estudios</label><select class="form-control" id="mu_programa"></select></div>
           <div class="col-md-3 form-group"><label for="mu_periodo">Periodo</label><select class="form-control" id="mu_periodo"></select></div>
         </div>
+        <div class="alert alert-light border mb-2" id="mu_record" hidden></div>
         <p class="text-muted mb-2">Solo se puede matricular en una unidad si el alumno tiene aprobados sus prerrequisitos; una unidad aprobada no se vuelve a llevar.</p>
         <div class="table-responsive">
           <table class="table table-sm table-bordered" id="tabla_matricula_unidades">
