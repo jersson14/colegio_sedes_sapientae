@@ -75,7 +75,12 @@ BASE_URL=http://127.0.0.1:8098/ DB_HOST=127.0.0.1 DB_PORT=3307 DB_USER=root DB_P
 ```
 
 Las peticiones van a `colegio-a.prueba.test` / `colegio-b.prueba.test` resueltos a 127.0.0.1 (sin tocar
-el archivo hosts). Comprobado que falla si se quita la marca `S_TENANT` de la sesión.
+el archivo hosts). Comprobado que falla si se quita la marca `S_TENANT` de la sesión. Incluye un barrido
+de los 269 endpoints con la sesión de A presentada en B (GET y POST): todos deben dar 401.
+
+El mismo trabajo del CI ensaya además el alta de un colegio (`tools/alta_tenant.php`) y el ciclo de
+respaldo: respaldar B, borrar sus alumnos, restaurar con `--activar` y comprobar que vuelven; un
+respaldo alterado no se restaura.
 
 ## Regrabar la caracterización
 

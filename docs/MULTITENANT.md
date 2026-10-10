@@ -211,7 +211,10 @@ que hace sostenible un SaaS.
       migra, siembra roles (ids fijos que usan los procedimientos) y empresa, crea el administrador y la
       registra al final; si falla, borra la base que creó. La contraseña inicial se muestra una vez (el
       envío por correo queda para la Fase 4B).
-- [ ] Backup por tenant, con restauración individual probada.
+- [x] Backup por tenant, con restauración individual probada: `php tools/respaldo_tenant.php`
+      (`App\Tenancy\RespaldoInstitucion`). Base sin DEFINER + almacén + manifiesto con sumas y filas por
+      tabla; se restaura siempre en una base nueva, verificando las filas, y se activa aparte. El CI
+      respalda un colegio, borra sus alumnos, lo restaura y comprueba que vuelven.
 
 ### 4.2 Aislamiento de archivos
 

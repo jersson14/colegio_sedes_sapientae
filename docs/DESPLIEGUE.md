@@ -245,7 +245,12 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
 - [x] `phpinfo.php`, `prueba.php`, `test_*` eliminados del repositorio
 - [x] `.htaccess` con el motor PHP desactivado en las carpetas de subidas (mover a `storage/`: Fase 3)
 - [ ] Backups automáticos **con restauración probada** (un backup no verificado no es un backup). De cada
-      colegio: su base de datos **y** su almacén de archivos `storage/tenants/<slug>/`
+      colegio: su base de datos **y** su almacén de archivos `storage/tenants/<slug>/`. Con
+      `php tools/respaldo_tenant.php respaldar --todos` en un cron diario (necesita `mysqldump`/`mysql`:
+      `MYSQL_BIN_DIR`), y una copia fuera del servidor. Restaurar: `restaurar --desde=<carpeta>` (en una
+      base nueva, verificada; `--activar` para que el colegio pase a usarla). En modo único el respaldo incluye
+      también los archivos subidos antes de la Fase 4, que al restaurar quedan en el almacén. Ensayarlo
+      cada cierto tiempo
 
 **Procedimiento de cada despliegue:**
 
@@ -445,7 +450,9 @@ es manual.
    su razón social y, cuando suba su logo en «Empresa», con su logo (hasta entonces, una marca neutra). El colegio entra por
    `https://colegio-x.midominio.pe` en estado `PRUEBA` salvo que se indique otro. Nunca reutiliza una
    base existente. Requiere `DB_MIGRACION_USER` con permiso `CREATE` en el servidor.
-8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php`.
+8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php` y
+   `0 2 * * * php /var/www/colegio/tools/respaldo_tenant.php respaldar --todos` (copiar `RESPALDO_DIR` fuera
+   del VPS).
    `event_scheduler` puede quedar apagado.
 9. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php
    --aplicar` (lleva al almacén lo subido antes de la Fase 4); después `mysqldump` de su base, importarla

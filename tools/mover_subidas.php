@@ -47,14 +47,8 @@ if ($resolver->modo() === ModoTenant::Unico) {
 }
 require __DIR__ . '/../core/subidas.php';
 
-$raiz = realpath(SUBIDA_RAIZ);
 $destino = almacen_raiz();
-// [carpeta física de antes, ruta en la BD]
-$origenes = [];
-foreach (['alumnos/fotos', 'docentes/fotos', 'personal_administrativo/fotos', 'comunicados/fotos', 'empleado/FOTOS', 'empresa/FOTOS'] as $c) {
-    $origenes[] = ["$raiz/controller/$c", "controller/$c"];
-}
-$origenes[] = ["$raiz/controller/tareas/controller/tareas/documentos", TAREAS_RUTA_BD];
+$origenes = subidas_anteriores();
 
 $movidos = 0;
 $omitidos = 0;
@@ -67,7 +61,7 @@ foreach ($origenes as [$origen, $rutaBd]) {
         /** @var SplFileInfo $archivo */
         $nombre = $archivo->getFilename();
         // Lo que es de la aplicación y no de los usuarios se queda.
-        if ($archivo->isDir() || $nombre === '.htaccess' || in_array(strtolower($nombre), IMAGENES_PROTEGIDAS, true)) {
+        if ($archivo->isDir() || subida_es_de_la_aplicacion($nombre)) {
             continue;
         }
         $relativa = str_replace('\\', '/', substr($archivo->getPathname(), strlen($origen) + 1));

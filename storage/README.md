@@ -11,4 +11,6 @@ Fuera de git (solo este README). No se sirve por HTTP: el `.htaccess` raíz resp
 - Los archivos subidos antes de la Fase 4 siguen en `controller/*/fotos/` y
   `controller/tareas/controller/tareas/documentos/`, y se siguen encontrando en modo único.
 
-Copia de seguridad de una institución: su base de datos + `tenants/<slug>/`.
+Copia de seguridad de una institución: su base de datos + `tenants/<slug>/`, las dos con
+`php tools/respaldo_tenant.php respaldar --tenant=<slug>`. Al restaurar con `--activar` quedan aquí
+`<slug>.anterior-<fecha>/` (lo que había) hasta que se retire a mano.

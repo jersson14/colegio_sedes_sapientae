@@ -212,6 +212,29 @@ function nombre_documento_seguro(string $original, array &$usados): ?string
 const TAREAS_RUTA_BD = 'controller/tareas/documentos';
 
 /**
+ * Carpetas donde quedaron los archivos subidos antes de la Fase 4, con la ruta que les da la BD
+ * (tools/mover_subidas.php las traslada; tools/respaldo_tenant.php las incluye en modo único).
+ *
+ * @return list<array{0: string, 1: string}> [carpeta física, ruta en la BD]
+ */
+function subidas_anteriores(): array
+{
+    $raiz = SUBIDA_RAIZ;
+    $carpetas = [];
+    foreach (['alumnos/fotos', 'docentes/fotos', 'personal_administrativo/fotos', 'comunicados/fotos', 'empleado/FOTOS', 'empresa/FOTOS'] as $c) {
+        $carpetas[] = ["$raiz/controller/$c", "controller/$c"];
+    }
+    $carpetas[] = ["$raiz/controller/tareas/controller/tareas/documentos", TAREAS_RUTA_BD];
+    return $carpetas;
+}
+
+/** Archivos de la aplicación (no de los usuarios) dentro de esas carpetas. */
+function subida_es_de_la_aplicacion(string $nombre): bool
+{
+    return $nombre === '.htaccess' || in_array(strtolower($nombre), IMAGENES_PROTEGIDAS, true);
+}
+
+/**
  * Carpeta física existente de una tarea, o null. $carpeta ya pasó por carpeta_tarea_valida().
  * Antes de la Fase 4 las rutas de la BD se resolvían relativas a controller/tareas/, así que las
  * carpetas antiguas están en controller/tareas/controller/tareas/documentos/ (solo modo único).

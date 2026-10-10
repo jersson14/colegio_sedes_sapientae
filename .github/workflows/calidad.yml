@@ -242,6 +242,7 @@ jobs:
           MODO_TENANT=multiple
           TENANT_DOMINIO=prueba.test
           MAESTRO_DB_NAME=$MAESTRO_DB_NAME
+          RESPALDO_DIR=$RUNNER_TEMP/respaldos
           EOF
           for bd in "$MAESTRO_DB_NAME" "$DB_NAME_A" "$DB_NAME_B"; do
             mysql -h 127.0.0.1 -uroot -proot -e "CREATE DATABASE \`$bd\` CHARACTER SET utf8mb4"
@@ -286,6 +287,25 @@ jobs:
           COLEGIO_ENV="$RUNNER_TEMP/colegio.env" nohup php -d session.save_path="$RUNNER_TEMP/sesiones"             -S 127.0.0.1:8098 -t . tests/E2E/router.php > "$RUNNER_TEMP/servidor.log" 2>&1 &
           for i in $(seq 1 30); do curl -s -o /dev/null "$BASE_URL" && break; sleep 1; done
           php tests/E2E/aislamiento.php
+
+      - name: Respaldo y restauración de un colegio (tools/respaldo_tenant.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
+        run: |
+          contar() { mysql -h 127.0.0.1 -uroot -proot -N -e "SELECT COUNT(*) FROM \`$1\`.alumnos"; }
+          antes=$(contar "$DB_NAME_B")
+          php tools/respaldo_tenant.php respaldar --tenant=colegio-b
+          respaldo=$(ls -d "$RUNNER_TEMP"/respaldos/colegio-b-* | tail -1)
+          php tools/respaldo_tenant.php verificar --desde="$respaldo"
+          if grep -q DEFINER "$respaldo/base.sql"; then echo "::error title=Respaldo::el volcado conserva DEFINER"; exit 1; fi
+          # Se pierden los datos de B; la restauración los devuelve en una base nueva y la activa.
+          mysql -h 127.0.0.1 -uroot -proot -e "SET FOREIGN_KEY_CHECKS=0; DELETE FROM \`$DB_NAME_B\`.alumnos"
+          php tools/respaldo_tenant.php restaurar --desde="$respaldo" --activar
+          nueva=$(mysql -h 127.0.0.1 -uroot -proot -N -e "SELECT base_datos FROM \`$MAESTRO_DB_NAME\`.tenants WHERE slug='colegio-b'")
+          [ "$nueva" != "$DB_NAME_B" ] && [ "$(contar "$nueva")" = "$antes" ] || { echo "::error title=Restauración::$nueva tiene $(contar "$nueva") alumnos, se esperaban $antes"; exit 1; }
+          # Un respaldo alterado no se restaura.
+          echo "-- alterado" >> "$respaldo/base.sql"
+          if php tools/respaldo_tenant.php restaurar --desde="$respaldo"; then echo "::error title=Respaldo::se restauró un respaldo alterado"; exit 1; fi
 
       - name: Log del servidor si algo falló
         if: failure()

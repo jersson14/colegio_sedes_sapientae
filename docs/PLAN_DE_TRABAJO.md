@@ -12,7 +12,7 @@
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
 | 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
-| 4 — Multi-tenant | 🔄 En curso: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hechos 4.1–4.7 y 4.9 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando; nombre, logo, color y página pública de cada colegio. Faltan 4.8 y 4.10 |
+| 4 — Multi-tenant | 🔄 En curso: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hechos 4.1–4.7, 4.9 y 4.10 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando; nombre, logo, color y página pública de cada colegio. copias de seguridad por colegio con restauración verificada. Falta 4.8 (panel de superadministrador) |
 | 4B en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
@@ -410,8 +410,8 @@ Diseño completo en [MULTITENANT.md](MULTITENANT.md). Resumen de hitos:
 | 4.6 ✅ | Almacenamiento de archivos aislado por tenant, fuera del docroot (`storage/tenants/<slug>`, servido con sesión) |
 | 4.7 ✅ | Personalización (logo, razón social, colores, cabecera de PDF y página pública) por tenant — `App\Tenancy\Marca`, «Empresa → Personalizar» |
 | 4.8 | Panel de superadministrador |
-| 4.9 ✅ | **Suite de pruebas de aislamiento** — el tenant A nunca ve datos del B (`tests/E2E/aislamiento.php`, en el CI; ampliarla con cada hito) |
-| 4.10 | Backup y restauración por tenant, probados |
+| 4.9 ✅ | **Suite de pruebas de aislamiento** — el tenant A nunca ve datos del B (`tests/E2E/aislamiento.php`, en el CI: datos, sesión, los 269 endpoints, archivos, marca, página pública, formulario y límites) |
+| 4.10 ✅ | Backup y restauración por tenant, probados (`tools/respaldo_tenant.php`, ciclo completo en el CI) |
 
 **Puerta de salida:** el hito 4.9 en verde es condición para dar de alta el segundo tenant.
 
