@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
+/** Procedimientos del plan de estudios y de la matrícula por unidad (migración 20261029000000, Fase 5.3 y 5.4). */
+final class PlanDeEstudiosTest extends BaseDatosTestCase
+{
+    private function sp(string $sql, array $parametros): int
+    {
+        $q = $this->pdo->prepare($sql);
+        $q->execute($parametros);
+        $valor = (int) $q->fetchColumn();
+        $q->closeCursor();
+        return $valor;
+    }
+
+    /** @return array{programa: int, modulo: int, u1: int, u2: int, u3: int, otro: int} */
+    private function plan(): array
+    {
+        $programa = $this->sp('CALL SP_GUARDAR_PROGRAMA(0, ?, ?, ?)', ['PRG-T', 'Computación e Informática', 'ACTIVO']);
+        $modulo = $this->sp('CALL SP_GUARDAR_MODULO(0, ?, ?, ?)', [$programa, 'Gestión de soporte técnico', 1]);
+        $unidad = fn (string $codigo, int $periodo): int => $this->sp(
+            'CALL SP_GUARDAR_UNIDAD(0, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [$modulo, $codigo, "Unidad $codigo", $periodo, '3.0', 32, 32, 'ACTIVO']
+        );
+        $otroPrograma = $this->sp('CALL SP_GUARDAR_PROGRAMA(0, ?, ?, ?)', ['PRG-O', 'Contabilidad', 'ACTIVO']);
+        $otroModulo = $this->sp('CALL SP_GUARDAR_MODULO(0, ?, ?, ?)', [$otroPrograma, 'Contabilidad básica', 1]);
+        $otra = $this->sp('CALL SP_GUARDAR_UNIDAD(0, ?, ?, ?, ?, ?, ?, ?, ?)', [$otroModulo, 'UD-O1', 'Otra', 1, '2.0', 16, 16, 'ACTIVO']);
+        return ['programa' => $programa, 'modulo' => $modulo, 'u1' => $unidad('UD-T1', 1), 'u2' => $unidad('UD-T2', 2), 'u3' => $unidad('UD-T3', 3), 'otro' => $otra];
+    }
+
+    private function periodo(): int
+    {
+        return (int) $this->pdo->query('SELECT MIN(id_periodo) FROM periodos')->fetchColumn();
+    }
+
+    private function alumno(): int
+    {
+        return (int) $this->pdo->query('SELECT MIN(Id_alumno) FROM alumnos')->fetchColumn();
+    }
+
+    public function testCodigosUnicos(): void
+    {
+        $p = $this->plan();
+        self::assertSame(0, $this->sp('CALL SP_GUARDAR_PROGRAMA(0, ?, ?, ?)', ['PRG-T', 'Repetido', 'ACTIVO']));
+        self::assertSame($p['programa'], $this->sp('CALL SP_GUARDAR_PROGRAMA(?, ?, ?, ?)', [$p['programa'], 'PRG-T', 'Renombrado', 'ACTIVO']), 'el suyo propio sí');
+        self::assertSame(0, $this->sp('CALL SP_GUARDAR_UNIDAD(0, ?, ?, ?, ?, ?, ?, ?, ?)', [$p['modulo'], 'UD-T1', 'Repetida', 1, '1.0', 0, 0, 'ACTIVO']));
+    }
+
+    public function testPrerrequisitosNiDeSiMismaNiDeOtroPrograma(): void
+    {
+        $p = $this->plan();
+        self::assertSame(1, $this->sp('CALL SP_AGREGAR_PRERREQUISITO(?, ?)', [$p['u2'], $p['u1']]));
+        self::assertSame(1, $this->sp('CALL SP_AGREGAR_PRERREQUISITO(?, ?)', [$p['u3'], $p['u2']]));
+        // Los ciclos los descarta el servicio (testElServicioDescartaLosCiclosIndirectos): ver la migración.
+        self::assertSame(0, $this->sp('CALL SP_AGREGAR_PRERREQUISITO(?, ?)', [$p['u1'], $p['u1']]), 'de sí misma');
+        self::assertSame(0, $this->sp('CALL SP_AGREGAR_PRERREQUISITO(?, ?)', [$p['u2'], $p['otro']]), 'de otro programa');
+    }
+
+    public function testLaMatriculaExigeLosPrerrequisitosAprobados(): void
+    {
+        $p = $this->plan();
+        $this->sp('CALL SP_AGREGAR_PRERREQUISITO(?, ?)', [$p['u2'], $p['u1']]);
+        [$alumno, $periodo] = [$this->alumno(), $this->periodo()];
+
+        self::assertSame(4, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u2'], $periodo]), 'sin u1 aprobada');
+        self::assertSame(1, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u1'], $periodo]));
+        self::assertSame(2, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u1'], $periodo]), 'dos veces en el mismo periodo');
+        self::assertSame(4, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u2'], $periodo]), 'matriculado no es aprobado');
+
+        $this->pdo->prepare("UPDATE matricula_unidades SET estado = 'APROBADO', nota_final = 15 WHERE id_alumno = ? AND id_unidad = ?")->execute([$alumno, $p['u1']]);
+        self::assertSame(1, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u2'], $periodo]), 'con u1 aprobada');
+        $otroPeriodo = (int) $this->pdo->query("SELECT MAX(id_periodo) FROM periodos")->fetchColumn();
+        self::assertSame(3, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u1'], $otroPeriodo]), 'no se vuelve a llevar una unidad aprobada');
+        self::assertSame(0, $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, 999999, $periodo]));
+    }
+
+    public function testRetirarSoloMientrasEstaMatriculado(): void
+    {
+        $p = $this->plan();
+        [$alumno, $periodo] = [$this->alumno(), $this->periodo()];
+        $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$alumno, $p['u1'], $periodo]);
+        $id = (int) $this->pdo->query("SELECT MAX(id_matricula_unidad) FROM matricula_unidades")->fetchColumn();
+        self::assertSame(1, $this->sp('CALL SP_RETIRAR_UNIDAD(?)', [$id]));
+        self::assertSame(0, $this->sp('CALL SP_RETIRAR_UNIDAD(?)', [$id]), 'ya retirado');
+    }
+
+    public function testNoSeBorraLoQueTieneHistorial(): void
+    {
+        $p = $this->plan();
+        $this->sp('CALL SP_MATRICULAR_UNIDAD(?, ?, ?)', [$this->alumno(), $p['u1'], $this->periodo()]);
+        self::assertSame(0, $this->sp('CALL SP_ELIMINAR_UNIDAD(?)', [$p['u1']]), 'con matrículas');
+        self::assertSame(1, $this->sp('CALL SP_ELIMINAR_UNIDAD(?)', [$p['u3']]), 'sin matrículas');
+        self::assertSame(0, $this->sp('CALL SP_ELIMINAR_MODULO(?)', [$p['modulo']]), 'con unidades');
+        self::assertSame(0, $this->sp('CALL SP_ELIMINAR_PROGRAMA(?)', [$p['programa']]), 'con módulos');
+    }
+
+    public function testElServicioDescartaLosCiclosIndirectos(): void
+    {
+        $p = $this->plan();
+        $plan = new \App\Institucion\PlanDeEstudios($this->pdo);
+        $plan->agregarPrerrequisito($p['u2'], $p['u1']);
+        $plan->agregarPrerrequisito($p['u3'], $p['u2']);
+        try {
+            $plan->agregarPrerrequisito($p['u1'], $p['u3']);
+            self::fail('u1 → u3 → u2 → u1 es un ciclo');
+        } catch (\DomainException $e) {
+            self::assertStringContainsString('ciclo', $e->getMessage());
+        }
+        $this->expectExceptionMessage('mismo programa');
+        $plan->agregarPrerrequisito($p['u1'], $p['otro']);
+    }
+
+    public function testSituacionDelAlumno(): void
+    {
+        $p = $this->plan();
+        $matricula = new \App\Institucion\MatriculaPorUnidad($this->pdo);
+        (new \App\Institucion\PlanDeEstudios($this->pdo))->agregarPrerrequisito($p['u2'], $p['u1']);
+        [$alumno, $periodo] = [$this->alumno(), $this->periodo()];
+        $matricula->matricular($alumno, $p['u1'], $periodo);
+        $situacion = array_column($matricula->situacion($alumno, $p['programa'], $periodo), 'situacion', 'codigo');
+        self::assertSame(['UD-T1' => 'MATRICULADO', 'UD-T2' => 'FALTA_REQUISITO', 'UD-T3' => 'DISPONIBLE'], $situacion);
+    }
+}

@@ -191,6 +191,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <br>
+              <?php /* Fase 5.3 y 5.4: solo en institutos (o con matrícula por unidad). Sin «if {}» aquí: tools/analizar_roles.py
+                 lee las llaves de este archivo para saber qué menú es de qué rol. */ ?>
+              <li class="nav-item" id="menu_instituto"<?= institucion_config()->matriculaPorUnidad() ? '' : ' hidden' ?>>
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-sitemap"></i>
+                  <p>
+                    Plan de estudios
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','plan_estudios/view_plan_estudios.php')" class="nav-link" id="menu_plan_estudios">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Programas y unidades</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','matricula_unidades/view_matricula_unidades.php')" class="nav-link" id="menu_matricula_unidades">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Matrícula por unidades</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-calendar-check"></i>

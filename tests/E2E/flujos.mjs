@@ -706,6 +706,65 @@ try {
     check(restaurar.texto === '1', 'volver a los valores por defecto');
     await adm.ctx.close();
   }
+
+  console.log('20. Plan de estudios y matrícula por unidades (instituto)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const cfg = 'controller/institucion/controlador_modificar_configuracion.php';
+    check(!(await adm.page.isVisible('#menu_instituto')), 'en un colegio no aparece el menú del plan de estudios');
+    await pedir(adm.page, cfg, { matricula_modo: 'POR_UNIDAD' });
+    await adm.page.reload();
+    await adm.page.waitForLoadState('networkidle').catch(() => {});
+    check(await adm.page.isVisible('#menu_instituto'), 'con matrícula por unidades aparece «Plan de estudios»');
+
+    const plan = 'controller/plan_estudios/controlador_plan.php';
+    const sufijo = String(Date.now()).slice(-6);
+    const programa = (await pedir(adm.page, plan, { accion: 'guardar_programa', id: 0, codigo: `P${sufijo}`, nombre: 'Computación E2E', estado: 'ACTIVO' })).json?.id;
+    const modulo = (await pedir(adm.page, plan, { accion: 'guardar_modulo', id: 0, programa, nombre: 'Soporte técnico', orden: 1 })).json?.id;
+    const unidad = async (codigo, periodo) => (await pedir(adm.page, plan, {
+      accion: 'guardar_unidad', id: 0, modulo, codigo, nombre: `Unidad ${codigo}`, periodo_academico: periodo, creditos: '3', horas_teoricas: 32, horas_practicas: 32, estado: 'ACTIVO',
+    })).json?.id;
+    const u1 = await unidad(`A${sufijo}`, 1);
+    const u2 = await unidad(`B${sufijo}`, 2);
+    check(programa > 0 && modulo > 0 && u1 > 0 && u2 > 0, 'se crean el programa, el módulo y dos unidades');
+    check((await pedir(adm.page, plan, { accion: 'agregar_requisito', unidad: u2, requisito: u1 })).json?.ok === true, 'B pide A aprobada');
+    const ciclo = await pedir(adm.page, plan, { accion: 'agregar_requisito', unidad: u1, requisito: u2 });
+    check(ciclo.estado === 422 && /ciclo/.test(ciclo.json?.error ?? ''), 'A pidiendo B formaría un ciclo: se rechaza', `(${ciclo.estado})`);
+    const invalida = await pedir(adm.page, plan, { accion: 'guardar_unidad', id: 0, modulo, codigo: `C${sufijo}`, nombre: 'Sin horas', periodo_academico: 1, creditos: '0', horas_teoricas: 0, horas_practicas: 0 });
+    check(invalida.estado === 422 && /créditos/.test(invalida.json?.error ?? ''), 'una unidad sin créditos ni horas se rechaza con el motivo');
+
+    await adm.page.click('#menu_instituto > a');
+    await adm.page.click('#menu_plan_estudios');
+    await adm.page.waitForSelector(`#plan_contenido tr[data-unidad="${u2}"]`, { timeout: 15000 });
+    check((await adm.page.textContent(`#plan_contenido tr[data-unidad="${u2}"]`)).includes(`A${sufijo}`), 'la pantalla del plan muestra la unidad con su prerrequisito');
+
+    await adm.page.click('#menu_matricula_unidades');
+    await adm.page.waitForSelector('#mu_programa option', { state: 'attached', timeout: 15000 });
+    const alumno = (await pedir(adm.page, 'controller/matricula_unidades/controlador_matricula_unidades.php', null, 'GET')).json?.alumnos?.[0]?.id;
+    await adm.page.selectOption('#mu_alumno', String(alumno));
+    await adm.page.selectOption('#mu_programa', String(programa));
+    await adm.page.dispatchEvent('#mu_periodo', 'change');
+    await adm.page.waitForSelector(`#tabla_matricula_unidades tr[data-unidad="${u2}"]`, { timeout: 15000 });
+    check(await adm.page.getAttribute(`#tabla_matricula_unidades tr[data-unidad="${u2}"]`, 'data-situacion') === 'FALTA_REQUISITO',
+      'B aparece bloqueada: le falta A');
+    await adm.page.click(`#tabla_matricula_unidades tr[data-unidad="${u1}"] .matricular`);
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    check((await adm.page.textContent('.swal2-popup')).includes('Matriculado'), 'se matricula en A desde la pantalla');
+    await adm.page.click('.swal2-confirm');
+    const directo = await pedir(adm.page, 'controller/matricula_unidades/controlador_matricula_unidades.php',
+      { accion: 'matricular', alumno, unidad: u2, periodo: await adm.page.inputValue('#mu_periodo') });
+    check(directo.json?.codigo === 4, 'tampoco por la API: el procedimiento exige A aprobada (4)', JSON.stringify(directo.json));
+    await adm.page.waitForSelector(`#tabla_matricula_unidades tr[data-unidad="${u1}"][data-situacion="MATRICULADO"] .retirar`, { timeout: 10000 });
+    await adm.page.click(`#tabla_matricula_unidades tr[data-unidad="${u1}"] .retirar`);
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    check((await adm.page.textContent('.swal2-popup')).includes('Retirado'), 'y se retira de A');
+    await adm.page.click('.swal2-confirm');
+    const docente = await entrar(browser, ESC.docente);
+    check((await pedir(docente.page, plan, null, 'GET')).estado === 403, 'el plan de estudios es del administrador (403)');
+    await docente.ctx.close();
+    await pedir(adm.page, cfg, { matricula_modo: '' });
+    await adm.ctx.close();
+  }
 } finally {
   await browser.close();
 }

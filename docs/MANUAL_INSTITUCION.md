@@ -26,6 +26,20 @@ cuatrimestre o semestre), la nota mínima aprobatoria, si el promedio se pondera
 apoderado son obligatorios y si la matrícula es por aula o por unidad didáctica. Vienen ya puestos según el tipo
 de institución (colegio o instituto); cámbialos solo si tu reglamento dice otra cosa.
 
+## Plan de estudios y matrícula por unidades (institutos)
+
+Con la matrícula «por unidad didáctica» aparece el menú **Plan de estudios**:
+
+- **Programas y unidades**: cada programa de estudios tiene módulos formativos, y cada módulo sus unidades
+  didácticas, con código, créditos, horas teóricas y prácticas y el periodo académico (I, II…). En
+  **Prerrequisitos** indicas qué unidades hay que aprobar antes. El sistema no deja crear un ciclo, por ejemplo
+  que A pida B y B pida A.
+- **Matrícula por unidades**: eliges al alumno, el programa y el periodo, y ves cada unidad como aprobada,
+  matriculada, disponible o bloqueada (y por qué prerrequisito). Solo se puede matricular en lo disponible, o
+  en lo que desaprobó para volver a llevarlo.
+
+Lo que ya tiene alumnos o historial no se borra: se desactiva.
+
 ## Usuarios y permisos
 
 Cada persona entra con su propia cuenta. Los roles disponibles son administrador, docente, auxiliar,

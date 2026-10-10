@@ -18,16 +18,17 @@ final class EsquemaTest extends BaseDatosTestCase
 
     public function testTablasDelSistema(): void
     {
-        // 36 del esquema inicial + configuracion (20261028000000, Fase 5.1).
-        self::assertSame(37, $this->contar(
+        // 36 del esquema inicial + configuracion (Fase 5.1) + las 5 del plan de estudios (Fase 5.3 y 5.4).
+        self::assertSame(42, $this->contar(
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name <> 'phinxlog'"
         ));
     }
 
     public function testProcedimientosAlmacenados(): void
     {
-        // 254 del esquema inicial + SP_OBTENER/MODIFICAR_PERSONALIZACION (Fase 4.7) + SP_GUARDAR_CONFIGURACION (Fase 5.1).
-        self::assertSame(257, $this->contar(
+        // 254 del esquema inicial + 2 de personalización (Fase 4.7) + 1 de configuración (Fase 5.1)
+        // + 10 del plan de estudios y la matrícula por unidades (Fase 5.3 y 5.4).
+        self::assertSame(267, $this->contar(
             "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = ? AND routine_type = 'PROCEDURE'"
         ));
     }

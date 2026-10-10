@@ -40,6 +40,8 @@ en MOROSO, todo menos la exportación en SUSPENDIDO, límites del plan), `Consum
 
 `Institucion/` (Fase 5): `TipoInstitucion`, `Configuracion` (claves, valores permitidos y valores por defecto por
 tipo) y `PdoConfiguracionRepositorio`; `core/institucion.php` la pasa al panel como `window.INSTITUCION`.
+`PlanDeEstudios` (programas, módulos, `UnidadDidactica`, prerrequisitos sin ciclos) y `MatriculaPorUnidad` (matrícula
+y situación del alumno en cada unidad); escriben por los procedimientos de la migración 20261029000000.
 
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
 `superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través
