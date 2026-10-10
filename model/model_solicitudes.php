@@ -226,7 +226,8 @@ class Solicitud_Model extends conexionBD {
      */
     public function Enviar_Notificacion_Email($datos) {
         // Configurar el email del colegio
-        $email_destino = "informes@sedessapientiae.edu.pe"; // Cambiar por el email real
+        // Fase 4.7: el correo de contacto de la institución (su «empresa»), no uno fijo.
+        $email_destino = (string) $this->conexion->query('SELECT emp_email FROM empresa ORDER BY empresa_id LIMIT 1')->fetchColumn();
         $asunto = "Nueva Solicitud de Información - Landing Page";
         
         $nivel_texto = array(
@@ -286,7 +287,7 @@ class Solicitud_Model extends conexionBD {
         
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=utf-8\r\n";
-        $headers .= "From: Landing Page <noreply@sedessapientiae.edu.pe>\r\n";
+        $headers .= "From: Pagina publica <noreply@" . preg_replace('/[^a-z0-9.-]/', '', strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'))) . ">\r\n";
         
         // Descomentar la siguiente línea para activar el envío de emails
         // return mail($email_destino, $asunto, $mensaje, $headers);

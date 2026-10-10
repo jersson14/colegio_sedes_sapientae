@@ -25,7 +25,8 @@ final class EsquemaTest extends BaseDatosTestCase
 
     public function testProcedimientosAlmacenados(): void
     {
-        self::assertSame(254, $this->contar(
+        // 254 del esquema inicial + SP_OBTENER/MODIFICAR_PERSONALIZACION (20261022000000, Fase 4.7).
+        self::assertSame(256, $this->contar(
             "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = ? AND routine_type = 'PROCEDURE'"
         ));
     }

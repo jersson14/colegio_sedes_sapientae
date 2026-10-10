@@ -32,7 +32,7 @@ function listar_empresa(){
       },
         {"data":"emp_telefono"},
         {"data":"emp_direccion"},
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de empresa'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button class='foto btn btn-warning btn-sm' title='Cambiar logo'><i class='fa fa-image'></i> Cambiar foto</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de empresa'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button class='foto btn btn-warning btn-sm' title='Cambiar logo'><i class='fa fa-image'></i> Cambiar foto</button>&nbsp;<button class='personalizar btn btn-info btn-sm' title='Color y página pública'><i class='fa fa-palette'></i> Personalizar</button>"},
 
     ],
 
@@ -225,3 +225,35 @@ $('#tabla_empresa').on('click','.editar',function(){
         }
     })
   }
+
+// Fase 4.7: color y página pública de la institución.
+const CAMPOS_PERSONALIZACION = ['color', 'lema', 'bienvenida', 'nosotros_titulo', 'nosotros_texto', 'caracteristicas', 'niveles', 'valores', 'cifras', 'horario'];
+$('#tabla_empresa').on('click', '.personalizar', function () {
+  $.ajax({ url: '../controller/empresa/controlador_obtener_personalizacion.php', type: 'GET', dataType: 'json' })
+    .done(function (datos) {
+      CAMPOS_PERSONALIZACION.forEach(function (c) { document.getElementById('txt_pers_' + c).value = datos[c] || ''; });
+      document.getElementById('txt_pers_color_selector').value = datos.color || '#1f4e79';
+      $('#modal_personalizar').modal('show');
+    })
+    .fail(function () { Swal.fire('Mensaje de Error', 'No se pudo cargar la personalización', 'error'); });
+});
+function Guardar_Personalizacion() {
+  let datos = {};
+  CAMPOS_PERSONALIZACION.forEach(function (c) { datos[c] = document.getElementById('txt_pers_' + c).value; });
+  if (datos.color !== '' && !/^#[0-9a-fA-F]{6}$/.test(datos.color.trim())) {
+    return Swal.fire('Mensaje de Advertencia', 'El color debe tener el formato #rrggbb', 'warning');
+  }
+  $.ajax({ url: '../controller/empresa/controlador_modificar_personalizacion.php', type: 'POST', data: datos })
+    .done(function (resp) {
+      if (resp == 1) {
+        Swal.fire('Mensaje de Confirmación', 'Personalización guardada. Recarga la página para ver el color.', 'success')
+          .then(function () { $('#modal_personalizar').modal('hide'); });
+      } else {
+        Swal.fire('Mensaje de Error', 'No se completó el proceso', 'error');
+      }
+    })
+    .fail(function (xhr) {
+      let motivo = (xhr.responseJSON && xhr.responseJSON.error) || 'No se completó el proceso';
+      Swal.fire('Mensaje de Advertencia', motivo, 'warning');
+    });
+}

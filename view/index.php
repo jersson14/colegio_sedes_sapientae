@@ -41,6 +41,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="../plantilla/dist//css/adminlte.min.css">
   <link href="../utilitario/DataTables/datatables.min.css" type="text/css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" integrity="sha384-OXVF05DQEe311p6ohU11NwlnX08FzMCsyoXzGOaL+83dKAb3qS17yZJxESl8YrJQ" crossorigin="anonymous" rel="stylesheet" />
+  <?= marca_estilo() /* Fase 4.7: color de la institución */ ?>
 </head>
 
 <body class="">
@@ -1130,6 +1131,71 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>
     </div>
 
+    <!-- Fase 4.7: color y página pública de la institución (solo administrador) -->
+    <div class="modal fade" id="modal_personalizar" tabindex="-1" role="dialog" aria-labelledby="titulo_personalizar" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="titulo_personalizar" style="color:white"><b>PERSONALIZAR LA INSTITUCIÓN</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="txt_pers_color">Color principal del panel, el acceso y la página pública:</label>
+                <div class="d-flex align-items-center">
+                  <input type="color" id="txt_pers_color_selector" style="width:60px;height:38px;border:none" oninput="document.getElementById('txt_pers_color').value=this.value">
+                  <input type="text" class="form-control ml-2" id="txt_pers_color" placeholder="#1f4e79 (vacío = colores de siempre)" maxlength="7" style="max-width:260px">
+                </div>
+              </div>
+              <div class="col-12"><hr><h6><b>Página pública</b> <small class="text-muted">— una sección vacía no se muestra</small></h6></div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_lema">Lema o tipo (bajo el nombre):</label>
+                <input type="text" class="form-control" id="txt_pers_lema" maxlength="80" placeholder="Colegio Diocesano">
+              </div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_horario">Horario de atención:</label>
+                <input type="text" class="form-control" id="txt_pers_horario" maxlength="120" placeholder="Lunes a viernes: 8:00 a 16:00">
+              </div>
+              <div class="col-12 form-group">
+                <label for="txt_pers_bienvenida">Frase de bienvenida:</label>
+                <input type="text" class="form-control" id="txt_pers_bienvenida" maxlength="250">
+              </div>
+              <div class="col-12 form-group">
+                <label for="txt_pers_nosotros_titulo">«Nosotros»: título</label>
+                <input type="text" class="form-control" id="txt_pers_nosotros_titulo" maxlength="120">
+              </div>
+              <div class="col-12 form-group">
+                <label for="txt_pers_nosotros_texto">«Nosotros»: texto (una línea en blanco separa párrafos)</label>
+                <textarea class="form-control" id="txt_pers_nosotros_texto" rows="4" maxlength="3000"></textarea>
+              </div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_caracteristicas">Características (una por línea, máx. 8):</label>
+                <textarea class="form-control" id="txt_pers_caracteristicas" rows="4"></textarea>
+              </div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_cifras">Cifras (máx. 4): <code>500 | Estudiantes</code></label>
+                <textarea class="form-control" id="txt_pers_cifras" rows="4"></textarea>
+              </div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_niveles">Niveles (máx. 6): <code>Primaria | descripción</code></label>
+                <textarea class="form-control" id="txt_pers_niveles" rows="4"></textarea>
+              </div>
+              <div class="col-6 form-group">
+                <label for="txt_pers_valores">Valores (máx. 8): <code>Respeto | descripción</code></label>
+                <textarea class="form-control" id="txt_pers_valores" rows="4"></textarea>
+              </div>
+              <div class="col-12"><small class="text-muted">La dirección, el teléfono y el correo de contacto son los de «Editar». La página se ve en <a href="../landing.php" target="_blank" rel="noopener">landing.php</a>.</small></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Guardar_Personalizacion()"><i class="fas fa-check"></i> Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="modal_editar_foto" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -1260,7 +1326,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
             <div class="card-body" style="display: block;">
-              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
+              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, var(--color-institucion, #1f4e79) 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
                 <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
                   <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
@@ -1500,7 +1566,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </div>
             </div>
             <div class="card-body" style="display: block;">
-              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
+              <div style="<?= marca()->fondoAcceso !== null ? "background-image: url('../" . marca_html(marca()->fondoAcceso) . "');" : 'background: linear-gradient(135deg, var(--color-institucion, #1f4e79) 0%, #6c9bc8 100%);' ?> background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
 
                 <!-- Contenedor de la imagen y el botón -->

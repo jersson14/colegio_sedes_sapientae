@@ -29,8 +29,9 @@
     }
   </style>
 
+  <?= marca_estilo() /* Fase 4.7: color de la institución */ ?>
 </head>
-<?php $fondo = marca()->fondoAcceso; ?><body class="hold-transition login-page" style="<?= $fondo !== null ? "background-image: url('" . marca_html($fondo) . "'); background-size: 100% 100%;" : 'background: linear-gradient(135deg, #1f4e79 0%, #6c9bc8 100%);' ?>">
+<?php $fondo = marca()->fondoAcceso; ?><body class="hold-transition login-page" style="<?= $fondo !== null ? "background-image: url('" . marca_html($fondo) . "'); background-size: 100% 100%;" : 'background: linear-gradient(135deg, var(--color-institucion, #1f4e79) 0%, #6c9bc8 100%);' ?>">
 <div class="login-box">
   <div class="login-logo">
     <a href="index.php"><b style="font-family:'arial black'; font-size:28px; color:black"></b></a>

@@ -242,8 +242,13 @@ archivo coincida con el tenant de la sesión. Esto resuelve además H-03 de
 > la instalación: el colegio en producción no ve ningún cambio; otra instalación las reemplaza o sube
 > su logo). En **modo múltiple**, el logo que cada colegio sube en «Empresa», servido en el acceso por
 > `controller/archivo/controlador_logo.php` (público, sin parámetros: solo el logo de la institución
-> del host); sin logo, `img/marca_neutra.svg`. Los PDF ya usaban la `empresa` de cada base. Pendiente:
-> colores por colegio y el texto de `landing.html` (página pública de un solo colegio).
+> del host); sin logo, `img/marca_neutra.svg`. Los PDF ya usaban la `empresa` de cada base.
+>
+> **Color y página pública:** «Empresa → Personalizar» guarda `emp_color` y `emp_pagina` (JSON, migración
+> `20261022000000`). El color se aplica al panel, al acceso y a la página pública; `landing.html` llega a
+> `landing.php`, que arma la página de cada colegio con sus textos y su contacto y oculta las secciones
+> vacías. En modo único y sin textos propios se sirve la `landing.html` de siempre; en modo múltiple,
+> nunca. El formulario de contacto avisa al correo de la empresa de cada colegio.
 
 Logo, razón social, colores y datos de cabecera de los PDF deben leerse de `empresa`
 del tenant activo, no estar en el HTML. Hoy `view/index.php` e `index.php` tienen

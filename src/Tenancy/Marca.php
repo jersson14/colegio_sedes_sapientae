@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tenancy;
 
+use App\Domain\Empresa\ColorInstitucion;
+use App\Domain\Empresa\PaginaPublica;
 use PDO;
 
 /**
- * Nombre e imágenes con que se presenta la institución en el acceso y en el panel (Fase 4, hito 4.7).
+ * Cómo se presenta la institución en el acceso, el panel y la página pública (Fase 4, hito 4.7).
  * Las rutas son relativas a la raíz del proyecto (cada vista les antepone lo suyo).
  *
- * - Modo único: la marca de la instalación son los archivos de img/ (como siempre); el nombre, el de
- *   la empresa en la BD. Una instalación nueva cambia esos archivos o sube su logo en «Empresa».
- * - Modo múltiple: el nombre y el logo de la empresa de cada colegio (módulo «Empresa»); si no subió
- *   logo, una marca neutra. Nunca las imágenes de img/, que son de la instalación original.
+ * - Modo único: las imágenes son las de img/ (la marca de la instalación, como siempre).
+ * - Modo múltiple: el logo que cada colegio sube en «Empresa»; si no subió, una marca neutra. Nunca
+ *   las imágenes de img/, que son de la instalación original.
+ * En los dos: nombre, contacto, color y textos de la página pública salen de la «empresa» de su base.
  */
 final class Marca
 {
@@ -27,6 +29,11 @@ final class Marca
         public readonly string $logoPanel,
         public readonly string $icono,
         public readonly ?string $fondoAcceso,
+        public readonly ?ColorInstitucion $color = null,
+        public readonly ?PaginaPublica $pagina = null,
+        public readonly string $email = '',
+        public readonly string $telefono = '',
+        public readonly string $direccion = '',
     ) {
     }
 
@@ -36,26 +43,34 @@ final class Marca
      */
     public static function deLaInstitucion(?PDO $pdo, ModoTenant $modo, \Closure $logoExiste): self
     {
-        $empresa = ['emp_razon' => '', 'emp_logo' => ''];
+        $e = [];
         if ($pdo !== null) {
             try {
-                $fila = $pdo->query('SELECT emp_razon, emp_logo FROM empresa ORDER BY empresa_id LIMIT 1')->fetch(PDO::FETCH_ASSOC);
-                $empresa = is_array($fila) ? $fila + $empresa : $empresa;
+                // SELECT *: una base aún sin migrar (sin emp_color/emp_pagina) también se presenta.
+                $fila = $pdo->query('SELECT * FROM empresa ORDER BY empresa_id LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+                $e = is_array($fila) ? $fila : [];
             } catch (\PDOException) {
                 // Sin la tabla (base a medio crear): la marca por defecto, nunca un error en el acceso.
             }
         }
-        $nombre = trim((string) $empresa['emp_razon']) !== '' ? trim((string) $empresa['emp_razon']) : self::NOMBRE_POR_DEFECTO;
+        $texto = static fn (string $c): string => trim((string) ($e[$c] ?? ''));
+        $nombre = $texto('emp_razon') !== '' ? $texto('emp_razon') : self::NOMBRE_POR_DEFECTO;
+        try {
+            $color = ColorInstitucion::desdeTexto($texto('emp_color'));
+        } catch (\InvalidArgumentException) {
+            $color = null;
+        }
+        $resto = [$color, PaginaPublica::desdeJson($e['emp_pagina'] ?? null), $texto('emp_email'), $texto('emp_telefono'), $texto('emp_direccion')];
 
         if ($modo === ModoTenant::Unico) {
-            return new self($nombre, 'img/logo1.png', 'img/logo.jpeg', 'img/icono.jpeg', 'img/fondo.jpeg');
+            return new self($nombre, 'img/logo1.png', 'img/logo.jpeg', 'img/icono.jpeg', 'img/fondo.jpeg', ...$resto);
         }
         // El logo está en el almacén (exige sesión): se sirve por un endpoint público sin parámetros que
         // solo entrega el logo de esta institución. «v» cambia con el archivo para no ver uno en caché.
-        $logo = (string) $empresa['emp_logo'];
+        $logo = $texto('emp_logo');
         $logo = $logo !== '' && $logoExiste($logo)
             ? self::LOGO_PUBLICO . '?v=' . substr(hash('sha256', $logo), 0, 10)
             : self::NEUTRA;
-        return new self($nombre, $logo, $logo, $logo, null);
+        return new self($nombre, $logo, $logo, $logo, null, ...$resto);
     }
 }

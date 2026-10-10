@@ -62,6 +62,8 @@ function animateStats() {
     if (hasAnimated) return;
 
     const statsSection = document.querySelector('.stats');
+    // landing.php no muestra las cifras si la institución no escribió ninguna.
+    if (!statsSection) return;
     const statsSectionTop = statsSection.offsetTop;
     const statsSectionHeight = statsSection.offsetHeight;
     const scrollY = window.pageYOffset;

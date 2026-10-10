@@ -641,6 +641,37 @@ try {
       'el comunicado queda a nombre de quien lo publica (la sesión)', `(${comunicado.texto} ${JSON.stringify(publicado ?? {}).slice(0, 120)})`);
     await adm.ctx.close();
   }
+
+  console.log('18. Personalización: color y página pública (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    // Por la interfaz: el botón de la tabla de Empresa abre el formulario con lo guardado.
+    await adm.page.waitForSelector('#tabla_empresa .personalizar', { timeout: 20000 });
+    await adm.page.click('#tabla_empresa .personalizar');
+    await adm.page.waitForSelector('#modal_personalizar.show', { timeout: 10000 });
+    check(await adm.page.inputValue('#txt_pers_color') === '', 'el formulario abre sin color propio');
+    await adm.page.fill('#txt_pers_color', '#2a6f3b');
+    await adm.page.fill('#txt_pers_lema', 'Lema E2E');
+    await adm.page.fill('#txt_pers_cifras', '123 | Alumnos E2E');
+    await adm.page.click('#modal_personalizar .btn-success');
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    check((await adm.page.textContent('.swal2-popup')).includes('guardada'), 'se guarda desde el panel');
+    const publica = await (await fetch(BASE + 'landing.html')).text();
+    check(publica.includes('Lema E2E') && publica.includes('data-target="123"') && publica.includes('#2a6f3b'),
+      'la página pública pasa a ser la de la institución, con su color');
+    const acceso = await (await fetch(BASE + 'index.php')).text();
+    check(acceso.includes('--color-institucion:#2a6f3b'), 'el acceso lleva su color');
+    const docente = await entrar(browser, ESC.docente);
+    const ajeno = await pedir(docente.page, 'controller/empresa/controlador_modificar_personalizacion.php', { color: '#000000' });
+    check(ajeno.estado === 403, 'solo el administrador personaliza (403)', `(${ajeno.estado})`);
+    await docente.ctx.close();
+    // Se deja como estaba: sin textos propios, en modo único vuelve la página de siempre.
+    const quitar = await pedir(adm.page, 'controller/empresa/controlador_modificar_personalizacion.php', { color: '' });
+    const deSiempre = await (await fetch(BASE + 'landing.html')).text();
+    check(quitar.texto === '1' && deSiempre.includes('Colegio Diocesano') && !deSiempre.includes('Lema E2E'),
+      'sin textos propios, en modo único vuelve la página de siempre');
+    await adm.ctx.close();
+  }
 } finally {
   await browser.close();
 }

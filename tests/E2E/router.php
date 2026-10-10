@@ -11,6 +11,11 @@ declare(strict_types=1);
 $raiz = dirname(__DIR__, 2);
 $ruta = ltrim(rawurldecode((string) parse_url((string) $_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/');
 
+if ($ruta === 'landing.html') {
+    chdir($raiz);
+    require $raiz . '/landing.php';
+    return true;
+}
 if (preg_match('#^controller/((alumnos|docentes|personal_administrativo|comunicados)/fotos|(empleado|empresa)/FOTOS)/[^/]+$#', $ruta) === 1
     && !is_file($raiz . '/' . $ruta)) {
     $_GET['ruta'] = $ruta;

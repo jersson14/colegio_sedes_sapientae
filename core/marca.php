@@ -40,3 +40,21 @@ function marca_html(string $texto): string
 {
     return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
 }
+
+/**
+ * <style> con el color de la institución sobre los elementos principales del panel y del acceso.
+ * Sin color propio, nada: los colores de siempre. El valor ya está validado como #rrggbb.
+ */
+function marca_estilo(): string
+{
+    $color = marca()->color;
+    if ($color === null) {
+        return '';
+    }
+    $c = $color->hex;
+    $o = $color->oscuro();
+    return "<style>:root{--color-institucion:$c;--color-institucion-oscuro:$o}"
+        . ".main-header.navbar,.main-sidebar .brand-link,.card-primary>.card-header,.modal-header{background-color:$c!important}"
+        . ".btn-primary{background-color:$c;border-color:$o}.btn-primary:hover,.btn-primary:focus{background-color:$o;border-color:$o}"
+        . "table thead[style]{background-color:$c!important}.nav-pills .nav-link.active{background-color:$c}</style>";
+}

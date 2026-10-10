@@ -396,7 +396,8 @@ Pasos (por cada colegio: un dominio o subdominio con su propia base):
    `view/MPDF/vendor/` sí va: lo necesitan los reportes. La aplicación no necesita Composer para funcionar.
    La marca de una instalación en modo único son los archivos de `img/` (`logo1.png` en el acceso,
    `logo.jpeg` en el panel, `icono.jpeg`, `fondo.jpeg`): para otro colegio, reemplázalos al subir el
-   código. El nombre se toma de «Empresa».
+   código. El nombre se toma de «Empresa», y el color y los textos de la página pública, de
+   «Empresa → Personalizar» (sin textos propios se sirve la `landing.html` de siempre).
 4. **Configuración fuera de `public_html`**, con el administrador de archivos o por SSH:
    `/home/<usuario>/domains/<dominio>/colegio_config/colegio.env`. La aplicación lo busca ahí sola, tanto
    si el proyecto es `public_html` como si está en `public_html/<carpeta>/` (no hace falta `SetEnv`).

@@ -192,6 +192,34 @@ $panelB = pedir($hostB, 'view/index.php', $galletaB)['cuerpo'];
 comprobar(str_contains($panelB, '<title>COLEGIO B DE PRUEBA</title>'), 'el panel de B lleva su nombre');
 @unlink("$almacen/colegio-b/controller/empresa/FOTOS/IMG_logo_b.png");
 
+// Color y página pública (Fase 4.7): B los edita en su panel; A no ve nada de eso.
+$pdo($entorno('DB_NAME_A'))->exec('UPDATE empresa SET emp_color = NULL, emp_pagina = NULL');
+$personalizar = 'controller/empresa/controlador_modificar_personalizacion.php';
+$malColor = pedir($hostB, $personalizar, $galletaB, ['color' => 'red;}body{display:none'], ["X-CSRF-Token: $tokenB"]);
+comprobar($malColor['codigo'] === 422, 'un color que no es #rrggbb se rechaza (422)', "({$malColor['codigo']})");
+$guardado = pedir($hostB, $personalizar, $galletaB, [
+    'color' => '#7a1f5c', 'lema' => 'Lema exclusivo de B', 'bienvenida' => '<b>bienvenida</b> de B',
+    'cifras' => '321 | Estudiantes de B', 'valores' => 'Respeto | Valor de B',
+], ["X-CSRF-Token: $tokenB"]);
+comprobar(trim($guardado['cuerpo']) === '1', 'el administrador de B guarda su personalización', "({$guardado['codigo']}: {$guardado['cuerpo']})");
+$publicaB = pedir($hostB, 'landing.html', "$tmp/vacia.txt")['cuerpo'];
+$publicaA = pedir($hostA, 'landing.html', "$tmp/vacia.txt")['cuerpo'];
+comprobar(
+    str_contains($publicaB, 'Lema exclusivo de B') && str_contains($publicaB, '#7a1f5c') && str_contains($publicaB, 'data-target="321"'),
+    'la página pública de B lleva sus textos, su color y sus cifras'
+);
+comprobar(str_contains($publicaB, '&lt;b&gt;bienvenida&lt;/b&gt;') && !str_contains($publicaB, '<b>bienvenida</b>'), 'los textos se escapan al mostrarse');
+comprobar(
+    str_contains($publicaA, 'COLEGIO A DE PRUEBA') && !str_contains($publicaA, 'de B') && !str_contains($publicaA, '#7a1f5c'),
+    'la de A no muestra nada de B'
+);
+comprobar(
+    stripos($publicaA, 'Sapientiae') === false && !str_contains($publicaA, 'class="stats"'),
+    'A sin página propia: genérica, sin la landing de la instalación original ni cifras inventadas'
+);
+comprobar(str_contains(pedir($hostB, 'index.php', "$tmp/vacia.txt")['cuerpo'], '--color-institucion:#7a1f5c'), 'el acceso de B lleva su color');
+comprobar(!str_contains(pedir($hostA, 'index.php', "$tmp/vacia.txt")['cuerpo'], '--color-institucion:'), 'el de A, los colores de siempre');
+
 // Hosts sin institución: la misma respuesta para el inexistente, el suspendido, la IP y el dominio base.
 $respuestas = [];
 foreach (['nadie.' . DOMINIO, 'suspendido.' . DOMINIO, '127.0.0.1', DOMINIO, 'colegio-a.otro.' . DOMINIO] as $host) {
