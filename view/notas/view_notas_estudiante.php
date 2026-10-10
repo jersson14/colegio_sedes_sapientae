@@ -95,7 +95,7 @@
                     <div class="alert alert-warning alert-dismissible" style=" text-align: justify;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <h5><i class="icon fas fa-exclamation-triangle"></i> ¡Aviso Importante!</h5>
-                        Si no logras visualizar las notas del bimestre correspondiente a la fecha, es posible que no estés al día con tus pagos. Por favor, revisa tu historial de pagos y verifica si hay algún saldo pendiente. En caso de no estar al día se le pide que pague su deuda para poder visualizar sus notas, y si fuera el caso que usted esta al día con su pago y no le filtra el bimestre que corresponde, te recomendamos ponerte en contacto con el área de soporte para más información.                   
+                        Si no logras visualizar las notas del <span class="etiqueta-periodo">bimestre</span> correspondiente a la fecha, es posible que no estés al día con tus pagos. Por favor, revisa tu historial de pagos y verifica si hay algún saldo pendiente. En caso de no estar al día se le pide que pague su deuda para poder visualizar sus notas, y si fuera el caso que usted esta al día con su pago y no le filtra el <span class="etiqueta-periodo">bimestre</span> que corresponde, te recomendamos ponerte en contacto con el área de soporte para más información.                   
                     </div>
                     <hr>
                     <div class="row">
@@ -354,3 +354,7 @@
             }
         }
     </script>
+<script>
+  // Fase 5.2: «bimestre», «semestre»… según la institución.
+  document.querySelectorAll('.etiqueta-periodo').forEach(function (e) { e.textContent = etiquetaPeriodo(); });
+</script>

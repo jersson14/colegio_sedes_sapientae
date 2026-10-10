@@ -85,7 +85,7 @@ function listar_notas_todos(){
       
 
 
-        {"defaultContent":"<button class='print_bimestre btn btn-warning  btn-sm' title='Imprimir notas por bimestre'><i class='fa fa-print'></i> Imprimir notas por bimestre</button>&nbsp;&nbsp;<button class='print_total btn btn-success  btn-sm' title='Imprimir notas general'><i class='fa fa-print'></i> Imprimir notas general</button>"},
+        {"defaultContent":"<button class='print_bimestre btn btn-warning  btn-sm' title='Imprimir notas por " + etiquetaPeriodo() + "'><i class='fa fa-print'></i> Imprimir notas por " + etiquetaPeriodo() + "</button>&nbsp;&nbsp;<button class='print_total btn btn-success  btn-sm' title='Imprimir notas general'><i class='fa fa-print'></i> Imprimir notas general</button>"},
         
     ],
 
@@ -235,7 +235,7 @@ $('#tabla_notas').on('click','.print_bimestre',function(){
     var width = screen.width;
     var height = screen.height;
     
-    window.open(url, "Boleta de notas por bimestre", "scrollbars=NO,width=" + width + ",height=" + height + ",top=0,left=0");
+    window.open(url, "Boleta de notas por " + etiquetaPeriodo(), "scrollbars=NO,width=" + width + ",height=" + height + ",top=0,left=0");
   
   }
 

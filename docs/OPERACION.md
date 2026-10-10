@@ -17,6 +17,7 @@
 | Registrar un pago o anular un cobro | Tarjeta «Cobros» |
 | Dar de alta un colegio (o una demo) | Tarjeta «Dar de alta una institución» |
 | Convertir una demo en cliente | Etiqueta «DEMO» → «Convertir en cliente» |
+| Tipo de institución (colegio, instituto, CETPRO) | Columna «Tipo»: cambia sus reglas académicas por defecto |
 
 ## Ciclo de vida de un colegio
 

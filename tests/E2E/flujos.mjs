@@ -672,6 +672,40 @@ try {
       'sin textos propios, en modo único vuelve la página de siempre');
     await adm.ctx.close();
   }
+
+  console.log('19. Configuración académica (administrador)');
+  {
+    const adm = await entrar(browser, ESC.admin);
+    const inicial = await adm.page.evaluate(() => window.INSTITUCION);
+    check(inicial?.tipo === 'COLEGIO' && inicial?.etiquetaPeriodo === 'Bimestre' && inicial?.apoderadoObligatorio === true,
+      'el panel conoce la configuración de la institución (un colegio, por defecto)', JSON.stringify(inicial));
+    await adm.page.waitForSelector('#tabla_empresa .configuracion', { timeout: 20000 });
+    await adm.page.click('#tabla_empresa .configuracion');
+    await adm.page.waitForSelector('#modal_configuracion.show', { timeout: 10000 });
+    check(await adm.page.inputValue('#cfg_evaluacion_nota_minima') === '11', 'el formulario muestra la nota mínima de un colegio (11)');
+    await adm.page.selectOption('#cfg_periodo_tipo', 'SEMESTRE');
+    await adm.page.selectOption('#cfg_apoderado_obligatorio', '0');
+    await adm.page.click('#modal_configuracion .btn-success');
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 10000 });
+    await adm.page.click('.swal2-confirm');
+    await adm.page.waitForLoadState('networkidle').catch(() => {});
+    const cambiada = await adm.page.evaluate(() => ({ ...window.INSTITUCION, etiqueta: etiquetaPeriodo() }));
+    check(cambiada.etiquetaPeriodo === 'Semestre' && cambiada.etiqueta === 'semestre' && cambiada.apoderadoObligatorio === false,
+      'tras guardar, el panel habla de semestres y el apoderado es opcional', JSON.stringify(cambiada));
+    const invalida = await pedir(adm.page, 'controller/institucion/controlador_modificar_configuracion.php', { evaluacion_nota_minima: '25' });
+    check(invalida.estado === 422, 'una nota mínima fuera de la escala se rechaza (422)', `(${invalida.estado})`);
+    const tipo = await pedir(adm.page, 'controller/institucion/controlador_modificar_configuracion.php', { institucion_tipo: 'INSTITUTO' });
+    check(tipo.texto === '1' && (await adm.page.evaluate(async () => (await (await fetch('../controller/institucion/controlador_obtener_configuracion.php')).json()).opciones['institucion.tipo'].valor)) === 'COLEGIO',
+      'el administrador no puede cambiar el tipo de institución (lo cambia soporte)');
+    const docente = await entrar(browser, ESC.docente);
+    check((await pedir(docente.page, 'controller/institucion/controlador_modificar_configuracion.php', { periodo_tipo: 'BIMESTRE' })).estado === 403,
+      'solo el administrador configura (403)');
+    await docente.ctx.close();
+    // Se deja como estaba (vacío = valor por defecto del tipo).
+    const restaurar = await pedir(adm.page, 'controller/institucion/controlador_modificar_configuracion.php', { periodo_tipo: '', apoderado_obligatorio: '' });
+    check(restaurar.texto === '1', 'volver a los valores por defecto');
+    await adm.ctx.close();
+  }
 } finally {
   await browser.close();
 }

@@ -275,7 +275,9 @@ function Registrar_alumno(){
   if(dni.length==0|| apepa.length==0||apema.length==0||sexo.length==0||fechanaci.length==0||direc.length==0||nombre.length==0 ){
     return Swal.fire("Mensaje de Advertencia","Tiene campos vacios en el registro del alumno","warning");
   }
-  if(dnima.length==0||nomma.length==0||celma.length==0){
+  // Fase 5.7: en institutos (alumnos mayores de edad) el apoderado es opcional.
+  var apoderadoObligatorio = !window.INSTITUCION || window.INSTITUCION.apoderadoObligatorio;
+  if(apoderadoObligatorio && (dnima.length==0||nomma.length==0||celma.length==0)){
     return Swal.fire("Mensaje de Advertencia","Tiene campos vacios en el registro de los papas","warning");
   }
 
@@ -381,7 +383,9 @@ function Modificar_alumno(){
   if(dni.length==0|| apepa.length==0||apema.length==0||sexo.length==0||fechanaci.length==0||direc.length==0||nombre.length==0 ){
     return Swal.fire("Mensaje de Advertencia","Tiene campos vacios en el registro del alumno","warning");
   }
-  if(dnima.length==0||nomma.length==0||celma.length==0){
+  // Fase 5.7: en institutos (alumnos mayores de edad) el apoderado es opcional.
+  var apoderadoObligatorio = !window.INSTITUCION || window.INSTITUCION.apoderadoObligatorio;
+  if(apoderadoObligatorio && (dnima.length==0||nomma.length==0||celma.length==0)){
     return Swal.fire("Mensaje de Advertencia","Tiene campos vacios en el registro de los papas","warning");
   }
 

@@ -2,6 +2,7 @@
 require '../core/sesion.php';
 require '../core/marca.php'; // Fase 4.7: nombre y logo de la institución
 require_once '../core/comercial.php'; // Fase 4B: estado y plan de la institución
+require_once '../core/institucion.php'; // Fase 5: tipo y reglas académicas de la institución
 if (!sesion_activa()) {
   header('Location: ../index.php');
   exit;
@@ -47,6 +48,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link href="../utilitario/DataTables/datatables.min.css" type="text/css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" integrity="sha384-OXVF05DQEe311p6ohU11NwlnX08FzMCsyoXzGOaL+83dKAb3qS17yZJxESl8YrJQ" crossorigin="anonymous" rel="stylesheet" />
   <?= marca_estilo() /* Fase 4.7: color de la institución */ ?>
+  <?= institucion_script() /* Fase 5: window.INSTITUCION para el JavaScript */ ?>
+  <script>
+    // «bimestre», «semestre»… según la configuración de la institución (Fase 5.2).
+    function etiquetaPeriodo() { return ((window.INSTITUCION && window.INSTITUCION.etiquetaPeriodo) || 'Bimestre').toLowerCase(); }
+  </script>
 </head>
 
 <body class="">
@@ -1216,6 +1222,56 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
             <button type="button" class="btn btn-success" onclick="Guardar_Personalizacion()"><i class="fas fa-check"></i> Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase 5.1: configuración académica de la institución (solo administrador) -->
+    <div class="modal fade" id="modal_configuracion" tabindex="-1" role="dialog" aria-labelledby="titulo_configuracion" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#1FA0E0;">
+            <h5 class="modal-title" id="titulo_configuracion" style="color:white"><b>CONFIGURACIÓN ACADÉMICA</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-2">Tipo de institución: <b id="lb_tipo_institucion"></b> <small class="text-muted">(lo cambia soporte)</small></p>
+            <div class="form-group">
+              <label for="cfg_periodo_tipo">Periodo de evaluación</label>
+              <select class="form-control" id="cfg_periodo_tipo" name="periodo_tipo">
+                <option value="BIMESTRE">Bimestre (4 por año)</option><option value="TRIMESTRE">Trimestre (3)</option>
+                <option value="CUATRIMESTRE">Cuatrimestre (3)</option><option value="SEMESTRE">Semestre (2)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cfg_evaluacion_nota_minima">Nota mínima aprobatoria (escala de 0 a 20)</label>
+              <input type="number" min="0" max="20" class="form-control" id="cfg_evaluacion_nota_minima" name="evaluacion_nota_minima">
+            </div>
+            <div class="form-group">
+              <label for="cfg_evaluacion_ponderacion">Promedio</label>
+              <select class="form-control" id="cfg_evaluacion_ponderacion" name="evaluacion_ponderacion">
+                <option value="SIMPLE">Simple (todas las asignaturas pesan igual)</option>
+                <option value="POR_CREDITOS">Ponderado por créditos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cfg_apoderado_obligatorio">Datos del apoderado al registrar un alumno</label>
+              <select class="form-control" id="cfg_apoderado_obligatorio" name="apoderado_obligatorio">
+                <option value="1">Obligatorios</option><option value="0">Opcionales (alumnos mayores de edad)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cfg_matricula_modo">Matrícula</label>
+              <select class="form-control" id="cfg_matricula_modo" name="matricula_modo">
+                <option value="POR_AULA">Por aula (grado y sección)</option>
+                <option value="POR_UNIDAD">Por unidad didáctica / curso</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+            <button type="button" class="btn btn-success" onclick="Guardar_Configuracion()"><i class="fas fa-check"></i> Guardar</button>
           </div>
         </div>
       </div>

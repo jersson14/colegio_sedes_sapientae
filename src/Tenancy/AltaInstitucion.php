@@ -91,6 +91,8 @@ final class AltaInstitucion
             $clave = self::claveInicial();
             $pdo = ($this->conectar)($s->baseDatos);
             $s->demo ? $this->cargarDemo($pdo, $s, $clave) : $this->sembrar($pdo, $s, $clave);
+            // Fase 5.1: el tipo vive también en la base de la institución (sus reglas académicas dependen de él).
+            (new \App\Institucion\PdoConfiguracionRepositorio($pdo))->guardar(['institucion.tipo' => $s->tipo]);
             return $clave;
         } catch (\Throwable $e) {
             $this->servidor->exec("DROP DATABASE IF EXISTS `{$s->baseDatos}`");

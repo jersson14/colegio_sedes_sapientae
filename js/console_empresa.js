@@ -32,7 +32,7 @@ function listar_empresa(){
       },
         {"data":"emp_telefono"},
         {"data":"emp_direccion"},
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de empresa'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button class='foto btn btn-warning btn-sm' title='Cambiar logo'><i class='fa fa-image'></i> Cambiar foto</button>&nbsp;<button class='personalizar btn btn-info btn-sm' title='Color y página pública'><i class='fa fa-palette'></i> Personalizar</button>&nbsp;<a class='btn btn-secondary btn-sm' href='../controller/exportacion/controlador_exportar_datos.php' title='Todos los datos de la institución en un zip'><i class='fa fa-download'></i> Exportar datos</a>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos de empresa'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button class='foto btn btn-warning btn-sm' title='Cambiar logo'><i class='fa fa-image'></i> Cambiar foto</button>&nbsp;<button class='personalizar btn btn-info btn-sm' title='Color y página pública'><i class='fa fa-palette'></i> Personalizar</button>&nbsp;<button class='configuracion btn btn-dark btn-sm' title='Periodos, nota mínima, apoderado, matrícula'><i class='fa fa-cogs'></i> Configuración académica</button>&nbsp;<a class='btn btn-secondary btn-sm' href='../controller/exportacion/controlador_exportar_datos.php' title='Todos los datos de la institución en un zip'><i class='fa fa-download'></i> Exportar datos</a>"},
 
     ],
 
@@ -255,5 +255,38 @@ function Guardar_Personalizacion() {
     .fail(function (xhr) {
       let motivo = (xhr.responseJSON && xhr.responseJSON.error) || 'No se completó el proceso';
       Swal.fire('Mensaje de Advertencia', motivo, 'warning');
+    });
+}
+
+// Fase 5.1: configuración académica de la institución.
+const CAMPOS_CONFIGURACION = ['periodo.tipo', 'evaluacion.nota_minima', 'evaluacion.ponderacion', 'apoderado.obligatorio', 'matricula.modo'];
+$('#tabla_empresa').on('click', '.configuracion', function () {
+  $.ajax({ url: '../controller/institucion/controlador_obtener_configuracion.php', type: 'GET', dataType: 'json' })
+    .done(function (datos) {
+      document.getElementById('lb_tipo_institucion').textContent = datos.tipo;
+      CAMPOS_CONFIGURACION.forEach(function (clave) {
+        document.getElementById('cfg_' + clave.replace('.', '_')).value = datos.opciones[clave].valor;
+      });
+      $('#modal_configuracion').modal('show');
+    })
+    .fail(function () { Swal.fire('Mensaje de Error', 'No se pudo cargar la configuración', 'error'); });
+});
+function Guardar_Configuracion() {
+  let datos = {};
+  CAMPOS_CONFIGURACION.forEach(function (clave) {
+    let campo = clave.replace('.', '_');
+    datos[campo] = document.getElementById('cfg_' + campo).value;
+  });
+  $.ajax({ url: '../controller/institucion/controlador_modificar_configuracion.php', type: 'POST', data: datos })
+    .done(function (resp) {
+      if (resp == 1) {
+        Swal.fire('Mensaje de Confirmación', 'Configuración guardada. La página se recargará para aplicarla.', 'success')
+          .then(function () { window.location.reload(); });
+      } else {
+        Swal.fire('Mensaje de Error', 'No se completó el proceso', 'error');
+      }
+    })
+    .fail(function (xhr) {
+      Swal.fire('Mensaje de Advertencia', (xhr.responseJSON && xhr.responseJSON.error) || 'No se completó el proceso', 'warning');
     });
 }

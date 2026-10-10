@@ -19,6 +19,13 @@ En el panel, tabla **«Datos de la institución»**:
 - **Personalizar**: el color principal y los textos de la **página pública**: lema, bienvenida, «Nosotros»,
   niveles, valores, cifras y horario. Escribe solo lo que sea cierto: una sección vacía no se muestra.
 
+## Configuración académica
+
+En «Datos de la institución» → **Configuración académica**: el periodo de evaluación (bimestre, trimestre,
+cuatrimestre o semestre), la nota mínima aprobatoria, si el promedio se pondera por créditos, si los datos del
+apoderado son obligatorios y si la matrícula es por aula o por unidad didáctica. Vienen ya puestos según el tipo
+de institución (colegio o instituto); cámbialos solo si tu reglamento dice otra cosa.
+
 ## Usuarios y permisos
 
 Cada persona entra con su propia cuenta. Los roles disponibles son administrador, docente, auxiliar,

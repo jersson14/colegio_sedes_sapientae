@@ -288,7 +288,7 @@ $(document).ready(function() {
     const opcionesPorTipo = {
       BIMESTRE: ["I BIMESTRE", "II BIMESTRE", "III BIMESTRE", "IV BIMESTRE"],
         TRIMESTRE: ["I TRIMESTRE", "II TRIMESTRE", "III TRIMESTRE"],
-        CUATRIMESTRE: ["I CUATRIMESTRE", "II CUATRIMESTRE", "III CUATRIMESTRE", "IV CUATRIMESTRE"],
+        CUATRIMESTRE: ["I CUATRIMESTRE", "II CUATRIMESTRE", "III CUATRIMESTRE"],
         SEMESTRE: ["I SEMESTRE", "II SEMESTRE"]
     };
 
@@ -303,6 +303,10 @@ $(document).ready(function() {
         actualizarOpcionesPeriodo($(this).val());
     });
 
+    // Fase 5.2: el tipo de periodo de la institución (bimestres en un colegio, semestres en un instituto).
+    if (window.INSTITUCION && window.INSTITUCION.tipoPeriodo) {
+        $('#tipo_periodo').val(window.INSTITUCION.tipoPeriodo);
+    }
     // Inicializar con las opciones correspondientes al valor inicial del select de "Tipo de Periodo"
     actualizarOpcionesPeriodo($('#tipo_periodo').val());
 });
@@ -312,7 +316,7 @@ $(document).ready(function() {
     const opcionesPorTipo = {
         BIMESTRE: ["I BIMESTRE", "II BIMESTRE", "III BIMESTRE", "IV BIMESTRE"],
         TRIMESTRE: ["I TRIMESTRE", "II TRIMESTRE", "III TRIMESTRE"],
-        CUATRIMESTRE: ["I CUATRIMESTRE", "II CUATRIMESTRE", "III CUATRIMESTRE", "IV CUATRIMESTRE"],
+        CUATRIMESTRE: ["I CUATRIMESTRE", "II CUATRIMESTRE", "III CUATRIMESTRE"],
         SEMESTRE: ["I SEMESTRE", "II SEMESTRE"]
     };
 

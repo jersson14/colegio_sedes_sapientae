@@ -86,7 +86,7 @@ function listar_notas_todos(){
 
 
 
-        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar notas por bimestre</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar notas por " + etiquetaPeriodo() + "</button>"},
         
     ],
 

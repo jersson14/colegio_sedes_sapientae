@@ -400,6 +400,8 @@ Pasos (por cada colegio: un dominio o subdominio con su propia base):
 2. **hPanel → PHP:** versión 8.2 o superior, con `pdo_mysql`, `mysqli`, `mbstring`, `intl`, `gd`, `fileinfo`.
 3. **Subir el código** a `public_html` (o a una subcarpeta), sin `vendor/` de la raíz ni `.git`.
    `view/MPDF/vendor/` sí va: lo necesitan los reportes. La aplicación no necesita Composer para funcionar.
+   Si la instalación es un instituto: `php tools/configurar_institucion.php --tipo=INSTITUTO` (semestres, nota
+   mínima 13, créditos, apoderado opcional; cada opción se puede ajustar después).
    La marca de una instalación en modo único son los archivos de `img/` (`logo1.png` en el acceso,
    `logo.jpeg` en el panel, `icono.jpeg`, `fondo.jpeg`): para otro colegio, reemplázalos al subir el
    código. El nombre se toma de «Empresa», y el color y los textos de la página pública, de

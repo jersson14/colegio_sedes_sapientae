@@ -138,6 +138,24 @@ final class PanelInstituciones
         $this->auditoria->registrar($actor, 'PLAN_ASIGNADO', $slug, $codigo . ($pruebaHasta !== null ? ", prueba hasta $pruebaHasta" : ''), $ip);
     }
 
+    /**
+     * Fase 5.1: el tipo de institución (COLEGIO, INSTITUTO, CETPRO), en la maestra y en su propia base,
+     * donde decide sus reglas académicas por defecto.
+     */
+    public function cambiarTipo(string $slug, string $tipo, string $actor, string $ip): void
+    {
+        $tipo = (string) \App\Institucion\Configuracion::validar('institucion.tipo', $tipo);
+        $consulta = $this->maestro->prepare('SELECT base_datos, tipo FROM tenants WHERE slug = ? AND borrado_en IS NULL');
+        $consulta->execute([$slug]);
+        $fila = $consulta->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($fila)) {
+            throw new \DomainException("No existe la institución «{$slug}».");
+        }
+        (new \App\Institucion\PdoConfiguracionRepositorio(($this->conectar)((string) $fila['base_datos'])))->guardar(['institucion.tipo' => $tipo]);
+        $this->maestro->prepare('UPDATE tenants SET tipo = ? WHERE slug = ?')->execute([$tipo, $slug]);
+        $this->auditoria->registrar($actor, 'TIPO', $slug, "{$fila['tipo']} → $tipo", $ip);
+    }
+
     private static function texto(?int $n): ?string
     {
         return $n === null ? null : (string) $n;

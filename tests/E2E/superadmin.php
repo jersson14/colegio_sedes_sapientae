@@ -138,6 +138,18 @@ panel_comprobar(str_contains($inexistente['cuerpo'], 'No existe la institución'
 panel_comprobar(substr_count($reactivado['cuerpo'], '<td>ESTADO</td>') >= 2 && str_contains($reactivado['cuerpo'], 'SUSPENDIDO → ACTIVO')
     && str_contains($reactivado['cuerpo'], "<td>$usuario</td>"), 'la auditoría registra quién cambió qué');
 
+// Fase 5.1: el tipo de institución decide sus reglas académicas por defecto.
+$baseB = (string) $maestro->query("SELECT base_datos FROM tenants WHERE slug = 'colegio-b'")->fetchColumn();
+panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'tipo', 'slug' => 'colegio-b', 'tipo' => 'INSTITUTO']);
+$tipoB = (string) $maestro->query("SELECT valor FROM `$baseB`.configuracion WHERE clave = 'institucion.tipo'")->fetchColumn();
+$panelB = panel_pedir('colegio-b.prueba.test', 'view/index.php', "$tmp/b.txt")['cuerpo'];
+panel_comprobar(
+    $tipoB === 'INSTITUTO' && (string) $maestro->query("SELECT tipo FROM tenants WHERE slug = 'colegio-b'")->fetchColumn() === 'INSTITUTO'
+    && str_contains($panelB, '"etiquetaPeriodo":"Semestre"') && str_contains($panelB, '"apoderadoObligatorio":false'),
+    'pasar colegio-b a INSTITUTO cambia sus reglas: semestres y apoderado opcional'
+);
+panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'tipo', 'slug' => 'colegio-b', 'tipo' => 'COLEGIO']);
+
 // Alta desde el panel.
 $slugNuevo = 'panel-' . getmypid();
 $alta = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'alta', 'slug' => $slugNuevo, 'razon' => 'Colegio desde el panel',

@@ -38,6 +38,9 @@ administrador edita con `Services\GestionarPersonalizacion` («Empresa → Perso
 en MOROSO, todo menos la exportación en SUSPENDIDO, límites del plan), `Consumo`, `ExportacionDatos` y
 `PdoRepositorioComercial`; `core/comercial.php` los usa en cada petición.
 
+`Institucion/` (Fase 5): `TipoInstitucion`, `Configuracion` (claves, valores permitidos y valores por defecto por
+tipo) y `PdoConfiguracionRepositorio`; `core/institucion.php` la pasa al panel como `window.INSTITUCION`.
+
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
 `superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través
 de `core/tenant.php` (`tenant_actual()`). `Services\TareasProgramadas` hace el trabajo de los eventos de la BD

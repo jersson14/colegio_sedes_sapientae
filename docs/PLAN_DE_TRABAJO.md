@@ -14,7 +14,8 @@
 | 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
 | 4 — Multi-tenant | ✅ Completa: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hitos 4.1–4.10 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando; nombre, logo, color y página pública de cada colegio. copias de seguridad por colegio con restauración verificada; panel de superadministrador con auditoría. Siguiente: Fase 4B (empaquetado comercial) |
 | 4B — Empaquetado comercial | ✅ Completa: planes editables y límites aplicados en el servidor, estados con su comportamiento (PRUEBA, MOROSO, SUSPENDIDO, CANCELADO), consumo diario, cobros con morosidad automática, exportación de datos, baja con borrado verificable, demo convertible, runbook P2, guía de operación y manual de la institución. Los precios los decide el responsable: el sistema no trae ninguno; los cobros son internos (el comprobante SUNAT va por un OSE/PSE) |
-| 5 en adelante | Pendiente |
+| 5 — Institutos | 🔄 En curso: hechos 5.1 (tipo de institución y configuración académica en la base de cada una), 5.2 (periodo y etiquetas configurables) y 5.7 (apoderado opcional). Los valores por defecto de institutos (nota mínima 13, semestres, créditos) se validan con el piloto (5.10) |
+| 6 en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
 
@@ -520,13 +521,13 @@ vs. suscripción, tarifa plana vs. por alumno matriculado).
 
 | Hito | Entregable |
 |---|---|
-| 5.1 | `tenants.tipo` + tabla `tenant_config` clave-valor |
-| 5.2 | Etiquetas y cantidad de periodos configurables (bimestre/semestre/ciclo) |
+| 5.1 ✅ | `tenants.tipo` + configuración clave-valor (tabla `configuracion` en la base de cada institución, `App\Institucion\Configuracion`) |
+| 5.2 ✅ | Etiquetas y cantidad de periodos configurables (bimestre/semestre/ciclo) |
 | 5.3 | Tablas `unidades_didacticas`, `creditos`, `prerrequisitos` |
 | 5.4 | Matrícula por unidad didáctica (además de por aula) |
 | 5.5 | `EstrategiaEvaluacion` con promedio ponderado por créditos |
 | 5.6 | Repitencia parcial: cargos y subsanación |
-| 5.7 | Apoderado opcional según configuración del tenant |
+| 5.7 ✅ | Apoderado opcional según configuración del tenant |
 | 5.8 | Certificación modular y título técnico (plantillas mPDF) |
 | 5.9 | Roles y permisos propios de instituto |
 | 5.10 | Piloto con un instituto real |

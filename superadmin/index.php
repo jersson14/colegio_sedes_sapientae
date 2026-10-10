@@ -199,6 +199,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $auditoria->registrar($actor, 'DEMO_CONVERTIDA', $datos->slug, "base {$resultado['base']}", $ip);
                 sa_aviso('success', "«{$datos->slug}» es ya cliente, con una base limpia. Administrador: admin · contraseña inicial: "
                     . "{$resultado['clave']} (se muestra solo ahora).");
+            } elseif ($accion === 'tipo') {
+                $slug = (string) ($_POST['slug'] ?? '');
+                $panel->cambiarTipo($slug, (string) ($_POST['tipo'] ?? ''), $actor, $ip);
+                sa_aviso('success', "«{$slug}» es ahora " . (string) ($_POST['tipo'] ?? '') . '.');
             } elseif ($accion === 'asignar_plan') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $hasta = trim((string) ($_POST['prueba_hasta'] ?? ''));
@@ -288,7 +292,18 @@ header('Content-Type: text/html; charset=utf-8');
             <tr data-slug="<?= $e($t['slug']) ?>">
               <td><a href="https://<?= $e($t['dominio'] ?? "{$t['slug']}.$dominio") ?>/" rel="noopener" target="_blank"><?= $e($t['slug']) ?></a></td>
               <td><?= $e($t['razon_social']) ?><br><small class="text-muted"><?= $e($t['base_datos']) ?></small></td>
-              <td><?= $e($t['tipo']) ?></td>
+              <td>
+                <form method="post" class="form-inline">
+                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                  <input type="hidden" name="accion" value="tipo">
+                  <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
+                  <select name="tipo" class="form-control form-control-sm mr-1" aria-label="Tipo de <?= $e($t['slug']) ?>" onchange="this.form.submit()">
+                    <?php foreach (['COLEGIO', 'INSTITUTO', 'CETPRO'] as $tipo) { ?>
+                      <option<?= $tipo === $t['tipo'] ? ' selected' : '' ?>><?= $tipo ?></option>
+                    <?php } ?>
+                  </select>
+                </form>
+              </td>
               <td><span class="badge badge-<?= $e($t['estado']) ?>"><?= $e($t['estado']) ?></span>
                 <?php if ($t['demo']) { ?><span class="badge badge-warning" style="color:#000">DEMO</span>
                   <details class="mt-1"><summary><small>Convertir en cliente</small></summary>
