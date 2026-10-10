@@ -264,7 +264,16 @@ jobs:
           done
 
       - name: Pruebas de integración de la BD maestra
-        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter TenantsMaestroTest
+        run: DB_NAME="$DB_NAME_A" vendor/bin/phpunit --testsuite=Integration --filter 'TenantsMaestroTest|AltaInstitucionTest'
+
+      - name: Alta de un colegio con la herramienta (tools/alta_tenant.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
+        run: |
+          php tools/alta_tenant.php --slug=colegio-alta --razon="Colegio Alta CI" --email=ci@example.com             --admin-dni=12345678 --admin-nombres=Ana --admin-apellidos=Perez | tee "$RUNNER_TEMP/alta.txt"
+          grep -q "Institución creada" "$RUNNER_TEMP/alta.txt"
+          ! php tools/alta_tenant.php --slug=colegio-alta --razon=X --email=ci@example.com             --admin-dni=12345678 --admin-nombres=Ana --admin-apellidos=Perez
+          php tools/migrar_tenants.php --solo=colegio-alta
 
       - name: Tareas programadas por cron en cada colegio (tools/tareas_programadas.php)
         run: COLEGIO_ENV="$RUNNER_TEMP/colegio.env" php tools/tareas_programadas.php

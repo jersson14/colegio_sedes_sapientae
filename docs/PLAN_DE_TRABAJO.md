@@ -12,7 +12,7 @@
 | 1 — Infraestructura de calidad | ✅ Base lista (ver desviaciones) |
 | 2 — Pruebas | ✅ Base: 47 unitarias, 31 de integración (incl. SP críticos), 124 respuestas caracterizadas de los 6 roles y 28 comprobaciones E2E; 8 defectos documentados ([tests/README.md](../tests/README.md)) |
 | 3 — Refactor | ✅ Los 10 módulos del plan: 68 defectos corregidos (14 migraciones); escrituras en `src/` (usuario, alumnos, matrícula, notas, asistencia, asignaturas/horarios, pensiones, pagos, caja, tareas, exámenes, enfermería, psicología, comunicados) y reportes PDF sobre `src/Reportes`. Pendiente: retirar el código sin uso (decisión del responsable) y el front controller. Ver [src/README.md](../src/README.md) |
-| 4 — Multi-tenant | 🔄 En curso: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hechos 4.1–4.4, 4.6 y 4.9 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. Faltan 4.5, 4.7, 4.8 y 4.10 |
+| 4 — Multi-tenant | 🔄 En curso: un solo código con `MODO_TENANT=unico\|multiple` ([DESPLIEGUE.md](DESPLIEGUE.md) §7). Hechos 4.1–4.6 y 4.9 (BD maestra, resolución por subdominio, conexión que exige tenant, sesión atada al colegio, migraciones en N bases, suite de aislamiento en el CI) y las tareas programadas por cron; archivos en un almacén por colegio. alta de un colegio con un comando. Faltan 4.7, 4.8 y 4.10 |
 | 4B en adelante | Pendiente |
 
 **Desviaciones de la Fase 1 respecto a lo planeado, y por qué:**
@@ -406,7 +406,7 @@ Diseño completo en [MULTITENANT.md](MULTITENANT.md). Resumen de hitos:
 | 4.2 ✅ | `TenantResolver` por subdominio + `TenantContext` |
 | 4.3 ✅ | `model_conexion` que exige tenant resuelto (excepción si falta) |
 | 4.4 ✅ | Phinx aplicando migraciones a N bases |
-| 4.5 | Alta automatizada de tenant (crear base, sembrar, admin inicial) |
+| 4.5 ✅ | Alta automatizada de tenant (crear base, sembrar, admin inicial): `tools/alta_tenant.php` |
 | 4.6 ✅ | Almacenamiento de archivos aislado por tenant, fuera del docroot (`storage/tenants/<slug>`, servido con sesión) |
 | 4.7 | Personalización (logo, razón social, colores, cabecera de PDF) por tenant |
 | 4.8 | Panel de superadministrador |

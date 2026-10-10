@@ -368,7 +368,7 @@ Es **el mismo código y la misma rama**. Lo único que cambia es `MODO_TENANT` e
 | Para qué | Vender a uno o pocos colegios | SaaS con varios colegios |
 | Dónde | Hosting compartido (Premium/Business) o VPS | VPS de Hostinger |
 | Qué base se abre | `DB_NAME` | La que la BD maestra asigna al subdominio (`<slug>.TENANT_DOMINIO`) |
-| Alta de un colegio | Una cuenta/sitio con su base, manual | Una fila en `tenants` + una base migrada (hito 4.5 la automatiza) |
+| Alta de un colegio | Una cuenta/sitio con su base, manual | `php tools/alta_tenant.php` (base, migraciones, roles, administrador y registro) |
 | Tareas programadas | Cron de hPanel con `tools/tareas_programadas.php` | Un solo cron que recorre todos los colegios |
 | Migraciones | `vendor/bin/phinx migrate` | `php tools/migrar_tenants.php` (maestra y cada colegio, en orden) |
 
@@ -429,15 +429,17 @@ es manual.
 5. `colegio.env` en `/var/www/colegio_config/` con `MODO_TENANT=multiple`, `TENANT_DOMINIO=midominio.pe`
    y `MAESTRO_DB_NAME=sge_maestro`.
 6. Crear la maestra y migrar todo: `CREATE DATABASE sge_maestro;` y `php tools/migrar_tenants.php`.
-7. Alta de un colegio (manual hasta el hito 4.5): crear su base, registrar la fila y migrar:
+7. Alta de un colegio, un solo comando (crea la base `sge_colegio_x`, la migra, siembra roles y
+   empresa, crea el administrador y la registra; si algo falla no deja nada a medias):
 
-   ```sql
-   CREATE DATABASE sge_colegio_x CHARACTER SET utf8mb4;
-   INSERT INTO sge_maestro.tenants (slug, razon_social, base_datos, estado)
-   VALUES ('colegio-x', 'Colegio X', 'sge_colegio_x', 'ACTIVO');
+   ```bash
+   php tools/alta_tenant.php --slug=colegio-x --razon="Colegio X" --email=direccion@colegiox.edu.pe \
+       --admin-dni=12345678 --admin-nombres="Ana" --admin-apellidos="Pérez Soto" [--estado=ACTIVO]
    ```
 
-   `php tools/migrar_tenants.php --solo=colegio-x`, y el colegio entra por `https://colegio-x.midominio.pe`.
+   Muestra una sola vez la contraseña del administrador (usuario `admin`). El colegio entra por
+   `https://colegio-x.midominio.pe` en estado `PRUEBA` salvo que se indique otro. Nunca reutiliza una
+   base existente. Requiere `DB_MIGRACION_USER` con permiso `CREATE` en el servidor.
 8. Cron (`crontab -e` del usuario web): `* * * * * php /var/www/colegio/tools/tareas_programadas.php`.
    `event_scheduler` puede quedar apagado.
 9. Para pasar un colegio del hosting compartido al VPS: en el compartido, `php tools/mover_subidas.php

@@ -207,8 +207,10 @@ que hace sostenible un SaaS.
 - [x] Sesión atada a la institución (`S_TENANT`) y límite de intentos de login por institución.
 - [x] Los 4 eventos de la BD, también por cron: `tools/tareas_programadas.php` (hosting sin `event_scheduler`).
 - [x] Suite de aislamiento en el CI: `tests/E2E/aislamiento.php`.
-- [ ] Proceso automatizado de alta de tenant: crear base → aplicar esquema → sembrar
-      catálogos → crear usuario administrador → enviar credenciales.
+- [x] Alta automatizada: `php tools/alta_tenant.php` (`App\Tenancy\AltaInstitucion`) crea la base, la
+      migra, siembra roles (ids fijos que usan los procedimientos) y empresa, crea el administrador y la
+      registra al final; si falla, borra la base que creó. La contraseña inicial se muestra una vez (el
+      envío por correo queda para la Fase 4B).
 - [ ] Backup por tenant, con restauración individual probada.
 
 ### 4.2 Aislamiento de archivos

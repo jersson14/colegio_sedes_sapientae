@@ -24,6 +24,7 @@ require __DIR__ . '/../core/autoload.php';
 
 use App\Core\Conexion;
 use App\Tenancy\ModoTenant;
+use App\Tenancy\MigradorPhinx;
 use App\Tenancy\PdoRepositorioTenants;
 use App\Tenancy\ResolverTenant;
 
@@ -39,30 +40,17 @@ foreach ($argv as $argumento) {
     }
 }
 
-/** Ejecuta Phinx en un proceso aparte con las credenciales por variables de entorno (sin argumentos visibles). */
-function phinx(string $accion, string $configuracion, string $base, string $etiqueta): bool
+function phinx(string $accion, string $base, string $etiqueta, bool $maestra = false): bool
 {
-    $usuario = (string) config('DB_MIGRACION_USER', '');
-    $entorno = getenv() + [
-        'DB_HOST' => (string) config('DB_HOST', 'localhost'),
-        'DB_PORT' => (string) config('DB_PORT', '3306'),
-        'DB_NAME' => $base,
-        'MAESTRO_DB_NAME' => $base,
-        'DB_MIGRACION_USER' => $usuario !== '' ? $usuario : (string) config('DB_USER', ''),
-        'DB_MIGRACION_PASS' => $usuario !== '' ? (string) config('DB_MIGRACION_PASS', '') : (string) config('DB_PASS', ''),
-    ];
-    $comando = [PHP_BINARY, __DIR__ . '/../vendor/robmorgan/phinx/bin/phinx', $accion, '-c', $configuracion, '--no-interaction'];
     echo "== $etiqueta ($base)\n";
-    $proceso = proc_open($comando, [1 => STDOUT, 2 => STDERR], $tuberias, __DIR__ . '/..', $entorno);
-    return is_resource($proceso) && proc_close($proceso) === 0;
+    return MigradorPhinx::ejecutar($accion, $base, $maestra);
 }
 
-$raiz = __DIR__ . '/..';
 if (ResolverTenant::desdeConfig()->modo() === ModoTenant::Unico) {
-    exit(phinx($accion, "$raiz/phinx.php", (string) config('DB_NAME', 'colegio'), 'institución única') ? 0 : 1);
+    exit(phinx($accion, (string) config('DB_NAME', 'colegio'), 'institución única') ? 0 : 1);
 }
 
-if ($solo === null && !phinx($accion, "$raiz/phinx_maestro.php", (string) config('MAESTRO_DB_NAME', 'sge_maestro'), 'BD maestra')) {
+if ($solo === null && !phinx($accion, (string) config('MAESTRO_DB_NAME', 'sge_maestro'), 'BD maestra', true)) {
     fwrite(STDERR, "Falló la BD maestra: no se toca ninguna institución.\n");
     exit(1);
 }
@@ -75,7 +63,7 @@ if ($solo !== null) {
     }
 }
 foreach ($tenants as $i => $tenant) {
-    if (!phinx($accion, "$raiz/phinx.php", $tenant->baseDatos, $tenant->slug . ' [' . $tenant->estado->value . ']')) {
+    if (!phinx($accion, $tenant->baseDatos, $tenant->slug . ' [' . $tenant->estado->value . ']')) {
         $pendientes = array_map(static fn ($t): string => $t->slug, array_slice($tenants, $i + 1));
         fwrite(STDERR, "Falló «{$tenant->slug}». Sin migrar todavía: " . ($pendientes === [] ? 'ninguna' : implode(', ', $pendientes)) . "\n");
         exit(1);

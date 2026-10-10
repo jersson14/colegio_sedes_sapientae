@@ -53,15 +53,28 @@ final class Conexion
         );
     }
 
-    private static function abrir(string $base, string $usuario, string $clave): PDO
+    /**
+     * Conexión con permisos DDL (DB_MIGRACION_USER; si falta, DB_USER) para herramientas de consola que
+     * crean bases: el alta de una institución. Sin $base, al servidor sin base seleccionada.
+     *
+     * @throws \PDOException si no se puede conectar
+     */
+    public static function administracion(?string $base = null): PDO
     {
         require_once __DIR__ . '/../../core/config.php';
-        $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s',
-            config('DB_HOST', 'localhost'),
-            (int) config('DB_PORT', '3306'),
-            $base
+        $usuario = (string) config('DB_MIGRACION_USER', '');
+        return self::abrir(
+            $base,
+            $usuario !== '' ? $usuario : (string) config('DB_USER', ''),
+            $usuario !== '' ? (string) config('DB_MIGRACION_PASS', '') : (string) config('DB_PASS', ''),
         );
+    }
+
+    private static function abrir(?string $base, string $usuario, string $clave): PDO
+    {
+        require_once __DIR__ . '/../../core/config.php';
+        $dsn = sprintf('mysql:host=%s;port=%d', config('DB_HOST', 'localhost'), (int) config('DB_PORT', '3306'))
+            . ($base !== null ? ';dbname=' . $base : '');
         $pdo = new PDO($dsn, $usuario, $clave);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec('set names utf8');

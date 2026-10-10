@@ -29,7 +29,8 @@ $cuentas = new GestionarCuentas(new PdoUsuarioRepositorio((new conexionBD())->co
 
 `Tenancy/`: `ModoTenant` (`unico`/`multiple`), `Tenant`, `EstadoTenant`, `ResolverTenant` (host → institución),
 `TenantContext` (la de la petición; sin ella `Core\Conexion::crear()` lanza `TenantNoResuelto`) y el registro
-`PdoRepositorioTenants` sobre la BD maestra (`Core\Conexion::maestro()`). El código heredado lo usa a través
+`PdoRepositorioTenants` sobre la BD maestra (`Core\Conexion::maestro()`). `AltaInstitucion` + `SolicitudAlta`
+dan de alta un colegio (`tools/alta_tenant.php`); `MigradorPhinx` migra una base concreta. El código heredado lo usa a través
 de `core/tenant.php` (`tenant_actual()`). `Services\TareasProgramadas` hace el trabajo de los eventos de la BD
 para el cron.
 
