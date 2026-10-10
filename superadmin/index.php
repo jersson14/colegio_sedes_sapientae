@@ -22,6 +22,7 @@ use App\Superadmin\Auditoria;
 use App\Superadmin\CuentasSuperadmin;
 use App\Superadmin\PanelInstituciones;
 use App\Tenancy\AltaInstitucion;
+use App\Tenancy\ConversionDemo;
 use App\Tenancy\EstadoTenant;
 use App\Tenancy\MigradorPhinx;
 use App\Tenancy\ModoTenant;
@@ -178,6 +179,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 sa_aviso('success', "Cobro $numero " . ($accion === 'cobro_pagado' ? 'pagado' : 'anulado') . '.'
                     . ($resultado['reactivado'] ? " «{$resultado['slug']}» vuelve a ACTIVO." : ''));
+            } elseif ($accion === 'convertir_demo') {
+                $campo = static fn (string $c): string => trim((string) ($_POST[$c] ?? ''));
+                $datos = new SolicitudAlta(
+                    $campo('slug'),
+                    $campo('razon'),
+                    $campo('email'),
+                    $campo('admin_dni'),
+                    $campo('admin_nombres'),
+                    $campo('admin_apellidos'),
+                    'admin',
+                    'COLEGIO',
+                    EstadoTenant::tryFrom($campo('estado')) ?? EstadoTenant::Activo,
+                    null,
+                    ConversionDemo::baseCliente($campo('slug')),
+                );
+                $almacenes = rtrim(config('ALMACEN_DIR') ?: dirname(__DIR__) . '/storage/tenants', '/\\');
+                $resultado = (new ConversionDemo(Conexion::administracion(), $maestro, $alta, $almacenes))->convertir($datos);
+                $auditoria->registrar($actor, 'DEMO_CONVERTIDA', $datos->slug, "base {$resultado['base']}", $ip);
+                sa_aviso('success', "«{$datos->slug}» es ya cliente, con una base limpia. Administrador: admin · contraseña inicial: "
+                    . "{$resultado['clave']} (se muestra solo ahora).");
             } elseif ($accion === 'asignar_plan') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $hasta = trim((string) ($_POST['prueba_hasta'] ?? ''));
@@ -195,6 +216,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $campo('admin_usuario') ?: 'admin',
                     $campo('tipo') ?: 'COLEGIO',
                     EstadoTenant::tryFrom($campo('estado')) ?? EstadoTenant::Prueba,
+                    null,
+                    null,
+                    $campo('demo') === '1',
                 );
                 $claveInicial = $panel->darDeAlta($solicitud, $actor, $ip);
                 sa_aviso('success', "Institución «{$solicitud->slug}» creada. Administrador: {$solicitud->adminUsuario} · contraseña inicial: "
@@ -265,7 +289,24 @@ header('Content-Type: text/html; charset=utf-8');
               <td><a href="https://<?= $e($t['dominio'] ?? "{$t['slug']}.$dominio") ?>/" rel="noopener" target="_blank"><?= $e($t['slug']) ?></a></td>
               <td><?= $e($t['razon_social']) ?><br><small class="text-muted"><?= $e($t['base_datos']) ?></small></td>
               <td><?= $e($t['tipo']) ?></td>
-              <td><span class="badge badge-<?= $e($t['estado']) ?>"><?= $e($t['estado']) ?></span></td>
+              <td><span class="badge badge-<?= $e($t['estado']) ?>"><?= $e($t['estado']) ?></span>
+                <?php if ($t['demo']) { ?><span class="badge badge-warning" style="color:#000">DEMO</span>
+                  <details class="mt-1"><summary><small>Convertir en cliente</small></summary>
+                    <form method="post" autocomplete="off" class="mt-1" style="min-width:220px">
+                      <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                      <input type="hidden" name="accion" value="convertir_demo">
+                      <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
+                      <input class="form-control form-control-sm mb-1" name="razon" value="<?= $e($t['razon_social']) ?>" required aria-label="Razón social">
+                      <input class="form-control form-control-sm mb-1" name="email" type="email" placeholder="Correo" required>
+                      <input class="form-control form-control-sm mb-1" name="admin_dni" placeholder="DNI del administrador" required pattern="\d{8}">
+                      <input class="form-control form-control-sm mb-1" name="admin_nombres" placeholder="Nombres" required>
+                      <input class="form-control form-control-sm mb-1" name="admin_apellidos" placeholder="Apellidos" required>
+                      <select class="form-control form-control-sm mb-1" name="estado" aria-label="Estado"><option>ACTIVO</option><option>PRUEBA</option></select>
+                      <button class="btn btn-sm btn-warning" type="submit">Convertir (borra los datos de ejemplo)</button>
+                    </form>
+                  </details>
+                <?php } ?>
+              </td>
               <?php if ($t['error'] !== null) { ?>
                 <td colspan="3" class="text-danger"><?= $e($t['error']) ?></td>
               <?php } else { ?>
@@ -386,6 +427,8 @@ header('Content-Type: text/html; charset=utf-8');
           <div class="col-md-3 mb-2"><label for="admin_apellidos">Apellidos</label><input class="form-control" id="admin_apellidos" name="admin_apellidos" required></div>
           <div class="col-md-2 mb-2"><label for="tipo">Tipo</label><select class="form-control" id="tipo" name="tipo"><option>COLEGIO</option><option>INSTITUTO</option><option>CETPRO</option></select></div>
           <div class="col-md-2 mb-2"><label for="estado">Estado</label><select class="form-control" id="estado" name="estado"><option>PRUEBA</option><option>ACTIVO</option></select></div>
+          <div class="col-md-12 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="demo" name="demo" value="1">
+            <label class="form-check-label" for="demo">Demo: con datos de ejemplo (ficticios) para que el colegio pruebe el sistema; luego se convierte en cliente</label></div></div>
         </div>
         <button class="btn btn-success" type="submit">Crear institución</button>
       </form>

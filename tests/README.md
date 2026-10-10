@@ -89,6 +89,10 @@ superadministrador: solo existe en su host, CSRF, contraseña mala, la sesión d
 cifras de cada colegio, suspender/reactivar (404/200), alta desde el panel con login del administrador
 nuevo, auditoría, cuenta desactivada y bloqueo tras cinco fallos.
 
+`tests/E2E/demo.php` crea una demo con datos de ejemplo (las cuentas del ejemplo no entran con la contraseña
+publicada), la convierte en cliente (base limpia, misma dirección, administrador real) y comprueba que un colegio
+real nunca se «convierte».
+
 `tests/E2E/baja.php` da de baja un colegio creado para la prueba con las herramientas reales: no se borra
 activo, ni en la retención, ni sin exportación final, ni sin confirmar el slug; después desaparecen su base,
 sus archivos y sus respaldos (no los de otro colegio con nombre parecido) y queda la constancia auditada.

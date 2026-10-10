@@ -328,6 +328,11 @@ jobs:
           echo "-- alterado" >> "$respaldo/base.sql"
           if php tools/respaldo_tenant.php restaurar --desde="$respaldo" >> "$registro" 2>&1; then echo "::error title=Respaldo::se restauró un respaldo alterado"; exit 1; fi
 
+      - name: Demo con datos de ejemplo y conversión en cliente (tests/E2E/demo.php)
+        env:
+          COLEGIO_ENV: ${{ runner.temp }}/colegio.env
+        run: php tests/E2E/demo.php
+
       - name: Baja de un colegio con borrado verificable (tests/E2E/baja.php)
         env:
           COLEGIO_ENV: ${{ runner.temp }}/colegio.env

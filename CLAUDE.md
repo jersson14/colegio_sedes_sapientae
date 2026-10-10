@@ -77,7 +77,8 @@ mezclar inglés rompe la coherencia con los 254 SPs.
   `S_TENANT`. `empresa_id` (en `usuario`/`empresa`) **no** es el discriminador. Una sola rama: nunca
   bifurcar por modo. Ver [docs/MULTITENANT.md](docs/MULTITENANT.md) y [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) §7.
   Herramientas: `tools/alta_tenant.php`, `migrar_tenants.php`, `respaldo_tenant.php`, `tareas_programadas.php`,
-  `crear_superadmin.php`; panel en `superadmin/` (solo `SUPERADMIN_HOST`). Zona horaria: `APP_ZONA_HORARIA`.
+  `crear_superadmin.php`, `facturacion.php`, `baja_tenant.php`, `convertir_demo.php`; panel en `superadmin/`
+  (solo `SUPERADMIN_HOST`). Planes y estados: `App\Comercial` (el guard aplica los límites). Zona horaria: `APP_ZONA_HORARIA`.
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
   versionan y leen `colegio.env` vía `config()`. Nunca pongas secretos en archivos del repo.
 - **`*.sql` está en `.gitignore`**, pero `colegio.sql` y `tabla_solicitudes.sql` ya están
@@ -134,7 +135,10 @@ Análisis y remediación en [docs/SEGURIDAD.md](docs/SEGURIDAD.md).
 | [docs/RUNBOOK-LIMPIEZA-HISTORIAL.md](docs/RUNBOOK-LIMPIEZA-HISTORIAL.md) | 🚨 Remediación de los datos personales ya publicados en GitHub |
 | [docs/MULTITENANT.md](docs/MULTITENANT.md) | Viabilidad colegios + institutos, diseño multi-tenant |
 | [docs/PLAN_DE_TRABAJO.md](docs/PLAN_DE_TRABAJO.md) | Fases, SOLID/Clean Code, estrategia de testing, empaquetado comercial |
-| [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) | Hosting compartido vs VPS vs AWS, costos, CI/CD |
+| [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md) | Hosting compartido vs VPS vs AWS, costos, CI/CD; §7 Hostinger (modo único y múltiple) |
+| [docs/OPERACION.md](docs/OPERACION.md) | Operar el SaaS: panel, ciclo de vida de un colegio, crons, cobros, restauración, baja |
+| [docs/RUNBOOK-INSTANCIA-DEDICADA.md](docs/RUNBOOK-INSTANCIA-DEDICADA.md) | Instancia dedicada (P2) paso a paso |
+| [docs/MANUAL_INSTITUCION.md](docs/MANUAL_INSTITUCION.md) | Manual para el administrador de cada colegio |
 
 ## Calidad y pruebas (Fase 1)
 

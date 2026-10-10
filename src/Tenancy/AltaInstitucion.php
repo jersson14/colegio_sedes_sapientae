@@ -42,22 +42,20 @@ final class AltaInstitucion
     ) {
     }
 
+    /** Datos de ejemplo anonimizados (los mismos de las pruebas) para las demos. */
+    public const DATOS_DEMO = __DIR__ . '/../../database/seeders/datos_prueba.sql';
+
     /** @return string la contraseña inicial del administrador (se muestra una vez; no se guarda en claro) */
     public function ejecutar(SolicitudAlta $s): string
     {
         $this->comprobarLibre($s);
-        $this->servidor->exec("CREATE DATABASE `{$s->baseDatos}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+        $clave = $this->crearBase($s);
         try {
-            if (!($this->migrar)($s->baseDatos)) {
-                throw new \RuntimeException('Las migraciones fallaron (detalle arriba).');
-            }
-            $clave = self::claveInicial();
-            $this->sembrar(($this->conectar)($s->baseDatos), $s, $clave);
             // Registro y plan inicial juntos: o queda el colegio completo o nada.
             $this->maestro->beginTransaction();
             try {
-                $this->maestro->prepare('INSERT INTO tenants (slug, dominio, razon_social, tipo, base_datos, estado) VALUES (?, ?, ?, ?, ?, ?)')
-                    ->execute([$s->slug, $s->dominio, $s->razonSocial, $s->tipo, $s->baseDatos, $s->estado->value]);
+                $this->maestro->prepare('INSERT INTO tenants (slug, dominio, razon_social, tipo, base_datos, estado, demo) VALUES (?, ?, ?, ?, ?, ?, ?)')
+                    ->execute([$s->slug, $s->dominio, $s->razonSocial, $s->tipo, $s->baseDatos, $s->estado->value, (int) $s->demo]);
                 $this->planInicial($s);
                 $this->maestro->commit();
             } catch (\Throwable $e) {
@@ -69,6 +67,62 @@ final class AltaInstitucion
             $this->servidor->exec("DROP DATABASE IF EXISTS `{$s->baseDatos}`");
             throw $e;
         }
+    }
+
+    /**
+     * Crea y deja lista la base de $s (sin registrarla): migraciones y, según el caso, el catálogo del sistema
+     * con su administrador o los datos de demostración. Si algo falla, la base no queda. La usan el alta y
+     * la conversión de una demo en cliente.
+     *
+     * @return string la contraseña inicial del administrador
+     */
+    public function crearBase(SolicitudAlta $s): string
+    {
+        $existe = $this->servidor->prepare('SELECT 1 FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?');
+        $existe->execute([$s->baseDatos]);
+        if ($existe->fetchColumn() !== false) {
+            throw new \DomainException("La base «{$s->baseDatos}» ya existe.");
+        }
+        $this->servidor->exec("CREATE DATABASE `{$s->baseDatos}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+        try {
+            if (!($this->migrar)($s->baseDatos)) {
+                throw new \RuntimeException('Las migraciones fallaron (detalle arriba).');
+            }
+            $clave = self::claveInicial();
+            $pdo = ($this->conectar)($s->baseDatos);
+            $s->demo ? $this->cargarDemo($pdo, $s, $clave) : $this->sembrar($pdo, $s, $clave);
+            return $clave;
+        } catch (\Throwable $e) {
+            $this->servidor->exec("DROP DATABASE IF EXISTS `{$s->baseDatos}`");
+            throw $e;
+        }
+    }
+
+    /**
+     * Demo: los datos de ejemplo, con el nombre y el correo del colegio. Esos datos traen cuentas con una
+     * contraseña conocida (está en el repositorio): todas pasan a una contraseña aleatoria que nadie conoce,
+     * y el primer administrador del ejemplo pasa a ser el de la demo, con la contraseña generada.
+     */
+    private function cargarDemo(PDO $pdo, SolicitudAlta $s, string $clave): void
+    {
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec("SET SESSION sql_mode = ''");
+        $pdo->exec("SET SESSION time_zone = '-05:00'");
+        foreach (preg_split('/;\R/', (string) file_get_contents(self::DATOS_DEMO)) ?: [] as $sql) {
+            $sql = trim((string) preg_replace('/^--.*$/m', '', $sql));
+            if ($sql !== '') {
+                $pdo->exec($sql);
+            }
+        }
+        $pdo->prepare('UPDATE empresa SET emp_razon = ?, emp_email = ? WHERE empresa_id = 1')
+            ->execute([mb_strtoupper($s->razonSocial, 'UTF-8'), $s->email]);
+        $inservible = $pdo->prepare('UPDATE usuario SET usu_contra = ? WHERE usu_id = ?');
+        foreach ($pdo->query('SELECT usu_id FROM usuario')->fetchAll(PDO::FETCH_COLUMN) as $id) {
+            $inservible->execute([Contrasena::hash(bin2hex(random_bytes(24))), $id]);
+        }
+        $admin = (int) $pdo->query('SELECT MIN(usu_id) FROM usuario WHERE rol_id = 9')->fetchColumn();
+        $pdo->prepare("UPDATE usuario SET usu_usuario = ?, usu_contra = ?, usu_email = ?, usu_estatus = 'ACTIVO' WHERE usu_id = ?")
+            ->execute([$s->adminUsuario, Contrasena::hash($clave), $s->email, $admin]);
     }
 
     /**

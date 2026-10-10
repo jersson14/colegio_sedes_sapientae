@@ -24,6 +24,8 @@ final class SolicitudAlta
         public readonly EstadoTenant $estado = EstadoTenant::Prueba,
         public readonly ?string $dominio = null,
         ?string $baseDatos = null,
+        /** Fase 4B.6: con los datos de ejemplo anonimizados, para que el colegio pruebe el sistema. */
+        public readonly bool $demo = false,
     ) {
         $errores = [];
         if (!Tenant::slugValido($slug)) {

@@ -28,7 +28,7 @@ final class PanelInstituciones
     }
 
     /**
-     * @return list<array{slug: string, razon_social: string, tipo: string, estado: string, base_datos: string,
+     * @return list<array{slug: string, razon_social: string, tipo: string, estado: string, demo: bool, base_datos: string,
      *     dominio: ?string, fecha_alta: string, prueba_hasta: ?string, plan: ?string, max_alumnos: ?int, max_usuarios: ?int,
      *     alumnos: ?int, usuarios: ?int,
      *     migracion: ?string, error: ?string}>
@@ -36,7 +36,7 @@ final class PanelInstituciones
     public function listar(): array
     {
         $filas = $this->maestro->query(
-            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, t.retencion_hasta, t.borrado_en,
+            'SELECT t.slug, t.razon_social, t.tipo, t.estado, t.demo, t.base_datos, t.dominio, t.fecha_alta, t.prueba_hasta, t.retencion_hasta, t.borrado_en,
                     p.codigo AS plan,
                     p.max_alumnos, p.max_usuarios
                FROM tenants t
@@ -67,6 +67,7 @@ final class PanelInstituciones
                 'razon_social' => (string) $f['razon_social'],
                 'tipo' => (string) $f['tipo'],
                 'estado' => (string) $f['estado'],
+                'demo' => (int) $f['demo'] === 1,
                 'base_datos' => (string) $f['base_datos'],
                 'dominio' => $f['dominio'] !== null ? (string) $f['dominio'] : null,
                 'fecha_alta' => (string) $f['fecha_alta'],

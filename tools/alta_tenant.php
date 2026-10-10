@@ -11,7 +11,10 @@
  *   php tools/alta_tenant.php --slug=colegio-x --razon="Colegio X" --email=direccion@colegiox.edu.pe \
  *       --admin-dni=12345678 --admin-nombres="Ana" --admin-apellidos="Pérez Soto" \
  *       [--admin-usuario=admin] [--tipo=COLEGIO|INSTITUTO|CETPRO] [--estado=PRUEBA|ACTIVO]
- *       [--dominio=intranet.colegiox.edu.pe] [--base=sge_colegio_x]
+ *       [--dominio=intranet.colegiox.edu.pe] [--base=sge_colegio_x] [--demo]
+ *
+ * --demo (Fase 4B.6): con los datos de ejemplo anonimizados, para que el colegio pruebe el sistema; luego
+ * se convierte en cliente con tools/convertir_demo.php (base limpia, mismo subdominio).
  *
  * Necesita un usuario de MySQL con permiso para crear bases (DB_MIGRACION_USER en colegio.env).
  */
@@ -34,7 +37,7 @@ use App\Tenancy\ResolverTenant;
 use App\Tenancy\SolicitudAlta;
 
 $opciones = getopt('', ['slug:', 'razon:', 'email:', 'admin-dni:', 'admin-nombres:', 'admin-apellidos:',
-    'admin-usuario:', 'tipo:', 'estado:', 'dominio:', 'base:']);
+    'admin-usuario:', 'tipo:', 'estado:', 'dominio:', 'base:', 'demo']);
 $valor = static fn (string $clave): string => is_string($opciones[$clave] ?? null) ? trim($opciones[$clave]) : '';
 
 if (ResolverTenant::desdeConfig()->modo() !== ModoTenant::Multiple) {
@@ -60,6 +63,7 @@ try {
         $estado,
         $valor('dominio') ?: null,
         $valor('base') ?: null,
+        isset($opciones['demo']),
     );
 } catch (InvalidArgumentException $e) {
     fwrite(STDERR, $e->getMessage() . "\n\nUso: ver la cabecera de tools/alta_tenant.php\n");
