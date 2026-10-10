@@ -272,7 +272,10 @@ jobs:
         run: |
           php tools/alta_tenant.php --slug=colegio-alta --razon="Colegio Alta CI" --email=ci@example.com             --admin-dni=12345678 --admin-nombres=Ana --admin-apellidos=Perez | tee "$RUNNER_TEMP/alta.txt"
           grep -q "Institución creada" "$RUNNER_TEMP/alta.txt"
-          ! php tools/alta_tenant.php --slug=colegio-alta --razon=X --email=ci@example.com             --admin-dni=12345678 --admin-nombres=Ana --admin-apellidos=Perez
+          # Con «!» delante bash no corta el paso: la repetición se comprueba explícitamente.
+          if php tools/alta_tenant.php --slug=colegio-alta --razon=X --email=ci@example.com --admin-dni=12345678 --admin-nombres=Ana --admin-apellidos=Perez; then
+            echo "::error title=Alta::un slug repetido no debía darse de alta"; exit 1
+          fi
           php tools/migrar_tenants.php --solo=colegio-alta
 
       - name: Tareas programadas por cron en cada colegio (tools/tareas_programadas.php)

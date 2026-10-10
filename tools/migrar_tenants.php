@@ -28,7 +28,10 @@ use App\Tenancy\MigradorPhinx;
 use App\Tenancy\PdoRepositorioTenants;
 use App\Tenancy\ResolverTenant;
 
-$accion = in_array($argv[1] ?? 'migrate', ['migrate', 'status'], true) ? ($argv[1] ?? 'migrate') : null;
+// La acción es opcional también cuando solo se pasan opciones (php tools/migrar_tenants.php --solo=x).
+$primero = $argv[1] ?? 'migrate';
+$primero = str_starts_with($primero, '--') ? 'migrate' : $primero;
+$accion = in_array($primero, ['migrate', 'status'], true) ? $primero : null;
 if ($accion === null) {
     fwrite(STDERR, "Uso: php tools/migrar_tenants.php [migrate|status] [--solo=<slug>]\n");
     exit(2);
