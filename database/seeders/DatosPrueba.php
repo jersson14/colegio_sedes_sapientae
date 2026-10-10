@@ -26,6 +26,10 @@ final class DatosPrueba extends AbstractSeed
             );
         }
         $this->execute("SET SESSION sql_mode = ''");
+        // Las horas del dataset son de Perú: las columnas TIMESTAMP se guardan en UTC según la zona de la
+        // sesión, y la aplicación las lee en -05:00 (APP_ZONA_HORARIA). Con la zona del servidor (UTC en el CI)
+        // saldrían cinco horas antes.
+        $this->execute("SET SESSION time_zone = '-05:00'");
         foreach (preg_split('/;\R/', (string) file_get_contents(__DIR__ . '/datos_prueba.sql')) ?: [] as $sql) {
             $sql = trim(preg_replace('/^--.*$/m', '', $sql) ?? '');
             if ($sql !== '') {
