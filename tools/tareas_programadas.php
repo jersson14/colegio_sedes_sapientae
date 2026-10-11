@@ -24,6 +24,7 @@ require __DIR__ . '/../core/autoload.php';
 use App\Comercial\Consumo;
 use App\Comercial\Facturacion;
 use App\Core\Conexion;
+use App\Auditoria\RegistroAuditoria;
 use App\Services\TareasProgramadas;
 use App\Tenancy\ModoTenant;
 use App\Tenancy\PdoRepositorioTenants;
@@ -51,6 +52,8 @@ foreach ($tenants as $tenant) {
         $tareas = new TareasProgramadas(Conexion::crear());
         $cerradas = $tareas->cerrarVencidas();
         $cierre = $tareas->cierreDeAnio();
+        // H-15: la auditoría se conserva AUDITORIA_DIAS (por defecto dos años; nunca menos de 30).
+        (new RegistroAuditoria(Conexion::crear()))->purgar((int) config('AUDITORIA_DIAS', '730'));
         if ($facturacion !== null && !$facturacion->tieneConsumo($tenant->slug, $hoy)) {
             $facturacion->registrarConsumo($tenant->slug, (new Consumo(Conexion::crear(), almacen_raiz()))->resumen(), $hoy);
         }

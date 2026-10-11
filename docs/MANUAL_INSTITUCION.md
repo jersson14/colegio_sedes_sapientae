@@ -72,6 +72,13 @@ estudios, la matrícula por unidades, las notas, el récord y los certificados, 
 configuración. Desactiva las cuentas de quien deja el
 colegio: así su acceso se corta en el momento.
 
+## Auditoría
+
+En **Configuración → Auditoría** ves quién guardó, modificó o eliminó algo, cuándo, desde qué IP y con qué
+resultado (también los intentos rechazados), además de los inicios y cierres de sesión y las exportaciones de
+datos. Filtra por fechas, usuario o módulo. Las contraseñas nunca quedan registradas. Los registros se conservan
+dos años.
+
 ## Tus datos
 
 - **Exportar datos** (en «Datos de la institución»): descarga todo en un archivo `.zip`. Incluye una planilla

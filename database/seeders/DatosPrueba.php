@@ -36,9 +36,9 @@ final class DatosPrueba extends AbstractSeed
                 $this->execute($sql);
             }
         }
-        // Las tablas de institutos (Fase 5) no están en el dataset: se vacían para que una base reutilizada en
+        // Las tablas de institutos (Fase 5) y la auditoría (H-15) no están en el dataset: se vacían para que una base reutilizada en
         // local quede igual que la recién migrada del CI (las pruebas y los flujos dejan programas y notas).
-        foreach (['unidades_docentes', 'matricula_unidades', 'prerrequisitos', 'unidades_didacticas', 'modulos_formativos', 'programas_estudio', 'configuracion'] as $tabla) {
+        foreach (['unidades_docentes', 'matricula_unidades', 'prerrequisitos', 'unidades_didacticas', 'modulos_formativos', 'programas_estudio', 'configuracion', 'auditoria_acciones'] as $tabla) {
             if ($this->hasTable($tabla)) {
                 $this->execute("DELETE FROM $tabla");
             }

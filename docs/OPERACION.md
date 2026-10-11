@@ -37,7 +37,7 @@ demo (datos de ejemplo) ─convertir─▶ PRUEBA ─▶ ACTIVO ⇄ MOROSO ─�
 ## Tareas programadas (cron del servidor)
 
 ```cron
-* * * * *  php /var/www/colegio/tools/tareas_programadas.php    # vencimientos, cierre de año, consumo diario
+* * * * *  php /var/www/colegio/tools/tareas_programadas.php    # vencimientos, cierre de año, consumo diario, retención de la auditoría
 0 2 * * *  php /var/www/colegio/tools/respaldo_tenant.php respaldar --todos
 0 6 * * *  php /var/www/colegio/tools/facturacion.php           # emite cobros y marca morosos
 ```

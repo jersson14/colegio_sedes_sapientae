@@ -47,6 +47,8 @@ por unidad, nota de recuperación, créditos aprobados, cargos); notas por `SP_C
 `RecordAcademico::detalle()` (módulos completos) alimenta el récord y los certificados de `view/MPDF/REPORTE/` (5.8).
 `DocentesPorUnidad` (5.9): docente de cada unidad por periodo (`SP_ASIGNAR_DOCENTE_UNIDAD`) y la comprobación de que dicta una matrícula.
 
+`Auditoria/` (H-15): `RegistroAuditoria` (escrituras, sesiones y exportaciones de cada institución; datos sin contraseñas; búsqueda y retención), usado por `core/auditoria.php` desde el guard.
+
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
 `superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través
 de `core/tenant.php` (`tenant_actual()`). `Services\TareasProgramadas` hace el trabajo de los eventos de la BD

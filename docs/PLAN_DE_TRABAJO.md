@@ -24,7 +24,7 @@
   con el front controller de la Fase 3. Mientras tanto, el `.htaccess` raíz bloquea por HTTP
   `vendor/`, `src/`, `tests/`, `database/`, `storage/`, `.git`, `*.sql` y `docs/`.
 - **Sin `vlucas/phpdotenv` ni `monolog`.** `core/config.php` ya lee `colegio.env` fuera del docroot
-  (Fase 0.4) sin dependencias; Monolog entrará cuando haya registro de auditoría (H-15).
+  (Fase 0.4) sin dependencias; la auditoría (H-15) se guarda en la BD de cada institución, sin Monolog.
 - **CI con MariaDB 10.4 en lugar de MySQL 8.4**: es el motor real del proyecto (XAMPP) y el que
   ejecuta los 254 procedimientos; validar contra otro motor daría falsos verdes o falsos rojos.
 - **Phinx en `require` (no `require-dev`)**: producción instala con `--no-dev` y debe poder migrar.

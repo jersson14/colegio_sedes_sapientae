@@ -53,6 +53,13 @@ if (!sesion_activa()) {
 // disponible para lectura.
 session_write_close();
 
+// H-15: toda escritura queda en la auditoría de la institución, con su resultado (incluso 419, 403 o 402);
+// también la exportación de todos los datos, que es un GET.
+if ($_SERVER['REQUEST_METHOD'] !== 'GET' || str_contains(strtr((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''), '\\', '/'), '/controller/exportacion/')) {
+    require_once __DIR__ . '/auditoria.php';
+    register_shutdown_function('auditoria_registrar_peticion');
+}
+
 // CSRF (Fase 0.5): toda petición que no sea GET debe traer el token de la sesión.
 // El panel lo envía en la cabecera X-CSRF-Token (ver $.ajaxPrefilter en view/index.php).
 verificar_csrf();

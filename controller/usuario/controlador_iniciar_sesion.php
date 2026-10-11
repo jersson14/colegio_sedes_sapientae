@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../model/model_conexion.php';
 require __DIR__ . '/../../core/sesion.php';
 require __DIR__ . '/../../core/limite_login.php';
+require __DIR__ . '/../../core/auditoria.php';
 
 use App\Domain\Usuario\ResultadoLogin;
 use App\Repositories\PdoUsuarioRepositorio;
@@ -31,8 +32,12 @@ $resultado = $autenticar->ejecutar($usuario, $clave);
 // Nunca se devuelve la fila (incluye el hash de la contraseña).
 if ($resultado->resultado === ResultadoLogin::Incorrecto) {
     limite_registrar_fallo($usuario);
+    auditoria_registrar(null, $usuario, '', 'sesion', 'inicio_fallido', 401, null);
 } elseif ($resultado->resultado === ResultadoLogin::Correcto && $resultado->cuenta !== null) {
     limite_registrar_exito($usuario);
     sesion_crear($resultado->cuenta);
+    auditoria_registrar((int) $_SESSION['S_ID'], (string) $_SESSION['S_USU'], (string) $_SESSION['S_ROL'], 'sesion', 'iniciar_sesion', 200, null);
+} else {
+    auditoria_registrar(null, $usuario, '', 'sesion', 'usuario_inactivo', 403, null);
 }
 echo $resultado->resultado->value;

@@ -19,8 +19,8 @@ final class EsquemaTest extends BaseDatosTestCase
     public function testTablasDelSistema(): void
     {
         // 36 del esquema inicial + configuracion (Fase 5.1) + las 5 del plan de estudios (Fase 5.3 y 5.4)
-        // + unidades_docentes (Fase 5.9).
-        self::assertSame(43, $this->contar(
+        // + unidades_docentes (Fase 5.9) + auditoria_acciones (H-15).
+        self::assertSame(44, $this->contar(
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name <> 'phinxlog'"
         ));
     }
@@ -29,8 +29,8 @@ final class EsquemaTest extends BaseDatosTestCase
     {
         // 254 del esquema inicial + 2 de personalización (Fase 4.7) + 1 de configuración (Fase 5.1)
         // + 10 del plan de estudios y la matrícula por unidades (Fase 5.3 y 5.4) + 2 de calificación (Fase 5.5 y 5.6)
-        // + 1 de asignación de docentes (Fase 5.9).
-        self::assertSame(270, $this->contar(
+        // + 1 de asignación de docentes (Fase 5.9) + 2 de auditoría (H-15).
+        self::assertSame(272, $this->contar(
             "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = ? AND routine_type = 'PROCEDURE'"
         ));
     }

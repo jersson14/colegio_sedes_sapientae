@@ -872,7 +872,23 @@ try {
     check((await pedir(docente.page, `${docenteUnidades}?unidad=${u1}&periodo=${actual}`, null, 'GET')).estado === 403, 'no ve los alumnos de una unidad que no dicta (403)');
     check((await pedir(docente.page, docenteUnidades, { accion: 'recuperar', id: ajena.id_matricula_unidad, nota: '20' })).estado === 403,
       'ni registra notas en ella (403)');
+    check((await pedir(docente.page, 'controller/auditoria/controlador_listar_auditoria.php', null, 'GET')).estado === 403, 'la auditoría es solo del administrador (403)');
     await docente.ctx.close();
+
+    // H-15: auditoría de la institución.
+    const auditoria = (q) => pedir(adm.page, `controller/auditoria/controlador_listar_auditoria.php?buscar=1&${q}`, null, 'GET').then((r) => r.json ?? []);
+    const altaAuditada = (await auditoria('usuario=usuario9&modulo=personal_administrativo'))[0];
+    check(altaAuditada?.accion === 'registrar_personal_administrativo' && altaAuditada.datos.includes(`"usu":"${usuSecretaria}"`)
+      && altaAuditada.datos.includes('"contra":"***"') && !altaAuditada.datos.includes(CLAVE),
+      'el alta de la secretaría queda auditada, sin la contraseña', JSON.stringify(altaAuditada));
+    check((await auditoria(`usuario=${usuSecretaria}&modulo=sesion`)).some((f) => f.accion === 'iniciar_sesion'), 'su inicio de sesión también');
+    check((await auditoria(`usuario=${ESC.docente}&modulo=matricula_unidades`)).some((f) => f.accion === 'unidades_docente' && Number(f.estado) === 403),
+      'y el intento denegado del docente, con su 403');
+    await pedir(adm.page, 'controller/alumnos/controlador_listar_alumnos.php');
+    check(!(await auditoria('usuario=usuario9&modulo=alumnos')).some((f) => f.accion === 'listar_alumnos'), 'los listados no llenan la auditoría');
+    await adm.page.click('#menu_auditoria');
+    await adm.page.waitForSelector('#tabla_auditoria tr[data-estado]', { timeout: 15000 });
+    check(true, 'la pantalla de auditoría lista los registros');
     await pedir(adm.page, cfg, { matricula_modo: '', evaluacion_nota_minima: '', evaluacion_recuperacion_desde: '', evaluacion_ponderacion: '' });
     await adm.ctx.close();
   }
