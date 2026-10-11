@@ -889,6 +889,50 @@ try {
     await adm.page.click('#menu_auditoria');
     await adm.page.waitForSelector('#tabla_auditoria tr[data-estado]', { timeout: 15000 });
     check(true, 'la pantalla de auditoría lista los registros');
+
+    // Módulo opcional: facturación electrónica con Nubefact (servidor falso en el puerto 8097).
+    const fe = 'controller/facturacion/controlador_facturacion.php';
+    check(await adm.page.isVisible('#menu_facturacion'), 'con el módulo activo aparece «Facturación electrónica»');
+    const rutaMala = await pedir(adm.page, fe, { accion: 'configurar', ruta: 'https://evil.example.com/api/v1/x', token: 'x', serie_boleta: 'B001', serie_factura: 'F001', afectacion: 'EXONERADO' });
+    check(rutaMala.estado === 422, 'la ruta solo puede ser la de Nubefact (422)', rutaMala.texto);
+    const conf = await pedir(adm.page, fe, { accion: 'configurar', ruta: 'http://127.0.0.1:8097/api/v1/prueba', token: 'token-de-prueba',
+      serie_boleta: 'B001', serie_factura: 'F001', afectacion: 'EXONERADO', enviar_cliente: '0', ultimo_boleta: '41' });
+    check(conf.json?.codigo === 1 && conf.json.configuracion.token_configurado && !JSON.stringify(conf.json).includes('token-de-prueba'),
+      'se configura la cuenta de Nubefact y el token no se devuelve', conf.texto);
+    await adm.page.click('#menu_facturacion > a');
+    await adm.page.waitForSelector('#tabla_fe_pendientes tr[data-ingreso] .fe-boleta', { timeout: 15000 });
+    const ingresoBoleta = await adm.page.getAttribute('#tabla_fe_pendientes tr[data-ingreso]', 'data-ingreso');
+    await adm.page.click(`#tabla_fe_pendientes tr[data-ingreso="${ingresoBoleta}"] .fe-boleta`);
+    await adm.page.waitForSelector('#modal_fe_emitir', { state: 'visible', timeout: 10000 });
+    await adm.page.selectOption('#fe_tipo_doc', '1');
+    await adm.page.fill('#fe_doc', '70000001');
+    await adm.page.fill('#fe_nombre', 'Padre de prueba');
+    await adm.page.click('#fe_confirmar_emision');
+    await adm.page.waitForSelector('.swal2-popup', { timeout: 15000 });
+    check((await adm.page.textContent('.swal2-popup')).includes('B001-42 emitido'), 'se emite la boleta B001-42 (continúa la numeración)', await adm.page.textContent('.swal2-popup'));
+    await adm.page.click('.swal2-confirm');
+    const emitidos = async () => (await pedir(adm.page, fe, null, 'GET')).json;
+    const boleta = (await emitidos()).emitidos.find((x) => String(x.id_ingreso) === String(ingresoBoleta));
+    check(boleta?.estado === 'EMITIDO' && boleta.enlace_pdf?.endsWith('B001-42.pdf') && boleta.cliente_nombre === 'PADRE DE PRUEBA', 'queda EMITIDA con su PDF', JSON.stringify(boleta));
+    check((await pedir(adm.page, fe, { accion: 'emitir', ingreso: ingresoBoleta, tipo: '2', tipo_doc: '1', doc: '70000001', nombre: 'X' })).json?.codigo === 0,
+      'el mismo ingreso no se factura dos veces');
+    const otroIngreso = (await emitidos()).pendientes[0].id_ingreso;
+    const sinRuc = await pedir(adm.page, fe, { accion: 'emitir', ingreso: otroIngreso, tipo: '1', tipo_doc: '1', doc: '70000001', nombre: 'X', direccion: 'Av' });
+    check(sinRuc.estado === 422 && /RUC/.test(sinRuc.json?.error ?? ''), 'la factura exige RUC (422)');
+    const rechazada = await pedir(adm.page, fe, { accion: 'emitir', ingreso: otroIngreso, tipo: '1', tipo_doc: '6', doc: '20123456789', nombre: 'RECHAZAR', direccion: 'Av. Prueba 123' });
+    check(rechazada.json?.codigo === 2 && rechazada.json.comprobante.estado === 'ERROR', 'si Nubefact la rechaza queda en ERROR con el motivo', rechazada.texto);
+    const reenviada = await pedir(adm.page, fe, { accion: 'reintentar', id: rechazada.json.comprobante.id, tipo_doc: '6', doc: '20123456789', nombre: 'Empresa de prueba SAC', direccion: 'Av. Prueba 123' });
+    check(reenviada.json?.codigo === 1 && reenviada.json.comprobante.estado === 'ACEPTADO' && reenviada.json.comprobante.numero === rechazada.json.comprobante.numero,
+      'corregida, se reenvía con el mismo número y la SUNAT la acepta', reenviada.texto);
+    const consultada = await pedir(adm.page, fe, { accion: 'consultar', id: boleta.id });
+    check(consultada.json?.comprobante?.estado === 'ACEPTADO', 'consultada, la boleta pasa a aceptada');
+    const anulada = await pedir(adm.page, fe, { accion: 'anular', id: boleta.id, motivo: 'Error en el monto' });
+    check(anulada.json?.codigo === 1 && anulada.json.comprobante.estado === 'ANULADO', 'y se anula con su motivo');
+    const confAuditada = (await auditoria('usuario=usuario9&modulo=facturacion')).find((f) => f.accion === 'facturacion' && f.datos.includes('"ruta"') && f.datos.includes('token-de-prueba') === false);
+    check(confAuditada?.datos.includes('"token":"***"'), 'la auditoría registra la configuración sin el token');
+    const docenteFe = await entrar(browser, ESC.docente);
+    check((await pedir(docenteFe.page, fe, null, 'GET')).estado === 403, 'la facturación es solo del administrador (403)');
+    await docenteFe.ctx.close();
     await pedir(adm.page, cfg, { matricula_modo: '', evaluacion_nota_minima: '', evaluacion_recuperacion_desde: '', evaluacion_ponderacion: '' });
     await adm.ctx.close();
   }

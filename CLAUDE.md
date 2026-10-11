@@ -79,6 +79,10 @@ mezclar inglés rompe la coherencia con los 254 SPs.
   Herramientas: `tools/alta_tenant.php`, `migrar_tenants.php`, `respaldo_tenant.php`, `tareas_programadas.php`,
   `crear_superadmin.php`, `facturacion.php`, `baja_tenant.php`, `convertir_demo.php`; panel en `superadmin/`
   (solo `SUPERADMIN_HOST`). Planes y estados: `App\Comercial` (el guard aplica los límites). Zona horaria: `APP_ZONA_HORARIA`.
+- **Módulos opcionales por institución** (`core/modulos.php`, `exigir_modulo()`): facturación electrónica con
+  Nubefact (cada colegio con su cuenta; token cifrado con `APP_CLAVE_CIFRADO`) y asistente de IA. Los activa el
+  superadministrador (modo múltiple) o `MODULOS_ACTIVOS` (modo único). Toda escritura queda en `auditoria_acciones`
+  (H-15, registrada por el guard).
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se
   versionan y leen `colegio.env` vía `config()`. Nunca pongas secretos en archivos del repo.
 - **`*.sql` está en `.gitignore`**, pero `colegio.sql` y `tabla_solicitudes.sql` ya están

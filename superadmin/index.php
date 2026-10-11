@@ -15,6 +15,8 @@ require_once __DIR__ . '/../core/autoload.php';
 require_once __DIR__ . '/../core/limite_login.php';
 
 use App\Comercial\Facturacion;
+use App\Comercial\ModuloOpcional;
+use App\Comercial\PdoRepositorioModulos;
 use App\Comercial\Plan;
 use App\Comercial\Recurso;
 use App\Core\Conexion;
@@ -203,6 +205,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $panel->cambiarTipo($slug, (string) ($_POST['tipo'] ?? ''), $actor, $ip);
                 sa_aviso('success', "«{$slug}» es ahora " . (string) ($_POST['tipo'] ?? '') . '.');
+            } elseif ($accion === 'modulo') {
+                $slug = (string) ($_POST['slug'] ?? '');
+                $modulo = ModuloOpcional::tryFrom((string) ($_POST['modulo'] ?? '')) ?? throw new InvalidArgumentException('Módulo inválido.');
+                $limite = trim((string) ($_POST['limite'] ?? ''));
+                if ($limite !== '' && preg_match('/^\d{1,9}$/', $limite) !== 1) {
+                    throw new InvalidArgumentException("Límite inválido: «{$limite}» (un número, o vacío = sin límite).");
+                }
+                $activo = ($_POST['activo'] ?? '') === '1';
+                $panel->cambiarModulo($slug, $modulo, $activo, $limite === '' ? null : (int) $limite, $actor, $ip);
+                sa_aviso('success', "«{$slug}»: {$modulo->etiqueta()} " . ($activo ? 'activado' : 'desactivado') . '.');
             } elseif ($accion === 'asignar_plan') {
                 $slug = (string) ($_POST['slug'] ?? '');
                 $hasta = trim((string) ($_POST['prueba_hasta'] ?? ''));
@@ -245,6 +257,7 @@ $csrf = $e((string) $_SESSION['csrf']);
 $panel = $actor !== null ? new PanelInstituciones($maestro, static fn (string $base): PDO => Conexion::administracion($base), $auditoria) : null;
 $planes = $panel?->planes() ?? [];
 $cobros = $panel !== null ? (new Facturacion($maestro))->recientes() : [];
+$modulos = $panel !== null ? (new PdoRepositorioModulos($maestro))->todos() : [];
 $dominio = (string) config('TENANT_DOMINIO', '');
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -286,7 +299,7 @@ header('Content-Type: text/html; charset=utf-8');
     <div class="card"><div class="card-header"><b>Instituciones</b></div>
       <div class="card-body table-responsive p-0">
         <table class="table table-sm table-striped mb-0" id="tabla_instituciones">
-          <thead><tr><th>Slug</th><th>Institución</th><th>Tipo</th><th>Estado</th><th>Alumnos</th><th>Usuarios</th><th>Migración</th><th>Alta</th><th>Plan</th><th>Cambiar estado</th></tr></thead>
+          <thead><tr><th>Slug</th><th>Institución</th><th>Tipo</th><th>Estado</th><th>Alumnos</th><th>Usuarios</th><th>Migración</th><th>Alta</th><th>Plan</th><th>Módulos</th><th>Cambiar estado</th></tr></thead>
           <tbody>
           <?php foreach ($panel->listar() as $t) { ?>
             <tr data-slug="<?= $e($t['slug']) ?>">
@@ -344,6 +357,25 @@ header('Content-Type: text/html; charset=utf-8');
                   <input type="date" name="prueba_hasta" class="form-control form-control-sm mr-1" value="<?= $e($t['prueba_hasta']) ?>" title="Fin de la prueba (vacío si no está en prueba)">
                   <button class="btn btn-sm btn-outline-primary" type="submit">Asignar</button>
                 </form>
+              </td>
+              <td style="min-width:230px">
+                <?php foreach (ModuloOpcional::cases() as $m) {
+                    $estadoModulo = $modulos[$t['slug']][$m->value] ?? ['activo' => false, 'limite' => null]; ?>
+                  <form method="post" class="form-inline mb-1" data-modulo="<?= $e($m->value) ?>">
+                    <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                    <input type="hidden" name="accion" value="modulo">
+                    <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
+                    <input type="hidden" name="modulo" value="<?= $e($m->value) ?>">
+                    <input type="hidden" name="activo" value="<?= $estadoModulo['activo'] ? '0' : '1' ?>">
+                    <span class="badge badge-<?= $estadoModulo['activo'] ? 'success' : 'secondary' ?> mr-1"><?= $e($m->etiqueta()) ?></span>
+                    <?php if ($m->tieneLimite() && !$estadoModulo['activo']) { ?>
+                      <input type="number" min="0" name="limite" class="form-control form-control-sm mr-1" style="width:90px" placeholder="Límite/mes" title="Consultas al mes (vacío = sin límite)">
+                    <?php } elseif ($m->tieneLimite()) { ?>
+                      <small class="mr-1"><?= $estadoModulo['limite'] !== null ? (int) $estadoModulo['limite'] . '/mes' : 'sin límite' ?></small>
+                    <?php } ?>
+                    <button class="btn btn-sm <?= $estadoModulo['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?>" type="submit"><?= $estadoModulo['activo'] ? 'Desactivar' : 'Activar' ?></button>
+                  </form>
+                <?php } ?>
               </td>
               <td>
                 <form method="post" class="form-inline">

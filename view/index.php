@@ -3,6 +3,7 @@ require '../core/sesion.php';
 require '../core/marca.php'; // Fase 4.7: nombre y logo de la institución
 require_once '../core/comercial.php'; // Fase 4B: estado y plan de la institución
 require_once '../core/institucion.php'; // Fase 5: tipo y reglas académicas de la institución
+require_once '../core/modulos.php'; // módulos opcionales que activa el superadministrador
 if (!sesion_activa()) {
   header('Location: ../index.php');
   exit;
@@ -546,6 +547,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                 </ul>
+              </li>
+              <li class="nav-item" id="menu_facturacion"<?= modulo_activo(App\Comercial\ModuloOpcional::FacturacionElectronica) ? '' : ' hidden' ?>>
+                <a onclick="cargar_contenido('contenido_principal','facturacion/view_facturacion.php')" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice"></i>
+                  <p>Facturación electrónica</p>
+                </a>
               </li>
 
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>

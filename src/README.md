@@ -47,6 +47,12 @@ por unidad, nota de recuperación, créditos aprobados, cargos); notas por `SP_C
 `RecordAcademico::detalle()` (módulos completos) alimenta el récord y los certificados de `view/MPDF/REPORTE/` (5.8).
 `DocentesPorUnidad` (5.9): docente de cada unidad por periodo (`SP_ASIGNAR_DOCENTE_UNIDAD`) y la comprobación de que dicta una matrícula.
 
+`Facturacion/` (módulo opcional): `ConfiguracionNubefact` (ruta solo de api.nubefact.com, series, IGV),
+`PdoConfiguracionFacturacion` (claves facturacion.* con el token cifrado por `Support\Cifrado`), `DocumentoNubefact`
+(los JSON de la API), `ClienteNubefact`/`HttpClienteNubefact` y `EmisionComprobantes` (reserva de número por SP,
+emisión, consulta, reintento y anulación). Los módulos opcionales: `Comercial\ModuloOpcional`, `ModulosInstitucion`,
+`PdoRepositorioModulos` y `core/modulos.php` (`exigir_modulo`).
+
 `Auditoria/` (H-15): `RegistroAuditoria` (escrituras, sesiones y exportaciones de cada institución; datos sin contraseñas; búsqueda y retención), usado por `core/auditoria.php` desde el guard.
 
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa

@@ -72,6 +72,23 @@ estudios, la matrícula por unidades, las notas, el récord y los certificados, 
 configuración. Desactiva las cuentas de quien deja el
 colegio: así su acceso se corta en el momento.
 
+## Facturación electrónica (si tu plan la incluye)
+
+Emite la boleta o factura de cada ingreso (pensión, matrícula o ingreso diverso) con **tu propia cuenta de
+Nubefact**.
+
+1. En Nubefact, «API (Integración)», copia la **ruta** y el **token**, y pégalos en **Facturación electrónica →
+   Cuenta de Nubefact**. Indica tus series (por ejemplo B001 y F001) y, si ya emitías con ellas, el último número
+   usado: el sistema continúa desde ahí. Elige cómo se trata el IGV (los servicios educativos suelen estar
+   exonerados; confírmalo con tu contador).
+2. En **Ingresos sin comprobante**, pulsa **Boleta** o **Factura**. El cliente viene sugerido (el apoderado o el
+   alumno); la factura exige RUC y dirección. Una boleta de S/ 700 o más exige el documento del cliente.
+3. En **Comprobantes emitidos** ves el estado y el PDF. Las boletas quedan «Emitido» hasta que la SUNAT las acepta
+   en el resumen diario: pulsa **Consultar** para actualizarlas. Si Nubefact rechaza uno, corrige los datos y
+   reenvíalo (conserva su número). Para anular, indica el motivo.
+
+El token se guarda cifrado y nunca se vuelve a mostrar.
+
 ## Auditoría
 
 En **Configuración → Auditoría** ves quién guardó, modificó o eliminó algo, cuándo, desde qué IP y con qué

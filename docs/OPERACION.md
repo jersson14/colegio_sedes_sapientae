@@ -18,6 +18,13 @@
 | Dar de alta un colegio (o una demo) | Tarjeta «Dar de alta una institución» |
 | Convertir una demo en cliente | Etiqueta «DEMO» → «Convertir en cliente» |
 | Tipo de institución (colegio, instituto, CETPRO) | Columna «Tipo»: cambia sus reglas académicas por defecto |
+| Activar la facturación electrónica o el asistente de IA | Columna «Módulos» (el asistente admite un límite de consultas al mes) |
+
+**Facturación electrónica (Nubefact).** Cada colegio emite con su propia cuenta de Nubefact (su RUC): tú solo
+activas el módulo; el administrador del colegio carga su ruta y su token en «Facturación electrónica». El
+servidor necesita `APP_CLAVE_CIFRADO` en `colegio.env` (el token se guarda cifrado con ella): genérala una vez,
+guárdala junto a las copias de seguridad y no la cambies (si se pierde, cada colegio debe volver a ingresar su token).
+En modo único, el módulo se activa con `MODULOS_ACTIVOS=facturacion_electronica`.
 
 ## Ciclo de vida de un colegio
 

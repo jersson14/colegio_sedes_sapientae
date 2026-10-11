@@ -150,6 +150,27 @@ panel_comprobar(
 );
 panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'tipo', 'slug' => 'colegio-b', 'tipo' => 'COLEGIO']);
 
+// Módulos opcionales: el superadministrador activa la facturación electrónica solo en colegio-a.
+panel_pedir('colegio-a.prueba.test', '', "$tmp/a.txt");
+panel_pedir('colegio-a.prueba.test', 'controller/usuario/controlador_iniciar_sesion.php', "$tmp/a.txt", ['u' => 'usuario9', 'c' => 'Prueba.2026']);
+$facturacionA = static fn (): array => panel_pedir('colegio-a.prueba.test', 'controller/facturacion/controlador_facturacion.php', "$tmp/a.txt");
+$antes = $facturacionA();
+panel_comprobar($antes['codigo'] === 403 && str_contains((string) (json_decode($antes['cuerpo'], true)['error'] ?? ''), 'no está activo'), 'sin activar, la facturación electrónica responde 403', mb_substr($antes['cuerpo'], 0, 150));
+$activado = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'modulo', 'slug' => 'colegio-a', 'modulo' => 'facturacion_electronica', 'activo' => '1']);
+$despues = $facturacionA();
+panel_comprobar(
+    $despues['codigo'] !== 403 && str_contains($activado['cuerpo'], 'MODULO_ACTIVADO')
+    && str_contains(panel_pedir('colegio-a.prueba.test', 'view/index.php', "$tmp/a.txt")['cuerpo'], 'id="menu_facturacion">'),
+    'activado en colegio-a: el menú aparece, el controlador responde y queda auditado',
+    "HTTP {$despues['codigo']}"
+);
+panel_comprobar(
+    (string) $maestro->query("SELECT COUNT(*) FROM tenant_modulos m JOIN tenants t ON t.id = m.tenant_id WHERE t.slug = 'colegio-b' AND m.activo = 1")->fetchColumn() === '0',
+    'colegio-b sigue sin el módulo'
+);
+panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'modulo', 'slug' => 'colegio-a', 'modulo' => 'facturacion_electronica', 'activo' => '0']);
+panel_comprobar($facturacionA()['codigo'] === 403, 'al desactivarlo vuelve el 403');
+
 // Alta desde el panel.
 $slugNuevo = 'panel-' . getmypid();
 $alta = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'alta', 'slug' => $slugNuevo, 'razon' => 'Colegio desde el panel',

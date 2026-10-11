@@ -544,6 +544,8 @@ Priorizado por valor para la institución:
 | Portal del apoderado (hoy el acceso es limitado) | 🟢 Alto | Medio |
 | Aplicación móvil o PWA para alumnos y apoderados | 🟢 Alto | Alto |
 | Pagos en línea (Culqi, Niubiz, Izipay, Yape/Plin) | 🟢 Alto | Alto |
+| ✅ Facturación electrónica con Nubefact (módulo opcional: cada colegio con su cuenta; boletas, facturas, consulta y anulación) | 🟢 Alto | Medio |
+| Asistente de IA para consultas (módulo opcional; consumo pagado por la plataforma) | 🟢 Alto | Medio |
 | Exportación a formatos oficiales del MINEDU (SIAGIE) | 🟢 Alto | Alto |
 | Dashboard analítico (deserción, rendimiento, morosidad) | 🟠 Medio | Medio |
 | Firma digital de certificados y constancias | 🟠 Medio | Medio |

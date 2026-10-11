@@ -156,6 +156,19 @@ final class PanelInstituciones
         $this->auditoria->registrar($actor, 'TIPO', $slug, "{$fila['tipo']} → $tipo", $ip);
     }
 
+    /** Activa o desactiva un módulo opcional (facturación electrónica, asistente de IA) de una institución. */
+    public function cambiarModulo(string $slug, \App\Comercial\ModuloOpcional $modulo, bool $activo, ?int $limite, string $actor, string $ip): void
+    {
+        (new \App\Comercial\PdoRepositorioModulos($this->maestro))->guardar($slug, $modulo, $activo, $limite, $actor);
+        $this->auditoria->registrar(
+            $actor,
+            $activo ? 'MODULO_ACTIVADO' : 'MODULO_DESACTIVADO',
+            $slug,
+            $modulo->value . ($activo && $modulo->tieneLimite() ? '; límite mensual: ' . ($limite ?? 'sin límite') : ''),
+            $ip
+        );
+    }
+
     private static function texto(?int $n): ?string
     {
         return $n === null ? null : (string) $n;

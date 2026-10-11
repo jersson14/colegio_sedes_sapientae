@@ -456,6 +456,13 @@ ADMINISTRADOR y AUXILIAR sin restricción de pertenencia.
 La secretaría académica no ve la gestión escolar del colegio (alumnos, pagos, usuarios, configuración):
 su panel es el de comunicados más el menú «Plan de estudios». En un colegio el rol no se ofrece al crear cuentas.
 
+## Auditoría y módulos opcionales
+
+| Controlador | Roles | Nota |
+|---|---|---|
+| `auditoria/controlador_listar_auditoria.php` | A | solo lectura (H-15) |
+| `facturacion/controlador_facturacion.php` | A | además `exigir_modulo(FacturacionElectronica)`: 403 si el superadministrador no lo activó |
+
 ## view/MPDF/REPORTE (reportes PDF, GET)
 
 | Reporte | Roles | Nota |
