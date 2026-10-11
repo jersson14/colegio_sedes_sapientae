@@ -97,7 +97,8 @@ final class AltaInstitucionTest extends TestCase
         self::assertSame('PRUEBA', $tenant->estado->value, 'empieza en prueba');
 
         $base = Conexion::administracion(self::PREFIJO . 'a');
-        self::assertSame([1, 2, 3, 4, 5, 9], array_map('intval', $base->query('SELECT Id_rol FROM roles ORDER BY Id_rol')->fetchAll(PDO::FETCH_COLUMN)));
+        // El 6 (SECRETARIA, Fase 5.9) lo crea la migración; los demás, la siembra del alta.
+        self::assertSame([1, 2, 3, 4, 5, 6, 9], array_map('intval', $base->query('SELECT Id_rol FROM roles ORDER BY Id_rol')->fetchAll(PDO::FETCH_COLUMN)));
         self::assertSame('COLEGIO ALTA A', $base->query('SELECT emp_razon FROM empresa WHERE empresa_id = 1')->fetchColumn());
 
         $login = (new AutenticarUsuario(new PdoUsuarioRepositorio($base)))->ejecutar('admin', $clave);
