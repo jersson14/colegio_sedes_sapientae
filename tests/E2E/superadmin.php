@@ -103,7 +103,9 @@ $galletaColegio = (string) file_get_contents($deColegio);
 file_put_contents("$tmp/colegio_en_panel.txt", str_replace('colegio-a.prueba.test', PANEL, $galletaColegio));
 panel_comprobar(!str_contains(panel_pedir(PANEL, 'superadmin/', "$tmp/colegio_en_panel.txt")['cuerpo'], 'tabla_instituciones'), 'la sesión del administrador de un colegio no abre el panel');
 
-$panel = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => panel_csrf($mala['cuerpo']), 'accion' => 'entrar', 'usuario' => $usuario, 'clave' => $clave]);
+$entrada = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => panel_csrf($mala['cuerpo']), 'accion' => 'entrar', 'usuario' => $usuario, 'clave' => $clave]);
+panel_comprobar(str_contains($entrada['cuerpo'], 'id="grafico_cobros"') && str_contains($entrada['cuerpo'], 'id="lista_alertas"'), 'al entrar ve el resumen (cifras, gráfico y alertas)');
+$panel = panel_pedir(PANEL, 'superadmin/?s=instituciones', $g);
 panel_comprobar(
     str_contains($panel['cuerpo'], 'tabla_instituciones') && str_contains($panel['cuerpo'], 'data-slug="colegio-a"') && str_contains($panel['cuerpo'], 'data-slug="colegio-b"'),
     'con su cuenta entra y ve las instituciones'
@@ -135,8 +137,11 @@ panel_comprobar(
 );
 $inexistente = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'estado', 'slug' => 'no-existe', 'estado' => 'ACTIVO']);
 panel_comprobar(str_contains($inexistente['cuerpo'], 'No existe la institución'), 'un colegio inexistente se informa, no se crea');
-panel_comprobar(substr_count($reactivado['cuerpo'], '<td>ESTADO</td>') >= 2 && str_contains($reactivado['cuerpo'], 'SUSPENDIDO → ACTIVO')
-    && str_contains($reactivado['cuerpo'], "<td>$usuario</td>"), 'la auditoría registra quién cambió qué');
+$registro = panel_pedir(PANEL, 'superadmin/?s=auditoria', $g)['cuerpo'];
+panel_comprobar(str_contains($reactivado['cuerpo'], 'pasa a ACTIVO') && substr_count($registro, '<td>ESTADO</td>') >= 2 && str_contains($registro, 'SUSPENDIDO → ACTIVO')
+    && str_contains($registro, "<td>$usuario</td>"), 'la auditoría registra quién cambió qué');
+$ficha = panel_pedir(PANEL, 'superadmin/?s=institucion&slug=colegio-b', $g)['cuerpo'];
+panel_comprobar(str_contains($ficha, 'Colegio B') && str_contains($ficha, 'SUSPENDIDO → ACTIVO'), 'la ficha de la institución muestra su propia auditoría');
 
 // Fase 5.1: el tipo de institución decide sus reglas académicas por defecto.
 $baseB = (string) $maestro->query("SELECT base_datos FROM tenants WHERE slug = 'colegio-b'")->fetchColumn();
@@ -159,7 +164,7 @@ panel_comprobar($antes['codigo'] === 403 && str_contains((string) (json_decode($
 $activado = panel_pedir(PANEL, 'superadmin/', $g, ['csrf' => $token, 'accion' => 'modulo', 'slug' => 'colegio-a', 'modulo' => 'facturacion_electronica', 'activo' => '1']);
 $despues = $facturacionA();
 panel_comprobar(
-    $despues['codigo'] !== 403 && str_contains($activado['cuerpo'], 'MODULO_ACTIVADO')
+    $despues['codigo'] !== 403 && str_contains($activado['cuerpo'], 'activado') && str_contains(panel_pedir(PANEL, 'superadmin/?s=auditoria', $g)['cuerpo'], 'MODULO_ACTIVADO')
     && str_contains(panel_pedir('colegio-a.prueba.test', 'view/index.php', "$tmp/a.txt")['cuerpo'], 'id="menu_facturacion">'),
     'activado en colegio-a: el menú aparece, el controlador responde y queda auditado',
     "HTTP {$despues['codigo']}"

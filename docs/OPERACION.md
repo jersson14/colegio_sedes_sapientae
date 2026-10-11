@@ -8,17 +8,19 @@
 `https://SUPERADMIN_HOST/superadmin/` — cuentas con `php tools/crear_superadmin.php --usuario=… --nombre="…"`
 (`--desactivar=…` para quitarlas). Todo lo que se hace ahí queda en la auditoría (quién, qué, colegio, cuándo, IP).
 
-| Tarea | Dónde |
+| Tarea | Dónde (menú lateral) |
 |---|---|
-| Ver colegios, su uso y su plan | Tabla «Instituciones» |
-| Crear o cambiar un plan (límites y precios) | Tarjeta «Planes» (mismo código = modificar) |
-| Asignar plan / fin de prueba | Columna «Plan» del colegio |
-| Suspender, reactivar, cancelar | Columna «Cambiar estado» |
-| Registrar un pago o anular un cobro | Tarjeta «Cobros» |
-| Dar de alta un colegio (o una demo) | Tarjeta «Dar de alta una institución» |
-| Convertir una demo en cliente | Etiqueta «DEMO» → «Convertir en cliente» |
-| Tipo de institución (colegio, instituto, CETPRO) | Columna «Tipo»: cambia sus reglas académicas por defecto |
-| Activar la facturación electrónica o el asistente de IA | Columna «Módulos» (el asistente admite un límite de consultas al mes) |
+| Cifras, cobros de los últimos meses, alertas y actividad | **Resumen** |
+| Ver y filtrar instituciones (estado, tipo, uso, módulos, migración) | **Instituciones** |
+| Suspender o reactivar, cambiar tipo, asignar plan y fin de prueba, módulos, convertir una demo | **Instituciones → Gestionar** (ficha de la institución, con sus cobros y su auditoría) |
+| Crear o cambiar un plan (límites y precios) | **Planes** (mismo código = modificar) |
+| Registrar un pago o anular un cobro | **Cobros** |
+| Dar de alta un colegio o instituto (o una demo) | **Dar de alta** |
+| Activar la facturación electrónica o el asistente de IA y ver su consumo | **Módulos e IA** (el asistente admite un límite de consultas al mes) |
+| Quién hizo qué | **Auditoría** |
+
+Las **alertas** del resumen avisan de pruebas por vencer o vencidas, morosos, suspendidos, demos, cobros vencidos,
+bases que no responden y bases sin la última migración.
 
 **Facturación electrónica (Nubefact).** Cada colegio emite con su propia cuenta de Nubefact (su RUC): tú solo
 activas el módulo; el administrador del colegio carga su ruta y su token en «Facturación electrónica». El

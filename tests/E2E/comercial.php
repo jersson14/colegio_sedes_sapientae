@@ -208,8 +208,8 @@ comercial_comprobar(
 $cuenta = 'cobros-' . getmypid();
 $claveCuenta = preg_match('/Contraseña:\s+(\S+)/', $herramienta('tools/crear_superadmin.php', "--usuario=$cuenta", '--nombre=Cobros E2E'), $m) === 1 ? $m[1] : '';
 $panel = "$tmp/panel.txt";
-$panelPedir = static function (string $host, ?array $post) use ($panel, $puerto): string {
-    $c = curl_init("http://$host:$puerto/superadmin/");
+$panelPedir = static function (string $host, ?array $post, string $ruta = 'superadmin/') use ($panel, $puerto): string {
+    $c = curl_init("http://$host:$puerto/$ruta");
     curl_setopt_array($c, [CURLOPT_RETURNTRANSFER => true, CURLOPT_RESOLVE => ["$host:$puerto:127.0.0.1"], CURLOPT_COOKIEFILE => $panel,
         CURLOPT_COOKIEJAR => $panel, CURLOPT_FOLLOWLOCATION => true, CURLOPT_TIMEOUT => 60]);
     if ($post !== null) {
@@ -220,6 +220,7 @@ $panelPedir = static function (string $host, ?array $post) use ($panel, $puerto)
 $token = static fn (string $html): string => preg_match('/name="csrf" value="([^"]+)"/', $html, $m) === 1 ? $m[1] : '';
 $html = $panelPedir('panel.prueba.test', null);
 $html = $panelPedir('panel.prueba.test', ['csrf' => $token($html), 'accion' => 'entrar', 'usuario' => $cuenta, 'clave' => $claveCuenta]);
+$html = $panelPedir('panel.prueba.test', null, 'superadmin/?s=cobros');
 comercial_comprobar(str_contains($html, "data-cobro=\"$numero\""), 'el cobro aparece en el panel de superadministrador');
 $html = $panelPedir('panel.prueba.test', ['csrf' => $token($html), 'accion' => 'cobro_pagado', 'numero' => $numero, 'medio' => 'Transferencia', 'referencia' => 'OP-E2E']);
 comercial_comprobar(

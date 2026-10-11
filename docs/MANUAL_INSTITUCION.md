@@ -26,6 +26,15 @@ cuatrimestre o semestre), la nota mínima aprobatoria, si el promedio se pondera
 apoderado son obligatorios y si la matrícula es por aula o por unidad didáctica. Vienen ya puestos según el tipo
 de institución (colegio o instituto); cámbialos solo si tu reglamento dice otra cosa.
 
+## Si tu institución es un instituto o CETPRO
+
+El sistema cambia de forma: el menú se organiza en **Plan de estudios**, **Matrícula y notas**, **Personas**,
+**Clases** (grupos, horarios y asistencia), **Aula virtual** (tareas y exámenes) y **Pagos**, y el inicio muestra el
+**tablero del semestre**: matriculados, unidades en curso, aprobación, notas por registrar, cargos pendientes, unidades
+sin docente y las de menor aprobación. No aparecen secciones y grados, boletas por bimestre, atenciones de salud ni
+apoderados. El docente califica en «Mis unidades didácticas» y el estudiante ve su avance y su récord en
+«Mis unidades y récord».
+
 ## Plan de estudios y matrícula por unidades (institutos)
 
 Con la matrícula «por unidad didáctica» aparece el menú **Plan de estudios**:

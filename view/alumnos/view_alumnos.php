@@ -634,4 +634,9 @@ input.addEventListener('input',function(){
         var label = input.nextElementSibling;
         label.innerHTML = "Subir Foto (" + fileName + ")";
     }
+</script><script>
+  // Instituto o CETPRO: sin pestañas de padres/apoderados (el apoderado es opcional y no se pide).
+  if (window.INSTITUCION && window.INSTITUCION.tipo !== 'COLEGIO') {
+    $('#custom-tabs-one-profile-tab, #custom-tabs-one-profile-tab2, #custom-tabs-one-profile-tab3').closest('li').hide();
+  }
 </script>

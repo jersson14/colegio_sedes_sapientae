@@ -1,7 +1,7 @@
 <?php
 // Fase 5.8: récord académico de un alumno en un programa de estudios (institutos).
 require_once __DIR__ . '/../../../core/guard.php';
-exigir_rol('ADMINISTRADOR', 'SECRETARIA');
+exigir_rol('ADMINISTRADOR', 'SECRETARIA', 'ESTUDIANTE');
 require_once __DIR__ . '/../../../model/model_conexion.php';
 require_once __DIR__ . '/../../../core/institucion.php';
 
@@ -14,6 +14,14 @@ $pdo = (new conexionBD())->conexionPDO();
 $datos = new Datos($pdo);
 $alumno = (int) ($_GET['alumno'] ?? 0);
 $programa = (int) ($_GET['programa'] ?? 0);
+// El estudiante solo su propio récord (el alumno de su matrícula).
+if (($_SESSION['S_ROL'] ?? '') === 'ESTUDIANTE') {
+    $propio = $pdo->prepare('SELECT 1 FROM matricula WHERE usu_id = ? AND id_alumno = ?');
+    $propio->execute([(int) $_SESSION['S_ID'], $alumno]);
+    if ($propio->fetchColumn() === false) {
+        responder_error(403, 'El registro solicitado no te pertenece');
+    }
+}
 
 $encabezado = $datos->fila(
     "SELECT a.alum_dni, CONCAT_WS(' ', a.alum_apepat, a.alum_apemat, a.alum_nombre) AS alumno, p.codigo, p.nombre AS programa,

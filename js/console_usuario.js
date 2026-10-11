@@ -506,6 +506,8 @@ function Modificar_Contra(){
 
 //SEGUIMIENTO TRAMITE //
 function Traer_Datos(){
+  // Solo en la ficha del estudiante: en el panel de otros roles esos campos no existen.
+  if (!document.getElementById('txt_añoaca')) { return; }
   let id = document.getElementById('txtprincipalid').value;
 
   $.ajax({

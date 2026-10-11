@@ -44,6 +44,9 @@
         ]
     },
     "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
         "sort-packages": true,
         "platform": {
             "php": "8.2.12"

@@ -33,6 +33,7 @@ use App\Tenancy\SolicitudAlta;
 
 const SA_INACTIVIDAD = 1800;
 const SA_FALLOS_MAX = 5;
+const SA_SECCIONES = ['resumen', 'instituciones', 'institucion', 'alta', 'planes', 'cobros', 'modulos', 'auditoria'];
 
 function sa_no_encontrado(): never
 {
@@ -247,255 +248,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sa_aviso('danger', 'No se completó la operación: ' . $ex->getMessage());
         }
     }
-    header('Location: ./', true, 303);
+    // Cada acción vuelve a su sección (o a la ficha de la institución desde la que se hizo).
+    $porDefecto = match ($accion) {
+        'plan' => 'planes',
+        'cobro_pagado', 'cobro_anulado' => 'cobros',
+        'alta' => 'instituciones',
+        'entrar' => 'resumen',
+        default => 'instituciones',
+    };
+    $volver = in_array($_POST['volver'] ?? '', SA_SECCIONES, true) ? (string) $_POST['volver'] : $porDefecto;
+    $destino = './?s=' . $volver . ($volver === 'institucion' ? '&slug=' . rawurlencode((string) ($_POST['slug'] ?? '')) : '');
+    header('Location: ' . $destino, true, 303);
     exit;
 }
 
-$aviso = $_SESSION['aviso'] ?? null;
-unset($_SESSION['aviso']);
-$csrf = $e((string) $_SESSION['csrf']);
-$panel = $actor !== null ? new PanelInstituciones($maestro, static fn (string $base): PDO => Conexion::administracion($base), $auditoria) : null;
-$planes = $panel?->planes() ?? [];
-$cobros = $panel !== null ? (new Facturacion($maestro))->recientes() : [];
-$modulos = $panel !== null ? (new PdoRepositorioModulos($maestro))->todos() : [];
-$consumoIa = $panel !== null ? (new PdoRepositorioModulos($maestro))->consumoIa(date('Y-m')) : [];
-$dominio = (string) config('TENANT_DOMINIO', '');
-header('Content-Type: text/html; charset=utf-8');
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Panel de superadministrador</title>
-  <link rel="stylesheet" href="../plantilla/dist/css/adminlte.min.css">
-  <style>body{background:#f4f6f9} .contenedor{max-width:1200px;margin:2rem auto;padding:0 1rem} .badge-PRUEBA{background:#17a2b8} .badge-ACTIVO{background:#28a745} .badge-MOROSO{background:#ffc107;color:#000} .badge-SUSPENDIDO{background:#dc3545} .badge-CANCELADO{background:#6c757d} .badge{color:#fff}</style>
-</head>
-<body>
-<div class="contenedor">
-  <h1 class="h3 mb-3">Panel de superadministrador</h1>
-  <?php if ($aviso !== null) { ?>
-    <div class="alert alert-<?= $e($aviso[0]) ?>" role="alert" id="aviso"><?= $e($aviso[1]) ?></div>
-  <?php } ?>
-
-  <?php if ($panel === null) { ?>
-    <form method="post" class="card card-body" style="max-width:380px" autocomplete="off">
-      <input type="hidden" name="csrf" value="<?= $csrf ?>">
-      <input type="hidden" name="accion" value="entrar">
-      <label for="usuario">Usuario</label>
-      <input class="form-control mb-2" id="usuario" name="usuario" required>
-      <label for="clave">Contraseña</label>
-      <input class="form-control mb-3" id="clave" name="clave" type="password" required>
-      <button class="btn btn-primary" type="submit">Entrar</button>
-    </form>
-  <?php } else { ?>
-    <form method="post" class="mb-3 text-right">
-      <input type="hidden" name="csrf" value="<?= $csrf ?>">
-      <input type="hidden" name="accion" value="salir">
-      <span class="mr-2"><?= $e((string) $_SESSION['sa_nombre']) ?></span>
-      <button class="btn btn-sm btn-outline-secondary" type="submit">Salir</button>
-    </form>
-
-    <div class="card"><div class="card-header"><b>Instituciones</b></div>
-      <div class="card-body table-responsive p-0">
-        <table class="table table-sm table-striped mb-0" id="tabla_instituciones">
-          <thead><tr><th>Slug</th><th>Institución</th><th>Tipo</th><th>Estado</th><th>Alumnos</th><th>Usuarios</th><th>Migración</th><th>Alta</th><th>Plan</th><th>Módulos</th><th>Cambiar estado</th></tr></thead>
-          <tbody>
-          <?php foreach ($panel->listar() as $t) { ?>
-            <tr data-slug="<?= $e($t['slug']) ?>">
-              <td><a href="https://<?= $e($t['dominio'] ?? "{$t['slug']}.$dominio") ?>/" rel="noopener" target="_blank"><?= $e($t['slug']) ?></a></td>
-              <td><?= $e($t['razon_social']) ?><br><small class="text-muted"><?= $e($t['base_datos']) ?></small></td>
-              <td>
-                <form method="post" class="form-inline">
-                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                  <input type="hidden" name="accion" value="tipo">
-                  <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
-                  <select name="tipo" class="form-control form-control-sm mr-1" aria-label="Tipo de <?= $e($t['slug']) ?>" onchange="this.form.submit()">
-                    <?php foreach (['COLEGIO', 'INSTITUTO', 'CETPRO'] as $tipo) { ?>
-                      <option<?= $tipo === $t['tipo'] ? ' selected' : '' ?>><?= $tipo ?></option>
-                    <?php } ?>
-                  </select>
-                </form>
-              </td>
-              <td><span class="badge badge-<?= $e($t['estado']) ?>"><?= $e($t['estado']) ?></span>
-                <?php if ($t['demo']) { ?><span class="badge badge-warning" style="color:#000">DEMO</span>
-                  <details class="mt-1"><summary><small>Convertir en cliente</small></summary>
-                    <form method="post" autocomplete="off" class="mt-1" style="min-width:220px">
-                      <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                      <input type="hidden" name="accion" value="convertir_demo">
-                      <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
-                      <input class="form-control form-control-sm mb-1" name="razon" value="<?= $e($t['razon_social']) ?>" required aria-label="Razón social">
-                      <input class="form-control form-control-sm mb-1" name="email" type="email" placeholder="Correo" required>
-                      <input class="form-control form-control-sm mb-1" name="admin_dni" placeholder="DNI del administrador" required pattern="\d{8}">
-                      <input class="form-control form-control-sm mb-1" name="admin_nombres" placeholder="Nombres" required>
-                      <input class="form-control form-control-sm mb-1" name="admin_apellidos" placeholder="Apellidos" required>
-                      <select class="form-control form-control-sm mb-1" name="estado" aria-label="Estado"><option>ACTIVO</option><option>PRUEBA</option></select>
-                      <button class="btn btn-sm btn-warning" type="submit">Convertir (borra los datos de ejemplo)</button>
-                    </form>
-                  </details>
-                <?php } ?>
-              </td>
-              <?php if ($t['error'] !== null) { ?>
-                <td colspan="3" class="text-danger"><?= $e($t['error']) ?></td>
-              <?php } else { ?>
-                <td><?= (int) $t['alumnos'] ?><?= $t['max_alumnos'] !== null ? ' / ' . (int) $t['max_alumnos'] : '' ?></td>
-                <td><?= (int) $t['usuarios'] ?><?= $t['max_usuarios'] !== null ? ' / ' . (int) $t['max_usuarios'] : '' ?></td>
-                <td><small><?= $e($t['migracion']) ?></small></td>
-              <?php } ?>
-              <td><small><?= $e($t['fecha_alta']) ?></small></td>
-              <td>
-                <form method="post" class="form-inline">
-                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                  <input type="hidden" name="accion" value="asignar_plan">
-                  <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
-                  <select name="plan" class="form-control form-control-sm mr-1" aria-label="Plan de <?= $e($t['slug']) ?>">
-                    <?php if ($t['plan'] === null) { ?><option value="">(sin plan)</option><?php } ?>
-                    <?php foreach ($planes as $p) { ?>
-                      <option value="<?= $e($p->codigo) ?>"<?= $p->codigo === $t['plan'] ? ' selected' : '' ?>><?= $e($p->codigo) ?></option>
-                    <?php } ?>
-                  </select>
-                  <input type="date" name="prueba_hasta" class="form-control form-control-sm mr-1" value="<?= $e($t['prueba_hasta']) ?>" title="Fin de la prueba (vacío si no está en prueba)">
-                  <button class="btn btn-sm btn-outline-primary" type="submit">Asignar</button>
-                </form>
-              </td>
-              <td style="min-width:230px">
-                <?php foreach (ModuloOpcional::cases() as $m) {
-                    $estadoModulo = $modulos[$t['slug']][$m->value] ?? ['activo' => false, 'limite' => null]; ?>
-                  <form method="post" class="form-inline mb-1" data-modulo="<?= $e($m->value) ?>">
-                    <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                    <input type="hidden" name="accion" value="modulo">
-                    <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
-                    <input type="hidden" name="modulo" value="<?= $e($m->value) ?>">
-                    <input type="hidden" name="activo" value="<?= $estadoModulo['activo'] ? '0' : '1' ?>">
-                    <span class="badge badge-<?= $estadoModulo['activo'] ? 'success' : 'secondary' ?> mr-1"><?= $e($m->etiqueta()) ?></span>
-                    <?php if ($m->tieneLimite() && !$estadoModulo['activo']) { ?>
-                      <input type="number" min="0" name="limite" class="form-control form-control-sm mr-1" style="width:90px" placeholder="Límite/mes" title="Consultas al mes (vacío = sin límite)">
-                    <?php } elseif ($m->tieneLimite()) { ?>
-                      <small class="mr-1" title="Consultas de este mes (las actualiza el cron)"><?= (int) ($consumoIa[$t['slug']]['consultas'] ?? 0) ?> /
-                        <?= $estadoModulo['limite'] !== null ? (int) $estadoModulo['limite'] . ' al mes' : 'sin límite' ?></small>
-                    <?php } ?>
-                    <button class="btn btn-sm <?= $estadoModulo['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?>" type="submit"><?= $estadoModulo['activo'] ? 'Desactivar' : 'Activar' ?></button>
-                  </form>
-                <?php } ?>
-              </td>
-              <td>
-                <form method="post" class="form-inline">
-                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                  <input type="hidden" name="accion" value="estado">
-                  <input type="hidden" name="slug" value="<?= $e($t['slug']) ?>">
-                  <select name="estado" class="form-control form-control-sm mr-1" aria-label="Estado de <?= $e($t['slug']) ?>">
-                    <?php foreach (EstadoTenant::cases() as $estado) { ?>
-                      <option value="<?= $e($estado->value) ?>"<?= $estado->value === $t['estado'] ? ' selected' : '' ?>><?= $e($estado->value) ?></option>
-                    <?php } ?>
-                  </select>
-                  <button class="btn btn-sm btn-primary" type="submit">Aplicar</button>
-                </form>
-              </td>
-            </tr>
-          <?php } ?>
-          </tbody>
-        </table>
-      </div>
-      <div class="card-footer"><small>PRUEBA, ACTIVO y MOROSO entran (MOROSO sin altas ni matrículas); SUSPENDIDO: solo su
-        administrador, para descargar sus datos, durante la ventana de exportación; CANCELADO responde 404. Nada se borra.</small></div>
-    </div>
-
-    <div class="card"><div class="card-header"><b>Planes</b> <small class="text-muted">— límites vacíos = sin límite; precios vacíos = no se cobra por ese concepto</small></div>
-      <div class="card-body table-responsive p-0">
-        <table class="table table-sm mb-0" id="tabla_planes">
-          <thead><tr><th>Código</th><th>Nombre</th><th>Alumnos</th><th>Usuarios</th><th>MB</th><th>Mensual</th><th>Por alumno</th><th>Moneda</th></tr></thead>
-          <tbody>
-          <?php foreach ($planes as $p) { ?>
-            <tr data-plan="<?= $e($p->codigo) ?>"><td><?= $e($p->codigo) ?></td><td><?= $e($p->nombre) ?></td>
-              <td><?= $e((string) ($p->limite(Recurso::Alumnos) ?? '—')) ?></td><td><?= $e((string) ($p->limite(Recurso::Usuarios) ?? '—')) ?></td>
-              <td><?= $e((string) ($p->limite(Recurso::AlmacenamientoMb) ?? '—')) ?></td><td><?= $e($p->precioMensual ?? '—') ?></td>
-              <td><?= $e($p->precioPorAlumno ?? '—') ?></td><td><?= $e($p->moneda) ?></td></tr>
-          <?php } ?>
-          </tbody>
-        </table>
-      </div>
-      <form method="post" class="card-body border-top" autocomplete="off">
-        <input type="hidden" name="csrf" value="<?= $csrf ?>">
-        <input type="hidden" name="accion" value="plan">
-        <div class="form-row">
-          <div class="col-md-2 mb-2"><label for="plan_codigo">Código</label><input class="form-control" id="plan_codigo" name="codigo" required pattern="[A-Za-z0-9_]{2,30}" placeholder="BASICO"></div>
-          <div class="col-md-3 mb-2"><label for="plan_nombre">Nombre</label><input class="form-control" id="plan_nombre" name="nombre" required maxlength="100"></div>
-          <div class="col-md-1 mb-2"><label for="plan_alumnos">Alumnos</label><input class="form-control" id="plan_alumnos" name="max_alumnos" inputmode="numeric"></div>
-          <div class="col-md-1 mb-2"><label for="plan_usuarios">Usuarios</label><input class="form-control" id="plan_usuarios" name="max_usuarios" inputmode="numeric"></div>
-          <div class="col-md-1 mb-2"><label for="plan_mb">MB</label><input class="form-control" id="plan_mb" name="max_almacenamiento_mb" inputmode="numeric"></div>
-          <div class="col-md-1 mb-2"><label for="plan_mensual">Mensual</label><input class="form-control" id="plan_mensual" name="precio_mensual" inputmode="decimal"></div>
-          <div class="col-md-1 mb-2"><label for="plan_por_alumno">Por alumno</label><input class="form-control" id="plan_por_alumno" name="precio_por_alumno" inputmode="decimal"></div>
-          <div class="col-md-1 mb-2"><label for="plan_moneda">Moneda</label><input class="form-control" id="plan_moneda" name="moneda" value="PEN" maxlength="3"></div>
-        </div>
-        <button class="btn btn-success" type="submit">Guardar plan</button> <small class="text-muted">Con un código existente, lo modifica.</small>
-      </form>
-    </div>
-
-    <div class="card"><div class="card-header"><b>Cobros</b> <small class="text-muted">— los emite cada día tools/facturacion.php; son
-      cobros internos, no comprobantes SUNAT (esos se emiten con un OSE/PSE)</small></div>
-      <div class="card-body table-responsive p-0">
-        <table class="table table-sm mb-0" id="tabla_cobros">
-          <thead><tr><th>Número</th><th>Institución</th><th>Periodo</th><th>Vence</th><th>Monto</th><th>Detalle</th><th>Estado</th><th></th></tr></thead>
-          <tbody>
-          <?php foreach ($cobros as $c) { ?>
-            <tr data-cobro="<?= $e($c['numero']) ?>">
-              <td><?= $e($c['numero']) ?></td><td><?= $e($c['slug']) ?></td>
-              <td><small><?= $e($c['periodo_inicio']) ?> – <?= $e($c['periodo_fin']) ?></small></td><td><?= $e($c['vencimiento']) ?></td>
-              <td><?= $e($c['moneda']) ?> <?= $e($c['monto']) ?></td><td><small><?= $e($c['detalle']) ?></small></td>
-              <td><?= $e($c['estado']) ?><?= $c['estado'] === 'PAGADA' ? '<br><small>' . $e($c['pagada_en']) . ' · ' . $e($c['medio_pago']) . ' ' . $e($c['referencia_pago']) . '</small>' : '' ?></td>
-              <td>
-                <?php if ($c['estado'] === 'PENDIENTE') { ?>
-                  <form method="post" class="form-inline">
-                    <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                    <input type="hidden" name="numero" value="<?= $e($c['numero']) ?>">
-                    <input name="medio" class="form-control form-control-sm mr-1" placeholder="Medio (transferencia…)" maxlength="40" style="width:150px">
-                    <input name="referencia" class="form-control form-control-sm mr-1" placeholder="N.º de operación" maxlength="100" style="width:130px">
-                    <button class="btn btn-sm btn-success mr-1" type="submit" name="accion" value="cobro_pagado">Pagado</button>
-                    <button class="btn btn-sm btn-outline-danger" type="submit" name="accion" value="cobro_anulado">Anular</button>
-                  </form>
-                <?php } ?>
-              </td>
-            </tr>
-          <?php } ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card"><div class="card-header"><b>Dar de alta una institución</b> <small class="text-muted">— crea la base, la migra y crea su administrador (unos segundos)</small></div>
-      <form method="post" class="card-body" autocomplete="off">
-        <input type="hidden" name="csrf" value="<?= $csrf ?>">
-        <input type="hidden" name="accion" value="alta">
-        <div class="form-row">
-          <div class="col-md-3 mb-2"><label for="slug">Subdominio</label><input class="form-control" id="slug" name="slug" required pattern="[a-z0-9]([a-z0-9-]*[a-z0-9])?" placeholder="colegio-x"></div>
-          <div class="col-md-5 mb-2"><label for="razon">Razón social</label><input class="form-control" id="razon" name="razon" required maxlength="200"></div>
-          <div class="col-md-4 mb-2"><label for="email">Correo</label><input class="form-control" id="email" name="email" type="email" required></div>
-          <div class="col-md-2 mb-2"><label for="admin_dni">DNI administrador</label><input class="form-control" id="admin_dni" name="admin_dni" required pattern="\d{8}"></div>
-          <div class="col-md-3 mb-2"><label for="admin_nombres">Nombres</label><input class="form-control" id="admin_nombres" name="admin_nombres" required></div>
-          <div class="col-md-3 mb-2"><label for="admin_apellidos">Apellidos</label><input class="form-control" id="admin_apellidos" name="admin_apellidos" required></div>
-          <div class="col-md-2 mb-2"><label for="tipo">Tipo</label><select class="form-control" id="tipo" name="tipo"><option>COLEGIO</option><option>INSTITUTO</option><option>CETPRO</option></select></div>
-          <div class="col-md-2 mb-2"><label for="estado">Estado</label><select class="form-control" id="estado" name="estado"><option>PRUEBA</option><option>ACTIVO</option></select></div>
-          <div class="col-md-12 mb-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="demo" name="demo" value="1">
-            <label class="form-check-label" for="demo">Demo: con datos de ejemplo (ficticios) para que el colegio pruebe el sistema; luego se convierte en cliente</label></div></div>
-        </div>
-        <button class="btn btn-success" type="submit">Crear institución</button>
-      </form>
-    </div>
-
-    <div class="card"><div class="card-header"><b>Auditoría</b> <small class="text-muted">— últimas 50 acciones</small></div>
-      <div class="card-body table-responsive p-0">
-        <table class="table table-sm mb-0" id="tabla_auditoria">
-          <thead><tr><th>Fecha</th><th>Quién</th><th>Acción</th><th>Institución</th><th>Detalle</th><th>IP</th></tr></thead>
-          <tbody>
-          <?php foreach ($auditoria->recientes() as $a) { ?>
-            <tr><td><small><?= $e($a['fecha']) ?></small></td><td><?= $e($a['actor']) ?></td><td><?= $e($a['accion']) ?></td><td><?= $e($a['tenant']) ?></td><td><small><?= $e($a['detalle']) ?></small></td><td><small><?= $e($a['ip']) ?></small></td></tr>
-          <?php } ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  <?php } ?>
-</div>
-</body>
-</html>
+require __DIR__ . '/vista.php';
+sa_mostrar_panel($e, $actor, $maestro, $auditoria);

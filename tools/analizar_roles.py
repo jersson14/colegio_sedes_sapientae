@@ -66,7 +66,8 @@ RX_CALL = re.compile(r"\b(" + "|".join(sorted(TODAS, key=len, reverse=True)) + r
 
 # Layout por rol
 idx = leer('view/index.php')
-RX_BLOQUE = re.compile(r"<\?php\s+if\s*\(([^{]*S_ROL[^{]*)\)\s*\{\s*\?>|<\?php\s*\}\s*\?>")
+# La condición no cruza un «?>»: un «<?php if (…): ?>» (sintaxis alternativa, p. ej. $esInstituto) no es un bloque de rol.
+RX_BLOQUE = re.compile(r"<\?php\s+if\s*\(((?:(?!\?>)[^{])*S_ROL(?:(?!\?>)[^{])*)\)\s*\{\s*\?>|<\?php\s*\}\s*\?>")
 pila, por_rol, pos = [], collections.defaultdict(list), 0
 for m in RX_BLOQUE.finditer(idx):
     for r in (pila[-1] if pila else ROLES): por_rol[r].append(idx[pos:m.start()])
