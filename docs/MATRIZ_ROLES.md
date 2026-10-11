@@ -461,6 +461,7 @@ su panel es el de comunicados más el menú «Plan de estudios». En un colegio 
 | Controlador | Roles | Nota |
 |---|---|---|
 | `auditoria/controlador_listar_auditoria.php` | A | solo lectura (H-15) |
+| `asistente/controlador_asistente.php` | A S D E | además `exigir_modulo(AsistenteIa)`; cada herramienta acota los datos por rol (`App\Asistente\HerramientasAsistente`) |
 | `facturacion/controlador_facturacion.php` | A | además `exigir_modulo(FacturacionElectronica)`: 403 si el superadministrador no lo activó |
 
 ## view/MPDF/REPORTE (reportes PDF, GET)

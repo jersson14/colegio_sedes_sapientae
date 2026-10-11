@@ -257,7 +257,7 @@ Migrar a AWS antes de tener tenants que lo justifiquen es pagar complejidad sin 
 
 ```bash
 git pull
-composer install --no-dev --optimize-autoloader   # solo Phinx en producción
+composer install --no-dev --optimize-autoloader   # Phinx y, para el asistente de IA, el SDK de Anthropic con Guzzle
 vendor/bin/phinx migrate                          # la inicial se registra sin tocar el esquema existente
 ```
 

@@ -59,4 +59,26 @@ final class PdoRepositorioModulos
              ON DUPLICATE KEY UPDATE activo = VALUES(activo), limite_mensual = VALUES(limite_mensual), actualizado = NOW(), actualizado_por = VALUES(actualizado_por)'
         )->execute([$tenantId, $modulo->value, $activo ? 1 : 0, $modulo->tieneLimite() ? $limite : null, mb_substr($actor, 0, 100)]);
     }
+
+    /** Consumo del asistente de IA del mes (lo copia el cron desde la base de cada institución). */
+    public function registrarConsumoIa(string $slug, string $mes, int $consultas, int $tokensEntrada, int $tokensSalida): void
+    {
+        $this->maestro->prepare(
+            'INSERT INTO consumo_ia (tenant_id, mes, consultas, tokens_entrada, tokens_salida)
+             SELECT id, ?, ?, ?, ? FROM tenants WHERE slug = ?
+             ON DUPLICATE KEY UPDATE consultas = VALUES(consultas), tokens_entrada = VALUES(tokens_entrada), tokens_salida = VALUES(tokens_salida)'
+        )->execute([$mes, $consultas, $tokensEntrada, $tokensSalida, $slug]);
+    }
+
+    /** @return array<string, array{consultas: int, tokens_entrada: int, tokens_salida: int}> slug => consumo del mes */
+    public function consumoIa(string $mes): array
+    {
+        $consulta = $this->maestro->prepare('SELECT t.slug, c.consultas, c.tokens_entrada, c.tokens_salida FROM consumo_ia c JOIN tenants t ON t.id = c.tenant_id WHERE c.mes = ?');
+        $consulta->execute([$mes]);
+        $consumo = [];
+        foreach ($consulta->fetchAll(PDO::FETCH_ASSOC) as $f) {
+            $consumo[(string) $f['slug']] = ['consultas' => (int) $f['consultas'], 'tokens_entrada' => (int) $f['tokens_entrada'], 'tokens_salida' => (int) $f['tokens_salida']];
+        }
+        return $consumo;
+    }
 }

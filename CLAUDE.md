@@ -80,7 +80,8 @@ mezclar inglés rompe la coherencia con los 254 SPs.
   `crear_superadmin.php`, `facturacion.php`, `baja_tenant.php`, `convertir_demo.php`; panel en `superadmin/`
   (solo `SUPERADMIN_HOST`). Planes y estados: `App\Comercial` (el guard aplica los límites). Zona horaria: `APP_ZONA_HORARIA`.
 - **Módulos opcionales por institución** (`core/modulos.php`, `exigir_modulo()`): facturación electrónica con
-  Nubefact (cada colegio con su cuenta; token cifrado con `APP_CLAVE_CIFRADO`) y asistente de IA. Los activa el
+  Nubefact (cada colegio con su cuenta; token cifrado con `APP_CLAVE_CIFRADO`) y asistente de IA (Claude por el SDK
+  oficial; herramientas de solo lectura acotadas por rol en `src/Asistente/`; clave de la plataforma). Los activa el
   superadministrador (modo múltiple) o `MODULOS_ACTIVOS` (modo único). Toda escritura queda en `auditoria_acciones`
   (H-15, registrada por el guard).
 - **Las credenciales no están en el código.** `model_conexion.php` y `view/MPDF/conexion.php` se

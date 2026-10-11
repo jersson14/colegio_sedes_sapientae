@@ -8,6 +8,8 @@
         "ext-fileinfo": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
+        "anthropic-ai/sdk": "^0.57.0",
+        "guzzlehttp/guzzle": "^8.2",
         "robmorgan/phinx": "^0.16"
     },
     "require-dev": {

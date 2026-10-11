@@ -26,6 +26,15 @@ servidor necesita `APP_CLAVE_CIFRADO` en `colegio.env` (el token se guarda cifra
 guárdala junto a las copias de seguridad y no la cambies (si se pierde, cada colegio debe volver a ingresar su token).
 En modo único, el módulo se activa con `MODULOS_ACTIVOS=facturacion_electronica`.
 
+**Asistente de IA (Claude).** La clave `ANTHROPIC_API_KEY` es de la plataforma y el consumo lo pagas tú: actívalo
+por colegio en «Módulos» con un límite de consultas al mes (vacío = sin límite) y cóbralo en su plan. El cron copia
+cada día el consumo del mes (consultas y tokens) a la tabla `consumo_ia` de la maestra; el panel muestra las
+consultas del mes junto al módulo. Además, cada usuario tiene un tope por hora (`IA_LIMITE_USUARIO_HORA`, 20).
+Modelo y esfuerzo: `IA_MODELO` (`claude-opus-5-5`) e `IA_ESFUERZO` (`medium`). Las preguntas y los datos que las
+herramientas devuelven (nombres y cifras; nunca DNI, contactos ni salud) se envían a Anthropic para responder:
+inclúyelo en el contrato y en el aviso de privacidad del colegio. En modo único: `MODULOS_ACTIVOS=…,asistente_ia` e
+`IA_LIMITE_MENSUAL`.
+
 ## Ciclo de vida de un colegio
 
 ```

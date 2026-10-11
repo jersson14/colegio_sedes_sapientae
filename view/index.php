@@ -2162,9 +2162,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
       var motivo = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'El plan no permite esta acción.';
       Swal.fire('Límite del plan', motivo, 'warning');
     } else if (jqXHR.status === 422) {
-      // Fase 0.3: archivo rechazado por el servidor (tipo o tamaño no permitido).
-      var msg = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'Archivo no permitido.';
-      Swal.fire('Archivo no permitido', msg, 'warning');
+      // Datos rechazados por el servidor (archivo no permitido, factura sin RUC…): el motivo viene en «error».
+      var msg = (jqXHR.responseJSON && jqXHR.responseJSON.error) || 'Datos no válidos.';
+      Swal.fire('Mensaje de Advertencia', msg, 'warning');
     }
   });
   // Evita la alerta de DataTables ("Ajax error") justo antes de redirigir.
@@ -2173,7 +2173,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
     alert(mensaje);
   };
 </script>
-
+<?php if (in_array($_SESSION['S_ROL'], ["ADMINISTRADOR", "SECRETARIA", "DOCENTE", "ESTUDIANTE"], true) && modulo_activo(App\Comercial\ModuloOpcional::AsistenteIa)) { ?>
+  <!-- Módulo opcional: asistente de IA (solo consultas; cada rol ve lo suyo). -->
+  <button type="button" id="asistente_abrir" class="btn btn-primary shadow" onclick="abrirAsistente()" title="Asistente de consultas"
+    style="position:fixed;right:20px;bottom:20px;z-index:1040;border-radius:50%;width:56px;height:56px"><i class="fas fa-robot"></i></button>
+  <div id="asistente_panel" class="card shadow" style="position:fixed;right:20px;bottom:86px;z-index:1040;width:380px;max-width:calc(100vw - 40px);max-height:70vh;display:none;flex-direction:column">
+    <div class="card-header d-flex align-items-center"><b class="mr-auto"><i class="fas fa-robot"></i> Asistente de consultas</b>
+      <button type="button" class="close" onclick="cerrarAsistente()" aria-label="Cerrar">&times;</button></div>
+    <div class="card-body" id="asistente_mensajes" style="overflow-y:auto;flex:1;font-size:14px">
+      <p class="text-muted mb-2">Pregunta sobre tus datos del sistema, por ejemplo: «¿Qué alumnos tienen más faltas este mes?». Las respuestas las genera una IA: verifica lo importante.</p>
+    </div>
+    <div class="card-footer">
+      <form onsubmit="enviarPreguntaAsistente(); return false;" class="d-flex">
+        <input type="text" id="asistente_pregunta" class="form-control mr-2" maxlength="500" placeholder="Escribe tu pregunta" autocomplete="off">
+        <button type="submit" class="btn btn-primary" id="asistente_enviar"><i class="fas fa-paper-plane"></i></button>
+      </form>
+      <small class="text-muted" id="asistente_uso"></small>
+    </div>
+  </div>
+  <script src="../js/console_asistente.js?rev=<?php echo time(); ?>"></script>
+<?php } ?>
 
 </body>
 

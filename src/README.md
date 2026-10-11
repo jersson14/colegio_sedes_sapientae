@@ -53,6 +53,11 @@ por unidad, nota de recuperación, créditos aprobados, cargos); notas por `SP_C
 emisión, consulta, reintento y anulación). Los módulos opcionales: `Comercial\ModuloOpcional`, `ModulosInstitucion`,
 `PdoRepositorioModulos` y `core/modulos.php` (`exigir_modulo`).
 
+`Asistente/` (módulo opcional): `AsistenteConsultas` (bucle de herramientas con tope de vueltas e historial
+validado), `ClaudeModeloAsistente` (SDK oficial `anthropic-ai/sdk`, `claude-opus-5-5`, fallbacks del servidor),
+`HerramientasAsistente` (consultas fijas de solo lectura acotadas por rol; sin DNI, contactos ni salud) y
+`RegistroConsultasIa` (límites y consumo).
+
 `Auditoria/` (H-15): `RegistroAuditoria` (escrituras, sesiones y exportaciones de cada institución; datos sin contraseñas; búsqueda y retención), usado por `core/auditoria.php` desde el guard.
 
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa

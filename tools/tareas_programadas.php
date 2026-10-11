@@ -23,7 +23,9 @@ require __DIR__ . '/../core/autoload.php';
 
 use App\Comercial\Consumo;
 use App\Comercial\Facturacion;
+use App\Comercial\PdoRepositorioModulos;
 use App\Core\Conexion;
+use App\Asistente\RegistroConsultasIa;
 use App\Auditoria\RegistroAuditoria;
 use App\Services\TareasProgramadas;
 use App\Tenancy\ModoTenant;
@@ -54,6 +56,13 @@ foreach ($tenants as $tenant) {
         $cierre = $tareas->cierreDeAnio();
         // H-15: la auditoría se conserva AUDITORIA_DIAS (por defecto dos años; nunca menos de 30).
         (new RegistroAuditoria(Conexion::crear()))->purgar((int) config('AUDITORIA_DIAS', '730'));
+        // Asistente de IA: misma retención; en modo múltiple, el consumo del mes pasa a la maestra (lo paga la plataforma).
+        $consultasIa = new RegistroConsultasIa(Conexion::crear());
+        $consultasIa->purgar((int) config('AUDITORIA_DIAS', '730'));
+        if ($facturacion !== null) {
+            $ia = $consultasIa->resumenDelMes();
+            (new PdoRepositorioModulos(Conexion::maestro()))->registrarConsumoIa($tenant->slug, $ia['mes'], $ia['consultas'], $ia['tokens_entrada'], $ia['tokens_salida']);
+        }
         if ($facturacion !== null && !$facturacion->tieneConsumo($tenant->slug, $hoy)) {
             $facturacion->registrarConsumo($tenant->slug, (new Consumo(Conexion::crear(), almacen_raiz()))->resumen(), $hoy);
         }

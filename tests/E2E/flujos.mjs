@@ -932,7 +932,37 @@ try {
     check(confAuditada?.datos.includes('"token":"***"'), 'la auditoría registra la configuración sin el token');
     const docenteFe = await entrar(browser, ESC.docente);
     check((await pedir(docenteFe.page, fe, null, 'GET')).estado === 403, 'la facturación es solo del administrador (403)');
+
+    // Módulo opcional: asistente de IA (API de Claude falsa en el puerto 8096, con el SDK oficial).
+    const ia = 'controller/asistente/controlador_asistente.php';
+    const preguntar = async (s, pregunta) => (await pedir(s.page, ia, { pregunta, historial: '[]' }));
+    const delDocente = await preguntar(docenteFe, '¿Quién falta más?');
+    check(delDocente.estado === 200 && /Herramientas: asistencia_resumen,notas_resumen,buscar_alumno,catalogo\n/.test(delDocente.json?.respuesta ?? ''),
+      'el docente consulta con sus herramientas (sin pensiones ni resumen general)', delDocente.texto.slice(0, 300));
     await docenteFe.ctx.close();
+    check(await adm.page.isVisible('#asistente_abrir'), 'con el módulo activo aparece el botón del asistente');
+    await adm.page.click('#asistente_abrir');
+    await adm.page.fill('#asistente_pregunta', '¿Cuántos alumnos activos hay?');
+    await adm.page.click('#asistente_enviar');
+    await adm.page.waitForSelector('#asistente_mensajes .asistente-respuesta', { timeout: 30000 });
+    const respuestaIa = await adm.page.textContent('#asistente_mensajes .asistente-respuesta');
+    check(respuestaIa.includes('resumen_institucion') && /"alumnos_activos":\d+/.test(respuestaIa),
+      'el administrador pregunta en el chat: el modelo usa la herramienta y responde con los datos', respuestaIa.slice(0, 300));
+    await adm.page.fill('#asistente_pregunta', 'RECHAZAR esta consulta');
+    await adm.page.click('#asistente_enviar');
+    await adm.page.waitForFunction(() => document.querySelectorAll('#asistente_mensajes .asistente-respuesta').length === 2, null, { timeout: 30000 });
+    check((await adm.page.textContent('#asistente_mensajes .asistente-respuesta:last-child')).includes('No puedo responder'), 'si el modelo declina, se informa');
+    check((await pedir(adm.page, ia, { pregunta: '' })).estado === 422, 'una pregunta vacía se rechaza (422)');
+    check((await pedir(adm.page, ia, null, 'GET')).json?.usadas_mes >= 3, 'cada consulta queda registrada para el límite y el consumo');
+    const estudianteIa = await entrar(browser, ESC.estudiante);
+    const delEstudiante = await preguntar(estudianteIa, '¿Debo algo?');
+    check(/Herramientas: pensiones_vencidas,asistencia_resumen,notas_resumen,(record_academico,)?catalogo\n/.test(delEstudiante.json?.respuesta ?? ''),
+      'el estudiante solo tiene sus consultas (sus pensiones, asistencia y notas)', delEstudiante.texto.slice(0, 300));
+    await estudianteIa.ctx.close();
+    const auxiliarIa = await entrar(browser, ESC.auxiliar);
+    check((await preguntar(auxiliarIa, 'hola')).estado === 403 && !(await auxiliarIa.page.isVisible('#asistente_abrir')),
+      'el auxiliar no tiene asistente (403 y sin botón)');
+    await auxiliarIa.ctx.close();
     await pedir(adm.page, cfg, { matricula_modo: '', evaluacion_nota_minima: '', evaluacion_recuperacion_desde: '', evaluacion_ponderacion: '' });
     await adm.ctx.close();
   }

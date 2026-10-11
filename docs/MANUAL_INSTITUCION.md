@@ -89,6 +89,19 @@ Nubefact**.
 
 El token se guarda cifrado y nunca se vuelve a mostrar.
 
+## Asistente de consultas (si tu plan lo incluye)
+
+El botón redondo de abajo a la derecha abre un chat para preguntar por los datos del sistema en lenguaje natural:
+«¿Qué alumnos de 3RO tienen más faltas este mes?», «¿Cuánto se debe de pensiones?», «¿Cómo va el promedio de
+Matemática por aula?».
+
+- Cada persona ve solo lo suyo: el administrador, toda la institución; la secretaría académica, alumnos y récord;
+  el docente, sus aulas y cursos; el estudiante (o su familia), sus notas, asistencia y pensiones.
+- Solo consulta: no modifica nada.
+- Las respuestas las genera una IA a partir de los datos del sistema: verifica lo importante antes de decidir.
+- Para responder, la pregunta y los datos necesarios (nombres y cifras, nunca DNI, teléfonos ni datos de salud) se
+  envían al servicio de IA. Hay un límite de consultas al mes para la institución y otro por persona y hora.
+
 ## Auditoría
 
 En **Configuración → Auditoría** ves quién guardó, modificó o eliminó algo, cuándo, desde qué IP y con qué

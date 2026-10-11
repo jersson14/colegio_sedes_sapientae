@@ -258,6 +258,7 @@ $panel = $actor !== null ? new PanelInstituciones($maestro, static fn (string $b
 $planes = $panel?->planes() ?? [];
 $cobros = $panel !== null ? (new Facturacion($maestro))->recientes() : [];
 $modulos = $panel !== null ? (new PdoRepositorioModulos($maestro))->todos() : [];
+$consumoIa = $panel !== null ? (new PdoRepositorioModulos($maestro))->consumoIa(date('Y-m')) : [];
 $dominio = (string) config('TENANT_DOMINIO', '');
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -371,7 +372,8 @@ header('Content-Type: text/html; charset=utf-8');
                     <?php if ($m->tieneLimite() && !$estadoModulo['activo']) { ?>
                       <input type="number" min="0" name="limite" class="form-control form-control-sm mr-1" style="width:90px" placeholder="Límite/mes" title="Consultas al mes (vacío = sin límite)">
                     <?php } elseif ($m->tieneLimite()) { ?>
-                      <small class="mr-1"><?= $estadoModulo['limite'] !== null ? (int) $estadoModulo['limite'] . '/mes' : 'sin límite' ?></small>
+                      <small class="mr-1" title="Consultas de este mes (las actualiza el cron)"><?= (int) ($consumoIa[$t['slug']]['consultas'] ?? 0) ?> /
+                        <?= $estadoModulo['limite'] !== null ? (int) $estadoModulo['limite'] . ' al mes' : 'sin límite' ?></small>
                     <?php } ?>
                     <button class="btn btn-sm <?= $estadoModulo['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?>" type="submit"><?= $estadoModulo['activo'] ? 'Desactivar' : 'Activar' ?></button>
                   </form>

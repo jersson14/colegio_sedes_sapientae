@@ -545,7 +545,7 @@ Priorizado por valor para la institución:
 | Aplicación móvil o PWA para alumnos y apoderados | 🟢 Alto | Alto |
 | Pagos en línea (Culqi, Niubiz, Izipay, Yape/Plin) | 🟢 Alto | Alto |
 | ✅ Facturación electrónica con Nubefact (módulo opcional: cada colegio con su cuenta; boletas, facturas, consulta y anulación) | 🟢 Alto | Medio |
-| Asistente de IA para consultas (módulo opcional; consumo pagado por la plataforma) | 🟢 Alto | Medio |
+| ✅ Asistente de IA para consultas (módulo opcional con Claude; herramientas de solo lectura por rol; límite mensual por colegio y por usuario; consumo pagado por la plataforma) | 🟢 Alto | Medio |
 | Exportación a formatos oficiales del MINEDU (SIAGIE) | 🟢 Alto | Alto |
 | Dashboard analítico (deserción, rendimiento, morosidad) | 🟠 Medio | Medio |
 | Firma digital de certificados y constancias | 🟠 Medio | Medio |
