@@ -1,7 +1,7 @@
 <?php
 // Fase 5.8: récord académico de un alumno en un programa de estudios (institutos).
 require_once __DIR__ . '/../../../core/guard.php';
-exigir_rol('ADMINISTRADOR');
+exigir_rol('ADMINISTRADOR', 'SECRETARIA');
 require_once __DIR__ . '/../../../model/model_conexion.php';
 require_once __DIR__ . '/../../../core/institucion.php';
 

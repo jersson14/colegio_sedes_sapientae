@@ -8,13 +8,13 @@ pantallas que fallarán con 403).
 Ejecútalo tras tocar menús, vistas o JS. Es un análisis estático: confirma en el
 navegador antes de quitar un permiso. Ver docs/MATRIZ_ROLES.md.
 Diferencias esperadas hoy: usuario/controlador_total_* (tarjetas solo para el
-administrador) y descargar_tarea para ENFERMERA/PSICOLOGA (enlace no visible).
+administrador) y descargar_tarea para ENFERMERA/PSICOLOGA/SECRETARIA (enlace no visible).
 """
 import re, glob, os, sys, json, collections
 os.chdir(sys.argv[1])
 sys.stdout.reconfigure(encoding='utf-8')
 SEP = chr(92)
-ROLES = ['ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE', 'AUXILIAR', 'ENFERMERA', 'PSICOLOGA']
+ROLES = ['ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE', 'AUXILIAR', 'ENFERMERA', 'PSICOLOGA', 'SECRETARIA']
 RX_EP = re.compile(r"((?:controller|MPDF/REPORTE)/[^'\"\s?#]+?\.php)")
 RX_VIEW = re.compile(r"cargar_contenido\(\s*'[^']*'\s*,\s*'([^']+)'")
 RX_SCRIPT = re.compile(r"src=\"(?:\.\./)?js/([^\"?]+\.js)")
@@ -116,7 +116,7 @@ def analizar_rol(rol):
                     pend.append((f, FUNCS[f][llamada], f'{origen}>{llamada}()'))
     return eps, rastro, docs_vistos
 
-AB = dict(zip(ROLES, 'ADEXNP'))
+AB = dict(zip(ROLES, 'ADEXNPS'))
 resultado, rastros = {}, {}
 for r in ROLES:
     resultado[r], rastros[r], docs = analizar_rol(r)
@@ -163,6 +163,7 @@ ESPERADOS_DE_MENOS = {
     # listar_tareas_menu() corre en el panel común, pero su tabla solo existe para el docente.
     ('ENFERMERA', 'controller/tareas/controlador_descargar_tarea.php'),
     ('PSICOLOGA', 'controller/tareas/controlador_descargar_tarea.php'),
+    ('SECRETARIA', 'controller/tareas/controlador_descargar_tarea.php'),
     # Fase 4B.7: el botón «Exportar datos» está en la tabla de Empresa, que solo existe para el administrador
     # (console_empresa.js se carga en el panel de todos los roles).
     *[(r, 'controller/exportacion/controlador_exportar_datos.php') for r in ROLES if r != 'ADMINISTRADOR'],

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Phinx\Seed\AbstractSeed;
 
 /**
- * Carga database/seeders/datos_prueba.sql: dataset de piloto ANONIMIZADO (507 filas, 36 tablas).
+ * Carga database/seeders/datos_prueba.sql: dataset de piloto ANONIMIZADO (508 filas, 36 tablas).
  * Contraseña de todos los usuarios: Prueba.2026 (usuarioN, con N = usu_id).
  *
  * ¡BORRA todas las tablas antes de insertar! Por eso exige dos condiciones:
@@ -34,6 +34,13 @@ final class DatosPrueba extends AbstractSeed
             $sql = trim(preg_replace('/^--.*$/m', '', $sql) ?? '');
             if ($sql !== '') {
                 $this->execute($sql);
+            }
+        }
+        // Las tablas de institutos (Fase 5) no están en el dataset: se vacían para que una base reutilizada en
+        // local quede igual que la recién migrada del CI (las pruebas y los flujos dejan programas y notas).
+        foreach (['unidades_docentes', 'matricula_unidades', 'prerrequisitos', 'unidades_didacticas', 'modulos_formativos', 'programas_estudio', 'configuracion'] as $tabla) {
+            if ($this->hasTable($tabla)) {
+                $this->execute("DELETE FROM $tabla");
             }
         }
     }

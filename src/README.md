@@ -45,6 +45,7 @@ y situación del alumno en cada unidad); escriben por los procedimientos de la m
 `Evaluacion/`: `EstrategiaEvaluacion` (`PromedioSimple`, `PromedioPorCreditos`) y `RecordAcademico` (último intento
 por unidad, nota de recuperación, créditos aprobados, cargos); notas por `SP_CALIFICAR_UNIDAD` y `SP_RECUPERAR_UNIDAD`.
 `RecordAcademico::detalle()` (módulos completos) alimenta el récord y los certificados de `view/MPDF/REPORTE/` (5.8).
+`DocentesPorUnidad` (5.9): docente de cada unidad por periodo (`SP_ASIGNAR_DOCENTE_UNIDAD`) y la comprobación de que dicta una matrícula.
 
 `Superadmin/`: `CuentasSuperadmin`, `Auditoria` y `PanelInstituciones` (estados, altas, cifras), que usa
 `superadmin/index.php` (fuera de `controller/`: tiene su propia autenticación, no el guard de los colegios). El código heredado lo usa a través

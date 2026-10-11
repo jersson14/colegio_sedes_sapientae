@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../core/guard.php';
-exigir_rol('ADMINISTRADOR');
+exigir_rol('ADMINISTRADOR', 'SECRETARIA');
 require_once __DIR__ . '/../../model/model_conexion.php';
 
 use App\Institucion\PlanDeEstudios;

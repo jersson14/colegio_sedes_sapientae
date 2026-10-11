@@ -100,7 +100,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <?php
     }
     ?>
-    <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "DOCENTE" || $_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
+    <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "SECRETARIA" || $_SESSION['S_ROL'] == "DOCENTE" || $_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
       <!-- Navbar -->
       <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->
@@ -212,6 +212,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','matricula_unidades/view_matricula_unidades.php')" class="nav-link" id="menu_matricula_unidades">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Matrícula por unidades</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','plan_estudios/view_docentes_unidad.php')" class="nav-link" id="menu_docentes_unidad">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Docentes por unidad</p>
                     </a>
                   </li>
                 </ul>
@@ -710,7 +716,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <?php
             }
             ?>
+            <?php if ($_SESSION['S_ROL'] == "SECRETARIA") { ?>
+              <?php /* Fase 5.9: secretaría académica de un instituto. */ ?>
+              <li class="nav-item menu-open">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-sitemap"></i>
+                  <p>
+                    Plan de estudios
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','plan_estudios/view_plan_estudios.php')" class="nav-link" id="menu_plan_estudios">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Programas y unidades</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','matricula_unidades/view_matricula_unidades.php')" class="nav-link" id="menu_matricula_unidades">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Matrícula por unidades</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','plan_estudios/view_docentes_unidad.php')" class="nav-link" id="menu_docentes_unidad">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Docentes por unidad</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <?php
+            }
+            ?>
             <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
+              <li class="nav-item" id="menu_unidades_docente"<?= institucion_config()->matriculaPorUnidad() ? '' : ' hidden' ?>>
+                <a onclick="cargar_contenido('contenido_principal','matricula_unidades/view_unidades_docente.php')" class="nav-link">
+                  <i class="nav-icon fas fa-sitemap"></i>
+                  <p>Mis unidades didácticas</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clipboard"></i>
@@ -1342,7 +1388,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <?php
       }
   ?>
-  <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR") { ?>
+  <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "SECRETARIA") { ?>
 
     <!-- Main content -->
 

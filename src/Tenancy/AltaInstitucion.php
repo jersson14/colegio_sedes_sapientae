@@ -17,7 +17,8 @@ final class AltaInstitucion
 {
     /**
      * Roles con los ids que los procedimientos dan por hechos (SP_REGISTRAR_DOCENTES usa rol 2; el
-     * administrador es el 9). Son del sistema, no de cada colegio.
+     * administrador es el 9). Son del sistema, no de cada colegio. El 6 (SECRETARIA, Fase 5.9) lo crea la
+     * migración 20261031000000, que corre antes que esta siembra.
      */
     public const ROLES = [
         1 => ['ESTUDIANTE', 'ROL QUE DA PERMISOS A ESTUDIANTE'],

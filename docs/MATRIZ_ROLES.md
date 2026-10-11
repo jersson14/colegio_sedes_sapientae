@@ -6,7 +6,7 @@
 > Un manejador `$('#x').on(...)` solo cuenta si `#x` existe en el documento que carga el script.
 > **Fuente de verdad:** la línea `exigir_rol(...)` de cada controlador. Este archivo es la foto de revisión.
 
-Leyenda: **A** administrador · **D** docente · **E** estudiante · **X** auxiliar · **N** enfermera · **P** psicóloga.
+Leyenda: **A** administrador · **D** docente · **E** estudiante · **X** auxiliar · **N** enfermera · **P** psicóloga · **S** secretaría académica (institutos, Fase 5.9).
 "Todos" = cualquier usuario autenticado (sin `exigir_rol`).
 
 **Pertenencia (IDOR):** las filas marcadas usan `core/pertenencia.php`. ESTUDIANTE: id propio desde
@@ -70,7 +70,7 @@ ADMINISTRADOR y AUXILIAR sin restricción de pertenencia.
 
 | Controlador | Roles | Nota |
 |---|---|---|
-| `controlador_cargar_select_aula_id.php` | Todos |  |
+| `controlador_cargar_select_aula_id.php` | A D E X N P | todos menos la secretaría académica (Fase 5.9) |
 | `controlador_editar_asistencia.php` | A X |  |
 | `controlador_eliminar_asistencia.php` | A X |  |
 | `controlador_listar_alumnos_asistencia.php` | A X |  |
@@ -439,6 +439,22 @@ ADMINISTRADOR y AUXILIAR sin restricción de pertenencia.
 | `controlador_traer_notificacion_tramite.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
 | `controlador_traer_seguimiento.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
 | `controlador_traer_seguimiento_detalle.php` | A | sin uso desde la UI (restos de otro sistema): solo administrador |
+
+## Institutos (Fase 5)
+
+| Controlador | Roles | Nota |
+|---|---|---|
+| `institucion/controlador_obtener_configuracion.php` | A |  |
+| `institucion/controlador_modificar_configuracion.php` | A | el tipo de institución no se cambia aquí |
+| `plan_estudios/controlador_plan.php` | A S |  |
+| `plan_estudios/controlador_docentes_unidad.php` | A S | docente de cada unidad por periodo |
+| `matricula_unidades/controlador_matricula_unidades.php` | A S | matrícula, notas, récord |
+| `matricula_unidades/controlador_unidades_docente.php` | D | Pertenencia: solo las unidades que dicta en el periodo (`unidades_docentes`) |
+| `MPDF/REPORTE/record_academico.php` | A S |  |
+| `MPDF/REPORTE/certificado_instituto.php` | A S | 422 si no está aprobado |
+
+La secretaría académica no ve la gestión escolar del colegio (alumnos, pagos, usuarios, configuración):
+su panel es el de comunicados más el menú «Plan de estudios». En un colegio el rol no se ofrece al crear cuentas.
 
 ## view/MPDF/REPORTE (reportes PDF, GET)
 

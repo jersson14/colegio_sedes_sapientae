@@ -12,7 +12,7 @@ Todo corre en el CI (`.github/workflows/calidad.yml`). Sin CI en verde no se mer
 
 ## Datos de prueba
 
-`database/seeders/datos_prueba.sql`: el dataset de piloto **anonimizado** (507 filas, 36 tablas),
+`database/seeders/datos_prueba.sql`: el dataset de piloto **anonimizado** (508 filas, 36 tablas),
 generado con `tools/generar_datos_prueba.php`. El generador verifica que ningún valor personal
 original (386: DNI, nombres, teléfonos, correos, direcciones, salud…) aparezca en la salida;
 si aparece, no escribe nada.

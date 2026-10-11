@@ -1,5 +1,6 @@
 <?php
     require_once __DIR__ . '/../../core/guard.php';
+    exigir_rol('ADMINISTRADOR', 'DOCENTE', 'ESTUDIANTE', 'AUXILIAR', 'ENFERMERA', 'PSICOLOGA');
 require '../../model/model_asistencia.php';
 
 // Check if 'id' is set in the POST data

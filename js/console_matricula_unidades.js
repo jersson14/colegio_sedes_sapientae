@@ -65,17 +65,16 @@ var MatriculaUnidades = (function () {
 
   // Fase 5.8: récord académico siempre; certificado por módulo completo; constancia de egreso con todo aprobado.
   function documentos(r, s) {
-    var base = '../view/MPDF/REPORTE/';
     var consulta = 'alumno=' + encodeURIComponent(s.alumno) + '&programa=' + encodeURIComponent(s.programa);
-    var html = '<a class="btn btn-xs btn-outline-dark mr-1" target="_blank" id="mu_record_pdf" href="' + base + 'record_academico.php?' + consulta + '">Récord académico (PDF)</a>';
+    var html = '<a class="btn btn-xs btn-outline-dark mr-1" target="_blank" id="mu_record_pdf" href="../view/MPDF/REPORTE/record_academico.php?' + consulta + '">Récord académico (PDF)</a>';
     (r.modulos || []).forEach(function (m) {
       if (m.completo) {
-        html += '<a class="btn btn-xs btn-outline-success mr-1 certificado-modulo" target="_blank" href="' + base + 'certificado_instituto.php?' + consulta
+        html += '<a class="btn btn-xs btn-outline-success mr-1 certificado-modulo" target="_blank" href="../view/MPDF/REPORTE/certificado_instituto.php?' + consulta
           + '&modulo=' + m.id_modulo + '">Certificado: ' + e(m.nombre) + '</a>';
       }
     });
     if (r.completo) {
-      html += '<a class="btn btn-xs btn-success" target="_blank" id="mu_egreso" href="' + base + 'certificado_instituto.php?' + consulta + '">Constancia de egreso</a>';
+      html += '<a class="btn btn-xs btn-success" target="_blank" id="mu_egreso" href="../view/MPDF/REPORTE/certificado_instituto.php?' + consulta + '">Constancia de egreso</a>';
     }
     return html;
   }

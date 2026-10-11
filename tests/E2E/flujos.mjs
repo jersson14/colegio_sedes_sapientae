@@ -20,6 +20,7 @@ const ESC = {
   matriculaOtraAula: 33,
   // Docente que ningún otro flujo usa: se renombra, cambia de contraseña y se desactiva.
   cuenta: { id: '11', rol: '2', correo: 'usuario11@example.com' },
+  idDocente: 1, // Id_docente de usuario10 (Fase 5.9: docente de una unidad didáctica)
   // Alumnos: 70000001 tiene matrícula; 70000014 (id 20) no, y ningún otro flujo lo usa.
   alumnoMatriculadoDni: '70000001', alumnoSinMatriculaDni: '70000014',
   // Matrícula §10: el alumno 20 (sin matrícula) en el año 5 (2025) y en el 2 (2024); 6 es otro alumno.
@@ -816,8 +817,61 @@ try {
     const egreso = await pdf(base);
     check(modular.estado === 200 && modular.inicio === '%PDF' && egreso.estado === 200 && egreso.inicio === '%PDF',
       'B llevada de nuevo y aprobada: certificado modular y constancia de egreso', JSON.stringify([modular, egreso]));
+
+    // Fase 5.9: secretaría académica y docente por unidad didáctica.
+    const roles = filas(await pedir(adm.page, 'controller/personal_administrativo/controlador_cargar_select_roles.php'));
+    check(roles.some((r) => r.tipo_rol === 'SECRETARIA'), 'en un instituto se ofrece el rol de secretaría académica');
+    const usuSecretaria = `secretaria${sufijo}`;
+    const alta = await pedir(adm.page, 'controller/personal_administrativo/controlador_registrar_personal_administrativo.php', {
+      dni: `77${sufijo}`, nombre: 'SECRETARIA', apelli: 'E2E', tipo: 'SECRETARIA', sexo: 'FEMENINO', fechanaci: '1990-01-01', telf: '999999999',
+      telfal: '', direc: 'Av. Prueba', nombrefoto: '', usu: usuSecretaria, contra: CLAVE, email: `${usuSecretaria}@example.com`, rol: '6',
+    });
+    check(alta.texto === '1', 'el administrador da de alta a la secretaría académica', alta.texto);
+    const sec = await entrar(browser, usuSecretaria);
+    check(await sec.page.isVisible('#menu_docentes_unidad'), 'la secretaría ve el menú del plan de estudios');
+    check((await pedir(sec.page, plan, null, 'GET')).estado === 200, 'y gestiona el plan de estudios');
+    check((await pedir(sec.page, 'controller/alumnos/controlador_listar_alumnos.php')).estado === 403, 'pero no la gestión escolar del colegio (403)');
+    check((await pedir(sec.page, 'controller/institucion/controlador_modificar_configuracion.php', { evaluacion_nota_minima: '11' })).estado === 403,
+      'ni la configuración académica (403)');
+    const recordSec = await pedir(sec.page, `view/MPDF/REPORTE/record_academico.php?alumno=${alumno}&programa=${programa}`, null, 'GET');
+    check(recordSec.estado === 200 && recordSec.texto.startsWith('%PDF'), 'emite el récord académico');
+    const u3 = (await pedir(sec.page, plan, {
+      accion: 'guardar_unidad', id: 0, modulo, codigo: `D${sufijo}`, nombre: `Unidad D${sufijo}`, periodo_academico: 3, creditos: '2', horas_teoricas: 16, horas_practicas: 32, estado: 'ACTIVO',
+    })).json?.id;
+    await sec.page.click('#menu_docentes_unidad');
+    await sec.page.waitForSelector('#du_programa option', { state: 'attached', timeout: 15000 });
+    await sec.page.selectOption('#du_programa', String(programa));
+    await sec.page.selectOption('#du_periodo', actual);
+    await sec.page.waitForSelector(`#tabla_docentes_unidad select[data-unidad="${u3}"]`, { timeout: 15000 });
+    await sec.page.selectOption(`#tabla_docentes_unidad select[data-unidad="${u3}"]`, String(ESC.idDocente));
+    await sec.page.waitForSelector('.swal2-toast', { timeout: 10000 });
+    const asignadas = (await pedir(sec.page, `controller/plan_estudios/controlador_docentes_unidad.php?programa=${programa}&periodo=${actual}`, null, 'GET')).json;
+    check(String(asignadas.find((x) => String(x.id_unidad) === String(u3))?.id_docente) === String(ESC.idDocente), 'la secretaría asigna el docente de la unidad D');
+    check((await pedir(sec.page, 'controller/matricula_unidades/controlador_matricula_unidades.php', { accion: 'matricular', alumno, unidad: u3, periodo: actual })).json?.codigo === 1,
+      'y matricula al alumno en D');
+    await sec.ctx.close();
+
     const docente = await entrar(browser, ESC.docente);
     check((await pedir(docente.page, plan, null, 'GET')).estado === 403, 'el plan de estudios es del administrador (403)');
+    check((await pedir(docente.page, 'controller/plan_estudios/controlador_docentes_unidad.php', null, 'GET')).estado === 403, 'el docente no asigna unidades (403)');
+    check(await docente.page.isVisible('#menu_unidades_docente'), 'el docente ve «Mis unidades didácticas»');
+    await docente.page.click('#menu_unidades_docente > a');
+    await docente.page.waitForSelector('#ud_periodo option', { state: 'attached', timeout: 15000 });
+    await docente.page.selectOption('#ud_periodo', actual);
+    await docente.page.waitForSelector('#tabla_unidades_docente tr[data-estado="MATRICULADO"] .calificar-unidad', { timeout: 15000 });
+    await docente.page.click('#tabla_unidades_docente tr[data-estado="MATRICULADO"] .calificar-unidad');
+    await docente.page.waitForSelector('.swal2-input', { timeout: 10000 });
+    await docente.page.fill('.swal2-input', '16');
+    await docente.page.click('.swal2-confirm');
+    await docente.page.waitForSelector('.swal2-popup:not(:has(.swal2-input:visible))', { timeout: 10000 });
+    check((await docente.page.textContent('.swal2-popup')).includes('Nota registrada'), 'el docente califica a su matriculado en D');
+    await docente.page.click('.swal2-confirm');
+    const ajena = (await pedir(adm.page, `controller/matricula_unidades/controlador_matricula_unidades.php?alumno=${alumno}&programa=${programa}&periodo=${actual}`, null, 'GET'))
+      .json.find((x) => String(x.id_unidad) === String(u1));
+    const docenteUnidades = 'controller/matricula_unidades/controlador_unidades_docente.php';
+    check((await pedir(docente.page, `${docenteUnidades}?unidad=${u1}&periodo=${actual}`, null, 'GET')).estado === 403, 'no ve los alumnos de una unidad que no dicta (403)');
+    check((await pedir(docente.page, docenteUnidades, { accion: 'recuperar', id: ajena.id_matricula_unidad, nota: '20' })).estado === 403,
+      'ni registra notas en ella (403)');
     await docente.ctx.close();
     await pedir(adm.page, cfg, { matricula_modo: '', evaluacion_nota_minima: '', evaluacion_recuperacion_desde: '', evaluacion_ponderacion: '' });
     await adm.ctx.close();

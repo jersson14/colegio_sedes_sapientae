@@ -561,6 +561,7 @@ INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`
 INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES ('3', 'AUXILIAR', 'EL AUXILIAR ES LA PERSONA QUE REGISTRA LAS ASISTENCIAS', 'ACTIVO', '2024-06-16 16:36:18', '0000-00-00 00:00:00');
 INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES ('4', 'ENFERMERA', 'PERSONA ENCARGADA DE LOS PRIMEROS AUXILIOS Y TRATAR EN ALGUN ACCIDENTE AL PERSONAL DEL COLEGIO', 'ACTIVO', '2024-06-16 16:37:09', '0000-00-00 00:00:00');
 INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES ('5', 'PSICOLOGA', 'PERSONA ENCARGADA DE LA SALUD MENTAL DE LOS ESTUDIANTES', 'ACTIVO', '2024-06-16 16:37:28', '0000-00-00 00:00:00');
+INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES ('6', 'SECRETARIA', 'SECRETARÍA ACADÉMICA: PLAN DE ESTUDIOS, MATRÍCULA POR UNIDADES Y CERTIFICADOS', 'ACTIVO', '2026-10-10 00:00:00', NULL);
 INSERT INTO `roles` (`Id_rol`, `tipo_rol`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES ('9', 'ADMINISTRADOR', 'ES LA PERSONA QUE TIENE ACCESO A TODAS LA FUNCIONALIDADES DEL SISTEMA EN ESTE CASO PUEDE SER EL DIRECTOR DEL COLEGIO', 'ACTIVO', '2024-06-16 16:45:12', '0000-00-00 00:00:00');
 
 -- seccion

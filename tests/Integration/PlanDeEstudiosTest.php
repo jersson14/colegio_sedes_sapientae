@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use PDO;
+
 /** Procedimientos del plan de estudios y de la matrícula por unidad (migración 20261029000000, Fase 5.3 y 5.4). */
 final class PlanDeEstudiosTest extends BaseDatosTestCase
 {
@@ -192,5 +194,42 @@ final class PlanDeEstudiosTest extends BaseDatosTestCase
         $completo = $record->detalle($alumno, $p['programa']);
         self::assertTrue($completo['modulos'][0]['completo']);
         self::assertTrue($completo['completo'], 'con todos sus módulos completos, el programa también');
+    }
+
+    public function testDocentesPorUnidad(): void
+    {
+        $p = $this->plan();
+        $servicio = new \App\Institucion\DocentesPorUnidad($this->pdo);
+        $matricula = new \App\Institucion\MatriculaPorUnidad($this->pdo);
+        [$alumno, $periodo] = [$this->alumno(), $this->periodo()];
+        $activos = $this->pdo->query("SELECT Id_docente FROM docentes WHERE docente_estatus = 'ACTIVO' ORDER BY Id_docente LIMIT 2")->fetchAll(PDO::FETCH_COLUMN);
+        [$docente, $otro] = array_map('intval', $activos);
+
+        self::assertSame(0, $servicio->asignar($p['u1'], $periodo, 999999), 'docente inexistente');
+        self::assertSame(1, $servicio->asignar($p['u1'], $periodo, $docente));
+        self::assertSame(1, $servicio->asignar($p['u1'], $periodo, $otro), 'reasignar reemplaza al anterior');
+        self::assertFalse($servicio->dicta($docente, $p['u1'], $periodo));
+        self::assertSame(1, $servicio->asignar($p['u1'], $periodo, $docente));
+        $asignadas = array_column($servicio->asignaciones($p['programa'], $periodo), 'id_docente', 'codigo');
+        self::assertSame([$docente, null, null], [(int) $asignadas['UD-T1'], $asignadas['UD-T2'], $asignadas['UD-T3']]);
+
+        $matricula->matricular($alumno, $p['u1'], $periodo);
+        $mias = $servicio->unidadesDe($docente, $periodo);
+        self::assertSame(['UD-T1'], array_column($mias, 'codigo'));
+        self::assertSame(1, (int) $mias[0]['matriculados']);
+        $alumnos = $servicio->matriculados($p['u1'], $periodo);
+        self::assertCount(1, $alumnos);
+        self::assertTrue($servicio->dictaMatricula($docente, (int) $alumnos[0]['id_matricula_unidad']));
+        self::assertFalse($servicio->dictaMatricula($otro, (int) $alumnos[0]['id_matricula_unidad']), 'otro docente no califica esa matrícula');
+        $otroPeriodo = (int) $this->pdo->query('SELECT MAX(id_periodo) FROM periodos')->fetchColumn();
+        self::assertFalse($servicio->dicta($docente, $p['u1'], $otroPeriodo), 'la asignación es por periodo');
+
+        self::assertSame(1, $servicio->asignar($p['u1'], $periodo, 0), 'docente 0 quita la asignación');
+        self::assertSame([], $servicio->unidadesDe($docente, $periodo));
+    }
+
+    public function testRolSecretariaAcademica(): void
+    {
+        self::assertSame('SECRETARIA', $this->pdo->query('SELECT tipo_rol FROM roles WHERE Id_rol = 6')->fetchColumn());
     }
 }

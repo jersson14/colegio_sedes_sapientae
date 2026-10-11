@@ -57,12 +57,19 @@ Debajo están los documentos en PDF:
 
 El título técnico oficial no lo genera el sistema: se tramita en el formato y el registro del MINEDU.
 
+En **Docentes por unidad** eliges el programa y el periodo y asignas el docente de cada unidad. Ese docente ve
+la unidad en **Mis unidades didácticas** y registra la nota final (y la de recuperación) solo de quienes están
+matriculados en ella en ese periodo.
+
 Lo que ya tiene alumnos o historial no se borra: se desactiva.
 
 ## Usuarios y permisos
 
 Cada persona entra con su propia cuenta. Los roles disponibles son administrador, docente, auxiliar,
-enfermera, psicóloga y estudiante, y cada uno ve solo su parte. Desactiva las cuentas de quien deja el
+enfermera, psicóloga y estudiante, y cada uno ve solo su parte. En un instituto existe además la
+**secretaría académica** (se crea en Personal administrativo con el rol SECRETARIA): maneja el plan de
+estudios, la matrícula por unidades, las notas, el récord y los certificados, sin acceso a pagos, usuarios ni
+configuración. Desactiva las cuentas de quien deja el
 colegio: así su acceso se corta en el momento.
 
 ## Tus datos

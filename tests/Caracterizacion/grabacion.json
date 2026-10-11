@@ -3345,6 +3345,110 @@
  },
  {
   "rol": "ADMINISTRADOR",
+  "metodo": "GET",
+  "ruta": "controller/matricula_unidades/controlador_matricula_unidades.php",
+  "tipo": "",
+  "cuerpo": "",
+  "estado": 200,
+  "respuesta": {
+   "json": {
+    "alumnos": [
+     {
+      "id": 10,
+      "dni": "70000004",
+      "nombre": "MUESTRA PATRON EUSEBIO"
+     },
+     {
+      "id": 11,
+      "dni": "70000005",
+      "nombre": "ENSAYO SIMULADO FILOMENA"
+     },
+     {
+      "id": 12,
+      "dni": "70000006",
+      "nombre": "MODELO PILOTO GUMERSINDO"
+     },
+     {
+      "id": 13,
+      "dni": "70000007",
+      "nombre": "PATRON PRUEBA HIGINIA"
+     },
+     {
+      "id": 14,
+      "dni": "70000008",
+      "nombre": "SIMULADO EJEMPLO ISIDORO"
+     },
+     {
+      "id": 15,
+      "dni": "70000009",
+      "nombre": "PILOTO FICTICIO JACINTA"
+     },
+     {
+      "id": 16,
+      "dni": "70000010",
+      "nombre": "PRUEBA DEMO LEOCADIO"
+     },
+     {
+      "id": 17,
+      "dni": "70000011",
+      "nombre": "EJEMPLO MUESTRA MACARIA"
+     },
+     {
+      "id": 6,
+      "dni": "70000001",
+      "nombre": "EJEMPLO MUESTRA BENITA"
+     },
+     {
+      "id": 7,
+      "dni": "70000002",
+      "nombre": "FICTICIO ENSAYO CIRILO"
+     },
+     {
+      "id": 9,
+      "dni": "70000003",
+      "nombre": "DEMO MODELO DOROTEA"
+     }
+    ],
+    "programas": [],
+    "periodos": [
+     {
+      "id": 12,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · I BIMESTRE"
+     },
+     {
+      "id": 13,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · II BIMESTRE"
+     },
+     {
+      "id": 14,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · III BIMESTRE"
+     },
+     {
+      "id": 39,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · IV BIMESTRE"
+     },
+     {
+      "id": 40,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · I BIMESTRE"
+     },
+     {
+      "id": 41,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · II BIMESTRE"
+     },
+     {
+      "id": 42,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · III BIMESTRE"
+     },
+     {
+      "id": 44,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · IV BIMESTRE"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "rol": "ADMINISTRADOR",
   "metodo": "POST",
   "ruta": "controller/matricula/controlador_cargar_select_a%C3%B1o.php",
   "tipo": "",
@@ -5054,6 +5158,122 @@
  },
  {
   "rol": "ADMINISTRADOR",
+  "metodo": "GET",
+  "ruta": "controller/plan_estudios/controlador_docentes_unidad.php",
+  "tipo": "",
+  "cuerpo": "",
+  "estado": 200,
+  "respuesta": {
+   "json": {
+    "programas": [],
+    "periodos": [
+     {
+      "id": 12,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · I BIMESTRE"
+     },
+     {
+      "id": 13,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · II BIMESTRE"
+     },
+     {
+      "id": 14,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · III BIMESTRE"
+     },
+     {
+      "id": 39,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · IV BIMESTRE"
+     },
+     {
+      "id": 40,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · I BIMESTRE"
+     },
+     {
+      "id": 41,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · II BIMESTRE"
+     },
+     {
+      "id": 42,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · III BIMESTRE"
+     },
+     {
+      "id": 44,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · IV BIMESTRE"
+     }
+    ],
+    "docentes": [
+     {
+      "id": 1,
+      "nombre": "EJEMPLO FICTICIO GUMERSINDO"
+     },
+     {
+      "id": 10,
+      "nombre": "PILOTO PRUEBA PRUDENCIO"
+     },
+     {
+      "id": 11,
+      "nombre": "PRUEBA EJEMPLO QUITERIA"
+     },
+     {
+      "id": 12,
+      "nombre": "EJEMPLO FICTICIO RUPERTO"
+     },
+     {
+      "id": 13,
+      "nombre": "FICTICIO DEMO SATURNINA"
+     },
+     {
+      "id": 14,
+      "nombre": "DEMO MUESTRA TELESFORO"
+     },
+     {
+      "id": 16,
+      "nombre": "ENSAYO MODELO AURELIO"
+     },
+     {
+      "id": 2,
+      "nombre": "FICTICIO DEMO HIGINIA"
+     },
+     {
+      "id": 3,
+      "nombre": "DEMO MUESTRA ISIDORO"
+     },
+     {
+      "id": 4,
+      "nombre": "MUESTRA ENSAYO JACINTA"
+     },
+     {
+      "id": 5,
+      "nombre": "ENSAYO MODELO LEOCADIO"
+     },
+     {
+      "id": 6,
+      "nombre": "MODELO PATRON MACARIA"
+     },
+     {
+      "id": 8,
+      "nombre": "PATRON SIMULADO NICASIO"
+     },
+     {
+      "id": 9,
+      "nombre": "SIMULADO PILOTO OTILIA"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "rol": "ADMINISTRADOR",
+  "metodo": "GET",
+  "ruta": "controller/plan_estudios/controlador_plan.php",
+  "tipo": "",
+  "cuerpo": "",
+  "estado": 200,
+  "respuesta": {
+   "json": []
+  }
+ },
+ {
+  "rol": "ADMINISTRADOR",
   "metodo": "POST",
   "ruta": "controller/roles/controlador_listar_roles.php",
   "tipo": "",
@@ -5106,6 +5326,15 @@
       "created_at": "2024-06-16 16:37:28",
       "fecha_formateada": "16-06-2024 - 16:37:28",
       "updated_at": "0000-00-00 00:00:00"
+     },
+     {
+      "Id_rol": 6,
+      "tipo_rol": "SECRETARIA",
+      "descripcion": "SECRETARÍA ACADÉMICA: PLAN DE ESTUDIOS, MATRÍCULA POR UNIDADES Y CERTIFICADOS",
+      "estado": "ACTIVO",
+      "created_at": "2026-10-10 00:00:00",
+      "fecha_formateada": "10-10-2026 - 00:00:00",
+      "updated_at": null
      },
      {
       "Id_rol": 9,
@@ -6988,6 +7217,63 @@
     "iTotalDisplayRecords": "0",
     "aaData": []
    }
+  }
+ },
+ {
+  "rol": "DOCENTE",
+  "metodo": "GET",
+  "ruta": "controller/matricula_unidades/controlador_unidades_docente.php",
+  "tipo": "",
+  "cuerpo": "",
+  "estado": 200,
+  "respuesta": {
+   "json": {
+    "periodos": [
+     {
+      "id": 12,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · I BIMESTRE"
+     },
+     {
+      "id": 13,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · II BIMESTRE"
+     },
+     {
+      "id": 14,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · III BIMESTRE"
+     },
+     {
+      "id": 39,
+      "nombre": "AñO DEL BICENTENARIO, DE LA CONSOLIDACIóN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIóN DE LAS HEROICAS BATALLAS DE JUNíN Y AYACUCHO · IV BIMESTRE"
+     },
+     {
+      "id": 40,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · I BIMESTRE"
+     },
+     {
+      "id": 41,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · II BIMESTRE"
+     },
+     {
+      "id": 42,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · III BIMESTRE"
+     },
+     {
+      "id": 44,
+      "nombre": "AñO DE LA RECUPERACIóN Y CONSOLIDACIóN DE LA ECONOMíA PERUANA · IV BIMESTRE"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "rol": "DOCENTE",
+  "metodo": "GET",
+  "ruta": "controller/matricula_unidades/controlador_unidades_docente.php?periodo=42",
+  "tipo": "",
+  "cuerpo": "",
+  "estado": 200,
+  "respuesta": {
+   "json": []
   }
  },
  {

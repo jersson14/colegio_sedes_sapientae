@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../core/guard.php';
-exigir_rol('ADMINISTRADOR');
+exigir_rol('ADMINISTRADOR', 'SECRETARIA');
 /*
  * Fase 5.8: certificado modular (con modulo=) o constancia de egreso (sin modulo, todo el programa) de un
  * instituto. Solo si de verdad está aprobado: en otro caso, 422 con el motivo.
