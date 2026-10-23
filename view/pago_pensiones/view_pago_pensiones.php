@@ -181,6 +181,33 @@
                 <h3 for="" id="lbl_totalneto"></h3>
               </div>
             </div>
+            <div class="col-12">
+              <h6><b><i class="fas fa-money-check-alt"></i> Forma de pago</b> <small class="text-muted">(puede dividirse, por ejemplo una parte en efectivo y otra con tarjeta)</small></h6>
+            </div>
+            <div class="col-12 table-responsive">
+              <table class="table table-sm table-bordered" id="tabla_formas_pago">
+                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                  <tr>
+                    <th style="width:28%">Método</th>
+                    <th style="width:28%">Caja / cuenta</th>
+                    <th style="width:16%">Monto</th>
+                    <th>N.° operación / referencia</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody_formas_pago"></tbody>
+              </table>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="Agregar_forma_pago()"><i class="fas fa-plus"></i> Agregar otra forma de pago</button>
+              <span class="float-right" id="lbl_diferencia_pago"></span>
+            </div>
+            <div class="col-md-6 form-group mt-2">
+              <label for="file_voucher">Voucher (opcional, imagen o PDF):</label>
+              <input type="file" class="form-control" id="file_voucher" accept="image/jpeg,image/png,image/webp,application/pdf">
+            </div>
+            <div class="col-md-6 form-group mt-2">
+              <label for="txt_observacion_pago">Observación (opcional):</label>
+              <input type="text" class="form-control" id="txt_observacion_pago" maxlength="255">
+            </div>
 
           </div>
         </div>
@@ -210,16 +237,18 @@
                     <thead style="background-color:#0A5D86;color:#FFFFFF;">
                       <tr style="text-align:center;">
                         <th style="text-align:center;">Nro.</th>
+                        <th style="text-align:center;">Recibo</th>
                         <th style="text-align:center;">Concepto</th>
                         <th style="text-align:center;">Mes</th>
                         <th style="text-align:center;">Fecha de Pago</th>
+                        <th style="text-align:center;">Forma de pago</th>
                         <th style="text-align:center;">Subtotal</th>
                         <th style="text-align:center;">Acción</th>
                       </tr>
                     </thead>
                     <tfoot>
                       <tr>
-                        <th colspan="4" style="text-align:right;">Total:</th>
+                        <th colspan="6" style="text-align:right;">Total:</th>
                         <th style="text-align:center;" id="total_sub_total"><?php echo formato_moneda(0); ?></th>
                         <th></th>
                       </tr>

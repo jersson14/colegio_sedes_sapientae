@@ -23,7 +23,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 1 – Seguridad crítica](#fase-1--seguridad-crítica--2026-10-23) ✅
 - [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes--2026-10-23) ✅
 - [Fase 3 – Configuración regional (Latinoamérica)](#fase-3--configuración-regional-latinoamérica--2026-10-23) ✅
-- [Fase 4 – Métodos de pago en pensiones y cuentas de depósito](#fase-4--métodos-de-pago-en-pensiones-y-cuentas-de-depósito)
+- [Fase 4 – Métodos de pago, cuentas y recibos](#fase-4--métodos-de-pago-cuentas-y-recibos--2026-10-23) ✅
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora)
 - [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla)
 - [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades)
@@ -259,25 +259,41 @@ Migración `database/migraciones/003_configuracion_regional.sql` (aplicada en `c
 
 ---
 
-## Fase 4 – Métodos de pago en pensiones y cuentas de depósito
+## Fase 4 – Métodos de pago, cuentas y recibos ✅ (2026-10-23)
 
-> Hoy el sistema **no** registra método de pago: `pago_pensiones` solo guarda concepto, pensión, fecha y subtotal.
+Migración `database/migraciones/004_metodos_pago_recibos.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_004.sql`). Ingresos válidos sin cambio (9 490.00).
 
-### 4.1 Base de datos (migración `004_metodos_pago.sql`)
-- [ ] Tabla `metodos_pago`: EFECTIVO, TARJETA DÉBITO, TARJETA CRÉDITO, TRANSFERENCIA, DEPÓSITO BANCARIO, BILLETERA DIGITAL (Yape/Plin/Nequi/Mercado Pago/Tigo Money…), CHEQUE, OTRO. Campos: `requiere_referencia`, `requiere_cuenta`, `estado`.
-- [ ] Tabla `cuentas_financieras`: cajas y cuentas bancarias del colegio (tipo `CAJA`/`BANCO`/`BILLETERA`, banco, número de cuenta, CCI/CBU/IBAN, saldo inicial, estado), todas en la moneda configurada. **Se pueden agregar todas las cuentas que se necesiten.**
-- [ ] Tabla cabecera `pagos` (recibo): `id_pago`, `serie`, `numero`, `id_matricula`, `fecha`, `total`, `usuario_id`, `estado`, `observacion`.
-- [ ] Tabla `pagos_metodos`: un pago puede dividirse en varios métodos (ej. 300 en efectivo + 200 con tarjeta). Campos: `id_pago`, `metodo_pago_id`, `cuenta_id`, `monto`, `referencia` (n.° de operación / voucher / últimos 4 dígitos), `comision` (para tarjeta).
-- [ ] `pago_pensiones` pasa a ser el **detalle** del recibo (`id_pago` FK).
+### 4.1 Base de datos
+- [x] `metodos_pago`: EFECTIVO, TARJETA DE DÉBITO, TARJETA DE CRÉDITO, TRANSFERENCIA BANCARIA, DEPÓSITO EN CUENTA, BILLETERA DIGITAL, CHEQUE; cada uno indica si pide n.° de operación y caja/cuenta, y su comisión %. Se agregan más desde la pantalla (Yape, Plin, Nequi, Mercado Pago…).
+- [x] `cuentas_financieras`: cajas, cuentas bancarias y billeteras del colegio (banco, número, CCI/CBU, titular, saldo inicial). Arranca con **CAJA PRINCIPAL**; **se pueden agregar todas las cuentas que se necesiten**.
+- [x] `pagos` (recibo): serie + número **correlativo** (`R001-000123`, serie en `empresa.serie_recibo`), matrícula, fecha, total, observación, voucher, usuario, estado y anulación.
+  - El número sale de `correlativos` dentro de la transacción del cobro: **sin repetidos ni saltos** (si el cobro falla no se consume; probado con 5 cobros simultáneos).
+- [x] `pagos_metodos`: un recibo puede pagarse con **varias formas** (efectivo + tarjeta…), cada una con su caja/cuenta, monto, referencia y comisión.
+- [x] `pago_pensiones.id_pago`: cada concepto es una línea de su recibo.
+- [x] **Pagos anteriores:** se agruparon en 16 recibos históricos (uno por alumno y día, R001-000001 a 000016) con el método **"NO REGISTRADO (HISTÓRICO)"**, que no se puede elegir ni editar. No se inventó el método real.
 
 ### 4.2 Funcionalidad
-- [ ] En la pantalla de pago: selector de método, cuenta destino y n.° de operación (obligatorio si el método lo requiere); botón "agregar otro método" para pagos mixtos; la suma de métodos debe igualar el total.
-- [ ] Adjuntar foto del voucher (opcional) usando `subir_archivo()` de Fase 1.
-- [ ] Recibo/boleta PDF muestra método(s) de pago y referencia.
-- [ ] Cada pago genera automáticamente el **movimiento en la cuenta** elegida (Fase 5).
-- [ ] Vista del estudiante: historial con método de pago y descarga de recibo.
+- [x] Pantalla de cobro: sección **Forma de pago** con método, caja/cuenta (se sugiere: efectivo → caja, billetera → billetera, resto → banco), monto y n.° de operación; "Agregar otra forma de pago"; aviso de lo que falta asignar. Con una sola forma, el monto se ajusta solo al total.
+- [x] El servidor exige que las formas de pago **sumen exactamente** el total y valida operación/cuenta según el método.
+- [x] **Voucher opcional** (imagen o PDF ≤ 5 MB) y observación por recibo. Los vouchers se guardan en una carpeta bloqueada y se ven con `controlador_ver_voucher.php` (con sesión).
+- [x] **Recibo PDF** (`view/MPDF/REPORTE/recibo.php`): número, datos del colegio e identificación tributaria, conceptos (mes y año, mora exonerada), formas de pago con caja/cuenta y referencia, usuario que lo registró; marca de agua **ANULADO** si corresponde. Se ofrece imprimirlo al terminar el cobro.
+- [x] **Matrícula**: el formulario pide forma de pago, caja/cuenta y referencia, y genera su recibo (admisión + alumno nuevo + matrícula).
+- [x] Historial de pagos (administrador y estudiante): columnas **Recibo** y **Forma de pago**; botón "Recibo".
+- [x] **Anular** un concepto anula **el recibo completo** (todas sus líneas e ingresos; el recibo queda visible como ANULADO).
+- [x] **Editar** un pago solo si su recibo tiene una forma de pago (se ajustan la forma de pago y el total); con varias formas hay que anular y registrar de nuevo.
+- [x] Pantalla **Formas de pago y cuentas** (menú del ADMINISTRADOR): alta/edición/desactivación de métodos y cuentas; muestra lo cobrado en cada cuenta.
+- [x] Corrección de seguridad: un estudiante podía ver la tabla de pagos de **cualquier** matrícula cambiando el id (se verificaba el rol, no la matrícula). Ahora solo la suya; también sus recibos.
+- [x] Al abrir el cobro se limpia la tabla: antes quedaban las filas del alumno anterior y podían cobrarse al siguiente.
+- [ ] Cada forma de pago genera el **movimiento en su cuenta** → **Fase 5** (la información ya queda en `pagos_metodos`: método, cuenta y monto).
 
-**Criterio de cierre:** un pago mixto efectivo + transferencia se registra, suma en la caja y en la cuenta bancaria correspondientes, y el recibo lo refleja.
+### Pruebas (BD `colegio2_test`)
+- HTTP Fase 4: **45/45** — catálogos y permisos, pago mixto efectivo + transferencia, número correlativo, validaciones que no consumen número, Yape sin cuenta, voucher (guardado, protegido, PHP rechazado), recibo PDF y acceso del estudiante (propio sí, ajeno no), editar/anular por recibo, matrícula con forma de pago (300.00, 3 conceptos), 5 cobros simultáneos sin números repetidos.
+- Integridad tras todas las pruebas: suma de conceptos = suma de formas de pago = suma de recibos (9 333.00).
+- Regresión: Fase 1 **43/43**, Fase 2 **41/41**, Fase 3 **26/26**; panel y vistas de 5 roles sin errores.
+
+**Criterio de cierre:** ✅ un pago mixto efectivo + transferencia se registra en la caja y en la cuenta bancaria, con su número de recibo, y el recibo PDF lo refleja.
+
+> **Para probar en el navegador:** *Formas de pago y cuentas* → crear la cuenta del banco y, si se usa, "YAPE". Luego *Pago de pensiones* → Pagar → agregar una pensión → dividir entre Efectivo y Transferencia (con n.° de operación) → Registrar → imprimir el recibo.
 
 ---
 

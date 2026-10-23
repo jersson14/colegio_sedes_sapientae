@@ -352,12 +352,14 @@ function listar_pagos(id) {
         },
         "columns": [
             { "data": "id_pago_pension" },
+            { "data": "recibo", render: function(data){ return data ? "<b>" + data + "</b>" : "-"; } },
             { "data": "concepto" },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
+            { "data": "metodos", render: function(data){ return data ? $('<div>').text(data).html() : "-"; } },
             { "data": "sub_total", render: function(data){ return formatoMoneda(data); } },
             {
-                "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir boleta'><i class='fa fa-print'></i> Boleta</button>",
+                "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fa fa-print'></i> Recibo</button>",
                 "orderable": false // Evita la ordenación en esta columna
             }
         ],
@@ -394,7 +396,7 @@ $('#tabla_pagos2').on('click','.imprimir',function(){
   if(tbl_pagos.row(this).child.isShown()){
       var data = tbl_pagos.row(this).data();
   }
-  var url = "../view/MPDF/REPORTE/boleta_pago.php?codigo=" + encodeURIComponent(data.id_matri) + "&idpagopen=" + encodeURIComponent(data.id_pago_pension)+ "#zoom=100%";
+  var url = data.id_pago ? "../view/MPDF/REPORTE/recibo.php?id=" + encodeURIComponent(data.id_pago) + "#zoom=100%" : "../view/MPDF/REPORTE/boleta_pago.php?codigo=" + encodeURIComponent(data.id_matri) + "&idpagopen=" + encodeURIComponent(data.id_pago_pension)+ "#zoom=100%";
 
   // Abrir una nueva ventana con la URL construida
   var newWindow = window.open(url, "BOLETA DE PAGO", "scrollbars=NO");

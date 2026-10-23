@@ -461,8 +461,11 @@ function Registrar_matriculado(){
   let usu = document.getElementById('txt_usu').value;
   let contra = document.getElementById('txt_contra').value;
   let correo = document.getElementById('txt_correo').value;
+  let metodo = document.getElementById('select_metodo_matricula').value;
+  let cuenta = document.getElementById('select_cuenta_matricula').value;
+  let referencia = document.getElementById('txt_ref_matricula').value;
   if(estu.length==0||año.length==0||aula.length==0|| matri.length==0){
-      return Swal.fire("Mensaje de Advertencia","El nombre del rol debe esta completo","warning");
+      return Swal.fire("Mensaje de Advertencia","Complete el estudiante, año, aula y pago de matrícula","warning");
   }
 
   $.ajax({
@@ -480,7 +483,10 @@ function Registrar_matriculado(){
         depa:depa,
         usu:usu,
         contra:contra,
-        correo:correo
+        correo:correo,
+        metodo:metodo,
+        cuenta:cuenta,
+        referencia:referencia
     }
   }).done(function(resp){
     if(resp>0){
@@ -497,6 +503,8 @@ function Registrar_matriculado(){
         Swal.fire("Mensaje de Advertencia","El nombre de usuario ya existe, ingrese otro","warning");
       }else if(resp==4){
         Swal.fire("Mensaje de Advertencia","Ingrese el usuario y contraseña del estudiante (es su primera matrícula)","warning");
+      }else if(resp==5){
+        Swal.fire("Mensaje de Advertencia","Revise la forma de pago: seleccione la caja o cuenta e indique el n.° de operación si corresponde","warning");
       }else{
         Swal.fire("Mensaje de Advertencia","El estudiante ya está matriculado en ese año académico, revise por favor","warning");
       }
@@ -664,3 +672,28 @@ $('#tabla_matricula').on('click','.delete',function(){
     }
   })
 })
+// Forma de pago del recibo de matrícula (Fase 4)
+var formas_pago_matricula = {metodos: [], cuentas: []};
+function Cargar_Formas_Pago_Matricula(){
+  $.ajax({
+    url: "../controller/pago_pension/controlador_cargar_formas_pago.php",
+    type: 'POST'
+  }).done(function(resp){
+    formas_pago_matricula = resp;
+    let metodos = "", cuentas = "";
+    resp.metodos.forEach(function(m){ metodos += "<option value='" + m.id_metodo + "'>" + $('<div>').text(m.nombre).html() + "</option>"; });
+    resp.cuentas.forEach(function(c){ cuentas += "<option value='" + c.id_cuenta + "' data-tipo='" + c.tipo + "'>" + $('<div>').text(c.nombre).html() + "</option>"; });
+    $("#select_metodo_matricula").html(metodos);
+    $("#select_cuenta_matricula").html(cuentas);
+    Sugerir_Cuenta_Matricula();
+  });
+}
+function Sugerir_Cuenta_Matricula(){
+  let m = formas_pago_matricula.metodos.find(x => x.id_metodo == $("#select_metodo_matricula").val());
+  if (!m) { return; }
+  let tipo = m.tipo == 'EFECTIVO' ? 'CAJA' : (m.tipo == 'BILLETERA' ? 'BILLETERA' : 'BANCO');
+  let op = $("#select_cuenta_matricula option[data-tipo='" + tipo + "']").first();
+  if (op.length) { $("#select_cuenta_matricula").val(op.val()); }
+  $("#txt_ref_matricula").attr('placeholder', m.requiere_referencia == 1 ? 'Obligatorio' : 'Opcional');
+}
+$(document).off('change.fpm', '#select_metodo_matricula').on('change.fpm', '#select_metodo_matricula', Sugerir_Cuenta_Matricula);

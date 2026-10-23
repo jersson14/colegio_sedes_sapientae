@@ -542,6 +542,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
+                  <i class="nav-icon fas fa-university"></i>
+                  <p>
+                    Formas de pago y cuentas
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_regional.php')" class="nav-link">
                   <i class="nav-icon fas fa-globe-americas"></i>
                   <p>

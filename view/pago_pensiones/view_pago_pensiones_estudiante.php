@@ -169,16 +169,18 @@
                                         <thead style="background-color:#0A5D86;color:#FFFFFF;">
                                             <tr style="text-align:center;">
                                                 <th style="text-align:center;">Nro.</th>
-                                                <th style="text-align:center;">Concepto</th>
+                                                <th style="text-align:center;">Recibo</th>
+<th style="text-align:center;">Concepto</th>
                                                 <th style="text-align:center;">Mes</th>
                                                 <th style="text-align:center;">Fecha de Pago</th>
-                                                <th style="text-align:center;">Subtotal</th>
+                                                <th style="text-align:center;">Forma de pago</th>
+<th style="text-align:center;">Subtotal</th>
                                                 <th style="text-align:center;">Acción</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="4" style="text-align:right;">Total:</th>
+                                                <th colspan="6" style="text-align:right;">Total:</th>
                                                 <th style="text-align:center;" id="total_sub_total"><?php echo formato_moneda(0); ?></th>
                                                 <th></th>
                                             </tr>

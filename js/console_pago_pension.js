@@ -306,6 +306,7 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
 
   $("#modal_registro").modal('show');
   document.getElementById('txt_id_matricula').value = data.id_matricula;
+  Reiniciar_cobro();
 
   // Cargar el select de nivel académico y seleccionar el nivel correspondiente
   Cargar_Select_Nivelaca(data.Id_nivel); // Paso el nivel seleccionado directamente
@@ -435,6 +436,10 @@ function SumarTotal(){
      total += parseFloat($(this).find('td').eq(4).text()) || 0;
    })
    $("#lbl_totalneto").html("<b>Total: </b>"+formatoMoneda(total));
+   if ($("#tbody_formas_pago tr").length == 1) {
+     $("#tbody_formas_pago .fp_monto").val(total.toFixed(2));
+   }
+   Actualizar_diferencia_pago();
 
  }
 
@@ -461,29 +466,53 @@ function Registrar_Pago() {
   if (lineas.length == 0) {
     return Swal.fire("Mensaje de Advertencia", "La tabla de pagos debe contener al menos un registro", "warning");
   }
+  let metodos = [];
+  $("#tbody_formas_pago tr").each(function () {
+    metodos.push({
+      id_metodo: $(this).find('.fp_metodo').val(),
+      id_cuenta: $(this).find('.fp_cuenta').val(),
+      monto: $(this).find('.fp_monto').val(),
+      referencia: $(this).find('.fp_referencia').val()
+    });
+  });
+  // Un pago que solo exonera mora no lleva forma de pago
+  if (Total_conceptos() == 0) {
+    metodos = [];
+  } else if (Diferencia_formas_pago() != 0) {
+    return Swal.fire("Mensaje de Advertencia", "Las formas de pago deben sumar el total a pagar (" + formatoMoneda(Total_conceptos()) + ")", "warning");
+  }
+
+  let formData = new FormData();
+  formData.append('id_matri', matricula);
+  formData.append('lineas', JSON.stringify(lineas));
+  formData.append('metodos', JSON.stringify(metodos));
+  formData.append('observacion', $("#txt_observacion_pago").val());
+  let voucher = $("#file_voucher")[0].files[0];
+  if (voucher) {
+    formData.append('voucher', voucher);
+  }
 
   $.ajax({
     url: "../controller/pago_pension/controlador_detalle_pago_pension.php",
     type: 'POST',
-    data: {
-      id_matri: matricula,
-      lineas: JSON.stringify(lineas)
-    }
+    data: formData,
+    contentType: false,
+    processData: false
   }).done(function (resp) {
     if(resp.ok){
       $("#tbody_tabla_pago").html("");
       SumarTotal();
       Swal.fire({
-        title: 'Se registro el pago correctamente<b>',
-        text: "Datos de Confirmación",
+        title: 'Pago registrado',
+        html: "Recibo N.° <b>" + resp.recibo + "</b> por <b>" + formatoMoneda(resp.total) + "</b>",
         icon: 'success',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Imprimir Boleta!'
+        confirmButtonText: 'Imprimir recibo'
       }).then((result) => {
         if (result.isConfirmed) {
-          var url = "../view/MPDF/REPORTE/pago.php?codigo="+ encodeURIComponent(matricula) + "&fecha=" + encodeURIComponent(fecha) + "#zoom=100%";
+          var url = "../view/MPDF/REPORTE/recibo.php?id=" + encodeURIComponent(resp.id_pago) + "#zoom=100%";
 
           // Abrir una nueva ventana con la URL construida
           var newWindow = window.open(url, "PAGO", "scrollbars=NO");
@@ -538,18 +567,23 @@ function listar_pagos(id) {
         },
         "columns": [
             { "data": "id_pago_pension" },
-            { "data": "concepto" },
+            { "data": "recibo", render: function(data){ return data ? "<b>" + data + "</b>" : "-"; } },
+            { "data": "concepto", render: function(data,type,row){ return row.mora_exonerada == 1 ? data + " <span class='badge badge-warning'>exonerada</span>" : data; } },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
+            { "data": "metodos", render: function(data){ return data ? $('<div>').text(data).html() : "-"; } },
             { "data": "sub_total", render: function(data){ return formatoMoneda(data); } },
 
             {"data":"concepto",
               render: function(data,type,row){
-                  if(data=='PENSION'){
-                  return "<button class='imprimir btn btn-success btn-sm' title='Imprimir boleta'><i class='fa fa-print'></i> Boleta</button> <button class='editar_1 btn btn-primary btn-sm' title='Editar pago'><i class='fa fa-edit'></i> Editar</button><button class='anular btn btn-danger btn-sm' title='Anular pago'><i class='fa fa-trash'></i> Anular</button>";
-                  }else{
-                  return "<button class='imprimir btn btn-success btn-sm' title='Imprimir boleta'><i class='fa fa-print'></i> Boleta</button>";
+                  let botones = "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fa fa-print'></i> Recibo</button> ";
+                  if(data=='PENSION' || data=='MORA'){
+                    if(row.n_metodos <= 1){
+                      botones += "<button class='editar_1 btn btn-primary btn-sm' title='Editar pago'><i class='fa fa-edit'></i> Editar</button>";
+                    }
+                    botones += "<button class='anular btn btn-danger btn-sm' title='Anular el recibo'><i class='fa fa-trash'></i> Anular</button>";
                   }
+                  return botones;
           }
           },
          
@@ -593,7 +627,9 @@ $('#tabla_pagos2').on('click','.imprimir',function(){
   if(tbl_pagos.row(this).child.isShown()){
       var data = tbl_pagos.row(this).data();
   }
-  var url = "../view/MPDF/REPORTE/boleta_pago.php?codigo=" + encodeURIComponent(data.id_matri) + "&idpagopen=" + encodeURIComponent(data.id_pago_pension)+ "#zoom=100%";
+  // Pagos con recibo: recibo completo; los muy antiguos sin recibo: boleta del concepto
+  var url = data.id_pago ? "../view/MPDF/REPORTE/recibo.php?id=" + encodeURIComponent(data.id_pago) + "#zoom=100%"
+          : "../view/MPDF/REPORTE/boleta_pago.php?codigo=" + encodeURIComponent(data.id_matri) + "&idpagopen=" + encodeURIComponent(data.id_pago_pension)+ "#zoom=100%";
 
   // Abrir una nueva ventana con la URL construida
   var newWindow = window.open(url, "BOLETA DE PAGO", "scrollbars=NO");
@@ -654,8 +690,8 @@ $('#tabla_pagos2').on('click','.anular',function(){
       var data = tbl_pagos.row(this).data();
   }
   Swal.fire({
-    title: 'Desea anular el pago con el concepto de : '+data.concepto+'?',
-    text: "El pago y su ingreso quedarán ANULADOS (no se borran). Indique el motivo:",
+    title: data.recibo ? '¿Anular el recibo ' + data.recibo + '?' : '¿Anular el pago de ' + data.concepto + '?',
+    text: (data.recibo ? "Se anularán TODOS los conceptos de ese recibo y sus ingresos" : "El pago y su ingreso quedarán ANULADOS") + " (no se borran). Indique el motivo:",
     icon: 'warning',
     input: 'text',
     inputPlaceholder: 'Motivo de la anulación',
@@ -721,4 +757,91 @@ function Editar_pago(){
 
     }
   })
+}
+// ---------- Formas de pago del recibo (Fase 4) ----------
+var formas_pago = {metodos: [], cuentas: []};
+
+function Cargar_Formas_Pago(callback) {
+  $.ajax({
+    url: "../controller/pago_pension/controlador_cargar_formas_pago.php",
+    type: 'POST'
+  }).done(function(resp) {
+    formas_pago = resp;
+    if (callback) { callback(); }
+  });
+}
+
+function opciones_cuentas(tipo_preferido) {
+  let html = "<option value=''>-- Seleccione --</option>";
+  formas_pago.cuentas.forEach(function(c) {
+    let detalle = c.banco ? " (" + c.banco + (c.numero_cuenta ? " " + c.numero_cuenta : "") + ")" : "";
+    html += "<option value='" + c.id_cuenta + "' data-tipo='" + c.tipo + "'>" + $('<div>').text(c.nombre + detalle).html() + "</option>";
+  });
+  return html;
+}
+
+// Cuenta sugerida según el método: efectivo -> caja, billetera -> billetera, el resto -> banco
+function sugerir_cuenta(fila) {
+  let metodo = formas_pago.metodos.find(m => m.id_metodo == fila.find('.fp_metodo').val());
+  if (!metodo) { return; }
+  let tipo = metodo.tipo == 'EFECTIVO' ? 'CAJA' : (metodo.tipo == 'BILLETERA' ? 'BILLETERA' : 'BANCO');
+  let opcion = fila.find(".fp_cuenta option[data-tipo='" + tipo + "']").first();
+  fila.find('.fp_cuenta').val(opcion.length ? opcion.val() : '');
+  fila.find('.fp_referencia').attr('placeholder', metodo.requiere_referencia == 1 ? 'Obligatorio' : 'Opcional');
+}
+
+function Agregar_forma_pago(monto) {
+  let metodos = "";
+  formas_pago.metodos.forEach(function(m) {
+    metodos += "<option value='" + m.id_metodo + "'>" + $('<div>').text(m.nombre).html() + "</option>";
+  });
+  let fila = $("<tr>"
+    + "<td><select class='form-control form-control-sm fp_metodo'>" + metodos + "</select></td>"
+    + "<td><select class='form-control form-control-sm fp_cuenta'>" + opciones_cuentas() + "</select></td>"
+    + "<td><input type='text' inputmode='decimal' class='form-control form-control-sm fp_monto'></td>"
+    + "<td><input type='text' class='form-control form-control-sm fp_referencia' maxlength='60'></td>"
+    + "<td><button type='button' class='btn btn-danger btn-sm' onclick='Quitar_forma_pago(this)'><i class='fas fa-times'></i></button></td>"
+    + "</tr>");
+  $("#tbody_formas_pago").append(fila);
+  sugerir_cuenta(fila);
+  fila.find('.fp_monto').val(monto !== undefined ? monto : Diferencia_formas_pago().toFixed(2));
+  Actualizar_diferencia_pago();
+}
+
+function Quitar_forma_pago(boton) {
+  $(boton).closest('tr').remove();
+  Actualizar_diferencia_pago();
+}
+
+function Total_conceptos() {
+  let total = 0;
+  $("#tabla_pago tbody#tbody_tabla_pago tr").each(function() {
+    total += parseFloat($(this).find('td').eq(4).text()) || 0;
+  });
+  return Math.round(total * 100) / 100;
+}
+
+function Diferencia_formas_pago() {
+  let suma = 0;
+  $("#tbody_formas_pago .fp_monto").each(function() { suma += parseFloat(this.value) || 0; });
+  return Math.round((Total_conceptos() - suma) * 100) / 100;
+}
+
+function Actualizar_diferencia_pago() {
+  let dif = Diferencia_formas_pago();
+  $("#lbl_diferencia_pago").html(dif == 0 ? "<span class='text-success'><b>Formas de pago completas</b></span>"
+    : "<span class='text-danger'><b>Falta asignar: " + formatoMoneda(dif) + "</b></span>");
+}
+
+$(document).off('change.fp', '.fp_metodo').on('change.fp', '.fp_metodo', function() { sugerir_cuenta($(this).closest('tr')); });
+$(document).off('input.fp', '.fp_monto').on('input.fp', '.fp_monto', Actualizar_diferencia_pago);
+
+// Al abrir el cobro se limpia lo del alumno anterior y se propone una forma de pago (efectivo en caja)
+function Reiniciar_cobro() {
+  $("#tbody_tabla_pago").html("");
+  $("#tbody_formas_pago").html("");
+  $("#file_voucher").val("");
+  $("#txt_observacion_pago").val("");
+  $("#lbl_totalneto").html("");
+  Cargar_Formas_Pago(function() { Agregar_forma_pago('0.00'); });
 }

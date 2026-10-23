@@ -157,6 +157,7 @@ return [
         'view/MPDF/REPORTE/boleta_pago.php' => ['ESTUDIANTE'],
         'view/MPDF/REPORTE/horario.php' => ['AUXILIAR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/kardex.php' => ['ESTUDIANTE'],
+        'view/MPDF/REPORTE/recibo.php' => ['ESTUDIANTE'],
     ],
 
     'propio' => [

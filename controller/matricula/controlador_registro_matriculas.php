@@ -20,7 +20,11 @@ require_once __DIR__ . '/../../utilitario/validacion.php';
 
     $correo = strtoupper(htmlspecialchars($_POST['correo'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MMAT->Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,usuario_actual_id());
+    // Forma de pago del recibo de matrícula (se valida en el SP; código 5 si no es válida)
+    $metodo = filter_var($_POST['metodo'] ?? null, FILTER_VALIDATE_INT) ?: null;
+    $cuenta = filter_var($_POST['cuenta'] ?? null, FILTER_VALIDATE_INT) ?: null;
+    $referencia = strtoupper(texto_post('referencia', 60, false, 'referencia'));
+    $consulta = $MMAT->Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,usuario_actual_id(),$metodo,$cuenta,$referencia);
     echo $consulta;
 
 

@@ -13,3 +13,7 @@ respaldos/
 
 # Logs
 logs/*.log
+
+# Vouchers de pago subidos
+controller/pago_pension/vouchers/*
+!controller/pago_pension/vouchers/.htaccess

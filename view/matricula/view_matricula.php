@@ -176,6 +176,19 @@
             <label for="">Correo electronico<b style="color:red">(*)</b>:</label>
                 <input type="email" class="form-control" id="txt_correo" placeholder="Ingrese el correo electronico">
             </div>
+            <!-- Forma de pago del recibo de matrícula (Fase 4) -->
+            <div class="col-4 form-group">
+              <label for="select_metodo_matricula">Forma de pago<b style="color:red">(*)</b>:</label>
+              <select class="form-control" id="select_metodo_matricula"></select>
+            </div>
+            <div class="col-4 form-group">
+              <label for="select_cuenta_matricula">Caja / cuenta<b style="color:red">(*)</b>:</label>
+              <select class="form-control" id="select_cuenta_matricula"></select>
+            </div>
+            <div class="col-4 form-group">
+              <label for="txt_ref_matricula">N.° operación / referencia:</label>
+              <input type="text" class="form-control" id="txt_ref_matricula" maxlength="60">
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -411,7 +424,8 @@ $("#select_nivel_buscar").change(function() {
       Cargar_Select_Aula(id);
     });
 $('#modal_registro').on('shown.bs.modal', function () {
-  $('#txt_matricula').trigger('focus')
+  $('#txt_matricula').trigger('focus');
+  Cargar_Formas_Pago_Matricula();
 })
 
     document.addEventListener('DOMContentLoaded', function() {

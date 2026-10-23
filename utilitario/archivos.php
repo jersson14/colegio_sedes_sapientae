@@ -70,6 +70,33 @@ function carpeta_tarea_valida($ruta) {
 }
 
 /**
+ * Voucher de pago opcional ($_FILES[$campo]): imagen o PDF de hasta 5 MB.
+ * Devuelve null si no se envió; si es inválido responde 400. Se valida ANTES de registrar el pago.
+ */
+function validar_voucher_subido($campo) {
+    $f = $_FILES[$campo] ?? null;
+    if (!$f || $f['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+    $tipos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'application/pdf' => 'pdf'];
+    $mime = ($f['error'] === UPLOAD_ERR_OK && is_uploaded_file($f['tmp_name'])) ? (new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']) : '';
+    if (!isset($tipos[$mime]) || $f['size'] > FOTO_MAX_MB * 1024 * 1024) {
+        denegar(400, 'El voucher debe ser una imagen (JPG, PNG, WEBP) o PDF de hasta ' . FOTO_MAX_MB . ' MB');
+    }
+    return ['tmp' => $f['tmp_name'], 'ext' => $tipos[$mime]];
+}
+
+/** Guarda el voucher validado en controller/pago_pension/vouchers y devuelve su ruta relativa a la raíz. */
+function guardar_voucher($voucher) {
+    $dir = __DIR__ . '/../controller/pago_pension/vouchers';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0750, true);
+    }
+    $nombre = 'VCH-' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.' . $voucher['ext'];
+    return move_uploaded_file($voucher['tmp'], $dir . '/' . $nombre) ? 'controller/pago_pension/vouchers/' . $nombre : null;
+}
+
+/**
  * Borra un archivo solo si está dentro de $carpeta_relativa (rutas relativas a la raíz del sistema)
  * y no es una imagen por defecto. Evita que una ruta enviada por el navegador borre otros archivos.
  */
