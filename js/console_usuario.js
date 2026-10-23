@@ -636,9 +636,9 @@ function Total_ingresos(){
       var data = JSON.parse(resp);
       var cadena="";
       if (data.length > 0 && data[0][0]) {
-        $("#total_ingresos").html("S/ " + data[0][0]);
+        $("#total_ingresos").html(formatoMoneda(data[0][0]));
     } else {
-        $("#total_ingresos").html("S/ 0");
+        $("#total_ingresos").html(formatoMoneda(0));
     }
     
   })
@@ -652,9 +652,9 @@ function Total_egresos(){
       var data = JSON.parse(resp);
       var cadena="";
       if (data.length > 0 && data[0][0]) {
-        $("#total_gastos").html("S/ " + data[0][0]);
+        $("#total_gastos").html(formatoMoneda(data[0][0]));
     } else {
-        $("#total_gastos").html("S/ 0");
+        $("#total_gastos").html(formatoMoneda(0));
     }
     
   })

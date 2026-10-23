@@ -61,7 +61,7 @@ function listar_ingresos_diversos(){
         {"data":"monto",
           render: function(data,type,row){
               if(data==data){
-              return '<span class="badge bg-success">S/. '+data+'</span>';
+              return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
               }
       }   
       },        {"data":"observacion"},
@@ -168,7 +168,7 @@ function listar_ingresos_diversos_filtro(){
       {"data":"monto",
         render: function(data,type,row){
             if(data==data){
-            return '<span class="badge bg-success">S/. '+data+'</span>';
+            return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
             }
     }   
     },        {"data":"observacion"},
@@ -459,7 +459,7 @@ function listar_ingresos_pensiones(){
         {"data":"monto",
           render: function(data,type,row){
               if(data==data){
-              return '<span class="badge bg-success">S/. '+data+'</span>';
+              return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
               }
       }   
       },        {"data":"PAGADO"},
@@ -558,7 +558,7 @@ function listar_ingresos_pensiones_filtro(){
     {"data":"monto",
       render: function(data,type,row){
           if(data==data){
-          return '<span class="badge bg-success">S/. '+data+'</span>';
+          return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
           }
   }   
   },        {"data":"PAGADO"},
@@ -649,23 +649,23 @@ function listar_diferencia(){
         {"data":"totalingresos",
           render: function(data,type,row){
               if(data==data){
-              return '<span class="badge bg-success">'+data+'</span>';
+              return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
               }
       }   
       },        
       {"data":"totalgasto",
         render: function(data,type,row){
             if(data==data){
-            return '<span class="badge bg-danger">'+data+'</span>';
+            return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
             }
     }   
     },    
     {"data":"Diferencia",
         render: function(data,type,row){
             if(data<0){
-            return '<span class="badge bg-danger">'+data+'</span>';
+            return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
             }else{
-                return '<span class="badge bg-success">'+data+'</span>';
+                return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
 
             }
     }   
@@ -749,23 +749,23 @@ function listar_diferencia_filtro(){
         {"data":"totalingresos",
           render: function(data,type,row){
               if(data==data){
-              return '<span class="badge bg-success">'+data+'</span>';
+              return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
               }
       }   
       },        
       {"data":"totalgasto",
         render: function(data,type,row){
             if(data==data){
-            return '<span class="badge bg-danger">'+data+'</span>';
+            return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
             }
     }   
     },    
     {"data":"Diferencia",
         render: function(data,type,row){
             if(data<0){
-            return '<span class="badge bg-danger">'+data+'</span>';
+            return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
             }else{
-                return '<span class="badge bg-success">'+data+'</span>';
+                return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
 
             }
     }   

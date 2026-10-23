@@ -69,11 +69,11 @@ function listar_pensiones(){
         },
         {"data":"mes"},
         {"data":"fecha_formateada"},
-        {"data":"PRECIO"},
+        {"data":"PRECIO", render: function(data){ return formatoMoneda(data); }},
         {"data":"MORA",
             render: function(data,type,row){
                     if(data==data){
-                    return '<span class="badge bg-danger">'+data+'</span>';
+                    return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
                     }
             }   
         },
@@ -166,11 +166,11 @@ function listar_pensiones_filtro(){
       },
       {"data":"mes"},
       {"data":"fecha_formateada"},
-      {"data":"PRECIO"},
+      {"data":"PRECIO", render: function(data){ return formatoMoneda(data); }},
       {"data":"MORA",
           render: function(data,type,row){
                   if(data==data){
-                  return '<span class="badge bg-danger">'+data+'</span>';
+                  return '<span class="badge bg-danger">'+formatoMoneda(data)+'</span>';
                   }
           }   
       },

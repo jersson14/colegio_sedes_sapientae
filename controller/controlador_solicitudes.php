@@ -24,10 +24,10 @@ function validar_email($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-// Función para validar teléfono (9 dígitos)
+// Teléfono de cualquier país: 6 a 15 dígitos (utilitario/regional.php)
+require_once __DIR__ . '/../utilitario/regional.php';
 function validar_telefono($telefono) {
-    $telefono_limpio = preg_replace('/[^0-9]/', '', $telefono);
-    return strlen($telefono_limpio) === 9;
+    return telefono_valido($telefono);
 }
 
 // Procesar solo peticiones POST
@@ -95,7 +95,7 @@ try {
     if (!validar_telefono($telefono)) {
         echo json_encode(array(
             'status' => 'error',
-            'message' => 'El teléfono debe tener 9 dígitos'
+            'message' => 'Ingrese un teléfono válido (6 a 15 dígitos)'
         ));
         exit;
     }

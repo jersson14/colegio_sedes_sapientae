@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../utilitario/regional.php';
+
 class conexionBD {
     private $pdo;
 
@@ -13,8 +15,8 @@ class conexionBD {
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("SET NAMES utf8");
 
-            // La zona horaria de MySQL sigue a la de PHP (configurable en config.php)
-            date_default_timezone_set($config['zona_horaria']);
+            // Zona horaria del país configurado (Configuración > Datos regionales); MySQL sigue a PHP
+            date_default_timezone_set(config_regional()['zona_horaria']);
             $this->pdo->exec("SET time_zone = '" . (new DateTime())->format('P') . "'");
 
             return $this->pdo;

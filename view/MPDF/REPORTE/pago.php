@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 setlocale(LC_TIME, 'es_ES.UTF-8');
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
@@ -66,7 +66,7 @@ if ($resultado->num_rows > 0) {
             <h2><u>RECIBO DE PAGO</u></h2>
         </div>
         <hr>
-        <p><strong>DNI:</strong> '.$first_row['alum_dni'].'</p>
+        <p><strong>' . nombre_documento() . ':</strong> '.$first_row['alum_dni'].'</p>
         <p><strong>Estudiante:</strong> '.$first_row['Estudiante'].'</p>
         <p><strong>Nivel académico:</strong> '.$first_row['Nivel_academico'].'</p>
         <p><strong>Grado - Sección:</strong> '.$first_row['grado'].'</p>
@@ -93,7 +93,7 @@ if ($resultado->num_rows > 0) {
                 <td>'.$row['concepto'].'</td>
                 <td>'.$row['mes'].'</td>
                 <td>'.$fecha_formateada.'</td>
-                <td>S/. '.number_format($row['sub_total'], 2).'</td>
+                <td>' . formato_moneda($row['sub_total']) . '</td>
             </tr>';
         
         $total += $row['sub_total'];
@@ -102,7 +102,7 @@ if ($resultado->num_rows > 0) {
     $html .= '
             <tr>
                 <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
-                <td><strong>S/. '.number_format($total, 2).'</strong></td>
+                <td><strong>' . formato_moneda($total) . '</strong></td>
             </tr>
         </table>
         

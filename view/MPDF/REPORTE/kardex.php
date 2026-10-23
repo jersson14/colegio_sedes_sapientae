@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
@@ -71,7 +71,7 @@ if ($row1 = $resultado->fetch_assoc()) {
         <h2><u>KARDEX DE PAGOS</u></h2>
     </div>
     <table>
-        <tr><th>DNI:</th><td>'.$row1['alum_dni'].'</td></tr>
+        <tr><th>' . nombre_documento() . ':</th><td>'.$row1['alum_dni'].'</td></tr>
         <tr><th>Estudiante:</th><td>'.$row1['Estudiante'].'</td></tr>
         <tr><th>Nivel Académico:</th><td>'.$row1['Nivel_academico'].'</td></tr>
         <tr><th>Grado - Sección:</th><td>'.$row1['grado'].'</td></tr>
@@ -94,14 +94,14 @@ if ($row1 = $resultado->fetch_assoc()) {
     $resultado = $stmt->get_result();
     
     while ($row2 = $resultado->fetch_assoc()) {
-        // Crear el objeto DateTime con la zona horaria de América/Lima
-        $fecha_pago = new DateTime($row2['fecha_pago'], new DateTimeZone('America/Lima'));
+        // Crear el objeto DateTime con la zona horaria configurada
+        $fecha_pago = new DateTime($row2['fecha_pago'], new DateTimeZone(config_regional()['zona_horaria']));
     
         // Configurar el locale para español
         $locale = 'es_ES';
         
         // Crear un formateador de fechas
-        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'America/Lima', IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
+        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::LONG, IntlDateFormatter::NONE, config_regional()['zona_horaria'], IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
     
         // Formatear la fecha en español
         $fecha_formateada = $formatter->format($fecha_pago);
@@ -111,7 +111,7 @@ if ($row1 = $resultado->fetch_assoc()) {
             <td>'.$row2['concepto'].'</td>
             <td>'.$row2['mes'].'</td>
             <td>'.$fecha_formateada.'</td>
-            <td>S/. '.number_format($row2['sub_total'], 2).'</td>
+            <td>' . formato_moneda($row2['sub_total']) . '</td>
         </tr>';
     
         // Sumar el subtotal al total
@@ -123,7 +123,7 @@ if ($row1 = $resultado->fetch_assoc()) {
     $html .= '
         <tr>
             <td colspan="3" style="text-align: right;"><b>Total:</b></td>
-            <td><b>S/. '.number_format($total, 2).'</b></td>
+            <td><b>' . formato_moneda($total) . '</b></td>
         </tr>
     </table>
     </div>';

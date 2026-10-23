@@ -349,10 +349,11 @@ function validateInput(input) {
             errorMessage = 'Ingrese un email válido';
         }
     } else if (input.type === 'tel' && value) {
-        const phoneRegex = /^[0-9]{9}$/;
-        if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+        // Cualquier país: 6 a 15 dígitos, se admiten +, espacios, guiones y paréntesis
+        const digitos = value.replace(/\D/g, '');
+        if (!/^\+?[0-9 ()-]+$/.test(value) || digitos.length < 6 || digitos.length > 15) {
             isValid = false;
-            errorMessage = 'Ingrese un teléfono válido (9 dígitos)';
+            errorMessage = 'Ingrese un teléfono válido (6 a 15 dígitos)';
         }
     }
 

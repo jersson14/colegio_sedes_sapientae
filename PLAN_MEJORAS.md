@@ -22,7 +22,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 0 – Preparación y respaldo](#fase-0--preparación-y-respaldo--2026-10-23) ✅
 - [Fase 1 – Seguridad crítica](#fase-1--seguridad-crítica--2026-10-23) ✅
 - [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes--2026-10-23) ✅
-- [Fase 3 – Configuración regional y multimoneda (Latinoamérica)](#fase-3--configuración-regional-y-multimoneda-latinoamérica)
+- [Fase 3 – Configuración regional (Latinoamérica)](#fase-3--configuración-regional-latinoamérica--2026-10-23) ✅
 - [Fase 4 – Métodos de pago en pensiones y cuentas de depósito](#fase-4--métodos-de-pago-en-pensiones-y-cuentas-de-depósito)
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora)
 - [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla)
@@ -216,34 +216,46 @@ Migración `database/migraciones/002_correcciones_logica.sql` (aplicada en `cole
 
 ---
 
-## Fase 3 – Configuración regional y multimoneda (Latinoamérica)
+## Fase 3 – Configuración regional (Latinoamérica) ✅ (2026-10-23)
 
-**Objetivo:** que el colegio elija su país y todo el sistema (montos, fechas, zona horaria, documentos) se adapte.
+**Objetivo:** que el colegio elija su país y todo el sistema (montos, zona horaria, documentos) se adapte. Un solo país y una sola moneda por colegio.
 
-### 3.1 Base de datos (migración `003_regional.sql`)
-- [ ] Tabla `paises` (código ISO, nombre, moneda, zona horaria, documento de identidad principal, prefijo telefónico).
-- [ ] Tabla `monedas` (código ISO 4217, símbolo, nombre, decimales, separador de miles, separador decimal, posición del símbolo).
-- [ ] Ampliar columnas de documento y teléfono (hoy `CHAR(8)` DNI y `CHAR(9)` celular, solo Perú): `*_dni` → `VARCHAR(20)` + `tipo_documento_id`, `*_movil`/`*_nro_alterno` → `VARCHAR(20)` en alumnos, padres, docentes y personal (y los parámetros de sus SP). *(movido desde la Fase 2)*
-- [ ] Tabla `tipos_documento_identidad` por país (DNI, Cédula, CI, RUT, CURP, CC, CPF…) con longitud mínima/máxima y expresión regular.
-- [ ] Columnas en `empresa`: `pais_id`, `moneda_id`, `zona_horaria`, `serie_recibo`, `ruc_nit` (identificación tributaria).
-- [ ] La moneda es **única para todo el colegio** (columna `empresa.moneda_id`); los movimientos no guardan moneda propia.
-- [ ] Al cambiar la moneda cuando ya hay pagos registrados, el sistema pide confirmación y deja registro (quién y cuándo), porque los montos anteriores no se convierten.
-- [ ] Datos iniciales de todos los países de Latinoamérica (ver [Anexo A](#anexo-a--monedas-y-países)).
+Migración `database/migraciones/003_configuracion_regional.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_003.sql`). El colegio quedó en **Perú / Sol / America/Lima**, igual que antes; los totales no cambian.
+
+### 3.1 Base de datos
+- [x] Catálogos: `monedas` (18, con símbolo, decimales y separadores), `paises` (los 20 de Latinoamérica, con locale, zona horaria, prefijo telefónico y nombre del identificador tributario) y `tipos_documento_identidad` (documento principal de cada país con largo y expresión regular). Ver [Anexo A](#anexo-a--monedas-y-países).
+- [x] `empresa`: `pais_id`, `moneda_id`, `zona_horaria`, `identificacion_tributaria`, `permite_doc_extranjero` (aceptar pasaporte / carné de extranjería).
+- [x] La moneda es **única para todo el colegio**; los movimientos no guardan moneda propia.
+- [x] Cambiar la moneda con pagos/egresos registrados **pide confirmación** (los montos no se convierten) y queda en `historial_configuracion` (campo, antes, después, usuario, fecha).
+- [x] Documentos `CHAR(8)` → `VARCHAR(20)` y teléfonos `CHAR(9)` → `VARCHAR(20)` en alumnos, padres, docentes, personal y auxiliar, y en los 8 SP que los reciben. *(De paso se corrigió `SP_REGISTRAR_DOCENTES`, que también cortaba el usuario a 8 caracteres.)*
+- [x] Los 14 SP que devolvían `'S/ '` o `'S/.'` concatenado ahora devuelven el número.
+- [ ] `tipo_documento_id` por persona → no hace falta con un solo país: se valida contra el documento del país o, si está permitido, pasaporte/carné. Se agrega si algún día se necesita distinguir el tipo en reportes.
+- [ ] `serie_recibo` → Fase 4 (recibos).
 
 ### 3.2 Backend
-- [ ] `utilitario/regional.php`: carga la configuración de la empresa una vez por sesión (`$_SESSION['S_MONEDA']`, `S_ZONA`, etc.).
-- [ ] Función `formato_moneda($monto)` usando la configuración (símbolo, decimales, separadores).
-- [ ] `date_default_timezone_set()` y `SET time_zone` según el país configurado (quitar `America/Lima` fijo).
-- [ ] Quitar `'S/.'` de todos los SPs; devolver solo números.
-- [ ] Reportes MPDF (`boleta_pago.php`, `pago.php`, `cedula.php`, etc.) usan `formato_moneda()` y el nombre del documento de identidad del país.
+- [x] `utilitario/regional.php`: `config_regional()` (se lee una vez y se guarda en la sesión), `formato_moneda()`, `nombre_documento()`, `documento_valido()`, `telefono_valido()`.
+- [x] Conexiones (PDO y MPDF) usan la zona horaria del país configurado (PHP y `SET time_zone` de MySQL); se quitó `America/Lima` fijo de los 9 reportes.
+- [x] Reportes MPDF (boleta, pago, kardex, cédula de matrícula, notas): montos con `formato_moneda()` y etiqueta del documento del país (DNI, Cédula, CI, RUT…).
+- [x] Validación en el servidor (`documento_post`, `telefono_post`) al registrar/modificar alumnos (y padres), docentes y personal. Los datos existentes cumplen las reglas de Perú (verificado).
+- [x] El formulario público de la landing acepta teléfonos de cualquier país (6 a 15 dígitos; antes exactamente 9).
 
 ### 3.3 Frontend
-- [ ] `js/regional.js` con `formatoMoneda(monto)` basado en `Intl.NumberFormat(locale, { style: 'currency', currency })`, leyendo la configuración desde un `<meta>` o variable global impresa en `view/index.php`.
-- [ ] Reemplazar las ~20 apariciones de `S/.` en `js/` y `view/`.
-- [ ] Validación de documento de identidad y teléfono según país (regex de la tabla).
-- [ ] Pantalla **Configuración → Datos regionales** (solo ADMINISTRADOR): país, moneda, zona horaria, formato de fecha.
+- [x] `js/regional.js`: `formatoMoneda()`, `documentoValido()` (mismas reglas que PHP) con la configuración impresa en `window.REGIONAL` por `view/index.php`.
+  > Se usa formato propio con los separadores de la tabla `monedas` (no `Intl.NumberFormat`) para que pantalla y PDF muestren exactamente lo mismo.
+- [x] Se reemplazaron todas las apariciones de `S/.` en `js/` y `view/` (ingresos, egresos, diferencia, pensiones, matrícula, pago de pensiones, totales del panel).
+- [x] Al cargar cada vista, "DNI" se cambia por el documento del país en etiquetas, encabezados y placeholders; los campos de documento dejan de aceptar "solo números" si el documento lleva letras o se permiten extranjeros, y se marcan en rojo si el formato no es válido.
+- [x] Pantalla **Datos regionales** (menú del ADMINISTRADOR): país (propone su moneda y zona), moneda, zona horaria, identificación tributaria (RUC/NIT/CUIT…), extranjeros, vista previa y últimos cambios.
+- [ ] Formato de fecha por país → no se cambió: todo el sistema usa `dd-mm-aaaa`, que es el formato de toda Latinoamérica.
 
-**Criterio de cierre:** cambiando el país a Ecuador se ve `$ 1,500.00` y cédula de 10 dígitos; a Argentina `$ 1.500,00`; a Bolivia `Bs 1.500,00`; a Perú `S/ 1,500.00`.
+### Pruebas (BD `colegio2_test`)
+- Unitarias PHP: **101/102** — el ejemplo de cada uno de los 20 documentos pasa su regla, con espacios/puntos/minúsculas; vacíos y textos se rechazan; formato de moneda en 10 países (`S/ 1,500.50`, `$ 1.500,50`, `$ 1.501` en Chile, `₡ 1 500,50`…); DNI con un dígito de menos no pasa como extranjero; teléfonos. La única "falla" es esperada: Puerto Rico no tiene documento nacional y su regla es genérica.
+- Unitarias JS: **13/13** (mismos resultados que PHP).
+- HTTP: **26/26** — cambio a Ecuador/USD con confirmación e historial, la sesión y otros usuarios ven `$` y "Cédula", DNI peruano rechazado en Ecuador, cédula y pasaporte aceptados, PDF con la nueva configuración, docente no puede cambiar la configuración, vuelta a Perú.
+- Regresión: Fase 1 **43/43**, Fase 2 **41/41**; panel y 47 vistas de 5 roles sin errores PHP.
+
+**Criterio de cierre:** ✅ cambiando el país a Ecuador se ve `$ 1,500.50` y se exige cédula de 10 dígitos; Argentina `$ 1.500,50`; Bolivia `Bs 1.500,50`; Perú `S/ 1,500.50`.
+
+> **Para probar en el navegador:** *Datos regionales* → elegir Ecuador → Guardar (pedirá confirmar el cambio de moneda) → revisar Pago de pensiones, Ingresos y un kardex PDF; en Alumnos la etiqueta debe decir "Cédula". Luego volver a Perú.
 
 ---
 

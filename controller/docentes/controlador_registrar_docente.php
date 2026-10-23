@@ -1,17 +1,18 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/validacion.php';
 require_once __DIR__ . '/../../utilitario/archivos.php';
     require '../../model/model_docentes.php';
     $MDO = new Modelo_Docentes();//Instaciamos
     //DATOS DE DOCENTE//
-    $dni = strtoupper(htmlspecialchars($_POST['dni'],ENT_QUOTES,'UTF-8'));
+    $dni = documento_post('dni', true, null);
     $nombre = strtoupper(htmlspecialchars($_POST['nombre'],ENT_QUOTES,'UTF-8'));
     $apelli = strtoupper(htmlspecialchars($_POST['apelli'],ENT_QUOTES,'UTF-8'));
     $espe = strtoupper(htmlspecialchars($_POST['espe'],ENT_QUOTES,'UTF-8'));
     $sexo = strtoupper(htmlspecialchars($_POST['sexo'],ENT_QUOTES,'UTF-8'));
     $fechanaci = strtoupper(htmlspecialchars($_POST['fechanaci'],ENT_QUOTES,'UTF-8'));
-    $telf = strtoupper(htmlspecialchars($_POST['telf'],ENT_QUOTES,'UTF-8'));
-    $telfal = strtoupper(htmlspecialchars($_POST['telfal'],ENT_QUOTES,'UTF-8'));
+    $telf = telefono_post('telf', true, 'celular');
+    $telfal = telefono_post('telfal', false, 'teléfono alterno');
     $direc = strtoupper(htmlspecialchars($_POST['direc'],ENT_QUOTES,'UTF-8'));
     $nombrefoto = preparar_foto_subida('foto', htmlspecialchars($_POST['nombrefoto'] ?? '',ENT_QUOTES,'UTF-8'));
 

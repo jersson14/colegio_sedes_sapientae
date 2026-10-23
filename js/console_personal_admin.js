@@ -354,7 +354,7 @@ function Registrar_Personal(){
       success:function(resp){
         if(resp.length>0){
         if(resp==1){
-          Swal.fire("Mensaje de Confirmación","Se registro correctamente al Personal Administrativo con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se registro correctamente al Personal Administrativo con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
             $("#modal_registro").modal('hide');
             tb_personal_administrativo.ajax.reload();
             document.getElementById('txt_dni').value="";
@@ -372,7 +372,7 @@ function Registrar_Personal(){
 
           });
             }else{
-            Swal.fire("Mensaje de Advertencia","El DNI del personal administrativo que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+            Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del personal administrativo que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
             }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo registrar al personal administrativo","warning");
@@ -441,13 +441,13 @@ function Modificar_personal(){
       success:function(resp){
         if(resp>0){
           if(resp==1){
-            Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al Personal Administrativo con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+            Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al Personal Administrativo con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
               $("#modal_editar").modal('hide');
               tb_personal_administrativo.ajax.reload();
               document.getElementById('txt_foto_editar').value="";
             });
               }else{
-              Swal.fire("Mensaje de Advertencia","El DNI del Personal administrativo que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+              Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del Personal administrativo que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
               }
           }else{
             Swal.fire("Mensaje de Advertencia","No se pudo registrar al personal administrativo","warning");

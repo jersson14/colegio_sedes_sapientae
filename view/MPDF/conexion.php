@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../utilitario/regional.php';
 // Conexión mysqli para los reportes MPDF; usa la misma configuración que los modelos.
 $config = require __DIR__ . '/../../config/config.php';
 $db = $config['db'];
@@ -9,6 +10,6 @@ if ($mysqli->connect_errno) {
     http_response_code(500);
     exit('Error de conexión con la base de datos');
 }
-date_default_timezone_set($config['zona_horaria']);
+date_default_timezone_set(config_regional()['zona_horaria']);
 $mysqli->query("SET time_zone = '" . (new DateTime())->format('P') . "'");
 ?>

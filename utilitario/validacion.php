@@ -53,3 +53,36 @@ function responder_json($datos) {
     echo json_encode($datos);
     exit;
 }
+
+/** Documento de identidad según el país configurado (utilitario/regional.php). Devuelve el valor normalizado. */
+function documento_post($campo, $requerido = true, $etiqueta = null) {
+    require_once __DIR__ . '/regional.php';
+    $v = normalizar_documento($_POST[$campo] ?? '');
+    if ($v === '') {
+        if ($requerido) {
+            denegar(400, 'Falta: ' . ($etiqueta ?? nombre_documento()));
+        }
+        return '';
+    }
+    if (!documento_valido($v)) {
+        $c = config_regional();
+        denegar(400, ($etiqueta ?? nombre_documento()) . ' no válido (ej. ' . $c['doc_ejemplo'] . ')');
+    }
+    return $v;
+}
+
+/** Teléfono: 6 a 15 dígitos; se admiten +, espacios, guiones y paréntesis. */
+function telefono_post($campo, $requerido = false, $etiqueta = null) {
+    require_once __DIR__ . '/regional.php';
+    $v = trim((string) ($_POST[$campo] ?? ''));
+    if ($v === '') {
+        if ($requerido) {
+            denegar(400, 'Falta: ' . ($etiqueta ?? 'teléfono'));
+        }
+        return '';
+    }
+    if (!telefono_valido($v)) {
+        denegar(400, ($etiqueta ?? 'Teléfono') . ' no válido');
+    }
+    return $v;
+}

@@ -179,7 +179,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th colspan="4" style="text-align:right;">Total:</th>
-                                                <th style="text-align:center;" id="total_sub_total">S/. 0.00</th>
+                                                <th style="text-align:center;" id="total_sub_total"><?php echo formato_moneda(0); ?></th>
                                                 <th></th>
                                             </tr>
                                         </tfoot>

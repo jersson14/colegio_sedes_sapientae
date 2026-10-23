@@ -99,7 +99,7 @@ $html.='
 
 <h2 style="text-align: center;margin: 0;text-decoration: underline;">BOLETA DE PAGO</h2>
 <div style="text-align:center">
-<br><b>DNI: </b><b>'.utf8_encode($row1['alum_dni']).'</b>
+<br><b>' . nombre_documento() . ': </b><b>'.utf8_encode($row1['alum_dni']).'</b>
 <br><b>Estudiante: </b>'.utf8_encode($row1['Estudiante']).'
 <br><b>Nivel académico: </b>'.utf8_decode($row1['Nivel_academico']).'
 <br><b>Grado - Sección: </b>'.$row1['grado'].'<hr>
@@ -165,7 +165,7 @@ WHERE
 	pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen' AND pago_pensiones.estado = 'VALIDO'";
 $resultado2=$mysqli->query($query2);
 while($row2=$resultado2->fetch_assoc()){
-    date_default_timezone_set('America/Lima'); // Configura la zona horaria a Lima/Perú
+    // Zona horaria: la fija ../conexion.php según la configuración regional
     setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES.utf8', 'es_ES', 'spanish'); // Configura el locale para español
     
     // Supongamos que 'fecha_pago' está en formato 'YYYY-MM-DD'
@@ -184,7 +184,7 @@ while($row2=$resultado2->fetch_assoc()){
     <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['concepto'])."</td>
     <td  style='text-align:center;font-size:14px'>".utf8_encode($row2['mes'])."</td>
     <td  style='text-align:center;font-size:14px'>".$fecha_formateada_minusculas."</td>
-    <td  style='text-align:center;font-size:14px'>S/. ".utf8_encode($row2['sub_total'])."</td>
+    <td  style='text-align:center;font-size:14px'>".formato_moneda($row2['sub_total'])."</td>
 
    
 ";

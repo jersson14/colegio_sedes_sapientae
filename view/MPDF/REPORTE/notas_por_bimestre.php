@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
@@ -166,7 +166,7 @@ $html = '
         <td>' . $datos_estudiante['emp_cod'] . '</td>
     </tr>
     <tr>
-        <th>DNI:</th>
+        <th>' . nombre_documento() . ':</th>
         <td>' . $datos_estudiante['alum_dni'] . '</td>
         <th>Estudiante:</th>
         <td>' . $datos_estudiante['Estudiante'] . '</td>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../utilitario/sesion.php';
+require_once __DIR__ . '/../utilitario/regional.php';
 iniciar_sesion_segura();
 if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
@@ -539,6 +540,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                 </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_regional.php')" class="nav-link">
+                  <i class="nav-icon fas fa-globe-americas"></i>
+                  <p>
+                    Datos regionales
+                  </p>
+                </a>
               </li>
                 <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
@@ -1805,7 +1814,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <script>
   function cargar_contenido(id, vista) {
-    $("#" + id).load(vista);
+    $("#" + id).load(vista, function() {
+      aplicarRegional(this);
+    });
   }
   var idioma_espanol = {
     select: {
@@ -1896,7 +1907,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       Swal.fire('Dato inválido', r400.mensaje || 'Revise los datos ingresados', 'warning');
     }
   });
+  // País, moneda y documento configurados (Configuración > Datos regionales)
+  window.REGIONAL = <?php echo json_encode(config_regional_publica(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;
 </script>
+<script src="../js/regional.js?rev=<?php echo time(); ?>"></script>
 <!-- Bootstrap 4 -->
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -1924,6 +1938,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- Incluye tu JavaScript personalizado -->
 <script>
   $(document).ready(function() {
+    aplicarRegional(document.body);
     listar_empresa();
     listar_comunicado_dash();
     <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>

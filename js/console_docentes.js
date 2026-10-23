@@ -317,7 +317,7 @@ function Registrar_Docente(){
       success:function(resp){
         if(resp.length>0){
         if(resp==1){
-          Swal.fire("Mensaje de Confirmación","Se registro correctamente al Docente con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se registro correctamente al Docente con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
             // Limpiar todos los campos
             document.getElementById('txt_dni').value = "";
             document.getElementById('txt_nomb').value = "";
@@ -342,7 +342,7 @@ function Registrar_Docente(){
 
           });
             }else{
-            Swal.fire("Mensaje de Advertencia","El DNI del docente que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+            Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del docente que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
             }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo registrar al docente","warning");
@@ -411,13 +411,13 @@ function Modificar_docente(){
       success:function(resp){
         if(resp>0){
           if(resp==1){
-            Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al Docente con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+            Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al Docente con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
               $("#modal_editar").modal('hide');
               tb_docentes.ajax.reload();
               document.getElementById('txt_foto_editar').value="";
             });
               }else{
-              Swal.fire("Mensaje de Advertencia","El DNI del docente que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+              Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del docente que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
               }
           }else{
             Swal.fire("Mensaje de Advertencia","No se pudo registrar al docente","warning");

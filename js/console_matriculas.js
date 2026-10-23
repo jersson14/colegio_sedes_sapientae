@@ -74,7 +74,7 @@ function listar_matriculados(){
         {"data":"MATRICULA",
             render: function(data,type,row){
                     if(data==data){
-                    return '<span class="badge bg-success">'+data+'</span>';
+                    return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
                     }
             }   
         },        {"data":"procedencia_colegio"},
@@ -177,7 +177,7 @@ function listar_matriculados_filtro(){
       {"data":"MATRICULA",
           render: function(data,type,row){
                   if(data==data){
-                  return '<span class="badge bg-success">'+data+'</span>';
+                  return '<span class="badge bg-success">'+formatoMoneda(data)+'</span>';
                   }
           }   
       },        {"data":"procedencia_colegio"},
@@ -208,7 +208,7 @@ function Cargar_Select_estudiante() {
     let cadena = "<option value=''>Seleccionar Estudiante</option>";
     if (Array.isArray(data) && data.length > 0) {
       data.forEach(function(item) {
-        cadena += `<option value='${item[0]}'>DNI: ${item[1]} - ${item[2]}</option>`;
+        cadena += `<option value='${item[0]}'>${REGIONAL.doc_nombre}: ${item[1]} - ${item[2]}</option>`;
       });
     } else {
       cadena = "<option value=''>No se encontraron registros</option>";

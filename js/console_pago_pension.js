@@ -434,7 +434,7 @@ function SumarTotal(){
    $("#tabla_pago tbody#tbody_tabla_pago tr").each(function(){
      total += parseFloat($(this).find('td').eq(4).text()) || 0;
    })
-   $("#lbl_totalneto").html("<b>Total:</b>S/."+total.toFixed(2));
+   $("#lbl_totalneto").html("<b>Total: </b>"+formatoMoneda(total));
 
  }
 
@@ -529,9 +529,9 @@ function listar_pagos(id) {
                 console.log(json);  // Imprime la respuesta JSON para depuración
 
                 if (json.total_sub_total !== undefined) {
-                    $('#total_sub_total').text(json.total_sub_total.toFixed(2));
+                    $('#total_sub_total').text(formatoMoneda(json.total_sub_total));
                 } else {
-                    $('#total_sub_total').text('0.00');  // Valor por defecto si no está definido
+                    $('#total_sub_total').text(formatoMoneda(0));  // Valor por defecto si no está definido
                 }
                 return json.data;
             }
@@ -541,7 +541,7 @@ function listar_pagos(id) {
             { "data": "concepto" },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
-            { "data": "sub_total" },
+            { "data": "sub_total", render: function(data){ return formatoMoneda(data); } },
 
             {"data":"concepto",
               render: function(data,type,row){

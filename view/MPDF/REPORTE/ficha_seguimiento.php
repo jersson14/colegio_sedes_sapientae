@@ -13,7 +13,7 @@ empresa.emp_direccion,
 empresa.emp_logo
 FROM
 empresa";
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 $html="";
 $resultado = $mysqli->query($query);
 $query2="SELECT

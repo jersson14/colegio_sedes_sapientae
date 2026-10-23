@@ -318,7 +318,7 @@ function Registrar_alumno(){
         if(resp.length>0){
           if(resp==1){
 
-          Swal.fire("Mensaje de Confirmación","Se registro correctamente al estudiante con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se registro correctamente al estudiante con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
             $("#modal_registro").modal('hide');
             tb_alumnos.ajax.reload();
             document.getElementById('txt_dni').value="";
@@ -342,7 +342,7 @@ function Registrar_alumno(){
             document.getElementById('txt_cel_ma').value="";
           });
         }else{
-        Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+        Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
         }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo registrar al alumno","warning");
@@ -425,14 +425,14 @@ function Modificar_alumno(){
       success:function(resp){
         if(resp.length>0){
           if(resp==1){
-          Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al estudiante con el DNI N° <b>"+dni+"</b>","success").then((value)=>{
+          Swal.fire("Mensaje de Confirmación","Se actualizo correctamente al estudiante con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{
             $("#modal_editar").modal('hide');
             tb_alumnos.ajax.reload();
             document.getElementById('txt_foto_editar').value="";
 
           });
         }else{
-        Swal.fire("Mensaje de Advertencia","El DNI del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+        Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del alumno que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
         }
         }else{
           Swal.fire("Mensaje de Advertencia","No se pudo actualizar la foto","warning");

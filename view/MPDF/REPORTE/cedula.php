@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
@@ -179,7 +179,7 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
     </div>
     <h3>Datos de Matricula</h3>
     <table>
-        <tr><th>DNI:</th><td>' . $row_matricula['alum_dni'] . '</td></tr>
+        <tr><th>' . nombre_documento() . ':</th><td>' . $row_matricula['alum_dni'] . '</td></tr>
         <tr><th>Estudiante:</th><td>' . $row_matricula['Estudiante'] . '</td></tr>
         <tr><th>Nivel Académico:</th><td>' . $row_matricula['Nivel_academico'] . '</td></tr>
         <tr><th>Grado - Sección:</th><td>' . $row_matricula['grado'] . '</td></tr>
@@ -190,10 +190,10 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
     </table>
     <h3>Datos de los Padres</h3>
     <table>
-        <tr><th>DNI Papá:</th><td>' . $row_matricula['Dni_papa'] . '</td></tr>
+        <tr><th>' . nombre_documento() . ' Papá:</th><td>' . $row_matricula['Dni_papa'] . '</td></tr>
         <tr><th>Datos Papá:</th><td>' . $row_matricula['Datos_papa'] . '</td></tr>
         <tr><th>Celular Papá:</th><td>' . $row_matricula['Celular_papa'] . '</td></tr>
-        <tr><th>DNI Mamá:</th><td>' . $row_matricula['Dni_mama'] . '</td></tr>
+        <tr><th>' . nombre_documento() . ' Mamá:</th><td>' . $row_matricula['Dni_mama'] . '</td></tr>
         <tr><th>Datos Mamá:</th><td>' . $row_matricula['Datos_mama'] . '</td></tr>
         <tr><th>Celular Mamá:</th><td>' . $row_matricula['Celular_mama'] . '</td></tr>
     </table>';
@@ -212,15 +212,15 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
 
     while ($row_pago = $resultado_pagos->fetch_assoc()) {
         $hay_pagos = true;
-        $fecha_pago = new DateTime($row_pago['fecha_pago'], new DateTimeZone('America/Lima'));
-        $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE, 'America/Lima', IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
+        $fecha_pago = new DateTime($row_pago['fecha_pago'], new DateTimeZone(config_regional()['zona_horaria']));
+        $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE, config_regional()['zona_horaria'], IntlDateFormatter::GREGORIAN, 'd \'de\' MMMM \'de\' y');
         $fecha_formateada = $formatter->format($fecha_pago);
 
         $html .= '
         <tr>
             <td>' . $row_pago['concepto'] . '</td>
             <td>' . $fecha_formateada . '</td>
-            <td>S/. ' . number_format($row_pago['sub_total'], 2) . '</td>
+            <td>' . formato_moneda($row_pago['sub_total']) . '</td>
         </tr>';
 
         $total += $row_pago['sub_total'];
@@ -235,7 +235,7 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
         $html .= '
         <tr>
             <td colspan="2" style="text-align: right;"><b>Total:</b></td>
-            <td><b>S/. ' . number_format($total, 2) . '</b></td>
+            <td><b>' . formato_moneda($total) . '</b></td>
         </tr>';
     }
 

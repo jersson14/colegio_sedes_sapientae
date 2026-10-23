@@ -343,9 +343,9 @@ function listar_pagos(id) {
                 console.log(json);  // Imprime la respuesta JSON para depuración
 
                 if (json.total_sub_total !== undefined) {
-                    $('#total_sub_total').text(json.total_sub_total.toFixed(2));
+                    $('#total_sub_total').text(formatoMoneda(json.total_sub_total));
                 } else {
-                    $('#total_sub_total').text('0.00');  // Valor por defecto si no está definido
+                    $('#total_sub_total').text(formatoMoneda(0));  // Valor por defecto si no está definido
                 }
                 return json.data;
             }
@@ -355,7 +355,7 @@ function listar_pagos(id) {
             { "data": "concepto" },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
-            { "data": "sub_total" },
+            { "data": "sub_total", render: function(data){ return formatoMoneda(data); } },
             {
                 "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir boleta'><i class='fa fa-print'></i> Boleta</button>",
                 "orderable": false // Evita la ordenación en esta columna

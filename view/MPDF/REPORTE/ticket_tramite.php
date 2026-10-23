@@ -13,7 +13,7 @@ empresa.emp_direccion,
 empresa.emp_logo
 FROM
 empresa";
-date_default_timezone_set('America/Lima');
+// Zona horaria: la fija ../conexion.php según la configuración regional
 $html="";
 $resultado = $mysqli->query($query);
 $query2="SELECT
@@ -70,7 +70,7 @@ while($row = $resultado2->fetch_assoc()){
     <span style="font-size:12px"><b><br>Tipo Documento:
     </b> '.$row['tipodo_descripcion'].'
     </span><br>
-    <span style="font-size:12px"><b><br>DNI:
+    <span style="font-size:12px"><b><br>' . nombre_documento() . ':
     </b> '.$row['doc_dniremitente'].'
     </span><br>
     <span style="font-size:12px"><b><br>Remitente:<br>
