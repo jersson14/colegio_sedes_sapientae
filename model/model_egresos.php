@@ -65,6 +65,7 @@
         }
         public function Cargar_Select_Indicadores_Egresos(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_INDICADORES_GASTOS()";
             $query  = $c->prepare($sql);
             $query->execute();

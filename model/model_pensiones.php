@@ -33,6 +33,7 @@
         }
         public function Cargar_Select_Nivel(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_NIVELACA()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -82,13 +83,11 @@
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$id);
     
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            // 1 eliminada, 2 tiene pagos registrados (no se elimina)
+            $query->execute();
+            $row = $query->fetchColumn();
             conexionBD::cerrar_conexion();
+            return $row;
         }
     }
 

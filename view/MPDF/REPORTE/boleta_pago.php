@@ -68,7 +68,7 @@ FROM
 	ON 
 		aulas.id_seccion = seccion.seccion_id
 	WHERE
-		pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
+		pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen' AND pago_pensiones.estado = 'VALIDO'";
 //CONVERSIÓN DE FECHA
 
 
@@ -162,7 +162,7 @@ FROM
 	ON 
 		usuario.empresa_id = empresa.empresa_id
 WHERE
-	pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen'";
+	pago_pensiones.id_matri = '$codigo' and pago_pensiones.id_pago_pension='$idpagopen' AND pago_pensiones.estado = 'VALIDO'";
 $resultado2=$mysqli->query($query2);
 while($row2=$resultado2->fetch_assoc()){
     date_default_timezone_set('America/Lima'); // Configura la zona horaria a Lima/Perú

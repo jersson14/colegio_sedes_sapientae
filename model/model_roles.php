@@ -61,6 +61,7 @@
         }
         public function Cargar_Select_Roles(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_ROLES_UNICO()";
             $query  = $c->prepare($sql);
             $query->execute();

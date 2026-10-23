@@ -99,7 +99,9 @@
           <div class="alert alert-warning alert-dismissible" style="text-align:justify">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h5><i class="icon fas fa-exclamation-triangle"></i> ¡Aviso Importante!</h5>
-            Si la fecha de vencimiento y el estado están en rojo con la etiqueta <b>VENCIDO</b>, considere agregar un recargo por mora, ya que el pago se ha realizado fuera de la fecha límite. En cambio, si la fecha y el estado están en verde con la etiqueta <b>PENDIENTE</b>, no es necesario aplicar mora, ya que el pago está al día o se está realizando antes de la fecha de vencimiento.
+            El <b>monto sugerido</b> es el saldo pendiente de la pensión e <b>incluye la mora</b> si se pagó fuera de la fecha de vencimiento.
+            Puede registrar un <b>pago parcial</b> con un monto menor (se aplica primero a la mora y luego a la pensión).
+            Para no cobrar la mora marque <b>Exonerar mora</b> e indique el motivo.
           </div>
           <div class="row">
             <div class="col-12 form-group" style="color:red">
@@ -137,6 +139,21 @@
             <div class="col-6 form-group">
                 <label for="">Estado<b style="color:red">(*)</b>:</label>
                 <input type="text" class="form-control" id="txt_estado" disabled>
+            </div>
+            <div class="col-6 form-group">
+                <label for="">Mora pendiente:</label>
+                <input type="text" class="form-control" id="txt_mora" disabled>
+            </div>
+            <div class="col-6 form-group" id="div_exonerar_mora" style="display:none">
+                <label>&nbsp;</label>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="chk_exonerar_mora">
+                  <label class="custom-control-label" for="chk_exonerar_mora"><b>Exonerar mora</b></label>
+                </div>
+            </div>
+            <div class="col-12 form-group" id="div_motivo_mora" style="display:none">
+                <label for="">Motivo de la exoneración<b style="color:red">(*)</b>:</label>
+                <input type="text" class="form-control" id="txt_motivo_mora" maxlength="200">
             </div>
             <div class="col-12 form-group">
               <button type="button" class="btn btn-success btn-block" onclick="Agregar_pago()">

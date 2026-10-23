@@ -49,6 +49,7 @@
         }
         public function Cargar_CursoDocente($id){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_CURSO_DOCENTE(?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);

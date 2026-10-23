@@ -82,6 +82,7 @@
         
         public function Listar_pagos_por_id_estudiante_año($id,$año){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_HORARIOS_ID_AULA_ESTUDIANTE_AÑO(?,?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);
@@ -96,6 +97,7 @@
         }
         public function Cargar_Id_aula_horarios($id){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_HORARIOS_ID_AULA(?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);

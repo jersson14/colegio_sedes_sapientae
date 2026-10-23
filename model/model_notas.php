@@ -86,6 +86,7 @@
         }
         public function Cargar_Año(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_AÑO()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -98,6 +99,7 @@
         }
         public function Cargar_estudiante(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_ESTUDIANTE()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -124,6 +126,7 @@
         }
         public function Cargar_Periodos(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_PERIODO()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -136,6 +139,7 @@
         }
         public function Cargar_Periodos2(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_PERIODO2()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -148,6 +152,7 @@
         }
         public function Cargar_Periodos_cargados(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_PERIODO_CARGADOS()";
             $query  = $c->prepare($sql);
             $query->execute();

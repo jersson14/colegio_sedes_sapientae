@@ -181,6 +181,7 @@
 
         public function Cargar_datos_usuario($id){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_DATOS_USUARIO(?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);

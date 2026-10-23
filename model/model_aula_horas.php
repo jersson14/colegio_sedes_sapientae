@@ -54,6 +54,7 @@
         
         public function Cargar_Id_aula($id,$año){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_HORA_ID_AULA(?,?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);

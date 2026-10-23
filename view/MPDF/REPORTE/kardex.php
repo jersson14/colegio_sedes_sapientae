@@ -48,7 +48,7 @@ FROM
     INNER JOIN seccion ON aulas.id_seccion = seccion.seccion_id
     INNER JOIN año_escolar ON matricula.id_año = año_escolar.Id_año_escolar
 WHERE
-    matricula.id_matricula = '$codigo'";
+    matricula.id_matricula = '$codigo' AND pago_pensiones.estado = 'VALIDO'";
 
 $stmt = $mysqli->prepare($query);
 $stmt->execute();

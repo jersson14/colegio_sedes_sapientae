@@ -209,11 +209,12 @@ function Cargar_Select_Nivelaca(id_nivel_seleccionado) {
 }
 
 function Cargar_Select_pensiones(id) {
+  // Pensiones del nivel de la matrícula, con su año y si ya están pagadas
   $.ajax({
     url: "../controller/pago_pension/controlador_cargar_select_pension.php",
     type: 'POST',
     data: {
-      id: id
+      id_matri: $("#txt_id_matricula").val()
     }
   }).done(function(resp) {
     let data = JSON.parse(resp);
@@ -226,60 +227,74 @@ function Cargar_Select_pensiones(id) {
       cadena += "<option value=''>No se encontraron registros</option>";
     }
     $('#select_pension').html(cadena);
-
-    var idSeleccionado = $("#select_pension").val();
-    Traerpension(idSeleccionado);
+    Traerpension($("#select_pension").val());
   });
 }
 
+function Limpiar_saldo() {
+  $("#txt_monto_pagar").val('').data('saldo', 0).data('mora', 0);
+  $("#txt_fecha_ven").val('');
+  $("#txt_estado").val('').css({"color": "", "font-weight": ""});
+  $("#txt_mora").val('');
+  $("#chk_exonerar_mora").prop('checked', false);
+  $("#div_exonerar_mora").hide();
+  $("#div_motivo_mora").hide();
+  $("#txt_motivo_mora").val('');
+}
+
+// Trae del servidor el saldo de la pensión: precio, mora aplicable y lo ya pagado
 function Traerpension(id) {
+  Limpiar_saldo();
+  if (!id || $("#select_concepto").val() != "PENSION") {
+    return;
+  }
   $.ajax({
-    url: "../controller/pago_pension/controlador_traermonto.php",
+    url: "../controller/pago_pension/controlador_saldo_pension.php",
     type: 'POST',
     data: {
-      id: id
+      id_matri: $("#txt_id_matricula").val(),
+      id_pension: id
     }
   }).done(function(resp) {
-    var data = JSON.parse(resp);
-    if (data.length > 0) {
-      // Asignar el monto de pago y fecha de vencimiento
-      $("#txt_monto_pagar").val(data[0][1]);
-      let fechaVencimiento = data[0][2]; // Asegúrate de que data[0][2] contenga la fecha de vencimiento
-
-      // Asigna la fecha de vencimiento
-      $("#txt_fecha_ven").val(fechaVencimiento);
-
-      // Verifica si la fecha de vencimiento es anterior a la fecha actual
-      let fechaActual = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
-      if (fechaVencimiento < fechaActual) {
-        // Si está vencido, poner la fecha en rojo y el estado en rojo con texto "VENCIDO" en negrita
-        $("#txt_fecha_ven").css({
-          "color": "red",
-          "font-weight": "bold"  // Aplicar negrita
-        });
-        $("#txt_estado").val("VENCIDO").css({
-          "color": "red",
-          "font-weight": "bold"  // Aplicar negrita
-        });
-      } else {
-        // Si no está vencido, poner el estado en verde con texto "PENDIENTE" en negrita
-        $("#txt_fecha_ven").css({
-          "color": "green",
-          "font-weight": "bold"  // Aplicar negrita
-        });  // Mantener el color verde si no está vencido
-        $("#txt_estado").val("PENDIENTE").css({
-          "color": "green",
-          "font-weight": "bold"  // Aplicar negrita
-        });
-      }
+    if (!resp.ok) {
+      return;
+    }
+    let s = resp.data;
+    let colores = {PAGADO: "blue", VENCIDO: "red", PARCIAL: "orange", PENDIENTE: "green"};
+    $("#txt_fecha_ven").val(s.fecha_vencimiento).css({"color": colores[s.estado], "font-weight": "bold"});
+    $("#txt_estado").val(s.estado + (parseFloat(s.pagado_pension) > 0 ? " (pagado " + s.pagado_pension + " de " + s.precio + ")" : ""))
+                    .css({"color": colores[s.estado], "font-weight": "bold"});
+    $("#txt_monto_pagar").val(s.saldo_total).data('saldo', parseFloat(s.saldo_total)).data('mora', parseFloat(s.saldo_mora));
+    if (parseFloat(s.saldo_mora) > 0) {
+      $("#txt_mora").val(s.saldo_mora + " (incluida en el monto)");
+      $("#div_exonerar_mora").show();
     } else {
-      // Si no hay datos, limpiar los campos
-      $("#txt_monto_pagar").val('');
-      $("#txt_fecha_ven").val('');
-      $("#txt_estado").val('');
+      $("#txt_mora").val(s.mora_exonerada == 1 ? "EXONERADA" : "0.00");
     }
   });
 }
+
+$(document).off('change.pago', '#chk_exonerar_mora').on('change.pago', '#chk_exonerar_mora', function() {
+  let saldo = $("#txt_monto_pagar").data('saldo') || 0;
+  let mora = $("#txt_monto_pagar").data('mora') || 0;
+  if (this.checked) {
+    $("#div_motivo_mora").show();
+    $("#txt_monto_pagar").val((saldo - mora).toFixed(2));
+  } else {
+    $("#div_motivo_mora").hide();
+    $("#txt_monto_pagar").val(saldo.toFixed(2));
+  }
+});
+
+$(document).off('change.pago', '#select_concepto').on('change.pago', '#select_concepto', function() {
+  let es_pension = $(this).val() == "PENSION";
+  $("#select_pension").prop('disabled', !es_pension);
+  if (es_pension) {
+    Traerpension($("#select_pension").val());
+  } else {
+    Limpiar_saldo();
+  }
+});
 
 // Evento para el botón "Pagar" en la tabla
 $('#tabla_pago_pension').on('click', '.pagar', function() {
@@ -372,30 +387,39 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
 function Agregar_pago(){
   var id_matri=$("#txt_id_matricula").val();
   var concepto=$("#select_concepto").val();
-  var id_pension2=$("#select_pension option:selected").val();
-  var id_pension=$("#select_pension option:selected").text();
+  var es_pension = concepto=="PENSION";
+  var id_pension2= es_pension ? $("#select_pension option:selected").val() : "";
+  var id_pension= es_pension ? $("#select_pension option:selected").text() : concepto;
+  var monto=$("#txt_monto_pagar").val().replace(",", ".");
+  var exonerar = es_pension && $("#chk_exonerar_mora").is(':checked') ? 1 : 0;
+  var motivo = $("#txt_motivo_mora").val().trim();
 
-  var monto=$("#txt_monto_pagar").val();
-
-
-
+  if(es_pension && id_pension2==""){
+    return Swal.fire("Mensaje de Advertencia","Seleccione la pensión a pagar","warning");
+  }
+  if(!/^\d+(\.\d{1,2})?$/.test(monto) || (parseFloat(monto)<=0 && !exonerar)){
+    return Swal.fire("Mensaje de Advertencia","Ingrese un monto válido mayor a 0","warning");
+  }
+  if(es_pension && parseFloat(monto) > ($("#txt_monto_pagar").data('saldo') || 0)){
+    return Swal.fire("Mensaje de Advertencia","El monto excede el saldo pendiente de la pensión","warning");
+  }
+  if(exonerar && motivo.length==0){
+    return Swal.fire("Mensaje de Advertencia","Indique el motivo para exonerar la mora","warning");
+  }
   if(verificarid(id_pension)){
-   return Swal.fire("Mensaje de Advertencia","La asignatura ya fue agregado a la tabla","warning");
+   return Swal.fire("Mensaje de Advertencia","Ese concepto ya fue agregado a la tabla","warning");
   }
 
-  var datos_agregar ="<tr>";
-  datos_agregar+="<td >"+id_matri+"</td>";
-  datos_agregar+="<td>"+concepto+"</td>";
-  datos_agregar+="<td>"+id_pension2+"</td>";
-
-  datos_agregar+="<td for='id'>"+id_pension+"</td>";
-  datos_agregar+="<td>"+monto+"</td>";
-  datos_agregar+="<td><button class='btn btn-danger' onclick='remove(this)'><i class='fas fa-trash'><i></button></td>";
-  datos_agregar+="</tr>";
-  $("#tabla_pago").append(datos_agregar);
+  var tr = $("<tr>").attr('data-exonerar', exonerar).attr('data-motivo', motivo);
+  tr.append($("<td>").text(id_matri));
+  tr.append($("<td>").text(concepto));
+  tr.append($("<td>").text(id_pension2));
+  tr.append($("<td for='id'>").text(id_pension));
+  tr.append($("<td>").text(parseFloat(monto).toFixed(2)));
+  tr.append($("<td>").html("<button class='btn btn-danger' onclick='remove(this)'><i class='fas fa-trash'></i></button>"
+                           + (exonerar ? " <span class='badge badge-warning'>Mora exonerada</span>" : "")));
+  $("#tabla_pago").append(tr);
   SumarTotal();
-
- 
 }
 function remove(t){
   var td =t.parentNode;
@@ -406,19 +430,11 @@ function remove(t){
 
 }
 function SumarTotal(){
-  let arreglo_total=new Array();
-   let count=0;
-   let total=0;
+  let total=0;
    $("#tabla_pago tbody#tbody_tabla_pago tr").each(function(){
-     arreglo_total.push($(this).find('td').eq(4).text());
-     count++;
+     total += parseFloat($(this).find('td').eq(4).text()) || 0;
    })
-   for(var i=0;i<count;i++){
-     var suma = arreglo_total[i];
-     total=(parseFloat(total)+parseFloat(suma)).toFixed(2);
-     
-   };
-   $("#lbl_totalneto").html("<b>Total:</b>S/."+total);
+   $("#lbl_totalneto").html("<b>Total:</b>S/."+total.toFixed(2));
 
  }
 
@@ -426,50 +442,37 @@ function verificarid(id){
   let idverificar=document.querySelectorAll('#tabla_pago td[for="id"]');
   return [].filter.call(idverificar, td=>td.textContent ===id).length===1;
 }
-//REGISTRANDO ROLES
-
-
 
 function Registrar_Pago() {
-  let count = 0;
-  let arreglo_id = new Array();
-  let arreglo_concepto = new Array();
-  let arreglo_pension = new Array();
-  let arreglo_subtotal = new Array();
-
   let matricula = document.getElementById('txt_id_matricula').value;
   let fecha = document.getElementById('fecha_pago').value;
-
+  let lineas = [];
 
   $("#tabla_pago tbody#tbody_tabla_pago tr").each(function () {
-    arreglo_id.push($(this).find('td').eq(0).text());
-    arreglo_concepto.push($(this).find('td').eq(1).text());
-    arreglo_pension.push($(this).find('td').eq(2).text());
-    arreglo_subtotal.push($(this).find('td').eq(4).text());
-
-    count++;
+    lineas.push({
+      concepto: $(this).find('td').eq(1).text(),
+      id_pension: $(this).find('td').eq(2).text(),
+      monto: $(this).find('td').eq(4).text(),
+      exonerar: $(this).attr('data-exonerar'),
+      motivo: $(this).attr('data-motivo')
+    });
   });
 
-  if (count == 0) {
+  if (lineas.length == 0) {
     return Swal.fire("Mensaje de Advertencia", "La tabla de pagos debe contener al menos un registro", "warning");
   }
-
-  let id_matri = arreglo_id.toString();
-  let concepto = arreglo_concepto.toString();
-  let id_pension = arreglo_pension.toString();
-  let monto = arreglo_subtotal.toString();
 
   $.ajax({
     url: "../controller/pago_pension/controlador_detalle_pago_pension.php",
     type: 'POST',
     data: {
-      id_matri: id_matri,
-      concepto: concepto,
-      id_pension: id_pension,
-      monto: monto
+      id_matri: matricula,
+      lineas: JSON.stringify(lineas)
     }
   }).done(function (resp) {
-    if(resp==1){
+    if(resp.ok){
+      $("#tbody_tabla_pago").html("");
+      SumarTotal();
       Swal.fire({
         title: 'Se registro el pago correctamente<b>',
         text: "Datos de Confirmación",
@@ -480,32 +483,23 @@ function Registrar_Pago() {
         confirmButtonText: 'Imprimir Boleta!'
       }).then((result) => {
         if (result.isConfirmed) {
-          var url = "../view/MPDF/REPORTE/pago.php?codigo="+ encodeURIComponent(matricula) + "&fecha=" + encodeURIComponent(fecha) + "#zoom=100%";;
+          var url = "../view/MPDF/REPORTE/pago.php?codigo="+ encodeURIComponent(matricula) + "&fecha=" + encodeURIComponent(fecha) + "#zoom=100%";
 
           // Abrir una nueva ventana con la URL construida
           var newWindow = window.open(url, "PAGO", "scrollbars=NO");
-          
+
           // Asegurarse de que la ventana se abre en tamaño máximo
           if (newWindow) {
               newWindow.moveTo(0, 0);
               newWindow.resizeTo(screen.width, screen.height);
-          }           
-           $("#modal_registro").modal('hide');
-           tbl_pago_pension.ajax.reload();
-           tbl_pago_pension.clear().draw();
-
-
-        }else{
-          $("#modal_registro").modal('hide');
-          tbl_pago_pension.ajax.reload();
-          tbl_pago_pension.clear().draw();
-
+          }
         }
+        $("#modal_registro").modal('hide');
+        tbl_pago_pension.ajax.reload();
       })
-    } else if (resp == 2) {
-      Swal.fire("Mensaje de Advertencia", "El mes que desea pagar ya existe en la base de datos, verifique por favor", "warning");
     } else {
-      Swal.fire("Mensaje de Error", "Error al registrar el pago", "error");
+      // Si un concepto falla no se registra ninguno de la tabla
+      Swal.fire("Mensaje de Advertencia", (resp.linea ? "Fila " + resp.linea + ": " : "") + resp.mensaje + ". No se registró ningún pago.", "warning");
     }
   });
 }
@@ -632,20 +626,21 @@ $('#tabla_pago_pension').on('click','.kardex',function(){
 })
 
 
-function Anular_pago(id){
+function Anular_pago(id, motivo){
   $.ajax({
     "url":"../controller/pago_pension/controlador_eliminar_pago_pension.php",
     type:'POST',
     data:{
-      id:id
+      id:id,
+      motivo:motivo
     }
   }).done(function(resp){
-    if(resp>0){
-        Swal.fire("Mensaje de Confirmación","Se anulo el pago satisfactoriamente","success").then((value)=>{
+    if(resp.codigo==1){
+        Swal.fire("Mensaje de Confirmación","Se anuló el pago satisfactoriamente","success").then((value)=>{
           tbl_pagos.ajax.reload();
         });
     }else{
-      return Swal.fire("Mensaje de Error","No se pudo completar el proceso","error");
+      return Swal.fire("Mensaje de Advertencia",resp.mensaje,"warning");
 
     }
   })
@@ -660,15 +655,18 @@ $('#tabla_pagos2').on('click','.anular',function(){
   }
   Swal.fire({
     title: 'Desea anular el pago con el concepto de : '+data.concepto+'?',
-    text: "Una vez aceptado el pago sera anulado y eliminado de esta lista!!!",
+    text: "El pago y su ingreso quedarán ANULADOS (no se borran). Indique el motivo:",
     icon: 'warning',
+    input: 'text',
+    inputPlaceholder: 'Motivo de la anulación',
+    inputValidator: (valor) => { if (!valor || !valor.trim()) { return 'El motivo es obligatorio'; } },
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
     confirmButtonText: 'Si, Anular'
   }).then((result) => {
     if (result.isConfirmed) {
-      Anular_pago(data.id_pago_pension);
+      Anular_pago(data.id_pago_pension, result.value.trim());
     }
   })
 })
@@ -712,14 +710,14 @@ function Editar_pago(){
       descrip:descrip
     }
   }).done(function(resp){
-    if(resp>0){
+    if(resp.codigo==1){
         Swal.fire("Mensaje de Confirmación","Pago actualizado correctamente","success").then((value)=>{
           tbl_pagos.ajax.reload();
             $("#modal_editar2").modal('hide');
         });
       
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Advertencia",resp.mensaje,"warning");
 
     }
   })

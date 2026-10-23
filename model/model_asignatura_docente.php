@@ -34,6 +34,7 @@
         }
         public function Cargar_Select_Docente(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_DOCENTE()";
             $query  = $c->prepare($sql);
             $query->execute();

@@ -137,20 +137,53 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        function Registrar_detalle_Pago_Pension($array_id,$array_concepto,$array_pension,$array_subtotal){
+        /**
+         * Registra varios conceptos de pago de una matrícula en una sola transacción:
+         * si alguno falla (ya pagado, excede saldo, etc.) no se registra ninguno.
+         * $lineas: [['concepto'=>..., 'id_pension'=>int|null, 'monto'=>'0.00', 'exonerar'=>0|1, 'motivo'=>''], ...]
+         */
+        public function Registrar_Pago($id_matri,$lineas,$usu){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_DETALLE_PENSION_PAGO(?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$array_id);
-            $query ->bindParam(2,$array_concepto);
-            $query ->bindParam(3,$array_pension);
-            $query ->bindParam(4,$array_subtotal);
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
+            $detalle = [];
+            try {
+                $c->beginTransaction();
+                foreach($lineas as $i => $l){
+                    $query = $c->prepare("CALL SP_REGISTRAR_PAGO_PENSION(?,?,?,?,?,?,?)");
+                    $query->execute([$id_matri,$l['concepto'],$l['id_pension'],$l['monto'],$l['exonerar'],$l['motivo'],$usu]);
+                    $r = $query->fetch(PDO::FETCH_ASSOC);
+                    $query->closeCursor();
+                    if((int)$r['codigo'] !== 1){
+                        $c->rollBack();
+                        conexionBD::cerrar_conexion();
+                        return ['ok'=>false,'codigo'=>(int)$r['codigo'],'linea'=>$i+1,'mensaje'=>$r['mensaje']];
+                    }
+                    $detalle[] = $r;
+                }
+                $c->commit();
+            } catch (PDOException $e) {
+                if($c->inTransaction()){ $c->rollBack(); }
+                error_log('Registrar_Pago: '.$e->getMessage());
+                conexionBD::cerrar_conexion();
+                return ['ok'=>false,'codigo'=>0,'mensaje'=>'Error al registrar el pago'];
             }
             conexionBD::cerrar_conexion();
+            return ['ok'=>true,'codigo'=>1,'mensaje'=>'Pago registrado','detalle'=>$detalle];
+        }
+        public function Saldo_Pension($id_matri,$id_pension){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("CALL SP_SALDO_PENSION(?,?)");
+            $query->execute([$id_matri,$id_pension]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r ?: null;
+        }
+        public function Cargar_Pension_Matricula($id_matri){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("CALL SP_CARGAR_SELECT_PENSION_MATRICULA(?)");
+            $query->execute([$id_matri]);
+            $arreglo = $query->fetchAll();
+            conexionBD::cerrar_conexion();
+            return $arreglo;
         }
 
         public function Listar_pagos_alu($id) {
@@ -171,35 +204,22 @@
             conexionBD::cerrar_conexion();
             return $arreglo;
         }
-        public function Modificar_Pago_pension($id,$monto,$descrip){
+        public function Modificar_Pago_pension($id,$monto,$descrip,$usu){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_PAGO_PENSION(?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$monto);
-            $query ->bindParam(3,$descrip);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            $query = $c->prepare("CALL SP_MODIFICAR_PAGO_PENSION(?,?,?,?)");
+            $query->execute([$id,$monto,$descrip,$usu]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
             conexionBD::cerrar_conexion();
+            return $r;
         }
-        public function Eliminar_pago_pension($id){
+        // Los pagos ya no se borran: quedan ANULADOS con motivo, usuario y fecha (y su ingreso también)
+        public function Anular_pago_pension($id,$motivo,$usu){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_PAGO_PENSION(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            $query = $c->prepare("CALL SP_ANULAR_PAGO_PENSION(?,?,?)");
+            $query->execute([$id,$motivo,$usu]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
             conexionBD::cerrar_conexion();
+            return $r;
         }
 
     }

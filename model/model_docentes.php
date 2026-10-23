@@ -82,6 +82,7 @@
         }
         public function Cargar_Select_Especialidad(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_ESPECIALIDAD()";
             $query  = $c->prepare($sql);
             $query->execute();

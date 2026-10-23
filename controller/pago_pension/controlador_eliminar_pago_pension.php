@@ -1,12 +1,10 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
-  require '../../model/model_pago_pension.php';
-  $MPP = new Modelo_Pago_Pension(); // Instanciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-
-    $consulta = $MPP->Eliminar_pago_pension($id);
-    echo $consulta;
-
-
-
+require_once __DIR__ . '/../../utilitario/validacion.php';
+    require '../../model/model_pago_pension.php';
+    $MPP = new Modelo_Pago_Pension(); // Instanciamos
+    // Ya no se elimina: el pago y su ingreso quedan ANULADOS con motivo y usuario
+    $id = entero_post('id', 1, 'pago');
+    $motivo = strtoupper(texto_post('motivo', 255, true, 'motivo de la anulación'));
+    responder_json($MPP->Anular_pago_pension($id, $motivo, usuario_actual_id()));
 ?>

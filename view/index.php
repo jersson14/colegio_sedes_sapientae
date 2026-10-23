@@ -1891,6 +1891,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     } else if (xhr.status === 403 && typeof Swal !== 'undefined') {
       var r = xhr.responseJSON || {};
       Swal.fire('Acceso denegado', r.mensaje || 'No tiene permiso para esta acción', 'error');
+    } else if (xhr.status === 400 && typeof Swal !== 'undefined') {
+      var r400 = xhr.responseJSON || {};
+      Swal.fire('Dato inválido', r400.mensaje || 'Revise los datos ingresados', 'warning');
     }
   });
 </script>

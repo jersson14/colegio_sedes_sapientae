@@ -493,8 +493,12 @@ function Registrar_matriculado(){
           Cargar_Select_estudiante();
         $("#modal_registro").modal('hide');
         });
+      }else if(resp==3){
+        Swal.fire("Mensaje de Advertencia","El nombre de usuario ya existe, ingrese otro","warning");
+      }else if(resp==4){
+        Swal.fire("Mensaje de Advertencia","Ingrese el usuario y contraseña del estudiante (es su primera matrícula)","warning");
       }else{
-        Swal.fire("Mensaje de Advertencia","El estudiante que intentas matricular ya se encuentra en la base de datos, revise por favor","warning");
+        Swal.fire("Mensaje de Advertencia","El estudiante ya está matriculado en ese año académico, revise por favor","warning");
       }
     }else{
       return Swal.fire("Mensaje de Error","No se completo el registro","error");
@@ -626,7 +630,7 @@ function eliminar_matricula(id){
   }).done(function(resp){
     if(resp>0){
       if(resp==1){
-        Swal.fire("Mensaje de Confirmación","Se anulo el pago satisfactoriamente","success").then((value)=>{
+        Swal.fire("Mensaje de Confirmación","Se eliminó la matrícula satisfactoriamente","success").then((value)=>{
           tbl_matricula.ajax.reload();
         });
       }else{

@@ -1,19 +1,23 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/validacion.php';
     require '../../model/model_matriculas.php';
     $MMAT= new Modelo_Matriculas();//Instaciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $estu = strtoupper(htmlspecialchars($_POST['estu'],ENT_QUOTES,'UTF-8'));
-    $año = strtoupper(htmlspecialchars($_POST['año'],ENT_QUOTES,'UTF-8'));
-    $aula = strtoupper(htmlspecialchars($_POST['aula'],ENT_QUOTES,'UTF-8'));
-    $admi = strtoupper(htmlspecialchars($_POST['admi'],ENT_QUOTES,'UTF-8'));
-    $nuevo = strtoupper(htmlspecialchars($_POST['nuevo'],ENT_QUOTES,'UTF-8'));
-    $matri = strtoupper(htmlspecialchars($_POST['matri'],ENT_QUOTES,'UTF-8'));
+    $id = entero_post('id', 1, 'matrícula');
+    $estu = entero_post('estu', 1, 'estudiante');
+    $año = entero_post('año', 1, 'año académico');
+    $aula = entero_post('aula', 1, 'aula');
+    if (trim($_POST['admi'] ?? '') === '') { $_POST['admi'] = '0'; }
+    $admi = monto_post('admi', 0, 999999999999.99, 'admisión');
+    if (trim($_POST['nuevo'] ?? '') === '') { $_POST['nuevo'] = '0'; }
+    $nuevo = monto_post('nuevo', 0, 999999999999.99, 'alumno nuevo');
+    if (trim($_POST['matri'] ?? '') === '') { $_POST['matri'] = '0'; }
+    $matri = monto_post('matri', 0, 999999999999.99, 'matrícula');
     $proce = strtoupper(htmlspecialchars($_POST['proce'],ENT_QUOTES,'UTF-8'));
     $pro = strtoupper(htmlspecialchars($_POST['pro'],ENT_QUOTES,'UTF-8'));
     $depa = strtoupper(htmlspecialchars($_POST['depa'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MMAT->Modificar_Matricula($id,$estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa);
+    $consulta = $MMAT->Modificar_Matricula($id,$estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,usuario_actual_id());
     echo $consulta;
 
 

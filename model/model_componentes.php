@@ -34,6 +34,7 @@
         }
         public function Cargar_Id_Detalle($id){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_ID_DETALLE(?)";
             $query  = $c->prepare($sql);
             $query->bindParam(1,$id);

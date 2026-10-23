@@ -34,7 +34,7 @@ FROM
     INNER JOIN empresa ON usuario.empresa_id = empresa.empresa_id
     INNER JOIN año_escolar ON matricula.id_año = año_escolar.Id_año_escolar
 WHERE
-    matricula.id_matricula = '$codigo' AND DATE(pago_pensiones.fecha_pago) = '$fecha'";
+    matricula.id_matricula = '$codigo' AND DATE(pago_pensiones.fecha_pago) = '$fecha' AND pago_pensiones.estado = 'VALIDO'";
 
 $resultado = $mysqli->query($query);
 

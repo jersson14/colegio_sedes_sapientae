@@ -34,6 +34,7 @@
         }
         public function Cargar_Select_Grados(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_GRADO()";
             $query  = $c->prepare($sql);
             $query->execute();

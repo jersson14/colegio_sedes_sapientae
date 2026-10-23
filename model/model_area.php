@@ -6,6 +6,7 @@
 
         public function Listar_Area(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_LISTAR_AREA()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -42,6 +43,7 @@
         }
         public function Cargar_Select_Area(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_AREA()";
             $query  = $c->prepare($sql);
             $query->execute();

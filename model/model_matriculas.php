@@ -20,6 +20,7 @@
         }
         public function Cargar_Año(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_AÑO()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -32,6 +33,7 @@
         }
         public function Cargar_estudiante(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_ESTUDIANTE()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -86,9 +88,9 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo){
+        public function Registrar_Matricula($estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usu,$contra,$correo,$usureg){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?,?)";
+            $sql = "CALL SP_REGISTRAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$estu);
             $query ->bindParam(2,$año);
@@ -102,15 +104,16 @@
             $query ->bindParam(10,$usu);
             $query ->bindParam(11,$contra);
             $query ->bindParam(12,$correo);
+            $query ->bindParam(13,$usureg);
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;
             }
             conexionBD::cerrar_conexion();
         }
-        public function Modificar_Matricula($id,$estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa){
+        public function Modificar_Matricula($id,$estu,$año,$aula,$admi,$nuevo,$matri,$proce,$pro,$depa,$usureg){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_MATRICULA(?,?,?,?,?,?,?,?,?,?)";
+            $sql = "CALL SP_MODIFICAR_MATRICULA(?,?,?,?,?,?,?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$id);
             $query ->bindParam(2,$estu);
@@ -122,6 +125,7 @@
             $query ->bindParam(8,$proce);
             $query ->bindParam(9,$pro);
             $query ->bindParam(10,$depa);
+            $query ->bindParam(11,$usureg);
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;

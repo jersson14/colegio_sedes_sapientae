@@ -34,6 +34,7 @@
         }
         public function Cargar_Select_Seccion(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_SECCION()";
             $query  = $c->prepare($sql);
             $query->execute();
@@ -46,6 +47,7 @@
         }
         public function Cargar_Select_Nivel(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_NIVELACA()";
             $query  = $c->prepare($sql);
             $query->execute();

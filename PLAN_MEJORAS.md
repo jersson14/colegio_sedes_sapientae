@@ -21,7 +21,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Resumen del diagnóstico](#resumen-del-diagnóstico)
 - [Fase 0 – Preparación y respaldo](#fase-0--preparación-y-respaldo--2026-10-23) ✅
 - [Fase 1 – Seguridad crítica](#fase-1--seguridad-crítica--2026-10-23) ✅
-- [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes)
+- [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes--2026-10-23) ✅
 - [Fase 3 – Configuración regional y multimoneda (Latinoamérica)](#fase-3--configuración-regional-y-multimoneda-latinoamérica)
 - [Fase 4 – Métodos de pago en pensiones y cuentas de depósito](#fase-4--métodos-de-pago-en-pensiones-y-cuentas-de-depósito)
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora)
@@ -154,37 +154,65 @@ Sin sesión → 401 en controladores, vistas y PDF · el endpoint `crear_sesion`
 
 ---
 
-## Fase 2 – Corrección de lógica en módulos existentes
+## Fase 2 – Corrección de lógica en módulos existentes ✅ (2026-10-23)
 
-### 2.1 Base de datos (migración `002_correcciones.sql`)
-- [ ] Cambiar todos los montos a `DECIMAL(14,2)`: `pensiones.precio`, `pensiones.mora`, `pago_pensiones.sub_total`, `ingresos.monto`, `egresos.monto`, `matricula.pago_admi`, `pago_alu_nuevo`, `pago_matricula`, y los parámetros `DECIMAL(5,2)` dentro de los SPs.
-- [ ] Ampliar documentos/teléfonos: `*_dni` → `VARCHAR(20)` + nueva columna `tipo_documento_id`; `*_movil` / `*_nro_alterno` → `VARCHAR(20)`.
-- [ ] Agregar claves foráneas e índices faltantes (`pago_pensiones.id_matri`, `ingresos.id_pago_pension`, `egresos.id_indicador`, `created_at` para filtros por fecha).
-- [ ] Reemplazar fechas `''`/`0000-00-00` por `NULL` (`updated_at`, `fecha_anulacion`).
-- [ ] Pasar tablas a `utf8mb4` uniforme (hoy hay mezcla `utf8` / `utf8mb4`) — evita los `CONVERT(... USING utf8)` en `SP_VERIFICAR_USUARIO`.
+Migración `database/migraciones/002_correcciones_logica.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_20261023_1626_antes_002.sql`). Total de ingresos válidos antes y después: **9 490.00** (sin cambios); egresos 1 751.99.
+
+### 2.1 Base de datos
+- [x] Montos a `DECIMAL(14,2)`: `pensiones.precio/mora`, `pago_pensiones.sub_total`, `ingresos.monto`, `egresos.monto`, `matricula.pago_admi/pago_alu_nuevo/pago_matricula` y todos los parámetros `DECIMAL(5,2)` de los SP.
+  > Hay un egreso de exactamente **999.99** (luz, 25-12-2025): probablemente era un monto mayor recortado por el límite anterior. Revisarlo a mano.
+- [x] **Collation única `utf8mb4_unicode_ci`.** Las 36 tablas ya estaban en `unicode_ci`, pero la BD y sus 254 procedimientos en `general_ci` → *"Illegal mix of collations"* al comparar parámetros de texto con columnas. **En producción, registrar una pensión fallaba.** Se cambió la collation de la BD y se recrearon todos los procedimientos.
+- [x] `ingresos → pago_pensiones` pasó de `ON DELETE CASCADE` a `SET NULL`: borrar un pago o una matrícula ya no borra ingresos (historia contable).
+- [x] Índice `(id_matri, id_pension, estado)` en `pago_pensiones`.
+- [ ] Ampliar documentos/teléfonos (`*_dni` → `VARCHAR(20)` + `tipo_documento_id`, `*_movil` → `VARCHAR(20)`) → **se hace en la Fase 3**, junto con la validación por país.
+- [ ] Reemplazar fechas `''`/`0000-00-00` por `NULL` en datos existentes → pendiente menor (los SP nuevos ya guardan `NULL`).
 
 ### 2.2 Pago de pensiones
-- [ ] Nuevo SP `SP_REGISTRAR_PAGO` que reciba la cabecera del pago (alumno, método, cuenta, usuario) y el detalle, todo dentro de **una transacción** (`START TRANSACTION ... COMMIT / ROLLBACK`).
-- [ ] Usar `LAST_INSERT_ID()` en lugar de `MAX(id)`.
-- [ ] Validación de duplicados por `id_matri + concepto + id_pension` (y para MATRÍCULA/ADMISIÓN por `id_matri + concepto`).
-- [ ] **Mora automática:** si `fecha_pago > fecha_vencimiento` sumar `pensiones.mora` como línea separada (concepto `MORA`), con opción de exonerar (requiere motivo y queda registrado quién exoneró).
-- [ ] Permitir **pagos parciales / a cuenta** (saldo pendiente por pensión).
-- [ ] Anular pago (no eliminar): estado `ANULADO`, motivo, usuario, fecha; anula también el ingreso asociado.
-- [ ] Número de recibo correlativo por serie (`B001-000123`).
+- [x] `SP_REGISTRAR_PAGO_PENSION` + transacción en PHP (`Modelo_Pago_Pension::Registrar_Pago`): **si un concepto de la tabla falla, no se registra ninguno** (antes quedaban pagos a medias).
+- [x] `LAST_INSERT_ID()` en lugar de `MAX(id)` → dos cajas simultáneas ya no cruzan ingresos.
+- [x] El **monto lo valida el servidor** contra el saldo de la pensión (antes se aceptaba lo que se escribiera). Duplicados: pensión ya pagada → rechazada; MATRÍCULA/ADMISIÓN/ALUMNO NUEVO: un pago válido por matrícula.
+- [x] La pensión debe ser del **nivel de la matrícula**; el selector muestra el **año** y si está PAGADA/PARCIAL ("ABRIL 2025 (PARCIAL)").
+- [x] **Mora automática** (`SP_CALCULAR_SALDO_PENSION`): se cobra si la pensión no quedó pagada completa hasta su vencimiento; va como fila `MORA` aparte. **Exonerar** requiere motivo y queda registrado (fila `MORA` en 0 con `mora_exonerada = 1`, usuario y fecha). Las pensiones antiguas pagadas tarde sin mora no generan deuda retroactiva.
+- [x] **Pagos parciales**: se puede pagar menos que el saldo; el pago se aplica primero a la mora y luego a la pensión. La pantalla sugiere el saldo pendiente y muestra estado y mora.
+- [x] **Anular en vez de eliminar** (`SP_ANULAR_PAGO_PENSION`): estado `ANULADO`, motivo obligatorio, usuario y fecha; el ingreso también queda ANULADO. Los anulados no salen en listados, kardex, boletas ni en "mes que toca pagar".
+- [x] Modificar un pago actualiza también su ingreso, exige motivo y no permite pagar una pensión/mora por encima de su precio.
+- [x] El usuario que registra/anula es el de la sesión (antes `id_user = 9` fijo).
+- [ ] Número de recibo correlativo por serie (`B001-000123`) → **Fase 4**, junto con la cabecera de pago y los métodos de pago.
 
-### 2.3 Ingresos / Egresos
-- [ ] Validar que `monto > 0` y `cantidad >= 1` en servidor.
-- [ ] El total del egreso = `cantidad × monto unitario` (hoy no está claro si `monto` es unitario o total; definir y documentar).
-- [ ] `SP_LISTAR_DIFERENCIA`: devolver números, el formato de moneda lo hace la capa de presentación (Fase 3).
-- [ ] Filtros por rango de fechas inclusivos (`created_at >= ini AND created_at < fin + 1 día`).
+### 2.3 Matrícula y pensiones
+- [x] `SP_REGISTRAR_MATRICULA`: el usuario se cortaba a **8 caracteres** (`ALEXANDER` → `ALEXANDE`, por eso hay duplicados); ahora 250, y se rechaza si ya existe (código 3). Cada ingreso se enlaza a **su** pago (antes los 3 al último, o a un id de otra sesión en alumnos antiguos); no se crean ingresos en 0; todo en una transacción.
+- [x] **Datos reparados:** 26 ingresos mal enlazados y 2 sin pago vueltos a enlazar con el pago de su concepto (21 pagos que figuraban "sin ingreso"). Sin cambio en los totales.
+- [x] Modificar matrícula actualiza los pagos e ingresos de admisión/alumno nuevo/matrícula (antes la matrícula decía un monto y el ingreso otro). El duplicado se valida por alumno + **año** (antes por aula).
+- [x] Eliminar matrícula: no se permite si tiene pensiones pagadas (2) o notas/asistencias (4) — antes se borraban en cascada. Sus ingresos quedan ANULADOS.
+- [x] Pensiones: duplicado = nivel + mes + **año** (antes nivel + mes, lo que **impedía crear las pensiones del año siguiente** y explica fechas como "MARZO 2026" dentro de la serie 2025). No se elimina una pensión con pagos (antes daba error).
+- [ ] Revisar a mano las pensiones con fechas fuera de su serie: MARZO 2026 (niveles 1 y 3), DICIEMBRE 2024 (nivel 1), DICIEMBRE 2026 (nivel 2).
+- [ ] Usuarios duplicados existentes (`JOAQUIN2` ×2, `ALEXANDE` ×2, 2 vacíos) → corregirlos a mano y luego agregar índice único en `usuario.usu_usuario`.
+- [ ] El registro de docentes y personal no valida usuario duplicado; `SP_REGISTRAR_USUARIO` usa columnas que no existen (resto del sistema anterior) → revisar en la Fase 8 (módulo Usuarios).
 
-### 2.4 Modelos PHP
-- [ ] Mover `cerrar_conexion()` antes del `return` (o usar `try/finally`).
-- [ ] Inicializar `$arreglo = []` en todas las funciones `Cargar_Select_*` (hoy pueden devolver variable indefinida si no hay filas).
-- [ ] Respuestas JSON uniformes: `{ "ok": true, "data": ..., "mensaje": "" }` con `header('Content-Type: application/json')`.
-- [ ] Validar tipos de entrada (`filter_var` para enteros, decimales y fechas) en lugar de `htmlspecialchars`.
+### 2.4 Ingresos / Egresos
+- [x] En el servidor: indicador y cantidad enteros ≥ 1, monto > 0 con 2 decimales, observación ≤ 255; anular exige motivo.
+- [x] `monto` es el **total** del movimiento (así lo suman todos los reportes); `cantidad` es informativa.
+- [x] Los totales del día ya no suman ingresos/egresos anulados.
+- [x] El listado filtrado de ingresos de pensiones ahora incluye admisión/matrícula (antes los excluía).
+- [x] Un ingreso de pensión/matrícula no se puede modificar ni anular desde "Ingresos" (se hace desde Pago de pensiones, para que coincida con el pago).
+- [x] Filtros por fecha: `created_at` es `DATE`, así que `BETWEEN ini AND fin` ya incluye el último día (verificado, sin cambio).
+- [ ] `SP_LISTAR_DIFERENCIA` devuelve el texto "S/." → **Fase 3** (formato de moneda configurable).
 
-**Criterio de cierre:** se puede registrar una pensión de 1 500.00; dos pagos simultáneos no se cruzan; un pago vencido suma la mora automáticamente.
+### 2.5 Modelos PHP
+- [x] 26 funciones de modelo devolvían `null` cuando no había filas (`$arreglo` sin inicializar) → corregido.
+- [x] `utilitario/validacion.php`: `entero_post`, `monto_post`, `texto_post`, `fecha_post`; aplicado en pagos, pensiones, matrícula, ingresos y egresos. Un dato inválido responde 400 con el motivo (se muestra en pantalla).
+- [x] Respuestas JSON `{ok, codigo, mensaje}` en los endpoints de pago nuevos/modificados. El resto se uniforma al tocar cada módulo (Fase 8).
+- [x] Matrícula con año/estudiante/aula vacíos → 400 (antes error fatal mostrando la traza al navegador).
+- [ ] `cerrar_conexion()` después del `return`: no tiene efecto práctico (la conexión se cierra al terminar la función); se limpia al tocar cada modelo.
+
+### Pruebas (BD `colegio2_test`)
+- SQL directo: 27 casos del cálculo de saldo/mora/parciales/exoneración/anulación/modificación.
+- HTTP: **41/41** (pago parcial y exonerado, transacción que revierte todo si una fila falla, montos inválidos, anulación con motivo, modificación con tope, pensiones del año siguiente, montos > 999.99, egresos con usuario de la sesión, matrícula con usuario repetido, eliminar matrícula con pensiones, kardex PDF).
+- Regresión Fase 1: **43/43**. Panel y 46 vistas de 5 roles sin errores PHP.
+
+**Criterio de cierre:** ✅ se registra una pensión de 1 500.50; los ingresos se enlazan con `LAST_INSERT_ID()` dentro de una transacción; un pago vencido suma la mora automáticamente.
+
+> **Para probar en el navegador (Pago de pensiones):** elegir una pensión vencida y ver que el monto sugerido incluye la mora; marcar "Exonerar mora"; agregar dos pensiones y registrar; anular un pago (pide motivo); editar un pago.
 
 ---
 
@@ -195,6 +223,7 @@ Sin sesión → 401 en controladores, vistas y PDF · el endpoint `crear_sesion`
 ### 3.1 Base de datos (migración `003_regional.sql`)
 - [ ] Tabla `paises` (código ISO, nombre, moneda, zona horaria, documento de identidad principal, prefijo telefónico).
 - [ ] Tabla `monedas` (código ISO 4217, símbolo, nombre, decimales, separador de miles, separador decimal, posición del símbolo).
+- [ ] Ampliar columnas de documento y teléfono (hoy `CHAR(8)` DNI y `CHAR(9)` celular, solo Perú): `*_dni` → `VARCHAR(20)` + `tipo_documento_id`, `*_movil`/`*_nro_alterno` → `VARCHAR(20)` en alumnos, padres, docentes y personal (y los parámetros de sus SP). *(movido desde la Fase 2)*
 - [ ] Tabla `tipos_documento_identidad` por país (DNI, Cédula, CI, RUT, CURP, CC, CPF…) con longitud mínima/máxima y expresión regular.
 - [ ] Columnas en `empresa`: `pais_id`, `moneda_id`, `zona_horaria`, `serie_recibo`, `ruc_nit` (identificación tributaria).
 - [ ] La moneda es **única para todo el colegio** (columna `empresa.moneda_id`); los movimientos no guardan moneda propia.

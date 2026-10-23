@@ -268,7 +268,7 @@ function Registrar_pensiones(){
         $("#modal_registro").modal('hide');
         });
       }else{
-        Swal.fire("Mensaje de Advertencia","El nivel académico y mes de la pensión que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
+        Swal.fire("Mensaje de Advertencia","Ya existe una pensión de ese nivel académico, mes y año, revise por favor","warning");
       }
     }else{
       return Swal.fire("Mensaje de Error","No se completo el registro","error");
@@ -307,7 +307,7 @@ function Modificar_Pensiones(){
             $("#modal_editar").modal('hide');
         });
       }else{
-        Swal.fire("Mensaje de Advertencia","El nivel académico y mes de la pensión que intentas actualizar ya se encuentra en la base de datos, revise por favor.","warning");
+        Swal.fire("Mensaje de Advertencia","Ya existe una pensión de ese nivel académico, mes y año, revise por favor.","warning");
       }
     }else{
       return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
@@ -324,12 +324,12 @@ function Eliminar_Pensión(id){
         id:id
       }
     }).done(function(resp){
-      if(resp>0){
+      if(resp==1){
           Swal.fire("Mensaje de Confirmación","Se elimino la pensión con exito","success").then((value)=>{
             tbl_pensiones.ajax.reload();
           });
       }else{
-        return Swal.fire("Mensaje de Advetencia","No se puede eliminar esta pensión por que esta siendo utilizadoe en otro registros, verifique por favor","warning");
+        return Swal.fire("Mensaje de Advetencia","No se puede eliminar esta pensión porque ya tiene pagos registrados","warning");
   
       }
     })

@@ -36,6 +36,7 @@
         }
         public function Cargar_Select_Matriculados(){
             $c = conexionBD::conexionPDO();
+            $arreglo = array();
             $sql = "CALL SP_CARGAR_SELECT_MATRICULADOS()";
             $query  = $c->prepare($sql);
             $query->execute();

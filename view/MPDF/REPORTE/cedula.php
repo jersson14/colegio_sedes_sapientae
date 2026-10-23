@@ -91,7 +91,7 @@ FROM
 	pago_pensiones
 WHERE
 	pago_pensiones.id_matri = '$codigo' AND
-	pago_pensiones.concepto IN ('ADMISION','ALUMNO NUEVO','MATRICULA')
+	pago_pensiones.concepto IN ('ADMISION','ALUMNO NUEVO','MATRICULA') AND pago_pensiones.estado = 'VALIDO'
 ORDER BY
 	pago_pensiones.fecha_pago ASC";
 
