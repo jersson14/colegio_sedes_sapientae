@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_alumnos.php';
     $MALU = new Modelo_Alumnos();//Instaciamos
     $consulta = $MALU->Listar_Alumnos();

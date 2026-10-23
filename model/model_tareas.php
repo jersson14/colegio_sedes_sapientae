@@ -223,6 +223,18 @@
             }
             conexionBD::cerrar_conexion();
         }
+        // Devuelve la carpeta enviada actualmente si el detalle es del usuario; null si no le pertenece
+        public function Detalle_Tarea_Propio($iddetalle,$usu_id){
+            $c = conexionBD::conexionPDO();
+            $sql = "SELECT IFNULL(d.archivo_evnio_tarea,'') FROM detalle_tarea d
+                    INNER JOIN matricula m ON d.id_matriculado = m.id_matricula
+                    WHERE d.id_detalle_tarea = ? AND m.usu_id = ?";
+            $query = $c->prepare($sql);
+            $query->execute([$iddetalle,$usu_id]);
+            $archivo = $query->fetchColumn();
+            conexionBD::cerrar_conexion();
+            return $archivo === false ? null : $archivo;
+        }
         public function Registrar_envio_tarea($iddetalle,$ruta_carpeta){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_ENVIAR_TAREA(?,?)";

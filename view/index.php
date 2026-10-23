@@ -1,7 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../utilitario/sesion.php';
+iniciar_sesion_segura();
 if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
+  exit;
 }
 ?>
 <?php
@@ -25,6 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <head>
   <meta charset="utf-8">
+  <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SEDES SAPIENTIAE</title>
 
@@ -503,7 +506,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
 
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
-              <li class="nav-item" >
+              <li class="nav-item" hidden="">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
@@ -536,6 +539,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                 </ul>
+              </li>
+                <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-envelope"></i>
+                  <p>
+                    Solicitudes de información
+                  </p>
+                </a>
               </li>
               <li class="nav-item">
                 <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" class="nav-link">
@@ -1783,7 +1794,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <em>Versión 1.0.0</em>
   </div>
   <!-- Default to the left -->
-  <strong>Copyright &copy; 2024 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
+  <strong>Copyright &copy; 2025 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
 </footer>
 </div>
 <!-- ./wrapper -->
@@ -1869,6 +1880,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </script>
 <!-- jQuery -->
 <script src="../plantilla/plugins//jquery/jquery.min.js"></script>
+<script>
+  // Todas las peticiones AJAX envían el token CSRF; si la sesión expiró se vuelve al login
+  $.ajaxSetup({
+    headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content }
+  });
+  $(document).ajaxError(function(event, xhr) {
+    if (xhr.status === 401) {
+      window.location.href = '../index.php';
+    } else if (xhr.status === 403 && typeof Swal !== 'undefined') {
+      var r = xhr.responseJSON || {};
+      Swal.fire('Acceso denegado', r.mensaje || 'No tiene permiso para esta acción', 'error');
+    }
+  });
+</script>
 <!-- Bootstrap 4 -->
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -1896,13 +1921,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- Incluye tu JavaScript personalizado -->
 <script>
   $(document).ready(function() {
-    Traer_Datos();
     listar_empresa();
     listar_comunicado_dash();
-    listar_tareas_menu();
+    <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
+    Traer_Datos();
     listar_tareas_menu_estudiante();
-    listar_examenes_menu();
     listar_examenes_menu_estudiante();
+    <?php } ?>
+    <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
+    listar_tareas_menu();
+    listar_examenes_menu();
+    <?php } ?>
+    <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
     Total_estudiantes();
     Total_docentes();
     Total_administrativos();
@@ -1911,6 +1941,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     Total_egresos();
     Total_atención_psicologica();
     Total_atención_enefermeria();
+    <?php } ?>
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {
       mostrarSiguienteModal();

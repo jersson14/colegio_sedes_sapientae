@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_atencion_enfer.php';
     $MAEN = new Modelo_Atencion_Enfer();//Instaciamos
 

@@ -13,12 +13,37 @@
             $resultado = $query->fetchAll();
             foreach($resultado as $resp){
                 if(password_verify($con,$resp['usu_contra'])){
+                    // El hash de la contraseña nunca sale del servidor
+                    unset($resp['usu_contra'], $resp[6]);
                     $arreglo[]=$resp;
                 }
             }
-            return $arreglo;
             conexionBD::cerrar_conexion();
-        } 
+            return $arreglo;
+        }
+        public function Login_Bloqueado($usu,$max,$minutos){
+            $c = conexionBD::conexionPDO();
+            $sql = "SELECT COUNT(*) FROM login_intentos WHERE usuario = ? AND fecha > (NOW() - INTERVAL ? MINUTE)";
+            $query = $c->prepare($sql);
+            $query->bindValue(1,$usu);
+            $query->bindValue(2,(int)$minutos,PDO::PARAM_INT);
+            $query->execute();
+            $total = (int)$query->fetchColumn();
+            conexionBD::cerrar_conexion();
+            return $total >= $max;
+        }
+        public function Registrar_Intento_Fallido($usu,$ip){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("INSERT INTO login_intentos(usuario,ip,fecha) VALUES(?,?,NOW())");
+            $query->execute([$usu,$ip]);
+            conexionBD::cerrar_conexion();
+        }
+        public function Limpiar_Intentos($usu){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("DELETE FROM login_intentos WHERE usuario = ?");
+            $query->execute([$usu]);
+            conexionBD::cerrar_conexion();
+        }
         public function Listar_Usuario(){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_LISTAR_USUARIO()";

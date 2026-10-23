@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_año.php';
     $MANIO = new Modelo_Años();//Instaciamos
     $consulta = $MANIO->Listar_Años();

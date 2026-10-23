@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');

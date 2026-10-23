@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_egresos.php';
     $MEGR= new Modelo_Egresos();//Instaciamos
     $fechaini = htmlspecialchars($_POST['fechaini'],ENT_QUOTES,'UTF-8');

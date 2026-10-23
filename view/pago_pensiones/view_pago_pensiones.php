@@ -1,4 +1,4 @@
-<script src="../js/console_pago_pension.js?rev=<?php echo time(); ?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_pago_pension.js?rev=<?php echo time(); ?>"></script>
 <link rel="stylesheet" href="../plantilla/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
 <!-- Content Header (Page header) -->

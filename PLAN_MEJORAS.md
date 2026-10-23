@@ -1,0 +1,640 @@
+# Plan de mejoras – Sistema Colegio
+
+> Base de datos: `colegio2` (MySQL/MariaDB, puerto 3307)
+> Arquitectura actual: PHP (MVC simple) + procedimientos almacenados + jQuery/DataTables + MPDF
+> Fecha de análisis: 2026-10-23
+
+Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí sola: se termina, se prueba, se hace commit y recién se pasa a la siguiente. Marcar `[x]` cada tarea al completarla.
+
+## Decisiones confirmadas
+
+| Tema | Decisión |
+|------|----------|
+| País | **Un solo país por colegio.** Se configura una vez en los datos de la empresa. |
+| Moneda | **Una sola moneda**, configurable desde el sistema. No se cobra en dos monedas a la vez. |
+| Roles financieros | **Solo CONTADOR** (no habrá rol CAJERO). El contador cobra pensiones, registra ingresos y egresos, hace la planilla y ve los reportes. |
+
+---
+
+## Índice
+
+- [Resumen del diagnóstico](#resumen-del-diagnóstico)
+- [Fase 0 – Preparación y respaldo](#fase-0--preparación-y-respaldo--2026-10-23) ✅
+- [Fase 1 – Seguridad crítica](#fase-1--seguridad-crítica--2026-10-23) ✅
+- [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes)
+- [Fase 3 – Configuración regional y multimoneda (Latinoamérica)](#fase-3--configuración-regional-y-multimoneda-latinoamérica)
+- [Fase 4 – Métodos de pago en pensiones y cuentas de depósito](#fase-4--métodos-de-pago-en-pensiones-y-cuentas-de-depósito)
+- [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora)
+- [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla)
+- [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades)
+- [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo)
+- [Fase 9 – Pruebas, documentación y despliegue](#fase-9--pruebas-documentación-y-despliegue)
+- [Anexo A – Monedas y países](#anexo-a--monedas-y-países)
+- [Anexo B – Script SQL de referencia](#anexo-b--script-sql-de-referencia)
+- [Pendientes por confirmar](#pendientes-por-confirmar)
+
+---
+
+## Resumen del diagnóstico
+
+Problemas encontrados al revisar el código y la base de datos real (`colegio2`):
+
+| # | Severidad | Problema | Dónde |
+|---|-----------|----------|-------|
+| 1 | 🔴 Crítico | **El rol de la sesión lo envía el navegador.** `controlador_crear_sesion.php` toma `rol`, `idusuario`, etc. de `$_POST`; cualquiera puede llamar ese endpoint con `rol=ADMINISTRADOR` y entrar como administrador sin contraseña. | `controller/usuario/controlador_crear_sesion.php` |
+| 2 | 🔴 Crítico | **255 de 257 controladores no verifican sesión ni rol.** Cualquier persona sin iniciar sesión puede listar, registrar, modificar o eliminar datos (alumnos, pagos, egresos, usuarios). | `controller/*/*.php` |
+| 3 | 🔴 Crítico | **Subida de archivos sin validar.** El nombre de archivo viene del cliente (`nombrefoto`) y no se valida extensión ni tipo MIME → se puede subir un `.php` y ejecutarlo en el servidor. | `controller/alumnos`, `docentes`, `empleado`, `empresa`, `comunicados`, `tareas` |
+| 4 | 🔴 Crítico | **El login devuelve el hash de la contraseña** (`usu_contra`) al navegador en el JSON. | `model/model_usuario.php` → `Verificar_Usuario` |
+| 5 | 🔴 Crítico | **El usuario que registra egresos/ingresos viene del formulario** (`$_POST['usu']`) en vez de la sesión → se puede falsificar quién registró un movimiento. En pagos de pensión el usuario está **fijo en 9** dentro del SP. | `controller/egresos`, `controller/ingresos`, `SP_REGISTRAR_DETALLE_PENSION_PAGO` |
+| 6 | 🟠 Alto | **Montos en `DECIMAL(5,2)`** → máximo **999.99**. Una pensión de 1 200 o cualquier monto en pesos argentinos/colombianos/chilenos/guaraníes se corta o falla. | `pensiones`, `pago_pensiones`, `ingresos`, `egresos`, `matricula` |
+| 7 | 🟠 Alto | **Registro de pagos sin transacción.** El controlador recorre un bucle y llama al SP por cada concepto; si falla a la mitad quedan pagos parciales registrados. | `controller/pago_pension/controlador_detalle_pago_pension.php` |
+| 8 | 🟠 Alto | El SP obtiene el último id con `SELECT MAX(id_pago_pension)` → con dos cajeros a la vez se asocia el ingreso al pago equivocado. Debe usarse `LAST_INSERT_ID()`. | `SP_REGISTRAR_DETALLE_PENSION_PAGO` |
+| 9 | 🟠 Alto | La validación de duplicados es `id_matri + id_pension`; para conceptos ADMISIÓN / ALUMNO NUEVO / MATRÍCULA (sin pensión) puede bloquear o permitir duplicados incorrectamente. | mismo SP |
+| 10 | 🟠 Alto | **La mora no se calcula.** La pantalla solo pinta "VENCIDO" en rojo y le pide al usuario que sume la mora a mano. | `js/console_pago_pension.js`, `view/pago_pensiones` |
+| 11 | 🟠 Alto | Moneda **"S/." fija** en ~20 archivos PHP/JS y en procedimientos almacenados (`SP_LISTAR_DIFERENCIA`, etc.). Zona horaria fija `America/Lima` / `-05:00`. | `js/`, `view/`, `view/MPDF/REPORTE/`, SPs |
+| 12 | 🟡 Medio | Credenciales de BD (`root` sin contraseña) escritas en **dos** archivos distintos (PDO y mysqli). | `model/model_conexion.php`, `view/MPDF/conexion.php` |
+| 13 | 🟡 Medio | `conexionBD::cerrar_conexion()` está **después del `return`** → nunca se ejecuta (código muerto en casi todos los modelos). Errores de conexión se imprimen con `echo` y exponen detalles. | `model/*.php` |
+| 14 | 🟡 Medio | Documentos y teléfonos con longitud fija peruana (`CHAR(8)` DNI, `CHAR(9)` celular) → no sirve para cédula de Ecuador (10), CI de Bolivia, RUT de Chile, etc. | `docentes`, `alumnos`, `personal_admi`, `padres` |
+| 15 | 🟡 Medio | Archivos de prueba expuestos en producción: `phpinfo.php`, `prueba.php`. | raíz |
+| 16 | 🟡 Medio | Ruta de subida de tareas duplicada: `controller/tareas/controller/tareas/documentos/...`; fotos y documentos subidos se mezclan con el código en git. | `controller/tareas` |
+| 17 | 🟢 Bajo | Uso de `htmlspecialchars` como "validación" de entrada (es para salida, no para entrada); no hay validación de tipos (números, fechas). | todos los controladores |
+| 18 | 🟢 Bajo | No existen: método de pago, cuentas bancarias, rol contador, pago a docentes, tipo de contrato docente, reportes de utilidad. | — |
+
+---
+
+## Fase 0 – Preparación y respaldo ✅ (2026-10-23)
+
+**Objetivo:** poder avanzar sin riesgo de perder datos.
+
+- [x] Respaldo completo de `colegio2` (estructura + datos + rutinas) en `respaldos/colegio2_20261023_1545.sql`:
+  `mysqldump -uroot -P3307 --routines --triggers --events colegio2 > respaldos/colegio2_YYYYMMDD.sql`
+- [x] Rama de trabajo `mejoras-fase-1` (una rama por fase).
+- [x] Carpeta `database/migraciones/` con scripts numerados (`001_...sql`, `002_...sql`). **Todo cambio de BD se hace por script**, nunca a mano en phpMyAdmin, para poder repetirlo en producción.
+- [x] `.gitignore` para no versionar fotos/documentos subidos, `config/config.local.php`, `respaldos/` y `logs/*.log`.
+  > Los 181 archivos subidos que ya estaban en git siguen versionados; para dejar de versionarlos hay que ejecutar `git rm --cached` sobre ellos (se decide aparte, porque en el servidor se borrarían al hacer pull).
+  > `node_modules/` **no** se ignora: `choices.js` se sirve desde ahí.
+- [x] Esquema actual (sin datos, con rutinas) en `database/esquema_base.sql`.
+
+**Criterio de cierre:** ✅ respaldo restaurado en `colegio2_test` (36 tablas, 254 rutinas, mismos conteos de datos).
+
+---
+
+## Fase 1 – Seguridad crítica ✅ (2026-10-23)
+
+**Objetivo:** cerrar los huecos que permiten entrar o modificar datos sin permiso. **No avanzar a funcionalidades nuevas sin terminar esta fase.**
+
+### 1.1 Configuración centralizada
+- [x] `config/config.php` (bloqueado por `.htaccess`) con BD, zona horaria, modo producción y parámetros de login. Cada servidor sobreescribe lo suyo en `config/config.local.php` (no versionado; ver `config.local.php.example`).
+- [x] `model/model_conexion.php` y `view/MPDF/conexion.php` leen de ese archivo (una sola fuente). La zona horaria de MySQL sigue a la de PHP.
+- [x] En error de conexión se registra en el log de PHP y se responde un mensaje genérico (antes se mostraba `$e->getMessage()`).
+- [ ] **Pendiente en producción:** crear un usuario MySQL propio para la app (no `root`) con permisos solo sobre `colegio2` y ponerlo en `config.local.php`.
+- [ ] Pasar la conexión a `utf8mb4` → se hace en la Fase 2 junto con la conversión de tablas (hoy hay tablas `utf8` y `utf8mb4` mezcladas y los SP usan `CONVERT(... USING utf8)`).
+  > `PDO::ATTR_EMULATE_PREPARES` se deja como está: todas las consultas ya usan parámetros enlazados y cambiarlo afecta cómo se leen los resultados de los `CALL`.
+
+### 1.2 Inicio de sesión seguro
+- [x] `controlador_iniciar_sesion.php` valida usuario/contraseña y **él mismo** llena `$_SESSION` con los datos de la BD. Se eliminó `controlador_crear_sesion.php` (recibía el rol por POST).
+- [x] El hash de la contraseña (`usu_contra`) ya no sale del servidor.
+- [x] `session_regenerate_id(true)` al iniciar sesión; cookie `HttpOnly`, `SameSite=Lax`, `Secure` con HTTPS (`utilitario/sesion.php`).
+- [x] Bloqueo temporal tras 5 intentos fallidos por 15 minutos (tabla `login_intentos`, migración `001_login_intentos.sql`, aplicada en `colegio2`).
+- [x] `usu_estatus = 'ACTIVO'` se valida en el servidor.
+- [x] "Recuérdame" ya no guarda la contraseña en `localStorage` (solo el usuario) y borra la que hubiera quedado guardada.
+- [x] `view/index.php` e `index.php`: la redirección por falta de sesión ahora termina con `exit` (antes la página se seguía generando).
+
+### 1.3 Control de acceso en todos los controladores
+- [x] `controller/_seguridad.php` incluido en la primera línea de **los 261 controladores**: 401 sin sesión, 403 si el rol no está permitido o falta el token CSRF en un POST.
+- [x] Permisos por archivo en `controller/_permisos.php`, generados analizando qué rol llega a cada controlador (menú por rol → vista → JS → controlador). **Un controlador que no aparece ahí es solo para ADMINISTRADOR.** Al crear un controlador para otro rol hay que registrarlo.
+- [x] `propio`: en 24 controladores de consulta, para roles distintos de ADMINISTRADOR el `id` se reemplaza por el de la sesión → un estudiante/docente solo ve lo suyo aunque cambie el `id` en el navegador.
+- [x] `usuario_sesion`: en ingresos, egresos, comunicados, enfermería y psicología el usuario que registra sale de la sesión (antes venía de `$_POST['usu']` / `idusu`).
+- [x] Token CSRF en `view/index.php` (meta tag) enviado por `$.ajaxSetup` en todas las peticiones; si la sesión expira (401) se vuelve al login.
+- [x] Las 42 sub-vistas (`view/*/view_*.php`) exigen sesión (`utilitario/vista_segura.php`).
+- [x] Reportes MPDF con sesión y rol (`utilitario/seguridad_reporte.php`); un estudiante solo abre la boleta/kardex de su matrícula y el horario de su aula.
+- [x] El panel solo pide al servidor lo de cada rol (los totales de ingresos/egresos ya no se consultan desde la sesión de un estudiante).
+- [x] Accesos rechazados registrados en `logs/accesos_denegados.log` (bloqueado por web) para detectar permisos mal configurados.
+- [ ] `SP_REGISTRAR_DETALLE_PENSION_PAGO` sigue con `id_user = 9` fijo → se corrige en la Fase 2 (requiere cambiar el SP).
+
+| Módulo | Roles permitidos |
+|--------|------------------|
+| Usuarios, roles, empresa, configuración | ADMINISTRADOR |
+| Alumnos, matrícula, aulas, secciones, horarios | ADMINISTRADOR |
+| Pensiones, pago de pensiones | ADMINISTRADOR, CONTADOR |
+| Ingresos, egresos, contabilidad, planilla docente, reportes financieros | ADMINISTRADOR, CONTADOR |
+| Notas, tareas, exámenes, asistencia | DOCENTE, AUXILIAR, ADMINISTRADOR |
+| Enfermería / Psicología | ENFERMERA / PSICOLOGA, ADMINISTRADOR |
+| Vistas del estudiante | ESTUDIANTE (solo sus propios datos) |
+
+> El rol CONTADOR se agrega a `_permisos.php` en la Fase 5, cuando exista.
+
+### 1.4 Subida de archivos
+- [x] `utilitario/archivos.php`:
+  - fotos: nombre generado en el servidor, MIME real (`finfo`) + `getimagesize`, solo JPG/PNG/GIF/WEBP hasta 5 MB (12 controladores);
+  - documentos de tareas: lista blanca de extensiones (pdf, doc(x), xls(x), ppt(x), txt, jpg, png, zip, rar), hasta 20 MB, nombre saneado (4 controladores).
+- [x] **Borrado arbitrario de archivos corregido:** `unlink('../../'.$fotoactual)` borraba la ruta que mandara el navegador (p. ej. `config/config.php`). Ahora `borrar_archivo_seguro()` solo borra dentro de la carpeta de fotos y nunca las imágenes por defecto. También se corrigió que la foto anterior se borraba aunque fallara la subida, y que al modificar alumno/docente/personal/comunicado nunca se borraba.
+- [x] Al reemplazar una tarea, la carpeta anterior solo se borra si tiene el formato que genera el sistema (antes `archivoactual=.` borraba todos los archivos de `documentos`). El estudiante solo puede enviar/reemplazar su propia tarea.
+- [x] `.htaccess` en cada carpeta de fotos: no ejecuta scripts ni lista contenido.
+- [x] **Archivos de tareas privados:** la carpeta `documentos` tenía `Options +Indexes` y cualquiera podía listar y descargar las tareas de todos. Ahora está bloqueada y los archivos se ven con `controller/tareas/controlador_archivos_tarea.php` (con sesión; el estudiante solo los de sus tareas). Se actualizaron los 11 botones "Descargar/Ver tarea".
+- [x] ~~Corregir la ruta duplicada `controller/tareas/controller/tareas/documentos`~~ → **se mantiene**: es la ruta real donde están todos los archivos y lo que guarda la BD; moverla no aporta seguridad y arriesga perder archivos. El nuevo controlador la resuelve.
+
+### 1.5 Limpieza
+- [x] Eliminados `phpinfo.php` y `prueba.php`.
+- [ ] Escapar salida en vistas y en DataTables (`render` con texto) → se hace módulo por módulo en la Fase 8 (son cientos de columnas).
+- [ ] Revisar `registrar.php`, `seguimiento.php`, `default.php` y los módulos `area`, `empleado`, `tipo_documento`, `tramite` (restos de otro sistema "DIRESA"; ya quedan solo para ADMINISTRADOR) → decidir si se eliminan.
+
+### Pruebas realizadas (BD `colegio2_test`, 43/43 OK)
+Sin sesión → 401 en controladores, vistas y PDF · el endpoint `crear_sesion` ya no existe · login por rol (admin, auxiliar, docente, estudiante, enfermera) · clave incorrecta no devuelve hash · estudiante/docente/auxiliar/enfermera reciben 403 fuera de su módulo · POST sin token o con token falso → 403 · estudiante que pide datos de otro `id` recibe los suyos (admin sí puede consultar otros) · kardex/cedula/tareas ajenas → 403 · foto falsa (PHP) y documento `.php` → 400 · `config.php` intacto tras intentar borrarlo · logout invalida la sesión · bloqueo tras 5 intentos aunque luego la clave sea correcta · panel y las 46 vistas del menú de los 5 roles cargan sin errores PHP.
+
+**Criterio de cierre:** ✅ sin sesión cualquier controlador responde 401; un ESTUDIANTE no puede llamar controladores de egresos; no se puede subir un `.php`.
+
+> **Para validar en el navegador:** usar el sistema normalmente con cada rol durante unos días y revisar `logs/accesos_denegados.log`. Si aparece una acción legítima rechazada (`ROL_NO_PERMITIDO`), agregar ese controlador y rol en `controller/_permisos.php`.
+
+### Hallazgos para la Fase 2 (encontrados al probar)
+- Hay usuarios con nombre de usuario **duplicado** (`JOAQUIN2`, `ALEXANDE`) y **vacío** → agregar índice único en `usuario.usu_usuario`.
+- Un estudiante sin matrícula vinculada a su usuario (`matricula.usu_id`) no puede iniciar sesión (`SP_VERIFICAR_USUARIO` hace `INNER JOIN matricula`).
+- `SP_LISTAR_PAGO_PENSION_ID` solo muestra el año actual: en enero un estudiante no ve sus pagos del año anterior.
+- Docentes: no se valida que la tarea/examen/nota que modifica sea de un curso suyo (pendiente de propiedad, igual que se hizo con estudiantes).
+
+---
+
+## Fase 2 – Corrección de lógica en módulos existentes
+
+### 2.1 Base de datos (migración `002_correcciones.sql`)
+- [ ] Cambiar todos los montos a `DECIMAL(14,2)`: `pensiones.precio`, `pensiones.mora`, `pago_pensiones.sub_total`, `ingresos.monto`, `egresos.monto`, `matricula.pago_admi`, `pago_alu_nuevo`, `pago_matricula`, y los parámetros `DECIMAL(5,2)` dentro de los SPs.
+- [ ] Ampliar documentos/teléfonos: `*_dni` → `VARCHAR(20)` + nueva columna `tipo_documento_id`; `*_movil` / `*_nro_alterno` → `VARCHAR(20)`.
+- [ ] Agregar claves foráneas e índices faltantes (`pago_pensiones.id_matri`, `ingresos.id_pago_pension`, `egresos.id_indicador`, `created_at` para filtros por fecha).
+- [ ] Reemplazar fechas `''`/`0000-00-00` por `NULL` (`updated_at`, `fecha_anulacion`).
+- [ ] Pasar tablas a `utf8mb4` uniforme (hoy hay mezcla `utf8` / `utf8mb4`) — evita los `CONVERT(... USING utf8)` en `SP_VERIFICAR_USUARIO`.
+
+### 2.2 Pago de pensiones
+- [ ] Nuevo SP `SP_REGISTRAR_PAGO` que reciba la cabecera del pago (alumno, método, cuenta, usuario) y el detalle, todo dentro de **una transacción** (`START TRANSACTION ... COMMIT / ROLLBACK`).
+- [ ] Usar `LAST_INSERT_ID()` en lugar de `MAX(id)`.
+- [ ] Validación de duplicados por `id_matri + concepto + id_pension` (y para MATRÍCULA/ADMISIÓN por `id_matri + concepto`).
+- [ ] **Mora automática:** si `fecha_pago > fecha_vencimiento` sumar `pensiones.mora` como línea separada (concepto `MORA`), con opción de exonerar (requiere motivo y queda registrado quién exoneró).
+- [ ] Permitir **pagos parciales / a cuenta** (saldo pendiente por pensión).
+- [ ] Anular pago (no eliminar): estado `ANULADO`, motivo, usuario, fecha; anula también el ingreso asociado.
+- [ ] Número de recibo correlativo por serie (`B001-000123`).
+
+### 2.3 Ingresos / Egresos
+- [ ] Validar que `monto > 0` y `cantidad >= 1` en servidor.
+- [ ] El total del egreso = `cantidad × monto unitario` (hoy no está claro si `monto` es unitario o total; definir y documentar).
+- [ ] `SP_LISTAR_DIFERENCIA`: devolver números, el formato de moneda lo hace la capa de presentación (Fase 3).
+- [ ] Filtros por rango de fechas inclusivos (`created_at >= ini AND created_at < fin + 1 día`).
+
+### 2.4 Modelos PHP
+- [ ] Mover `cerrar_conexion()` antes del `return` (o usar `try/finally`).
+- [ ] Inicializar `$arreglo = []` en todas las funciones `Cargar_Select_*` (hoy pueden devolver variable indefinida si no hay filas).
+- [ ] Respuestas JSON uniformes: `{ "ok": true, "data": ..., "mensaje": "" }` con `header('Content-Type: application/json')`.
+- [ ] Validar tipos de entrada (`filter_var` para enteros, decimales y fechas) en lugar de `htmlspecialchars`.
+
+**Criterio de cierre:** se puede registrar una pensión de 1 500.00; dos pagos simultáneos no se cruzan; un pago vencido suma la mora automáticamente.
+
+---
+
+## Fase 3 – Configuración regional y multimoneda (Latinoamérica)
+
+**Objetivo:** que el colegio elija su país y todo el sistema (montos, fechas, zona horaria, documentos) se adapte.
+
+### 3.1 Base de datos (migración `003_regional.sql`)
+- [ ] Tabla `paises` (código ISO, nombre, moneda, zona horaria, documento de identidad principal, prefijo telefónico).
+- [ ] Tabla `monedas` (código ISO 4217, símbolo, nombre, decimales, separador de miles, separador decimal, posición del símbolo).
+- [ ] Tabla `tipos_documento_identidad` por país (DNI, Cédula, CI, RUT, CURP, CC, CPF…) con longitud mínima/máxima y expresión regular.
+- [ ] Columnas en `empresa`: `pais_id`, `moneda_id`, `zona_horaria`, `serie_recibo`, `ruc_nit` (identificación tributaria).
+- [ ] La moneda es **única para todo el colegio** (columna `empresa.moneda_id`); los movimientos no guardan moneda propia.
+- [ ] Al cambiar la moneda cuando ya hay pagos registrados, el sistema pide confirmación y deja registro (quién y cuándo), porque los montos anteriores no se convierten.
+- [ ] Datos iniciales de todos los países de Latinoamérica (ver [Anexo A](#anexo-a--monedas-y-países)).
+
+### 3.2 Backend
+- [ ] `utilitario/regional.php`: carga la configuración de la empresa una vez por sesión (`$_SESSION['S_MONEDA']`, `S_ZONA`, etc.).
+- [ ] Función `formato_moneda($monto)` usando la configuración (símbolo, decimales, separadores).
+- [ ] `date_default_timezone_set()` y `SET time_zone` según el país configurado (quitar `America/Lima` fijo).
+- [ ] Quitar `'S/.'` de todos los SPs; devolver solo números.
+- [ ] Reportes MPDF (`boleta_pago.php`, `pago.php`, `cedula.php`, etc.) usan `formato_moneda()` y el nombre del documento de identidad del país.
+
+### 3.3 Frontend
+- [ ] `js/regional.js` con `formatoMoneda(monto)` basado en `Intl.NumberFormat(locale, { style: 'currency', currency })`, leyendo la configuración desde un `<meta>` o variable global impresa en `view/index.php`.
+- [ ] Reemplazar las ~20 apariciones de `S/.` en `js/` y `view/`.
+- [ ] Validación de documento de identidad y teléfono según país (regex de la tabla).
+- [ ] Pantalla **Configuración → Datos regionales** (solo ADMINISTRADOR): país, moneda, zona horaria, formato de fecha.
+
+**Criterio de cierre:** cambiando el país a Ecuador se ve `$ 1,500.00` y cédula de 10 dígitos; a Argentina `$ 1.500,00`; a Bolivia `Bs 1.500,00`; a Perú `S/ 1,500.00`.
+
+---
+
+## Fase 4 – Métodos de pago en pensiones y cuentas de depósito
+
+> Hoy el sistema **no** registra método de pago: `pago_pensiones` solo guarda concepto, pensión, fecha y subtotal.
+
+### 4.1 Base de datos (migración `004_metodos_pago.sql`)
+- [ ] Tabla `metodos_pago`: EFECTIVO, TARJETA DÉBITO, TARJETA CRÉDITO, TRANSFERENCIA, DEPÓSITO BANCARIO, BILLETERA DIGITAL (Yape/Plin/Nequi/Mercado Pago/Tigo Money…), CHEQUE, OTRO. Campos: `requiere_referencia`, `requiere_cuenta`, `estado`.
+- [ ] Tabla `cuentas_financieras`: cajas y cuentas bancarias del colegio (tipo `CAJA`/`BANCO`/`BILLETERA`, banco, número de cuenta, CCI/CBU/IBAN, saldo inicial, estado), todas en la moneda configurada. **Se pueden agregar todas las cuentas que se necesiten.**
+- [ ] Tabla cabecera `pagos` (recibo): `id_pago`, `serie`, `numero`, `id_matricula`, `fecha`, `total`, `usuario_id`, `estado`, `observacion`.
+- [ ] Tabla `pagos_metodos`: un pago puede dividirse en varios métodos (ej. 300 en efectivo + 200 con tarjeta). Campos: `id_pago`, `metodo_pago_id`, `cuenta_id`, `monto`, `referencia` (n.° de operación / voucher / últimos 4 dígitos), `comision` (para tarjeta).
+- [ ] `pago_pensiones` pasa a ser el **detalle** del recibo (`id_pago` FK).
+
+### 4.2 Funcionalidad
+- [ ] En la pantalla de pago: selector de método, cuenta destino y n.° de operación (obligatorio si el método lo requiere); botón "agregar otro método" para pagos mixtos; la suma de métodos debe igualar el total.
+- [ ] Adjuntar foto del voucher (opcional) usando `subir_archivo()` de Fase 1.
+- [ ] Recibo/boleta PDF muestra método(s) de pago y referencia.
+- [ ] Cada pago genera automáticamente el **movimiento en la cuenta** elegida (Fase 5).
+- [ ] Vista del estudiante: historial con método de pago y descarga de recibo.
+
+**Criterio de cierre:** un pago mixto efectivo + transferencia se registra, suma en la caja y en la cuenta bancaria correspondientes, y el recibo lo refleja.
+
+---
+
+## Fase 5 – Módulo de contabilidad (rol Contador/a)
+
+**Objetivo:** que la contadora maneje todo el dinero del colegio desde un solo módulo.
+
+### 5.1 Rol y menú
+- [ ] Insertar rol `CONTADOR` en `roles` y permitir crear usuarios contadores (`personal_admi.personal_adm_tipo = 'CONTADOR'`).
+- [ ] En `view/index.php` agregar bloque de menú para `CONTADOR`:
+  - Dashboard financiero
+  - Pensiones y cobranzas (consultar, registrar pagos, morosos)
+  - Ingresos
+  - Egresos
+  - Pago a docentes / planilla
+  - Cuentas y cajas (movimientos, depósitos, transferencias)
+  - Reportes y utilidades
+  - Configuración contable (categorías, métodos de pago, cuentas)
+- [ ] El CONTADOR **no** ve notas, tareas, enfermería ni psicología.
+
+### 5.2 Categorías contables
+- [ ] Ampliar `indicadores` (hoy `GASTOS`/`INGRESOS`) a un **plan de cuentas simplificado** con jerarquía: `codigo`, `nombre`, `tipo` (INGRESO/EGRESO), `padre_id`.
+  - Ingresos: Pensiones, Matrículas, Admisión, Moras, Otros ingresos (uniformes, eventos, certificados…)
+  - Egresos: **Remuneraciones docentes**, Remuneraciones administrativas, Servicios (luz, agua, internet), Alquiler, Mantenimiento, Materiales, Impuestos, Comisiones bancarias, Otros
+- [ ] Migrar los indicadores existentes a la nueva estructura sin perder los movimientos.
+
+### 5.3 Movimientos de caja y bancos
+- [ ] Tabla `movimientos_cuenta`: `cuenta_id`, `fecha`, `tipo` (INGRESO/EGRESO/TRANSFERENCIA_ENTRADA/TRANSFERENCIA_SALIDA/AJUSTE), `monto`, `origen` (PAGO_PENSION, EGRESO, PAGO_DOCENTE, DEPOSITO, MANUAL), `origen_id`, `referencia`, `usuario_id`, `estado`.
+- [ ] Todo ingreso y egreso afecta una cuenta → saldo de cada caja/banco siempre calculable.
+- [ ] **Depósitos:** pasar efectivo de caja a una cuenta bancaria (2 movimientos enlazados) con n.° de operación y voucher.
+- [ ] Transferencias entre cuentas.
+- [ ] **Cierre de caja diario:** saldo inicial, ingresos, egresos, saldo esperado vs. contado, diferencia, observación, usuario.
+- [ ] Conciliación bancaria básica: marcar movimientos como "conciliados" contra el extracto.
+
+### 5.4 Egresos mejorados
+- [ ] Al registrar un egreso: categoría, proveedor/beneficiario, método de pago, cuenta de salida, n.° de comprobante (factura/boleta/recibo), adjunto.
+- [ ] Egresos que provienen de planilla docente se generan automáticamente (Fase 6) y no se editan a mano.
+
+**Criterio de cierre:** la contadora inicia sesión, ve solo su menú, registra un egreso con cuenta y comprobante, deposita el efectivo del día al banco y el saldo de ambas cuentas cuadra.
+
+---
+
+## Fase 6 – Pago a docentes (planilla)
+
+### 6.1 Base de datos (migración `006_planilla.sql`)
+- [ ] Tabla `tipos_contrato`: **TIEMPO COMPLETO**, **TIEMPO PARCIAL**, **POR HORAS**, (opcional: SUPLENTE / RECIBO POR HONORARIOS).
+- [ ] Tabla `contratos_docente`: `docente_id`, `tipo_contrato_id`, `fecha_inicio`, `fecha_fin`, `sueldo_base` (tiempo completo/parcial), `tarifa_hora` (por horas), `horas_semanales`, `metodo_pago_id` preferido (**EFECTIVO / TRANSFERENCIA / DEPÓSITO / CHEQUE / BILLETERA**), `cuenta_bancaria_docente`, `banco_docente`, `estado`. Un docente puede tener historial de contratos.
+- [ ] Tabla `conceptos_planilla`: ingresos (bono, horas extra, movilidad) y descuentos (tardanzas, faltas, adelantos, aportes/retenciones según país) con tipo `MONTO_FIJO` o `PORCENTAJE`.
+- [ ] Tabla `planillas`: `periodo` (año-mes), `estado` (BORRADOR / APROBADA / PAGADA / ANULADA), `usuario_id`, totales.
+- [ ] Tabla `planilla_detalle`: por docente → base, horas dictadas, ingresos, descuentos, neto.
+- [ ] Tabla `pagos_docentes`: pago real del neto (puede ser en varias partes o adelantos), `metodo_pago_id`, `cuenta_id` (de dónde sale el dinero), `referencia`, `fecha`, `voucher`.
+
+### 6.2 Reglas de cálculo
+- [ ] **Tiempo completo:** `sueldo_base` mensual.
+- [ ] **Tiempo parcial:** `sueldo_base` mensual pactado (o proporcional a horas pactadas).
+- [ ] **Por horas:** `horas_dictadas × tarifa_hora`; las horas se toman de `horarios` / `asignatura_docente` y se pueden ajustar.
+- [ ] Descuentos por faltas/tardanzas (opcional, integrable con asistencia docente si se implementa).
+- [ ] Neto = base + ingresos − descuentos − adelantos.
+
+### 6.3 Flujo
+1. [ ] La contadora genera la planilla del mes (se crean filas para todos los docentes con contrato activo).
+2. [ ] Revisa y ajusta horas/bonos/descuentos (estado BORRADOR).
+3. [ ] Administrador aprueba (APROBADA).
+4. [ ] Se registra el pago de cada docente según su modalidad → genera **egreso** (categoría "Remuneraciones docentes") y **movimiento de cuenta** automáticamente.
+5. [ ] Boleta de pago del docente en PDF; el docente la ve desde su perfil.
+
+### 6.4 Pantallas
+- [ ] Docentes → pestaña "Contrato" en el formulario existente (`view/docentes/view_docentes.php`).
+- [ ] Contabilidad → Planilla docente (lista por mes, detalle, aprobar, pagar).
+- [ ] Contabilidad → Adelantos a docentes.
+- [ ] Docente → "Mis boletas de pago".
+
+**Criterio de cierre:** se genera la planilla de un mes con un docente a tiempo completo (pago en efectivo) y uno por horas (pago por transferencia); ambos pagos aparecen en egresos y en sus cuentas.
+
+---
+
+## Fase 7 – Reportes financieros y utilidades
+
+- [ ] **Estado de resultados / utilidad** por mes, rango o año escolar: ingresos por categoría − egresos por categoría = **utilidad (o pérdida)**, con margen %.
+- [ ] **Flujo de caja**: saldo inicial, entradas, salidas, saldo final por cuenta.
+- [ ] Comparativo mensual (gráfico de barras ingresos vs. egresos vs. utilidad) y comparativo contra el año anterior.
+- [ ] **Morosidad**: alumnos con pensiones vencidas, monto adeudado, días de atraso, por nivel/grado/sección; exportable para cobranza.
+- [ ] Proyección de ingresos: pensiones por cobrar del año.
+- [ ] Reporte de planilla por mes y costo docente por tipo de contrato.
+- [ ] Ingresos por método de pago y por cuenta (cuánto entró en efectivo, tarjeta, transferencia).
+- [ ] Reporte de cierres de caja y diferencias.
+- [ ] Exportar a PDF (MPDF) y Excel (DataTables Buttons ya está en `plantilla/plugins`).
+- [ ] Dashboard del CONTADOR con tarjetas: ingresos del mes, egresos del mes, utilidad, morosidad, saldo por cuenta.
+
+**Criterio de cierre:** el reporte de utilidad de un mes coincide con la suma manual de ingresos y egresos válidos.
+
+---
+
+## Fase 8 – Mejoras generales por módulo
+
+Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la seguridad y del formato regional).
+
+| Módulo | Mejoras |
+|--------|---------|
+| **Usuarios / Roles** | Permisos por módulo configurables (tabla `rol_permisos`) en lugar de `if ($_SESSION['S_ROL'] == ...)` repetidos en `view/index.php`; cambio de contraseña obligatorio en primer ingreso; recuperar contraseña por email. |
+| **Empresa** | Datos regionales (Fase 3), logo validado, datos tributarios (RUC/NIT/CUIT/RUT). |
+| **Alumnos** | Validación de documento según país; evitar duplicados por documento; buscador con paginación del servidor (DataTables server-side) para colegios grandes; ficha de apoderado con más de 2 responsables. |
+| **Matrícula** | Validar vacantes por aula; impedir doble matrícula del mismo alumno en el mismo año; generar automáticamente el cronograma de pensiones del alumno al matricular; descuentos/becas (% o monto) por alumno. |
+| **Pensiones** | Generar las 10/12 pensiones del año en un clic por nivel; mora fija o % por día/mes; becas y descuentos por hermanos. |
+| **Docentes** | Contrato y modalidad de pago (Fase 6); validación de documento; historial. |
+| **Personal administrativo** | Reutilizar la planilla de la Fase 6 para personal administrativo (misma estructura). |
+| **Asistencia** | Registro de asistencia docente (sirve para descuentos de planilla); alertas a padres por inasistencias. |
+| **Notas / Exámenes / Tareas** | Validar rangos de nota según la escala del país (0–20 Perú, 1–10 Ecuador, 1–7 Chile…) desde configuración; bloquear edición de periodos cerrados. |
+| **Horarios / Aulas** | Validar choque de horario de docente y aula. |
+| **Comunicados / Solicitudes** | Validar archivos adjuntos; notificaciones; estado leído. |
+| **Enfermería / Psicología** | Confidencialidad: solo el rol correspondiente y ADMINISTRADOR. |
+| **Reportes MPDF** | Unificar conexión con PDO; moneda y documento regional; plantilla común de encabezado con logo. |
+| **Landing (`landing.html`)** | Formulario de solicitudes con validación y protección anti-spam (honeypot / captcha). |
+| **General** | Mensajes de error claros con SweetAlert; registro de auditoría (`auditoria`: quién, qué, cuándo, valor anterior/nuevo) para tablas financieras; paginación server-side en listados grandes. |
+
+---
+
+## Fase 9 – Pruebas, documentación y despliegue
+
+- [ ] BD de prueba `colegio2_test` restaurada desde el respaldo para probar cada migración antes de aplicarla en la real.
+- [ ] Lista de casos de prueba por fase (login por rol, acceso denegado, pago normal, pago vencido con mora, pago mixto, anulación, planilla, reportes).
+- [ ] Actualizar `manual_usuario.pdf` con el módulo de contabilidad y la configuración regional.
+- [ ] Manual corto para la contadora (flujo diario: cobrar → cerrar caja → depositar; flujo mensual: planilla → reportes).
+- [ ] Checklist de producción: `display_errors=Off`, HTTPS, usuario MySQL sin privilegios globales, respaldos automáticos diarios, eliminar archivos de prueba.
+
+---
+
+## Anexo A – Monedas y países
+
+| País | Código | Moneda | Símbolo | Decimales | Formato ejemplo | Zona horaria | Documento |
+|------|--------|--------|---------|-----------|-----------------|--------------|-----------|
+| Perú | PE | PEN – Sol | S/ | 2 | S/ 1,500.00 | America/Lima | DNI (8) |
+| Ecuador | EC | USD – Dólar | $ | 2 | $ 1,500.00 | America/Guayaquil | Cédula (10) |
+| Bolivia | BO | BOB – Boliviano | Bs | 2 | Bs 1.500,00 | America/La_Paz | CI (5–10) |
+| Argentina | AR | ARS – Peso | $ | 2 | $ 1.500,00 | America/Argentina/Buenos_Aires | DNI (7–8) |
+| Chile | CL | CLP – Peso | $ | 0 | $ 1.500 | America/Santiago | RUT |
+| Colombia | CO | COP – Peso | $ | 0–2 | $ 1.500 | America/Bogota | CC (6–10) |
+| México | MX | MXN – Peso | $ | 2 | $1,500.00 | America/Mexico_City | CURP (18) |
+| Venezuela | VE | VES – Bolívar | Bs. | 2 | Bs. 1.500,00 | America/Caracas | CI |
+| Paraguay | PY | PYG – Guaraní | ₲ | 0 | ₲ 1.500 | America/Asuncion | CI |
+| Uruguay | UY | UYU – Peso | $U | 2 | $U 1.500,00 | America/Montevideo | CI (8) |
+| Brasil | BR | BRL – Real | R$ | 2 | R$ 1.500,00 | America/Sao_Paulo | CPF (11) |
+| Costa Rica | CR | CRC – Colón | ₡ | 2 | ₡1 500,00 | America/Costa_Rica | Cédula (9) |
+| Panamá | PA | PAB/USD | B/. | 2 | B/. 1,500.00 | America/Panama | Cédula |
+| Guatemala | GT | GTQ – Quetzal | Q | 2 | Q1,500.00 | America/Guatemala | DPI (13) |
+| Honduras | HN | HNL – Lempira | L | 2 | L 1,500.00 | America/Tegucigalpa | DNI (13) |
+| El Salvador | SV | USD – Dólar | $ | 2 | $1,500.00 | America/El_Salvador | DUI (9) |
+| Nicaragua | NI | NIO – Córdoba | C$ | 2 | C$ 1,500.00 | America/Managua | Cédula (14) |
+| Rep. Dominicana | DO | DOP – Peso | RD$ | 2 | RD$1,500.00 | America/Santo_Domingo | Cédula (11) |
+| Cuba | CU | CUP – Peso | $ | 2 | $1 500,00 | America/Havana | CI (11) |
+| Puerto Rico | PR | USD – Dólar | $ | 2 | $1,500.00 | America/Puerto_Rico | — |
+
+> El formato exacto (separadores) se resuelve con `Intl.NumberFormat('es-XX', {currency})` en JS y con la configuración de la tabla `monedas` en PHP/MPDF.
+
+---
+
+## Anexo B – Script SQL de referencia
+
+Esquema propuesto (se ajusta al implementar cada fase; nombres en español para seguir la convención actual).
+
+```sql
+-- ===== Fase 2: ampliar montos =====
+ALTER TABLE pensiones       MODIFY precio DECIMAL(14,2), MODIFY mora DECIMAL(14,2);
+ALTER TABLE pago_pensiones  MODIFY sub_total DECIMAL(14,2);
+ALTER TABLE ingresos        MODIFY monto DECIMAL(14,2);
+ALTER TABLE egresos         MODIFY monto DECIMAL(14,2);
+ALTER TABLE matricula       MODIFY pago_admi DECIMAL(14,2),
+                            MODIFY pago_alu_nuevo DECIMAL(14,2),
+                            MODIFY pago_matricula DECIMAL(14,2);
+
+-- ===== Fase 3: regional =====
+CREATE TABLE monedas (
+  id_moneda      INT AUTO_INCREMENT PRIMARY KEY,
+  codigo         CHAR(3) NOT NULL UNIQUE,          -- PEN, USD, BOB, ARS...
+  nombre         VARCHAR(60) NOT NULL,
+  simbolo        VARCHAR(5)  NOT NULL,
+  decimales      TINYINT NOT NULL DEFAULT 2,
+  sep_miles      CHAR(1) NOT NULL DEFAULT ',',
+  sep_decimal    CHAR(1) NOT NULL DEFAULT '.',
+  simbolo_antes  TINYINT(1) NOT NULL DEFAULT 1,
+  estado         ENUM('ACTIVO','INACTIVO') DEFAULT 'ACTIVO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE paises (
+  id_pais        INT AUTO_INCREMENT PRIMARY KEY,
+  codigo_iso     CHAR(2) NOT NULL UNIQUE,
+  nombre         VARCHAR(80) NOT NULL,
+  locale         VARCHAR(10) NOT NULL,             -- es-PE, es-EC, es-BO...
+  moneda_id      INT NOT NULL,
+  zona_horaria   VARCHAR(60) NOT NULL,
+  prefijo_tel    VARCHAR(6),
+  FOREIGN KEY (moneda_id) REFERENCES monedas(id_moneda)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE tipos_documento_identidad (
+  id_tipo_doc    INT AUTO_INCREMENT PRIMARY KEY,
+  pais_id        INT NOT NULL,
+  nombre         VARCHAR(40) NOT NULL,             -- DNI, CÉDULA, CI, RUT...
+  long_min       TINYINT NOT NULL,
+  long_max       TINYINT NOT NULL,
+  regex          VARCHAR(120),
+  FOREIGN KEY (pais_id) REFERENCES paises(id_pais)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE empresa
+  ADD pais_id INT NULL, ADD moneda_id INT NULL,
+  ADD zona_horaria VARCHAR(60) NULL, ADD identificacion_tributaria VARCHAR(20) NULL;
+
+-- ===== Fase 4: métodos de pago y cuentas =====
+CREATE TABLE metodos_pago (
+  id_metodo            INT AUTO_INCREMENT PRIMARY KEY,
+  nombre               VARCHAR(60) NOT NULL,       -- EFECTIVO, TARJETA, TRANSFERENCIA...
+  requiere_referencia  TINYINT(1) DEFAULT 0,
+  requiere_cuenta      TINYINT(1) DEFAULT 0,
+  estado               ENUM('ACTIVO','INACTIVO') DEFAULT 'ACTIVO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE cuentas_financieras (
+  id_cuenta      INT AUTO_INCREMENT PRIMARY KEY,
+  tipo           ENUM('CAJA','BANCO','BILLETERA') NOT NULL,
+  nombre         VARCHAR(100) NOT NULL,            -- "Caja principal", "BCP Soles"...
+  banco          VARCHAR(100),
+  numero_cuenta  VARCHAR(40),
+  codigo_interbancario VARCHAR(40),                -- CCI / CBU / IBAN
+  saldo_inicial  DECIMAL(14,2) DEFAULT 0,
+  estado         ENUM('ACTIVO','INACTIVO') DEFAULT 'ACTIVO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pagos (
+  id_pago        INT AUTO_INCREMENT PRIMARY KEY,
+  serie          VARCHAR(5)  NOT NULL,
+  numero         INT NOT NULL,
+  id_matricula   INT NOT NULL,
+  fecha          DATETIME NOT NULL,
+  total          DECIMAL(14,2) NOT NULL,
+  usuario_id     INT NOT NULL,
+  estado         ENUM('VALIDO','ANULADO') DEFAULT 'VALIDO',
+  motivo_anulacion VARCHAR(255),
+  UNIQUE KEY (serie, numero)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pagos_metodos (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  id_pago        INT NOT NULL,
+  metodo_pago_id INT NOT NULL,
+  cuenta_id      INT NOT NULL,
+  monto          DECIMAL(14,2) NOT NULL,
+  comision       DECIMAL(14,2) DEFAULT 0,
+  referencia     VARCHAR(60),
+  voucher        VARCHAR(255),
+  FOREIGN KEY (id_pago) REFERENCES pagos(id_pago),
+  FOREIGN KEY (metodo_pago_id) REFERENCES metodos_pago(id_metodo),
+  FOREIGN KEY (cuenta_id) REFERENCES cuentas_financieras(id_cuenta)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE pago_pensiones ADD id_pago INT NULL, ADD estado ENUM('VALIDO','ANULADO') DEFAULT 'VALIDO';
+
+-- ===== Fase 5: contabilidad =====
+INSERT INTO roles (tipo_rol, descripcion, estado, created_at)
+VALUES ('CONTADOR','GESTIONA INGRESOS, EGRESOS, PLANILLA Y REPORTES FINANCIEROS','ACTIVO',NOW());
+
+CREATE TABLE movimientos_cuenta (
+  id_movimiento  INT AUTO_INCREMENT PRIMARY KEY,
+  cuenta_id      INT NOT NULL,
+  fecha          DATETIME NOT NULL,
+  tipo           ENUM('INGRESO','EGRESO','TRANSF_ENTRADA','TRANSF_SALIDA','AJUSTE') NOT NULL,
+  monto          DECIMAL(14,2) NOT NULL,
+  origen         ENUM('PAGO_PENSION','INGRESO','EGRESO','PAGO_DOCENTE','DEPOSITO','MANUAL') NOT NULL,
+  origen_id      INT,
+  referencia     VARCHAR(60),
+  usuario_id     INT NOT NULL,
+  conciliado     TINYINT(1) DEFAULT 0,
+  estado         ENUM('VALIDO','ANULADO') DEFAULT 'VALIDO',
+  FOREIGN KEY (cuenta_id) REFERENCES cuentas_financieras(id_cuenta),
+  INDEX (cuenta_id, fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE cierres_caja (
+  id_cierre      INT AUTO_INCREMENT PRIMARY KEY,
+  cuenta_id      INT NOT NULL,
+  fecha          DATE NOT NULL,
+  saldo_inicial  DECIMAL(14,2), ingresos DECIMAL(14,2), egresos DECIMAL(14,2),
+  saldo_esperado DECIMAL(14,2), saldo_contado DECIMAL(14,2), diferencia DECIMAL(14,2),
+  observacion    VARCHAR(255),
+  usuario_id     INT NOT NULL,
+  UNIQUE KEY (cuenta_id, fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE egresos
+  ADD metodo_pago_id INT NULL, ADD cuenta_id INT NULL,
+  ADD beneficiario VARCHAR(150) NULL, ADD nro_comprobante VARCHAR(30) NULL,
+  ADD adjunto VARCHAR(255) NULL;
+
+-- ===== Fase 6: planilla docente =====
+CREATE TABLE tipos_contrato (
+  id_tipo_contrato INT AUTO_INCREMENT PRIMARY KEY,
+  nombre         VARCHAR(40) NOT NULL,             -- TIEMPO COMPLETO, TIEMPO PARCIAL, POR HORAS
+  calculo        ENUM('MENSUAL','POR_HORA') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE contratos_docente (
+  id_contrato    INT AUTO_INCREMENT PRIMARY KEY,
+  docente_id     INT NOT NULL,
+  tipo_contrato_id INT NOT NULL,
+  fecha_inicio   DATE NOT NULL,
+  fecha_fin      DATE NULL,
+  sueldo_base    DECIMAL(14,2) DEFAULT 0,
+  tarifa_hora    DECIMAL(14,2) DEFAULT 0,
+  horas_semanales DECIMAL(5,2) DEFAULT 0,
+  metodo_pago_id INT NOT NULL,                     -- efectivo, transferencia, depósito...
+  banco_docente  VARCHAR(100),
+  cuenta_docente VARCHAR(40),
+  estado         ENUM('ACTIVO','FINALIZADO') DEFAULT 'ACTIVO',
+  FOREIGN KEY (tipo_contrato_id) REFERENCES tipos_contrato(id_tipo_contrato),
+  FOREIGN KEY (metodo_pago_id) REFERENCES metodos_pago(id_metodo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE conceptos_planilla (
+  id_concepto    INT AUTO_INCREMENT PRIMARY KEY,
+  nombre         VARCHAR(80) NOT NULL,
+  tipo           ENUM('INGRESO','DESCUENTO') NOT NULL,
+  forma          ENUM('MONTO','PORCENTAJE') NOT NULL,
+  valor_defecto  DECIMAL(14,2) DEFAULT 0,
+  estado         ENUM('ACTIVO','INACTIVO') DEFAULT 'ACTIVO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE planillas (
+  id_planilla    INT AUTO_INCREMENT PRIMARY KEY,
+  anio           SMALLINT NOT NULL,
+  mes            TINYINT NOT NULL,
+  estado         ENUM('BORRADOR','APROBADA','PAGADA','ANULADA') DEFAULT 'BORRADOR',
+  total_bruto    DECIMAL(14,2) DEFAULT 0,
+  total_descuentos DECIMAL(14,2) DEFAULT 0,
+  total_neto     DECIMAL(14,2) DEFAULT 0,
+  usuario_id     INT NOT NULL,
+  aprobado_por   INT NULL,
+  UNIQUE KEY (anio, mes)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE planilla_detalle (
+  id_detalle     INT AUTO_INCREMENT PRIMARY KEY,
+  id_planilla    INT NOT NULL,
+  contrato_id    INT NOT NULL,
+  horas_dictadas DECIMAL(6,2) DEFAULT 0,
+  base           DECIMAL(14,2) NOT NULL,
+  ingresos       DECIMAL(14,2) DEFAULT 0,
+  descuentos     DECIMAL(14,2) DEFAULT 0,
+  adelantos      DECIMAL(14,2) DEFAULT 0,
+  neto           DECIMAL(14,2) NOT NULL,
+  pagado         DECIMAL(14,2) DEFAULT 0,
+  FOREIGN KEY (id_planilla) REFERENCES planillas(id_planilla),
+  FOREIGN KEY (contrato_id) REFERENCES contratos_docente(id_contrato)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE planilla_detalle_conceptos (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  id_detalle     INT NOT NULL,
+  concepto_id    INT NOT NULL,
+  monto          DECIMAL(14,2) NOT NULL,
+  FOREIGN KEY (id_detalle) REFERENCES planilla_detalle(id_detalle)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pagos_docentes (
+  id_pago_docente INT AUTO_INCREMENT PRIMARY KEY,
+  id_detalle     INT NULL,                         -- NULL = adelanto fuera de planilla
+  docente_id     INT NOT NULL,
+  fecha          DATETIME NOT NULL,
+  monto          DECIMAL(14,2) NOT NULL,
+  metodo_pago_id INT NOT NULL,
+  cuenta_id      INT NOT NULL,                     -- cuenta/caja del colegio de donde sale
+  referencia     VARCHAR(60),
+  voucher        VARCHAR(255),
+  egreso_id      INT NULL,                         -- egreso generado automáticamente
+  usuario_id     INT NOT NULL,
+  estado         ENUM('VALIDO','ANULADO') DEFAULT 'VALIDO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+---
+
+## Orden recomendado y dependencias
+
+```
+Fase 0 ─► Fase 1 ─► Fase 2 ─► Fase 3 ─┬─► Fase 4 ─► Fase 5 ─► Fase 6 ─► Fase 7
+                                      └─► Fase 8 (en paralelo, módulo por módulo)
+                                                                         ─► Fase 9
+```
+
+- Fase 1 va primero porque hoy cualquiera puede entrar como administrador.
+- Fase 2 (ampliar `DECIMAL`) va antes de multimoneda: sin ella, los montos en pesos/guaraníes no caben.
+- Fase 4 (cuentas y métodos) es la base de la Fase 5 (movimientos) y la Fase 6 (pago a docentes).
+
+---
+
+## Pendientes por confirmar
+
+Ya resueltos: un solo país, una sola moneda configurable, solo rol CONTADOR (ver [Decisiones confirmadas](#decisiones-confirmadas)).
+
+1. **Retenciones de ley en planilla** (aportes de pensión, seguro, impuesto a la renta) cambian por país; ¿se manejan como conceptos configurables (propuesto) o se necesita cálculo automático por país?
+2. **¿Facturación electrónica?** (SUNAT, SRI, SIN, AFIP…) — fuera del alcance de este plan; sería una fase aparte.
+3. El mensaje original terminaba en "a su vez debe poder…": falta completar ese requerimiento.

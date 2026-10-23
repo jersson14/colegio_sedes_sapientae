@@ -1,0 +1,15 @@
+# Archivos subidos por los usuarios (fotos, documentos de tareas)
+controller/*/fotos/*
+controller/*/FOTOS/*
+controller/tareas/**/documentos/
+!controller/*/fotos/.htaccess
+!controller/*/FOTOS/.htaccess
+
+# Configuración local con credenciales
+config/config.local.php
+
+# Respaldos de base de datos
+respaldos/
+
+# Logs
+logs/*.log

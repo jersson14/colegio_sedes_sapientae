@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 setlocale(LC_TIME, 'es_ES.UTF-8'); // Establecer la configuración local para español
 $current_year = date('Y');
 
@@ -6,6 +7,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
 $html = '';
 $codigo = $mysqli->real_escape_string($_GET['codigo']);
+reporte_exigir_matricula_propia($mysqli, $codigo);
 $idpagopen = $mysqli->real_escape_string($_GET['idpagopen']);
 
 	$query="SELECT

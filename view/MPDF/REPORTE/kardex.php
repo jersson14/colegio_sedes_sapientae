@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 ob_start();
 setlocale(LC_TIME, 'es_ES.UTF-8');
 date_default_timezone_set('America/Lima');
@@ -6,6 +7,7 @@ date_default_timezone_set('America/Lima');
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
 $codigo = $mysqli->real_escape_string($_GET['codigo']);
+reporte_exigir_matricula_propia($mysqli, $codigo);
 
 $query = "SELECT
     pensiones.id_nivel_academico, 

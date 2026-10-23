@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
 require '../../model/model_asistencia.php';
 $MASIS = new Modelo_Asistencia();
 

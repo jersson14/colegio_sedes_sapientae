@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_asignatura_docente.php';
     $MASD = new Modelo_Asignatura_Docente();//Instaciamos
     $consulta = $MASD->Listar_Asignatura_Docente();

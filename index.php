@@ -1,7 +1,9 @@
 <?php
-  session_start();
+  require_once __DIR__ . '/utilitario/sesion.php';
+  iniciar_sesion_segura();
   if(isset($_SESSION['S_ID'])){
     header('Location: view/index.php');
+    exit;
   }
 ?>
 <!DOCTYPE html>
@@ -20,6 +22,12 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="plantilla/dist/css/adminlte.min.css">
   <link rel="icon" href="img/icono.jpeg" type="image/jpeg">
+
+  <style>
+    .input-group-text {
+      cursor: pointer;
+    }
+  </style>
 
 </head>
 <body class="hold-transition login-page" style="background-image: url('img/fondo.jpeg'); background-size: 25px 50px; background-size: 100% 100%;"  >
@@ -43,8 +51,8 @@
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Ingrese su contraseña" id="txt_contra">
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+            <div class="input-group-text" onclick="togglePassword()" title="Mostrar/Ocultar contraseña">
+              <span class="fas fa-eye" id="toggleIcon"></span>
             </div>
           </div>
         </div>
@@ -71,7 +79,53 @@
   </div>
 </div>
 <!-- /.login-box -->
+<div class="alert alert-info" style="font-size:13px; margin-top:15px;">
+    <h6 style="font-weight:bold; text-align:center;">
+        <i class="fas fa-key"></i> USUARIOS DE ACCESO
+    </h6>
 
+    <table class="table table-sm table-bordered table-striped mb-0">
+        <thead class="bg-primary text-white">
+            <tr>
+                <th>Rol</th>
+                <th>Usuario</th>
+                <th>Contraseña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Administrador</b></td>
+                <td>JERSSON123</td>
+                <td>123456</td>
+            </tr>
+            <tr>
+                <td><b>Auxiliar</b></td>
+                <td>MANUEL123</td>
+                <td>123456</td>
+            </tr>
+            <tr>
+                <td><b>Docente</b></td>
+                <td>jorge</td>
+                <td>123456</td>
+            </tr>
+            <tr>
+                <td><b>Estudiante</b></td>
+                <td>JOAQUIN2</td>
+                <td>123456</td>
+            </tr>
+            <tr>
+                <td><b>Psicóloga</b></td>
+                <td>yessica2</td>
+                <td>123456</td>
+            </tr>
+            <tr>
+                <td><b>Enfermera</b></td>
+                <td>adriana2</td>
+                <td>123456</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 <!-- jQuery -->
 <script src="plantilla/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -80,19 +134,39 @@
 <script src="plantilla/dist/js/adminlte.min.js"></script>
 <script src="js/console_usuario.js?rev=<?php echo time();?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // Función para mostrar/ocultar contraseña
+  function togglePassword() {
+    const passInput = document.getElementById('txt_contra');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      toggleIcon.classList.remove('fa-eye');
+      toggleIcon.classList.add('fa-eye-slash');
+    } else {
+      passInput.type = 'password';
+      toggleIcon.classList.remove('fa-eye-slash');
+      toggleIcon.classList.add('fa-eye');
+    }
+  }
+</script>
+
 <script>
   const rmcheck       = document.getElementById('remember'),
         usuarioInput  = document.getElementById('txt_usuario'),
         passInput     = document.getElementById('txt_contra');
+      // Solo se recuerda el usuario; se borra la contraseña que versiones anteriores guardaban
+      try { localStorage.removeItem('pass'); } catch (e) {}
       if(localStorage.checkbox && localStorage.checkbox !=""){
         rmcheck.setAttribute("checked","checked");
         usuarioInput.value = localStorage.usuario;
-        passInput.value    = localStorage.pass;
       }else{
         rmcheck.removeAttribute("checked");
         usuarioInput.value = "";
-        passInput.value    = "";
       }
+      passInput.value = "";
       
 </script>
 <script>

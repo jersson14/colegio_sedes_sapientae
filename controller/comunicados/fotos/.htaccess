@@ -1,0 +1,8 @@
+# Carpeta de archivos subidos: nunca ejecutar scripts ni listar el contenido
+<FilesMatch "(?i)\.(php\d?|phtml|phar|pht|pl|py|cgi|sh|asp|aspx|jsp|htaccess)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+Options -Indexes

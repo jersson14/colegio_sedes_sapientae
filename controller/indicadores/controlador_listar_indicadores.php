@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_indicadores.php';
     $MIN = new Modelo_Indicadores();//Instaciamos
     $consulta = $MIN->Listar_Indicadores();

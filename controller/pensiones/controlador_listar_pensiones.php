@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_pensiones.php';
     $MPE = new Modelo_Pensiones();//Instaciamos
     $consulta = $MPE->Listar_Pensiones();

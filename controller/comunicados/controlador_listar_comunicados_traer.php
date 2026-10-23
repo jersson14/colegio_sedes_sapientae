@@ -1,4 +1,4 @@
-<!-- <?php
+<?php require_once __DIR__ . '/../_seguridad.php'; ?><!-- <?php
     // require '../../model/model_comunicados.php';
     // $MC = new Modelo_Comunicados();//Instaciamos
     // $codigo = strtoupper(htmlspecialchars($_POST['codigo'],ENT_QUOTES,'UTF-8'));

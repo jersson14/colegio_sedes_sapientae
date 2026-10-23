@@ -1,4 +1,4 @@
-<script src="../js/console_tareas.js?rev=<?php echo time();?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_tareas.js?rev=<?php echo time();?>"></script>
 
 <div class="content-header">
   <div class="container-fluid">

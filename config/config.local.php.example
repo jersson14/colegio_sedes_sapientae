@@ -1,0 +1,9 @@
+<?php
+// Copiar como config.local.php y ajustar a cada servidor. Solo poner lo que cambia.
+return [
+    'db' => [
+        'usuario'    => 'colegio_app',
+        'contrasena' => 'CAMBIAR_POR_UNA_CLAVE_SEGURA',
+    ],
+    'produccion' => true,
+];

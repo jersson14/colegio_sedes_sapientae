@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_comunicados.php';
     $MC = new Modelo_Comunicados();//Instaciamos
     $fechaini = htmlspecialchars($_POST['fechaini'],ENT_QUOTES,'UTF-8');

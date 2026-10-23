@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/archivos.php';
     require '../../model/model_alumnos.php';
     $MALU = new Modelo_Alumnos();//Instaciamos
     //DATOS DE ESTUDIANTE//
@@ -10,7 +12,7 @@
     $fechanaci = strtoupper(htmlspecialchars($_POST['fechanaci'],ENT_QUOTES,'UTF-8'));
     $telf = strtoupper(htmlspecialchars($_POST['telf'],ENT_QUOTES,'UTF-8'));
     $direc = strtoupper(htmlspecialchars($_POST['direc'],ENT_QUOTES,'UTF-8'));
-    $nombrefoto = htmlspecialchars($_POST['nombrefoto'],ENT_QUOTES,'UTF-8');
+    $nombrefoto = preparar_foto_subida('foto', htmlspecialchars($_POST['nombrefoto'] ?? '',ENT_QUOTES,'UTF-8'));
 
     //DATOS DE LOS PAPAS //
     $dnipa = strtoupper(htmlspecialchars($_POST['dnipa'],ENT_QUOTES,'UTF-8'));

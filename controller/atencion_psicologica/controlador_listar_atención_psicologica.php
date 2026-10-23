@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../_seguridad.php';
     require '../../model/model_atencion_psico.php';
     $MAPSI = new Modelo_Atencion_Psico();//Instaciamos
     $consulta = $MAPSI->Listar_Atencion_Psicologica();

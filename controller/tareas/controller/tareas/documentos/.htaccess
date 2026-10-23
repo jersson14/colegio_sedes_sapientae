@@ -1,1 +1,2 @@
-Options +Indexes
+# Los archivos de tareas solo se entregan por controller/tareas/controlador_archivos_tarea.php (con sesión)
+Require all denied
