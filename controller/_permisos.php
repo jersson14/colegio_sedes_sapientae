@@ -200,6 +200,16 @@ return [
         'controller/planilla/controlador_planilla_detalle.php' => ['CONTADOR'],
         'controller/planilla/controlador_planilla_generar.php' => ['CONTADOR'],
         'controller/planilla/controlador_planillas_listar.php' => ['CONTADOR'],
+        // reportes
+        'controller/reportes/controlador_cierres.php' => ['CONTADOR'],
+        'controller/reportes/controlador_filtros.php' => ['CONTADOR'],
+        'controller/reportes/controlador_flujo_caja.php' => ['CONTADOR'],
+        'controller/reportes/controlador_mensual.php' => ['CONTADOR'],
+        'controller/reportes/controlador_morosidad.php' => ['CONTADOR'],
+        'controller/reportes/controlador_planilla.php' => ['CONTADOR'],
+        'controller/reportes/controlador_por_metodo.php' => ['CONTADOR'],
+        'controller/reportes/controlador_proyeccion.php' => ['CONTADOR'],
+        'controller/reportes/controlador_resultados.php' => ['CONTADOR'],
         // tareas
         'controller/tareas/controlador_archivos_tarea.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/tareas/controlador_cargar_curso_id_detalle_estudiante.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
@@ -226,8 +236,11 @@ return [
         // reportes
         'view/MPDF/REPORTE/boleta_docente.php' => ['CONTADOR', 'DOCENTE'],
         'view/MPDF/REPORTE/boleta_pago.php' => ['CONTADOR', 'ESTUDIANTE'],
+        'view/MPDF/REPORTE/estado_resultados.php' => ['CONTADOR'],
+        'view/MPDF/REPORTE/flujo_caja.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/horario.php' => ['AUXILIAR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/kardex.php' => ['CONTADOR', 'ESTUDIANTE'],
+        'view/MPDF/REPORTE/morosidad.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/recibo.php' => ['CONTADOR', 'ESTUDIANTE'],
     ],
 

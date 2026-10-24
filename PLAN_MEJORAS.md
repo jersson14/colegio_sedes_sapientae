@@ -26,7 +26,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 4 – Métodos de pago, cuentas y recibos](#fase-4--métodos-de-pago-cuentas-y-recibos--2026-10-23) ✅
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora--2026-10-23) ✅
 - [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla--2026-10-23) ✅
-- [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades)
+- [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades--2026-10-23) ✅
 - [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo)
 - [Fase 9 – Pruebas, documentación y despliegue](#fase-9--pruebas-documentación-y-despliegue)
 - [Anexo A – Monedas y países](#anexo-a--monedas-y-países)
@@ -390,20 +390,30 @@ Migración `database/migraciones/006_planilla_docente.sql` (aplicada en `colegio
 
 ---
 
-## Fase 7 – Reportes financieros y utilidades
+## Fase 7 – Reportes financieros y utilidades ✅ (2026-10-23)
 
-- [ ] **Estado de resultados / utilidad** por mes, rango o año escolar: ingresos por categoría − egresos por categoría = **utilidad (o pérdida)**, con margen %.
-- [ ] **Flujo de caja**: saldo inicial, entradas, salidas, saldo final por cuenta.
-- [ ] Comparativo mensual (gráfico de barras ingresos vs. egresos vs. utilidad) y comparativo contra el año anterior.
-- [ ] **Morosidad**: alumnos con pensiones vencidas, monto adeudado, días de atraso, por nivel/grado/sección; exportable para cobranza.
-- [ ] Proyección de ingresos: pensiones por cobrar del año.
-- [ ] Reporte de planilla por mes y costo docente por tipo de contrato.
-- [ ] Ingresos por método de pago y por cuenta (cuánto entró en efectivo, tarjeta, transferencia).
-- [ ] Reporte de cierres de caja y diferencias.
-- [ ] Exportar a PDF (MPDF) y Excel (DataTables Buttons ya está en `plantilla/plugins`).
-- [ ] Dashboard del CONTADOR con tarjetas: ingresos del mes, egresos del mes, utilidad, morosidad, saldo por cuenta.
+Migración `database/migraciones/007_reportes_financieros.sql` (solo lectura; aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_007.sql`). Totales sin cambio.
 
-**Criterio de cierre:** el reporte de utilidad de un mes coincide con la suma manual de ingresos y egresos válidos.
+Pantalla **Reportes financieros** (ADMINISTRADOR y CONTADOR) con filtros por período (con atajos: hoy, este mes, mes anterior, este año, año escolar), año o año escolar/nivel/grado según la pestaña. Cada tabla se exporta a **Excel** (montos como número) e **imprime**; utilidad, flujo y morosidad también en **PDF** con el encabezado del colegio.
+
+- [x] **Estado de resultados / utilidad** por período: ingresos y egresos por grupo del plan de cuentas › categoría; la cobranza se desglosa en matrícula, admisión, alumno nuevo, pensiones y mora. Utilidad (o pérdida) y **margen %**. PDF con firmas.
+- [x] **Flujo de caja** por caja/cuenta: saldo inicial, cobros, transferencias recibidas, ajustes, pagos (incluida la planilla), transferencias enviadas y saldo final (= saldo del libro). Los cobros/pagos históricos sin caja/cuenta se informan aparte para que cuadre con la utilidad. PDF.
+- [x] **Comparativo mensual**: ingresos, egresos y utilidad de cada mes contra el año anterior, con gráfico (barras + líneas) y variación %.
+- [x] **Morosidad**: pensiones vencidas con saldo a hoy, por alumno (meses, días de atraso, pensión, mora, deuda y teléfonos de los padres), por pensión y por grado; filtros por año escolar, nivel y grado/sección; PDF para cobranza agrupado por grado. Usa la **misma regla de mora** que la pantalla de cobro (vista `vw_estado_pensiones`, verificada contra `SP_SALDO_PENSION` para cada matrícula × pensión).
+- [x] **Proyección de pensiones** del año escolar por mes: esperado, cobrado, vencido sin cobrar, mora pendiente, por vencer y % de avance.
+- [x] **Costo de planilla** por mes y tipo de contrato (sueldo/horas, bonos, costo bruto, descuentos, adelantos, neto, pagado) y resumen por tipo con % del costo.
+- [x] **Formas de pago**: cobros y pagos por forma de pago y caja/cuenta, con comisiones; cuadra con el estado de resultados.
+- [x] **Cierres de caja** del período con faltantes y sobrantes.
+- [x] **Panel del contador**: además de ingresos/egresos/resultado, **pensiones vencidas por cobrar**, **alumnos con deuda** y gráfico de ingresos y egresos del año.
+- [x] **Corregido:** al entrar, el contador (y enfermería/psicología) veía "Acceso denegado": los JS de tareas, cargados para todos los roles, pedían los grados del docente al iniciar. Ahora solo los pide la pantalla de tareas.
+- [x] **Aviso de datos:** la tabla `pensiones` no tiene año; el colegio la usa como calendario por nivel y **27 pensiones tienen vencimiento 2024/2025 para el año escolar 2026**. La morosidad las cuenta vencidas desde esa fecha (como la pantalla de cobro) y muestra un aviso para corregirlas en Pensiones. Vincular pensiones al año escolar → Fase 8.
+
+### Pruebas (BD `colegio2_test`)
+- HTTP Fase 7: **75/75** — accesos (contador y administrador sí; docente y estudiante 403, también en PDF), validación de fechas/rango/año, **utilidad del mes = suma manual de ingresos y egresos válidos** (420 − 280 = 140, margen 33.3 %; el egreso anulado no suma), historial completo = SQL, desglose de cobranza, comparativo (mes y año = SQL), flujo (saldo final = saldo del libro de cada cuenta; depósito sale de caja y entra al banco sin cambiar el total), formas de pago = estado de resultados, morosidad (vista = pantalla de cobro en todas las pensiones; total = panel; filtros por nivel y aula; al cobrar baja 110), proyección (esperado = cobrado + vencido + por vencer), costo de planilla 3 000 (2 000 + 25 × 40 h), cierre con faltante 10, PDF de los tres reportes.
+- Navegador (Chrome headless): las 8 pestañas y el panel cargan sin errores de JavaScript.
+- Regresión: Fases 1–6 **254/254**; vistas de 7 roles sin avisos de PHP.
+
+**Criterio de cierre:** ✅ el reporte de utilidad de un mes coincide con la suma manual de ingresos y egresos válidos (y en producción, el historial completo da 9 490.00 − 1 751.99).
 
 ---
 
@@ -417,7 +427,7 @@ Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la segurid
 | **Empresa** | Datos regionales (Fase 3), logo validado, datos tributarios (RUC/NIT/CUIT/RUT). |
 | **Alumnos** | Validación de documento según país; evitar duplicados por documento; buscador con paginación del servidor (DataTables server-side) para colegios grandes; ficha de apoderado con más de 2 responsables. |
 | **Matrícula** | Validar vacantes por aula; impedir doble matrícula del mismo alumno en el mismo año; generar automáticamente el cronograma de pensiones del alumno al matricular; descuentos/becas (% o monto) por alumno. |
-| **Pensiones** | Generar las 10/12 pensiones del año en un clic por nivel; mora fija o % por día/mes; becas y descuentos por hermanos. |
+| **Pensiones** | **Vincular cada pensión al año escolar** (hoy no tienen año y 27 tienen vencimientos de 2024/2025 usados en 2026; afecta cobro, mora y morosidad); generar las 10/12 pensiones del año en un clic por nivel; mora fija o % por día/mes; becas y descuentos por hermanos. |
 | **Docentes** | Contrato y modalidad de pago (Fase 6); validación de documento; historial. |
 | **Personal administrativo** | Reutilizar la planilla de la Fase 6 para personal administrativo (misma estructura). |
 | **Asistencia** | Registro de asistencia docente (sirve para descuentos de planilla); alertas a padres por inasistencias. |
@@ -425,7 +435,7 @@ Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la segurid
 | **Horarios / Aulas** | Validar choque de horario de docente y aula. |
 | **Comunicados / Solicitudes** | Validar archivos adjuntos; notificaciones; estado leído. |
 | **Enfermería / Psicología** | Confidencialidad: solo el rol correspondiente y ADMINISTRADOR. |
-| **Reportes MPDF** | Unificar conexión con PDO; moneda y documento regional; plantilla común de encabezado con logo. |
+| **Reportes MPDF** | Unificar conexión con PDO; moneda y documento regional; usar en los reportes antiguos el encabezado común `utilitario/reporte_pdf.php` (Fase 7). |
 | **Landing (`landing.html`)** | Formulario de solicitudes con validación y protección anti-spam (honeypot / captcha). |
 | **General** | Mensajes de error claros con SweetAlert; registro de auditoría (`auditoria`: quién, qué, cuándo, valor anterior/nuevo) para tablas financieras; paginación server-side en listados grandes. |
 

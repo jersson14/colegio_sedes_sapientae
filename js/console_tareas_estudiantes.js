@@ -552,9 +552,7 @@ $('#tabla_tarea').on('click', '.editar', function() {
 
 });
 
-$(document).ready(function() {
-  Cargar_Select_Grado();
-});
+// Cargar_Select_Grado() lo llama la vista de tareas al abrirse (este archivo se carga en el index para todos los roles).
 //ABRIENDO MODAL REGISTRO
 function AbrirRegistro(){
   $("#modal_registro").modal({backdrop:'static',keyboard:false})

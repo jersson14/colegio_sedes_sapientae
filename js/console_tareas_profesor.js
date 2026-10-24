@@ -487,9 +487,8 @@ $('#tabla_tarea').on('click', '.editar', function() {
     }, 500); // Ajusta este tiempo si es necesario
   });
 });
-$(document).ready(function() {
-  Cargar_Select_Grado();
-});
+// Cargar_Select_Grado() lo llama cada vista que usa el selector; llamarlo aquí (este archivo se carga
+// en el index para todos los roles) mostraba "Acceso denegado" al contador, enfermería y psicología.
 //ABRIENDO MODAL REGISTRO
 function AbrirRegistro(){
   $("#modal_registro").modal({backdrop:'static',keyboard:false})

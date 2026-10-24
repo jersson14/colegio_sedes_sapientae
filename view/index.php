@@ -518,6 +518,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Planilla docente</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php')" class="nav-link">
+                  <i class="nav-icon fas fa-chart-line"></i>
+                  <p>Reportes financieros</p>
+                </a>
+              </li>
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
               <li class="nav-item" hidden="">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
@@ -652,6 +658,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
                   <i class="nav-icon fas fa-file-invoice-dollar"></i>
                   <p>Planilla docente</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php')" class="nav-link">
+                  <i class="nav-icon fas fa-chart-line"></i>
+                  <p>Reportes financieros</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -1284,6 +1296,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="col-lg-2 col-6"><div class="small-box bg-warning"><div class="inner"><h4 id="pc_egresos_mes">-</h4><p>Egresos del mes</p></div><div class="icon"><i class="fas fa-calendar-minus"></i></div></div></div>
           <div class="col-lg-2 col-6"><div class="small-box bg-primary"><div class="inner"><h4 id="pc_utilidad_mes">-</h4><p>Resultado del mes</p></div><div class="icon"><i class="fas fa-balance-scale"></i></div></div></div>
           <div class="col-lg-2 col-6"><div class="small-box bg-secondary"><div class="inner"><h4 id="pc_recibos_hoy">-</h4><p>Recibos emitidos hoy</p></div><div class="icon"><i class="fas fa-receipt"></i></div></div></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-6"><div class="small-box bg-danger"><div class="inner"><h4 id="pc_morosidad">-</h4><p>Pensiones vencidas por cobrar</p></div><div class="icon"><i class="fas fa-user-clock"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-warning"><div class="inner"><h4 id="pc_alumnos_morosos">-</h4><p>Alumnos con deuda</p></div><div class="icon"><i class="fas fa-users"></i></div></div></div>
+          <div class="col-lg-8 col-12">
+            <div class="card mb-3">
+              <div class="card-header py-2"><b>Ingresos y egresos del año</b>
+                <a href="#" class="float-right" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php');return false;">Ver reportes financieros <i class="fas fa-arrow-circle-right"></i></a></div>
+              <div class="card-body py-2" style="height:170px"><canvas id="pc_grafico"></canvas></div>
+            </div>
+          </div>
         </div>
         <div class="card">
           <div class="card-header"><h3 class="card-title"><i class="fas fa-university"></i> <b>Saldos de cajas y cuentas</b></h3>
@@ -1947,6 +1970,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
       $("#pc_egresos_mes").text(formatoMoneda(r.egresos_mes));
       $("#pc_utilidad_mes").text(formatoMoneda(r.ingresos_mes - r.egresos_mes));
       $("#pc_recibos_hoy").text(r.recibos_hoy);
+      $("#pc_morosidad").text(formatoMoneda(r.morosidad));
+      $("#pc_alumnos_morosos").text(r.alumnos_morosos);
       let filas = "";
       r.cuentas.forEach(function(c) {
         filas += "<tr><td><b>" + $('<div>').text(c.nombre).html() + "</b></td><td>" + c.tipo + "</td><td class='text-right text-success'>" + formatoMoneda(c.entradas_hoy)
@@ -1954,6 +1979,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                + "</b></td><td>" + (c.ultimo_cierre || '<span class="text-muted">sin cierres</span>') + "</td></tr>";
       });
       $("#pc_cuentas").html(filas || "<tr><td colspan='6' class='text-center text-muted'>No hay cajas ni cuentas activas</td></tr>");
+    });
+    $.ajax({ url: "../controller/reportes/controlador_mensual.php", type: 'POST', data: { anio: new Date().getFullYear() } }).done(function(r) {
+      new Chart(document.getElementById('pc_grafico'), {
+        type: 'bar',
+        data: {
+          labels: r.data.map(function(m) { return m.mes_nombre.substr(0, 3); }),
+          datasets: [
+            { type: 'line', label: 'Utilidad', data: r.data.map(function(m) { return m.utilidad; }), borderColor: '#0A5D86', backgroundColor: 'transparent', lineTension: 0, pointRadius: 2 },
+            { label: 'Ingresos', data: r.data.map(function(m) { return m.ingresos; }), backgroundColor: 'rgba(40,167,69,0.75)' },
+            { label: 'Egresos', data: r.data.map(function(m) { return m.egresos; }), backgroundColor: 'rgba(220,53,69,0.75)' }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false, legend: { position: 'right' },
+          tooltips: { mode: 'index', intersect: false, callbacks: { label: function(it, d) { return d.datasets[it.datasetIndex].label + ': ' + formatoMoneda(it.yLabel); } } },
+          scales: { yAxes: [{ ticks: { beginAtZero: true, callback: function(v) { return formatoMoneda(v); } } }] }
+        }
+      });
     });
   }
   function cargar_contenido(id, vista) {
@@ -2059,6 +2102,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../plantilla/dist/js/adminlte.min.js"></script>
+<!-- Chart.js (gráficos de reportes y panel del contador) -->
+<script src="../plantilla/plugins/chart.js/Chart.min.js"></script>
 
 
 

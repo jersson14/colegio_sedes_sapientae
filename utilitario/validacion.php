@@ -47,6 +47,19 @@ function fecha_post($campo, $etiqueta = null) {
     return $t;
 }
 
+/** Rango de fechas de un reporte: desde ≤ hasta y como máximo 10 años. Devuelve [desde, hasta]. */
+function rango_fechas_post($campo_desde = 'desde', $campo_hasta = 'hasta') {
+    $desde = fecha_post($campo_desde, 'fecha desde');
+    $hasta = fecha_post($campo_hasta, 'fecha hasta');
+    if ($desde > $hasta) {
+        denegar(400, 'La fecha "desde" no puede ser mayor que la fecha "hasta"');
+    }
+    if ((new DateTime($desde))->diff(new DateTime($hasta))->y >= 10) {
+        denegar(400, 'El rango de fechas no puede superar 10 años');
+    }
+    return [$desde, $hasta];
+}
+
 /** Responde JSON y termina. */
 function responder_json($datos) {
     header('Content-Type: application/json; charset=utf-8');
