@@ -1,2 +1,3 @@
 # Los scripts de bash deben quedar con fin de línea LF (con CRLF bash falla)
 *.sh text eol=lf
+*.bat text eol=crlf

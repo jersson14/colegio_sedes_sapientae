@@ -11,6 +11,17 @@ function iniciar_sesion_segura() {
     }
     $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    // Producción (config 'produccion' => true): los errores de PHP no se muestran (revelan rutas y consultas),
+    // se guardan en logs/php_errores.log; con HTTPS el navegador recuerda usar siempre HTTPS
+    $config = require __DIR__ . '/../config/config.php';
+    if (!empty($config['produccion'])) {
+        ini_set('display_errors', '0');
+        ini_set('log_errors', '1');
+        ini_set('error_log', __DIR__ . '/../logs/php_errores.log');
+        if ($https && !headers_sent()) {
+            header('Strict-Transport-Security: max-age=31536000');
+        }
+    }
     session_set_cookie_params([
         'lifetime' => 0,
         'path'     => '/',

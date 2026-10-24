@@ -27,8 +27,8 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora--2026-10-23) ✅
 - [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla--2026-10-23) ✅
 - [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades--2026-10-23) ✅
-- [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo)
-- [Fase 9 – Pruebas, documentación y despliegue](#fase-9--pruebas-documentación-y-despliegue)
+- [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo--2026-10-24) ✅
+- [Fase 9 – Pruebas, documentación y despliegue](#fase-9--pruebas-documentación-y-despliegue--2026-10-24) ✅
 - [Anexo A – Monedas y países](#anexo-a--monedas-y-países)
 - [Anexo B – Script SQL de referencia](#anexo-b--script-sql-de-referencia)
 - [Pendientes por confirmar](#pendientes-por-confirmar)
@@ -417,7 +417,7 @@ Pantalla **Reportes financieros** (ADMINISTRADOR y CONTADOR) con filtros por per
 
 ---
 
-## Fase 8 – Mejoras generales por módulo
+## Fase 8 – Mejoras generales por módulo ✅ (2026-10-24)
 
 Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la seguridad y del formato regional). Se avanza por bloques:
 
@@ -546,13 +546,32 @@ Migración `database/migraciones/011_matricula_horarios_salud_auditoria.sql`, ge
 
 ---
 
-## Fase 9 – Pruebas, documentación y despliegue
+## Fase 9 – Pruebas, documentación y despliegue ✅ (2026-10-24)
 
-- [ ] BD de prueba `colegio2_test` restaurada desde el respaldo para probar cada migración antes de aplicarla en la real.
-- [ ] Lista de casos de prueba por fase (login por rol, acceso denegado, pago normal, pago vencido con mora, pago mixto, anulación, planilla, reportes).
-- [ ] Actualizar `manual_usuario.pdf` con el módulo de contabilidad y la configuración regional.
-- [ ] Manual corto para la contadora (flujo diario: cobrar → cerrar caja → depositar; flujo mensual: planilla → reportes).
-- [ ] Checklist de producción: `display_errors=Off`, HTTPS, usuario MySQL sin privilegios globales, respaldos automáticos diarios, eliminar archivos de prueba.
+**Seguridad encontrada al preparar el despliegue**
+- [x] **Los respaldos completos de la base (`respaldos/*.sql`) y la carpeta `.git` se podían descargar desde el navegador.** El `.htaccess` ahora bloquea `.sql`, `.md`, `.sh`, logs, `package.json` y `.git`; `respaldos/` y `scripts/` tienen su propio `.htaccess`. Si el servidor del colegio ya tenía esas carpetas publicadas, cambiar las claves (ver `docs/despliegue.md`).
+- [x] Retiradas páginas de otro proyecto que seguían publicadas (`registrar.php` y `seguimiento.php` de trámites DIRESA), la página por defecto del hosting y un manual ajeno.
+
+**Permisos por rol revisados**
+- [x] Nueva herramienta `tests/herramientas/revisar_permisos.php`: sigue el menú de cada rol hasta los controladores que realmente usa (sin unir funciones por nombre entre archivos, que causó los errores del generador anterior).
+- [x] Se quitaron **89 permisos** que ningún rol usaba (p. ej. notas de otros alumnos para enfermería, psicología o la contadora; saldos de pensiones y listas de matrícula para el estudiante) y se agregaron 2 que faltaban. Resultado: 0 sobrantes, 0 faltantes.
+- [x] `tests/navegador/revisar_roles.sh`: con un usuario de cada rol abre todas las pantallas de su menú en Chrome headless; los 7 roles sin errores ni "Acceso denegado".
+
+**Pruebas**
+- [x] BD de prueba `colegio2_test` reconstruida desde el respaldo + todas las migraciones (`tests/reset_test_db.sh`); cada suite corre sobre una base recién reiniciada (`tests/ejecutar_todo.sh`).
+- [x] Suites: Fases 1–6 (33, rehecha: login y bloqueo, 401/403, CSRF, subida de archivos, mora, cobro duplicado, pago mixto, recibo y anulación, egresos y caja, planilla), Fase 7 (26), 8A (37), 8B (26), 8C (23), 8D (44): **189 comprobaciones, 0 fallas**; también con el usuario restringido de la base.
+- [x] Navegador: todas las vistas sin errores de JavaScript; prueba de escapado (XSS).
+
+**Producción**
+- [x] `'produccion' => true` en `config.local.php` oculta los errores de PHP (van a `logs/php_errores.log`) y con HTTPS envía `Strict-Transport-Security`.
+- [x] `scripts/usuario_app.sql`: usuario de base de datos solo con SELECT, INSERT, UPDATE, DELETE y EXECUTE (probado: el sistema completo funciona con él).
+- [x] `scripts/respaldo_diario.bat` (Windows/XAMPP, probado) y `scripts/respaldo_diario.sh` (Linux/cron): respaldo diario con rutinas y triggers, 30 días.
+- [ ] HTTPS y programar el respaldo en el servidor del colegio: los configura quien administra el hosting (pasos en `docs/despliegue.md`).
+
+**Documentación**
+- [x] `docs/manual_contadora.md`: flujo diario (cobrar → registrar gastos → cerrar caja → depositar) y mensual (planilla → reportes).
+- [x] `docs/despliegue.md`: instalación, migraciones, lista para producción, respaldos, pruebas y permisos.
+- [ ] `manual_usuario.pdf`: sigue siendo el manual anterior; el contenido nuevo está en `docs/`. Generar un PDF actualizado queda pendiente.
 
 ---
 
