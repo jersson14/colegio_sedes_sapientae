@@ -443,11 +443,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
       }
     })
@@ -468,7 +468,7 @@ function Cargar_Select_Grado() {
     let cadena = "";
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][2] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - " + textoSeguro(data[i][2]) + "</option>";
       }
       $('#select_aula, #select_aula_editar,#select_grado_ver, #select_grado, #select_grado_editar,#select_grado_envio').html(cadena);
       
@@ -506,7 +506,7 @@ function Cargar_Select_curso(id, select_id) {
     
     if (data && data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][2] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][2]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
     } else {
       cadena = "<option value='' disabled selected>Sin datos disponibles</option>";
@@ -718,19 +718,19 @@ $('#tabla_tarea').on('click', '.ver', function() {
   document.getElementById('txt_descripcion_ver').value = data.descripcion;
   document.getElementById('txt_observacion').value = data.observacion;
 
-  document.getElementById('titulo_h1').innerHTML = '<b>NOTA DE LA TAREA CON EL TEMA: <span style="color:blue">' + data.tema+'</span></b>';
+  document.getElementById('titulo_h1').innerHTML = '<b>NOTA DE LA TAREA CON EL TEMA: <span style="color:blue">' + textoSeguro(data.tema)+'</span></b>';
 
  // Asignar el valor de la calificación al h2
   var nota = document.getElementById('titulo_h2').innerHTML = data.calificacion;
 
 // Verificar la calificación y asignar el texto correspondiente con el color
-if (nota >= 11) {
+if (notaAprobada(nota)) {
   // Colocar la nota en verde y mostrar "FELICITACIONES" con un emoji de trofeo
-  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: green;">' + data.calificacion + '</span></b>';
+  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: green;">' + textoSeguro(data.calificacion) + '</span></b>';
   document.getElementById('subtitulo_h3').innerHTML = '<b><span style="color: green;">🏆 FELICITACIONES 🏆</span></b>';
 } else {
   // Colocar la nota en rojo y mostrar "TIENES QUE MEJORAR" con un emoji de advertencia
-  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: red;">' + data.calificacion + '</span></b>';
+  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: red;">' + textoSeguro(data.calificacion) + '</span></b>';
   document.getElementById('subtitulo_h3').innerHTML = '<b><span style="color: red;">⚠️ TIENES QUE MEJORAR ⚠️</span></b>';
 }
 

@@ -2136,6 +2136,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_examen_profesor.js?rev=<?php echo time(); ?>"></script>
 <script src="../utilitario/DataTables/datatables.min.js"></script>
+<!-- Escapa los datos al mostrarlos (DataTables por defecto y textoSeguro() para el HTML armado a mano) -->
+<script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

@@ -193,7 +193,7 @@ function Cargar_Select_Nivelaca(id_nivel_seleccionado) {
     let cadena = "<option value=''>Seleccionar Nivel Académico</option>"; // Siempre inicializa la cadena
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
     } else {
       cadena += "<option value=''>No se encontraron registros</option>";
@@ -221,7 +221,7 @@ function Cargar_Select_pensiones(id) {
     let cadena = "<option value=''>Seleccionar Pensión</option>";
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
     } else {
       cadena += "<option value=''>No se encontraron registros</option>";
@@ -321,12 +321,12 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año_buscar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año_buscar').innerHTML=cadena;
 
       }
@@ -341,7 +341,7 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel_buscar').html(cadena);
   
@@ -349,7 +349,7 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
         Cargar_Select_Aula(id);
   
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_buscar').html(cadena);
   
       }
@@ -369,7 +369,7 @@ $('#tabla_pago_pension').on('click', '.pagar', function() {
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula_buscar').html(cadena);
             } else {
@@ -567,8 +567,8 @@ function listar_pagos(id) {
         },
         "columns": [
             { "data": "id_pago_pension" },
-            { "data": "recibo", render: function(data){ return data ? "<b>" + data + "</b>" : "-"; } },
-            { "data": "concepto", render: function(data,type,row){ return row.mora_exonerada == 1 ? data + " <span class='badge badge-warning'>exonerada</span>" : data; } },
+            { "data": "recibo", render: function(data){ return data ? "<b>" + textoSeguro(data) + "</b>" : "-"; } },
+            { "data": "concepto", render: function(data,type,row){ return row.mora_exonerada == 1 ? textoSeguro(data) + " <span class='badge badge-warning'>exonerada</span>" : textoSeguro(data); } },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
             { "data": "metodos", render: function(data){ return data ? $('<div>').text(data).html() : "-"; } },
@@ -613,7 +613,7 @@ $('#tabla_pago_pension').on('click','.mostrar',function(){
       var data = tbl_pago_pension.row(this).data();
   }
 $("#modal_ver_pagos").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>PAGOS DEL ESTUDIANTE: "+data.Estudiante+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>PAGOS DEL ESTUDIANTE: "+textoSeguro(data.Estudiante)+"</b>";
   listar_pagos(data.id_matri);
 
 })
@@ -690,7 +690,7 @@ $('#tabla_pagos2').on('click','.anular',function(){
       var data = tbl_pagos.row(this).data();
   }
   Swal.fire({
-    title: data.recibo ? '¿Anular el recibo ' + data.recibo + '?' : '¿Anular el pago de ' + data.concepto + '?',
+    title: data.recibo ? '¿Anular el recibo ' + textoSeguro(data.recibo) + '?' : '¿Anular el pago de ' + textoSeguro(data.concepto) + '?',
     text: (data.recibo ? "Se anularán TODOS los conceptos de ese recibo y sus ingresos" : "El pago y su ingreso quedarán ANULADOS") + " (no se borran). Indique el motivo:",
     icon: 'warning',
     input: 'text',
@@ -716,7 +716,7 @@ $('#tabla_pagos2').on('click','.editar_1',function(){
       var data = tbl_pagos.row(this).data();
   }
   $("#modal_editar2").modal('show');
-  document.getElementById('lb_titulo4').innerHTML="<b>EDITANDO LA PENSIÓN DE: "+data.mes+"</b>";
+  document.getElementById('lb_titulo4').innerHTML="<b>EDITANDO LA PENSIÓN DE: "+textoSeguro(data.mes)+"</b>";
   document.getElementById('txt_id_pagopension').value=data.id_pago_pension;
   document.getElementById('txt_monto_edita').value=data.sub_total;
 

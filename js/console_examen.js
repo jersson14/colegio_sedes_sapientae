@@ -228,7 +228,7 @@ function Cargar_Select_Nivelaca(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
       $('#select_nivel_buscar').html(cadena);
 
@@ -236,7 +236,7 @@ function Cargar_Select_Nivelaca(){
       Cargar_Select_Aula(id);
 
     }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
+      let cadena = "<option value=''>No se encontraron regitros</option>";
       $('#select_nivel_buscar').html(cadena);
 
     }
@@ -256,7 +256,7 @@ function Cargar_Select_Aula(id){
           if(data.length > 0){
               let cadena = "";
               for (let i = 0; i < data.length; i++) {
-                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                  cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
               }
               $('#select_aula_buscar').html(cadena);
           } else {
@@ -299,7 +299,7 @@ function Modificar_Estatus_examen(id,estatus,temita){
         var data = tbl_examen.row(this).data();
     }
       Swal.fire({
-        title: 'Desea dejar como realizado el examen con el tema: <b style="color:blue">'+data.tema_examen+'</b>?',
+        title: 'Desea dejar como realizado el examen con el tema: <b style="color:blue">'+textoSeguro(data.tema_examen)+'</b>?',
         text: "Una vez realizado se deshabilitara el boton eliminar ya que el examen de desarrollo con éxito.",
         icon: 'warning',
         showCancelButton: true,
@@ -327,7 +327,7 @@ function Cargar_Select_docente() {
 
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][4] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - " + textoSeguro(data[i][4]) + "</option>";
       }
     } else {
       cadena += "<option value='' disabled>No hay docentes en la base de datos</option>";
@@ -355,7 +355,7 @@ function Cargar_Select_Curso(id, selectedCursoId = null) {
     if (data.length > 0) {
       cadena = "<option value='' disabled selected>--SELECCIONE--</option>"; // Reinicia el placeholder si hay datos
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][2] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][2]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
     }
 
@@ -524,7 +524,7 @@ $('#tabla_examen').on('click','.delete',function(){
         var data = tbl_examen.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el examen programado con el tema: '+data.tema_examen+'?',
+      title: 'Desea eliminar el examen programado con el tema: '+textoSeguro(data.tema_examen)+'?',
       text: "Una vez aceptado la programación del examen sera eliminada!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -593,8 +593,8 @@ $('#tabla_examen').on('click','.mostrar',function(){
       var data = tbl_examen.row(this).data();
   }
 $("#modal_ver_alumnos").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>CURSO - DOCENTE: "+data.Docente+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>TEMA DE EXAMEN: "+data.tema_examen+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>CURSO - DOCENTE: "+textoSeguro(data.Docente)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>TEMA DE EXAMEN: "+textoSeguro(data.tema_examen)+"</b>";
   listar_tareas_enviadas(data.Id_detalle_asig_docente);
 
 })
@@ -609,8 +609,8 @@ $('#tabla_ver').on('click','.calificar',function(){
   let nota = document.getElementById('txt_cali').value;
   let obser = document.getElementById('txt_observa').value;
 
-  if(nota>20){
-      return Swal.fire("Mensaje de Advertencia","La nota no debe ser mayor a 20.","warning");
+  if(nota.length>0 && !notaValida(nota)){
+      return Swal.fire("Mensaje de Advertencia","La nota debe estar entre " + descripcionEscala() + ".","warning");
   }
   if(id.length==0||nota.length==0){
     return Swal.fire("Mensaje de Advertencia","Debe llenar la nota es un campo obligatorio.","warning");

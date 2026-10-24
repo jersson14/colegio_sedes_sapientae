@@ -82,7 +82,7 @@ function listar_alumnos(){
                   if(data=='controller/docentes/fotos/'){
                     return '<img src="../controller/docentes/fotos/VACIO.png" class="img img-responsive" style="width:40px">';
                   }else{
-                    return '<img src="../'+data+'" class="img img-responsive" style="width:40px">';
+                    return '<img src="../'+textoSeguro(data)+'" class="img img-responsive" style="width:40px">';
                   }
               }   
         }, 
@@ -144,7 +144,7 @@ function Cargar_Select_Especialidad(){
     let cadena = "<option value=''>Seleccione</option>"; // Agregar opción 'Seleccione'
     if(data.length > 0){
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena += "<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
     } else {
       cadena += "<option value=''>No hay secciones en la base de datos</option>";
@@ -456,7 +456,7 @@ $('#tabla_docentes').on('click','.delete',function(){
         var data = tb_docentes.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar al docente: '+data.Docente+'?',
+      title: 'Desea eliminar al docente: '+textoSeguro(data.Docente)+'?',
       text: "Una vez aceptado el docente sera eliminado y a su vez se eliminara el acceso al sistema!!!",
       icon: 'warning',
       showCancelButton: true,

@@ -211,7 +211,7 @@ function Cargar_Select_Matriculados() {
     let cadena = "<option value=''>Seleccionar Estudiante</option>";
     if (Array.isArray(data) && data.length > 0) {
       data.forEach(function(item) {
-        cadena += `<option value='${item[0]}'>${item[5]} - ${item[1]}</option>`;
+        cadena += `<option value='${textoSeguro(item[0])}'>${textoSeguro(item[5])} - ${textoSeguro(item[1])}</option>`;
       });
     } else {
       cadena = "<option value=''>No hay secciones en la base de datos</option>";
@@ -243,7 +243,7 @@ function Cargar_Select_Matriculados() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel').html(cadena);
         $('#select_nivel_editar').html(cadena);
@@ -253,7 +253,7 @@ function Cargar_Select_Matriculados() {
         var id =$("#select_nivel_editar").val();
         Cargar_Select_Aula(id);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_editar').html(cadena);
   
       }
@@ -273,7 +273,7 @@ function Cargar_Select_Matriculados() {
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula').html(cadena);
             } else {

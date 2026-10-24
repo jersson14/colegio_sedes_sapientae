@@ -17,7 +17,7 @@ function listar_empresa(){
         {
           "data": "emp_logo",
           render: function(data, type, row) {
-              return '<img src="../' + data + '" class="img img-responsive" style="width: 120px; height: auto;">';
+              return '<img src="../' + textoSeguro(data) + '" class="img img-responsive" style="width: 120px; height: auto;">';
           }
       },
       
@@ -26,7 +26,7 @@ function listar_empresa(){
         {"data":"emp_cod",
           render: function(data,type,row){
                   if(data==data){
-                  return '<span class="badge bg-success" style="font-size:16px">'+data+'</span>';
+                  return '<span class="badge bg-success" style="font-size:16px">'+textoSeguro(data)+'</span>';
                   }
           }   
       },

@@ -82,7 +82,7 @@ function listar_alumnos(){
                   if(data=='controller/alumnos/fotos/'){
                     return '<img src="../controller/alumnos/fotos/VACIO.png" class="img img-responsive" style="width:40px">';
                   }else{
-                    return '<img src="../'+data+'" class="img img-responsive" style="width:40px">';
+                    return '<img src="../'+textoSeguro(data)+'" class="img img-responsive" style="width:40px">';
                   }
               }   
         }, 
@@ -469,7 +469,7 @@ $('#tabla_alumnos').on('click','.delete',function(){
         var data = tb_alumnos.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar a el estudiante: '+data.Estudiante+'?',
+      title: 'Desea eliminar a el estudiante: '+textoSeguro(data.Estudiante)+'?',
       text: "Una vez aceptado el estudiante sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

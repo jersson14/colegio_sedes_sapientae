@@ -58,11 +58,23 @@
                 </div>
               </div>
             </div>
+            <h5 class="mt-2"><b>Escala de notas</b> <small class="text-muted">(se propone la del país; ajústela si su colegio usa otra)</small></h5>
+            <div class="row">
+              <div class="col-md-3 col-6 form-group"><label>Nota mínima:</label><input type="text" inputmode="decimal" class="form-control" id="txt_nota_min"></div>
+              <div class="col-md-3 col-6 form-group"><label>Nota máxima:</label><input type="text" inputmode="decimal" class="form-control" id="txt_nota_max"></div>
+              <div class="col-md-3 col-6 form-group"><label>Aprueba con:</label><input type="text" inputmode="decimal" class="form-control" id="txt_nota_aprobatoria"></div>
+              <div class="col-md-3 col-6 form-group"><label>Decimales:</label>
+                <select class="form-control" id="select_nota_decimales"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select>
+              </div>
+              <div class="col-md-6 form-group"><label>Calificaciones con letras (opcional):</label><input type="text" class="form-control" id="txt_notas_literales" maxlength="60" placeholder="p. ej. AD,A,B,C"></div>
+              <div class="col-md-6 form-group"><label>Letras que aprueban:</label><input type="text" class="form-control" id="txt_literales_aprobatorios" maxlength="60" placeholder="p. ej. AD,A,B"></div>
+            </div>
             <h5 class="mt-2"><b>Vista previa</b></h5>
             <table class="table table-sm table-bordered">
               <tr><th style="width:45%">Monto de ejemplo</th><td id="prev_monto"></td></tr>
               <tr><th>Documento de identidad</th><td id="prev_documento"></td></tr>
               <tr><th>Prefijo telefónico</th><td id="prev_prefijo"></td></tr>
+              <tr><th>Notas aceptadas</th><td id="prev_escala"></td></tr>
             </table>
           </div>
           <div class="card-footer">

@@ -298,11 +298,11 @@ function Cargar_Año(){
         if(data.length>0){
           let cadena ="";
           for (let i = 0; i < data.length; i++) {
-            cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" || "+data[i][4]+" || "+data[i][5]+"</option>";    
+            cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" || "+textoSeguro(data[i][4])+" || "+textoSeguro(data[i][5])+"</option>";    
           }
             document.getElementById('select_año').innerHTML=cadena;
         }else{
-          cadena+="<option value=''>No hay secciones en la base de datos</option>";
+          let cadena = "<option value=''>No hay secciones en la base de datos</option>";
           document.getElementById('select_año').innerHTML=cadena;
         }
       })
@@ -352,7 +352,7 @@ function listar_pagos(id) {
         },
         "columns": [
             { "data": "id_pago_pension" },
-            { "data": "recibo", render: function(data){ return data ? "<b>" + data + "</b>" : "-"; } },
+            { "data": "recibo", render: function(data){ return data ? "<b>" + textoSeguro(data) + "</b>" : "-"; } },
             { "data": "concepto" },
             { "data": "mes" },
             { "data": "fecha_formateada2" },
@@ -385,7 +385,7 @@ $('#tabla_pago_pension').on('click','.mostrar',function(){
       var data = tbl_pago_pension.row(this).data();
   }
 $("#modal_ver_pagos").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>PAGOS DEL ESTUDIANTE: "+data.Estudiante+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>PAGOS DEL ESTUDIANTE: "+textoSeguro(data.Estudiante)+"</b>";
   listar_pagos(data.id_matri);
 
 })

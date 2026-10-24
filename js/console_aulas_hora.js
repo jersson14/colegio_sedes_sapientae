@@ -213,7 +213,7 @@ function Cargar_Select_Grado(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
@@ -224,7 +224,7 @@ function Cargar_Select_Grado(){
         var id =$("#select_aula_editar").val();
         Traernivel(id);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
 
@@ -248,7 +248,7 @@ function Cargar_Select_Grado(){
 
         }
         else{
-          cadena+="<option value=''>No se encontraron regitros</option>";
+          let cadena = "<option value=''>No se encontraron regitros</option>";
           $('#txt_nivel').html(cadena);
           $("#txt_nivel_editar").val(data[0][1]);
 
@@ -265,14 +265,14 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
           document.getElementById('select_año_buscar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
         document.getElementById('select_año_buscar').innerHTML=cadena;
@@ -290,7 +290,7 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel_buscar').html(cadena);
   
@@ -298,7 +298,7 @@ function Cargar_Año(){
         Cargar_Select_Aula(id);
   
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_buscar').html(cadena);
   
       }
@@ -316,7 +316,7 @@ function Cargar_Año(){
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula_buscar').html(cadena);
             } else {
@@ -726,7 +726,7 @@ $('#tabla_aula_horas').on('click','.delete',function(){
         var data = tbl_aula_horas.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar las horas del aula de: '+data.Grado+'?',
+      title: 'Desea eliminar las horas del aula de: '+textoSeguro(data.Grado)+'?',
       text: "Una vez aceptado, toda las horas serán eliminados!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -786,8 +786,8 @@ $('#tabla_aula_horas').on('click','.mostrar',function(){
       var data = tbl_aula_horas.row(this).data();
   }
 $("#modal_ver_horas").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>AÑO ACADEMICO: "+data.año_escolar+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>AULA O GRADO: "+data.Grado+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>AÑO ACADEMICO: "+textoSeguro(data.año_escolar)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>AULA O GRADO: "+textoSeguro(data.Grado)+"</b>";
   listar_horas(data.id_aula,data.año_escolar);
 
 })

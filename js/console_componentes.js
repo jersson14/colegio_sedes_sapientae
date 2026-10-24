@@ -210,7 +210,7 @@ function Cargar_Select_Nivelaca(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
       $('#select_nivel').html(cadena);
       $('#select_nivel_editar').html(cadena);
@@ -220,7 +220,7 @@ function Cargar_Select_Nivelaca(){
       var id =$("#select_nivel_editar").val();
       Cargar_Select_Aula(id);
     }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
+      let cadena = "<option value=''>No se encontraron regitros</option>";
       $('#select_nivel_editar').html(cadena);
 
     }
@@ -240,7 +240,7 @@ function Cargar_Select_Aula(id){
           if(data.length > 0){
               let cadena = "";
               for (let i = 0; i < data.length; i++) {
-                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                  cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
               }
               $('#select_aula_buscar').html(cadena);
           } else {
@@ -263,7 +263,7 @@ function Cargar_Select_Grado() {
     let cadena = ""; // Inicializa la cadena vacía
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - "+ data[i][2] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - "+ textoSeguro(data[i][2]) + "</option>";
       }
       $('#select_aula').html(cadena);
       $('#select_aula_editar').html(cadena);
@@ -300,7 +300,7 @@ function Cargar_Select_curso(id, select_id) {
     if (data.length > 0) {
       cadena += "<option value='' disabled selected>--SELECCIONE--</option>";
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][2] + "'>" + data[i][1] +"</option>";
+        cadena += "<option value='" + textoSeguro(data[i][2]) + "'>" + textoSeguro(data[i][1]) +"</option>";
       }
     } else {
       // Si no hay cursos disponibles
@@ -407,7 +407,7 @@ $('#tabla_criterio_editar').on('click','.delete',function(){
       var data = tbl_traer_datos.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar el componente: '+data.competencias+' del curso de: '+data.nombre_asig+'?',
+    title: 'Desea eliminar el componente: '+textoSeguro(data.competencias)+' del curso de: '+textoSeguro(data.nombre_asig)+'?',
     text: "Una vez aceptado el componente sera eliminado!!!",
     icon: 'warning',
     showCancelButton: true,
@@ -626,7 +626,7 @@ $('#tabla_componentes').on('click','.delete',function(){
         var data = tbl_componentes.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar los componentes del curso de: '+data.nombre_asig+'?',
+      title: 'Desea eliminar los componentes del curso de: '+textoSeguro(data.nombre_asig)+'?',
       text: "Una vez aceptado, todo los componentes serán eliminados!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -686,8 +686,8 @@ $('#tabla_componentes').on('click','.mostrar',function(){
       var data = tbl_componentes.row(this).data();
   }
 $("#modal_ver_compo").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>AULA O GRADO: "+data.Grado+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>CURSO: "+data.nombre_asig+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>AULA O GRADO: "+textoSeguro(data.Grado)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>CURSO: "+textoSeguro(data.nombre_asig)+"</b>";
   listar_compo2(data.id_detalle_asignatura);
 
 })

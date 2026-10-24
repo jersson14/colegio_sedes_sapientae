@@ -150,7 +150,7 @@ $('#tabla_perio_editar').on('click','.delete',function(){
       var data = tbl_traer_datos.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar periodo: '+data.periodos+' del año: '+data.año_escolar+'?',
+    title: 'Desea eliminar periodo: '+textoSeguro(data.periodos)+' del año: '+textoSeguro(data.año_escolar)+'?',
     text: "Una vez aceptado el periodo sera eliminado!!!",
     icon: 'warning',
     showCancelButton: true,
@@ -177,12 +177,12 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
       }
@@ -497,7 +497,7 @@ $('#tabla_periodo').on('click','.delete',function(){
         var data = tbl_periodo.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el periodo: '+data.tipo_perido+' del año : '+data.año_escolar+'?',
+      title: 'Desea eliminar el periodo: '+textoSeguro(data.tipo_perido)+' del año : '+textoSeguro(data.año_escolar)+'?',
       text: "Una vez aceptado el periodo se eliminar conjuntamente con todo sus items que se registraron!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -566,8 +566,8 @@ $('#tabla_periodo').on('click','.mostrar',function(){
       var data = tbl_periodo.row(this).data();
   }
 $("#modal_ver_perio").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>AÑO: "+data.año_escolar+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>TIPO DE PERIODO: "+data.tipo_perido+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>AÑO: "+textoSeguro(data.año_escolar)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>TIPO DE PERIODO: "+textoSeguro(data.tipo_perido)+"</b>";
   listar_perio(data.id_año_escolar);
 
 })

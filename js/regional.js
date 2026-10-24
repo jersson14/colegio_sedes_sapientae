@@ -70,3 +70,40 @@ $(document).off('blur.regional', 'input[id*="dni"]').on('blur.regional', 'input[
   var v = this.value.trim();
   $(this).toggleClass('is-invalid', v !== '' && !documentoValido(v));
 });
+
+// ---------- Escala de notas del colegio (Fase 8C): mismas reglas que nota_normalizada() en utilitario/regional.php ----------
+function notasLiterales(clave) {
+  let t = String(REGIONAL[clave || 'notas_literales'] || '').trim();
+  return t === '' ? [] : t.toUpperCase().split(',').map(function(x) { return x.trim(); });
+}
+
+// Devuelve la nota normalizada (texto) o null si no cumple la escala
+function notaNormalizada(valor) {
+  let v = String(valor === null || valor === undefined ? '' : valor).trim().replace(',', '.').toUpperCase();
+  if (v === '') { return null; }
+  if (notasLiterales().indexOf(v) >= 0) { return v; }
+  if (!/^\d+(\.\d+)?$/.test(v)) { return null; }
+  let dec = (v.split('.')[1] || '').replace(/0+$/, '');
+  if (dec.length > Number(REGIONAL.nota_decimales)) { return null; }
+  let n = parseFloat(v);
+  if (n < Number(REGIONAL.nota_min) || n > Number(REGIONAL.nota_max)) { return null; }
+  return n.toFixed(Number(REGIONAL.nota_decimales));
+}
+
+function notaValida(valor) {
+  return notaNormalizada(valor) !== null;
+}
+
+function notaAprobada(valor) {
+  let v = notaNormalizada(valor);
+  if (v === null) { return false; }
+  if (isNaN(v)) { return notasLiterales('literales_aprobatorios').indexOf(v) >= 0; }
+  return parseFloat(v) >= Number(REGIONAL.nota_aprobatoria);
+}
+
+// "0 a 20 (aprueba con 11) o AD, A, B, C"
+function descripcionEscala() {
+  let f = function(n) { return String(Number(n)); };
+  let t = f(REGIONAL.nota_min) + ' a ' + f(REGIONAL.nota_max) + ' (aprueba con ' + f(REGIONAL.nota_aprobatoria) + ')';
+  return notasLiterales().length ? t + ' o ' + notasLiterales().join(', ') : t;
+}

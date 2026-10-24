@@ -198,7 +198,7 @@ $('#tabla_especialidad').on('click','.delete',function(){
         var data = tbl_especialidad.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar la especialidad: '+data.Especialidad+'?',
+      title: 'Desea eliminar la especialidad: '+textoSeguro(data.Especialidad)+'?',
       text: "Una vez aceptado la especialidad sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

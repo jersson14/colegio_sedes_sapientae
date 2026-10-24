@@ -122,11 +122,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
       }
     })
@@ -141,11 +141,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_bimestre').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_bimestre').innerHTML=cadena;
       }
     })
@@ -163,7 +163,7 @@ function Cargar_Select_Nivelaca(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel').html(cadena);
         $('#select_nivel_editar').html(cadena);
@@ -173,7 +173,7 @@ function Cargar_Select_Nivelaca(){
         var id =$("#select_nivel_editar").val();
         Cargar_Select_Aula(id);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_editar').html(cadena);
   
       }
@@ -193,7 +193,7 @@ function Cargar_Select_Nivelaca(){
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula').html(cadena);
             } else {

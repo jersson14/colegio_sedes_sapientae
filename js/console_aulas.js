@@ -208,12 +208,12 @@ function Cargar_Select_Seccion(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_seccion').innerHTML=cadena;
           document.getElementById('select_seccion_editar').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_seccion').innerHTML=cadena;
         document.getElementById('select_seccion_editar').innerHTML=cadena;
       }
@@ -230,14 +230,14 @@ function Cargar_Select_Seccion(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_nivel_aca').innerHTML=cadena;
           document.getElementById('select_nivel_aca_editar').innerHTML=cadena;
           document.getElementById('select_nivel_buscar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_nivel_aca').innerHTML=cadena;
         document.getElementById('select_nivel_aca_editar').innerHTML=cadena;
         document.getElementById('select_nivel_buscar').innerHTML=cadena;
@@ -372,7 +372,7 @@ $('#tabla_aulas').on('click','.delete',function(){
         var data = tbl_aulas.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el grado académico: '+data.Grado+'?',
+      title: 'Desea eliminar el grado académico: '+textoSeguro(data.Grado)+'?',
       text: "Una vez aceptado el grado académico sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

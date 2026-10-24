@@ -21,3 +21,6 @@ controller/pago_pension/vouchers/*
 # Comprobantes de egresos subidos
 controller/egresos/comprobantes/*
 !controller/egresos/comprobantes/.htaccess
+
+# Temporales de las pruebas
+tests/tmp/

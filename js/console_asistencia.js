@@ -250,7 +250,7 @@ function listar_alumnos(){
             {
                 "data":"id_matricula",
                 "render": function(data, type, row, meta){
-                    return "<input type='number' disabled style='width: 70px;text-align:center' id='id_matri' class='form-control input-small' value='" + (data || '') + "' />";
+                    return "<input type='number' disabled style='width: 70px;text-align:center' id='id_matri' class='form-control input-small' value='" + textoSeguro(data || '') + "' />";
                 }
             },
             {"data":"alum_dni"},
@@ -368,7 +368,7 @@ function listar_alumnos_editar(){
           {
               "data":"id_asistencia",
               "render": function(data, type, row, meta){
-                  return "<input type='number' disabled style='width: 70px;text-align:center' id='id_asis_editar' class='form-control input-small' value='" + (data || '') + "' />";
+                  return "<input type='number' disabled style='width: 70px;text-align:center' id='id_asis_editar' class='form-control input-small' value='" + textoSeguro(data || '') + "' />";
               }
           },
           {"data":"alum_dni"},
@@ -376,8 +376,8 @@ function listar_alumnos_editar(){
           {
               "data": "fecha", 
               "render": function(data, type, row, meta){
-                  // Obtener la fecha y hora actual de la PC y formatearla para datetime-local                  return "<input type='number' disabled style='width: 70px;text-align:center' id='id_asis_editar' class='form-control input-small' value='" + (data || '') + "' />";
-                  return "<input disabled type='date' style='text-align:center' id='txt_fecha_asis_editar' class='form-control input-small' value='" + (data || '') + "' />";
+                  // Obtener la fecha y hora actual de la PC y formatearla para datetime-local                  return "<input type='number' disabled style='width: 70px;text-align:center' id='id_asis_editar' class='form-control input-small' value='" + textoSeguro(data || '') + "' />";
+                  return "<input disabled type='date' style='text-align:center' id='txt_fecha_asis_editar' class='form-control input-small' value='" + textoSeguro(data || '') + "' />";
 
               }
           },
@@ -583,7 +583,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -598,7 +598,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -613,7 +613,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -628,7 +628,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -643,7 +643,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -658,7 +658,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -673,7 +673,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -688,7 +688,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -703,7 +703,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -718,7 +718,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -733,7 +733,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -748,7 +748,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -763,7 +763,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -779,7 +779,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
     },      
@@ -794,7 +794,7 @@ function listar_alumnos_totales_dia() {
         } else if (data === 'JUSTIFICADO') {
           return '<span class="badge bg-dark">FJ</span>';
         } else {
-            return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+            return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
         }
     }
     },
@@ -809,7 +809,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -824,7 +824,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -839,7 +839,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -854,7 +854,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -869,7 +869,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -884,7 +884,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -899,7 +899,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -914,7 +914,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -929,7 +929,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -944,7 +944,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -959,7 +959,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -974,7 +974,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -989,7 +989,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -1004,7 +1004,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -1019,7 +1019,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        },
@@ -1034,7 +1034,7 @@ function listar_alumnos_totales_dia() {
           } else if (data === 'JUSTIFICADO') {
             return '<span class="badge bg-dark">FJ</span>';
           } else {
-              return data;  // Devuelve el valor tal cual si no coincide con ninguna condición
+              return textoSeguro(data);  // Devuelve el valor (escapado) si no coincide con ninguna condición
           }
       }
        }
@@ -1064,7 +1064,7 @@ function listar_alumnos_totales_dia() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel').html(cadena);
         $('#select_nivel_editar').html(cadena);
@@ -1074,7 +1074,7 @@ function listar_alumnos_totales_dia() {
         var id =$("#select_nivel_editar").val();
         Cargar_Select_Aula(id);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_editar').html(cadena);
   
       }
@@ -1094,12 +1094,12 @@ function listar_alumnos_totales_dia() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][1]+"'>"+data[i][2]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][1])+"'>"+textoSeguro(data[i][2])+"</option>";    
         }
           document.getElementById('select_aula').innerHTML=cadena;
           document.getElementById('select_aula_editar').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_aula').innerHTML=cadena;
         document.getElementById('select_aula_editar').innerHTML=cadena;
 
@@ -1116,13 +1116,13 @@ function Cargar_Select_Grado_buscar(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+data[i][2]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" - "+textoSeguro(data[i][2])+"</option>";    
       }
       $('#select_aula_buscar').html(cadena);
       $('#select_aula_buscar_2').html(cadena);
 
     }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
+      let cadena = "<option value=''>No se encontraron regitros</option>";
       $('#select_aula_buscar').html(cadena);
       $('#select_aula_buscar_2').html(cadena);
 
@@ -1140,12 +1140,12 @@ function Cargar_Año(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año2').innerHTML=cadena;
     }else{
-      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      let cadena = "<option value=''>No hay secciones en la base de datos</option>";
       document.getElementById('select_año').innerHTML=cadena;
       document.getElementById('select_año2').innerHTML=cadena;
     }
@@ -1309,7 +1309,7 @@ $('#tabla_asistencia').on('click','.delete',function(){
         var data = tbl_asistencia.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar la asistencia de fecha: '+data.fecha_formateada+' del aula: '+data.Grado+'?',
+      title: 'Desea eliminar la asistencia de fecha: '+textoSeguro(data.fecha_formateada)+' del aula: '+textoSeguro(data.Grado)+'?',
       text: "Una vez aceptado se eliminara la asistencia de la fecha que se mostro así como el registro de cada alumno!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -1335,8 +1335,8 @@ $('#tabla_asistencia').on('click','.delete',function(){
         var data = tbl_asistencia.row(this).data();
     }
   $("#modal_ver_asistencia").modal('show');
-    document.getElementById('lb_titulo').innerHTML="<b>NIVEL ACADEMICO - GRADO: </b>"+data.Nivel_academico+" - "+data.Grado+"";
-    document.getElementById('lb_titulo2').innerHTML="<b>FECHA: </b>"+data.fecha_formateada+"";
+    document.getElementById('lb_titulo').innerHTML="<b>NIVEL ACADEMICO - GRADO: </b>"+textoSeguro(data.Nivel_academico)+" - "+textoSeguro(data.Grado)+"";
+    document.getElementById('lb_titulo2').innerHTML="<b>FECHA: </b>"+textoSeguro(data.fecha_formateada)+"";
     listar_asistencia_alumnos(data.fecha,data.Id_aula);
   
   })

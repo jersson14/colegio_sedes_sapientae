@@ -20,6 +20,7 @@ function Cargar_Regional(){
       $("#select_zona").val(resp.config.zona_horaria);
       $("#txt_id_tributario").val(resp.config.identificacion_tributaria);
       $("#chk_doc_extranjero").prop('checked', resp.config.permite_doc_extranjero == 1);
+      Poner_Escala(resp.config);
     }
     let filas = "";
     resp.historial.forEach(function(h){
@@ -37,9 +38,24 @@ $(document).off('change.regional', '#select_pais').on('change.regional', '#selec
   if (p) {
     $("#select_moneda").val(p.moneda_id);
     $("#select_zona").val(p.zona_horaria);
+    Poner_Escala(p);
   }
   Vista_Previa_Regional();
 });
+$(document).off('input.regional', '#txt_nota_min, #txt_nota_max, #txt_nota_aprobatoria, #txt_notas_literales, #txt_literales_aprobatorios')
+  .on('input.regional', '#txt_nota_min, #txt_nota_max, #txt_nota_aprobatoria, #txt_notas_literales, #txt_literales_aprobatorios', Vista_Previa_Regional);
+$(document).off('change.regional', '#select_nota_decimales').on('change.regional', '#select_nota_decimales', Vista_Previa_Regional);
+
+// Escala de notas (Fase 8C): la del colegio o la que trae el país elegido
+function Poner_Escala(e) {
+  let n = function(v) { return String(Number(v)); };
+  $("#txt_nota_min").val(n(e.nota_min));
+  $("#txt_nota_max").val(n(e.nota_max));
+  $("#txt_nota_aprobatoria").val(n(e.nota_aprobatoria));
+  $("#select_nota_decimales").val(e.nota_decimales);
+  $("#txt_notas_literales").val(e.notas_literales || '');
+  $("#txt_literales_aprobatorios").val(e.literales_aprobatorios || '');
+}
 $(document).off('change.regional', '#select_moneda').on('change.regional', '#select_moneda', Vista_Previa_Regional);
 
 function Vista_Previa_Regional(){
@@ -54,6 +70,9 @@ function Vista_Previa_Regional(){
   $("#prev_documento").text(p.doc_nombre + ' (ej. ' + p.doc_ejemplo + ')');
   $("#prev_prefijo").text(p.prefijo_tel);
   $("#lbl_id_tributario").text(p.id_tributario + ' del colegio:');
+  let lit = $("#txt_notas_literales").val().trim();
+  $("#prev_escala").text($("#txt_nota_min").val() + ' a ' + $("#txt_nota_max").val() + ' con ' + $("#select_nota_decimales").val()
+    + ' decimal(es), aprueba con ' + $("#txt_nota_aprobatoria").val() + (lit ? ' · o letras ' + lit + ' (aprueban ' + $("#txt_literales_aprobatorios").val() + ')' : ''));
 }
 
 function Guardar_Regional(confirmar){
@@ -66,6 +85,12 @@ function Guardar_Regional(confirmar){
       zona: $("#select_zona").val(),
       id_tributario: $("#txt_id_tributario").val(),
       extranjero: $("#chk_doc_extranjero").is(':checked') ? 1 : 0,
+      nota_min: $("#txt_nota_min").val(),
+      nota_max: $("#txt_nota_max").val(),
+      nota_aprobatoria: $("#txt_nota_aprobatoria").val(),
+      nota_decimales: $("#select_nota_decimales").val(),
+      notas_literales: $("#txt_notas_literales").val(),
+      literales_aprobatorios: $("#txt_literales_aprobatorios").val(),
       confirmar_moneda: confirmar ? 1 : 0
     }
   }).done(function(resp){

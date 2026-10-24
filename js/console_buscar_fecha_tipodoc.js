@@ -200,7 +200,7 @@ $('#tabla_tramite').on('click','.delete',function(){
       var data = tbl_tramite.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar el tramite con código '+data.documento_id+'?',
+    title: 'Desea eliminar el tramite con código '+textoSeguro(data.documento_id)+'?',
     text: "Una vez aceptado el tramite sera eliminado!",
     icon: 'warning',
     showCancelButton: true,
@@ -231,7 +231,7 @@ $('#tabla_tramite').on('click','.seguimiento',function(){
       var data = tbl_tramite.row(this).data();
   }
 $("#modal_seguimiento").modal('show');
-  document.getElementById('lb_titulo').innerHTML="SEGUIMIENTO DE TRAMITE Nº: "+data.documento_id;
+  document.getElementById('lb_titulo').innerHTML="SEGUIMIENTO DE TRAMITE Nº: "+textoSeguro(data.documento_id);
   listar_seguimiento_tramite(data.documento_id);
 })
 $('#tabla_tramite').on('click','.mas',function(){
@@ -244,7 +244,7 @@ $("#modal_mas").modal('show');
 document.getElementById('txt_ndocumento').value=data.doc_nrodocumento;
 document.getElementById('txt_folio').value=data.doc_folio;
 document.getElementById('txt_asunto').value=data.doc_asunto;
-document.getElementById('lb_titulo_datos').innerHTML="DATOS DEL EXPEDIENTE Nº: "+data.doc_nrodocumento;
+document.getElementById('lb_titulo_datos').innerHTML="DATOS DEL EXPEDIENTE Nº: "+textoSeguro(data.doc_nrodocumento);
 $("#select_area_p").select2().val(data.area_origen).trigger('change.select2');
 $("#select_area_d").select2().val(data.area_destino).trigger('change.select2');
 $("#select_tipo").select2().val(data.tipodocumento_id).trigger('change.select2');
@@ -342,11 +342,11 @@ function Cargar_Select_Area(){
       if(data.length>0){
         let cadena ="<option value=''>Seleccionar Área</option>";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_area_p').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay áreas disponibles</option>";
+        let cadena = "<option value=''>No hay áreas disponibles</option>";
         document.getElementById('select_area_p').innerHTML=cadena;
         
       }
@@ -362,7 +362,7 @@ function Cargar_Select_Area(){
         var cadena="";
         if(data.length>0){
             for(var i=0; i < data.length; i++){
-                cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";
+                cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";
             }
             $('#select_tipo').html(cadena);
             var id =$("#select_tipo").val();
@@ -371,7 +371,7 @@ function Cargar_Select_Area(){
             
         }
         else{
-            cadena+="<option value=''>No se encontraron regitros</option>";
+            let cadena = "<option value=''>No se encontraron regitros</option>";
             $('#select_tipo').html(cadena);
         }
     })
@@ -553,7 +553,7 @@ function listar_seguimiento_tramite(id){
           if(data==''){
             return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
         }else{
-          return "<a class='btn btn-primary btn-sm' href='../"+data+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i></a>";
+          return "<a class='btn btn-primary btn-sm' href='../"+textoSeguro(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i></a>";
         }
             }   
         },         

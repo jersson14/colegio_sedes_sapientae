@@ -289,14 +289,14 @@ function Cargar_Select_Rol(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
       document.getElementById('select_rol_editar').innerHTML=cadena;
 
         document.getElementById('select_rol').innerHTML=cadena;
 
     }else{
-      cadena+="<option value=''>No hay empleado en la base de datos</option>";
+      let cadena = "<option value=''>No hay empleado en la base de datos</option>";
       document.getElementById('select_rol_editar').innerHTML=cadena;
 
       document.getElementById('select_rol').innerHTML=cadena;
@@ -338,7 +338,7 @@ $('#tabla_usuario').on('click','.desactivar',function(){
       var data = tbl_usuario.row(this).data();
   }
     Swal.fire({
-      title: 'Desea desactivar al usuario '+data.usu_usuario+'?',
+      title: 'Desea desactivar al usuario '+textoSeguro(data.usu_usuario)+'?',
       text: "Una vez desactivado el usuario no tendra acceso al sistema",
       icon: 'warning',
       showCancelButton: true,
@@ -361,7 +361,7 @@ $('#tabla_usuario').on('click','.activar',function(){
       var data = tbl_usuario.row(this).data();
   }
     Swal.fire({
-      title: 'Desea activar al usuario '+data.usu_usuario+'?',
+      title: 'Desea activar al usuario '+textoSeguro(data.usu_usuario)+'?',
       text: "Una vez activado el usuario tendra acceso al sistema",
       icon: 'warning',
       showCancelButton: true,

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/regional.php';
 // Asegurarse de que la solicitud sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -37,8 +38,13 @@ foreach ($registros as $registro) {
     }
 
     $id_nota_papa = filter_var($registro['id_nota_papa'], FILTER_VALIDATE_INT);
-    $criterio = filter_var($registro['criterio'], FILTER_SANITIZE_STRING);
-    $nota = filter_var($registro['nota'], FILTER_SANITIZE_STRING);
+    $criterio = trim(strip_tags((string) $registro['criterio']));
+    $nota = nota_normalizada($registro['nota']);
+    if ($nota === null) {
+        $errores[] = 'Nota fuera de la escala: use ' . descripcion_escala();
+        $respuesta = 2;
+        continue;
+    }
 
     if ($id_nota_papa === false) {
         $errores[] = 'ID de nota inválido';

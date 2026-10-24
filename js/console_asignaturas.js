@@ -221,7 +221,7 @@ function Cargar_Select_Nivelaca() {
 
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
       $('#select_nivel').html(cadena);
       $('#select_nivel_editar').html(cadena);
@@ -238,7 +238,7 @@ function Cargar_Select_Nivelaca() {
       var idEditar2 = $("#select_nivel_buscar").val();
       Cargar_Select_Aula(idEditar2);
     } else {
-      cadena += "<option value=''>No se encontraron registros</option>";
+      let cadena = "<option value=''>No se encontraron registros</option>";
       $('#select_nivel_editar').html(cadena);
     }
   });
@@ -256,14 +256,14 @@ function Cargar_Select_Aula(id) {
 
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";
       }
       document.getElementById('select_grado').innerHTML = cadena;
       document.getElementById('select_grado_editar').innerHTML = cadena;
       document.getElementById('select_aula_buscar').innerHTML = cadena;
 
     } else {
-      cadena += "<option value=''>No hay secciones en la base de datos</option>";
+      let cadena = "<option value=''>No hay secciones en la base de datos</option>";
       document.getElementById('select_grado').innerHTML = cadena;
       document.getElementById('select_grado_editar').innerHTML = cadena;
       document.getElementById('select_aula_buscar').innerHTML = cadena;
@@ -401,7 +401,7 @@ $('#tabla_asignaturas').on('click','.delete',function(){
         var data = tbl_asignaturas.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar la asignatura: '+data.nombre_asig+'?',
+      title: 'Desea eliminar la asignatura: '+textoSeguro(data.nombre_asig)+'?',
       text: "Una vez aceptado la asignatura sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

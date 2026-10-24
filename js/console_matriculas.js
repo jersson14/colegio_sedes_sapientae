@@ -208,7 +208,7 @@ function Cargar_Select_estudiante() {
     let cadena = "<option value=''>Seleccionar Estudiante</option>";
     if (Array.isArray(data) && data.length > 0) {
       data.forEach(function(item) {
-        cadena += `<option value='${item[0]}'>${REGIONAL.doc_nombre}: ${item[1]} - ${item[2]}</option>`;
+        cadena += `<option value='${textoSeguro(item[0])}'>${REGIONAL.doc_nombre}: ${textoSeguro(item[1])} - ${textoSeguro(item[2])}</option>`;
       });
     } else {
       cadena = "<option value=''>No se encontraron registros</option>";
@@ -245,7 +245,7 @@ function Cargar_Select_Grado(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+data[i][2]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" - "+textoSeguro(data[i][2])+"</option>";    
         }
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
@@ -256,7 +256,7 @@ function Cargar_Select_Grado(){
         var id2 =$("#select_aula_editar").val();
         Traernivel(id2);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
 
@@ -280,7 +280,7 @@ function Cargar_Select_Grado(){
 
         }
         else{
-          cadena+="<option value=''>No se encontraron regitros</option>";
+          let cadena = "<option value=''>No se encontraron regitros</option>";
           $('#txt_nivel').html(cadena);
           $("#txt_nivel_editar").val(data[0][1]);
 
@@ -299,7 +299,7 @@ function Cargar_Select_Nivelaca(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
       $('#select_nivel_buscar').html(cadena);
 
@@ -307,7 +307,7 @@ function Cargar_Select_Nivelaca(){
       Cargar_Select_Aula(id);
 
     }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
+      let cadena = "<option value=''>No se encontraron regitros</option>";
       $('#select_nivel_buscar').html(cadena);
 
     }
@@ -327,7 +327,7 @@ function Cargar_Select_Aula(id){
           if(data.length > 0){
               let cadena = "";
               for (let i = 0; i < data.length; i++) {
-                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                  cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
               }
               $('#select_aula_buscar').html(cadena);
           } else {
@@ -350,14 +350,14 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
           document.getElementById('select_año_buscar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
         document.getElementById('select_año_buscar').innerHTML=cadena;
@@ -384,7 +384,7 @@ function Cargar_Año(){
 
         }
         else{
-          cadena+="<option value=''>No se encontraron regitros</option>";
+          let cadena = "<option value=''>No se encontraron regitros</option>";
           $('#txt_tipo').html(cadena);
 
 
@@ -589,7 +589,7 @@ $('#tabla_matricula').on('click','.delete',function(){
         var data = tbl_matricula.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el grado académico: '+data.Grado+'?',
+      title: 'Desea eliminar el grado académico: '+textoSeguro(data.Grado)+'?',
       text: "Una vez aceptado el grado académico sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -659,7 +659,7 @@ $('#tabla_matricula').on('click','.delete',function(){
       var data = tbl_matricula.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar la matricula del alumno: '+data.Estudiante+'?',
+    title: 'Desea eliminar la matricula del alumno: '+textoSeguro(data.Estudiante)+'?',
     text: "Una vez aceptado la matricula del alumno sera eliminada de esta lista!!!",
     icon: 'warning',
     showCancelButton: true,

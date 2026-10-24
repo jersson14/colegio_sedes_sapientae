@@ -1,14 +1,16 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/validacion.php';
+require_once __DIR__ . '/../../utilitario/regional.php';
     require '../../model/model_tareas.php';
-    $MTA = new Modelo_Tareas();//Instaciamos    $nota = strtoupper(htmlspecialchars($_POST['nota'],ENT_QUOTES,'UTF-8'));
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $nota = strtoupper(htmlspecialchars($_POST['nota'],ENT_QUOTES,'UTF-8'));
-    $obser = strtoupper(htmlspecialchars($_POST['obser'],ENT_QUOTES,'UTF-8'));
+    $MTA = new Modelo_Tareas();//Instaciamos
+    $id = entero_post('id', 1, 'tarea');
+    // La calificación sigue la escala del colegio (número con sus decimales o literal como AD/A/B/C)
+    $nota = nota_normalizada($_POST['nota'] ?? '');
+    if ($nota === null) {
+        denegar(400, 'La nota debe estar entre ' . descripcion_escala());
+    }
+    $obser = strtoupper(htmlspecialchars(trim($_POST['obser'] ?? ''), ENT_QUOTES, 'UTF-8'));
 
-    $consulta = $MTA->Registrar_calificación($id,$nota,$obser);
-    echo $consulta;
-
-
-
+    echo $MTA->Registrar_calificación($id, $nota, $obser);
 ?>

@@ -425,8 +425,8 @@ Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la segurid
 |--------|-----------|--------|
 | **8A** | Integridad de datos: pensiones por año escolar, usuarios únicos, categorías con grupo | ✅ 2026-10-24 |
 | **8B** | Planilla del personal administrativo (misma estructura que la docente) y asistencia docente para las horas de la planilla | ✅ 2026-10-24 |
-| **8C** | Seguridad en pantallas: escapar los datos que muestran las tablas (DataTables) en todos los módulos; validación de notas según la escala del país | Pendiente |
-| **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, adjuntos de comunicados, anti-spam del landing, auditoría de tablas financieras | Pendiente |
+| **8C** | Seguridad en pantallas: escapar los datos que muestran las tablas (DataTables) en todos los módulos; validación de notas según la escala del país | ✅ 2026-10-24 |
+| **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, adjuntos de comunicados, anti-spam del landing, auditoría de tablas financieras; **retirar módulos de otro proyecto que no existen en la BD** (empleado, tipo de documento, trámites/áreas: sus controladores muestran errores fatales de PHP con la ruta del servidor) | Pendiente |
 
 ### Bloque 8A ✅ (2026-10-24)
 
@@ -473,7 +473,29 @@ Migración `database/migraciones/009_planilla_administrativa_asistencia.sql` (ap
 
 **Pruebas (BD `colegio2_test`)**: Bloque 8B **51/51** (contratos y planillas por tipo sin mezclarse, asistencia → 9 h × 25 = 225, adelanto y pago del auxiliar en 5.1.2, caja 10 000 → 8 500, bloqueo de asistencia tras aprobar, boletas propias y ajenas, reporte); regresión Fases 1–8A **397/397**; Planilla y Asistencia docente revisadas en Chrome headless sin errores.
 
-### Mejoras por módulo (pendientes, bloques 8C–8D)
+### Bloque 8C ✅ (2026-10-24)
+
+Migración `database/migraciones/010_escala_notas.sql`.
+
+**Datos mostrados como texto, nunca como HTML (XSS)**
+- [x] `js/texto_seguro.js`: `textoSeguro()` escapa `& < > " '` y el acento grave; antes decodifica las entidades de los registros antiguos que se guardaron con `htmlspecialchars` (se ve "O'Brien" y no "O&#039;Brien").
+- [x] **DataTables**: toda columna sin `render` propio (517 columnas en 47 tablas) se muestra escapada por defecto; antes cualquier nombre, tema, título o comentario con `<script>`/`onerror` se ejecutaba en el navegador de quien lo viera (incluido el aviso de comunicados del inicio, que ven todos los roles).
+- [x] HTML armado a mano: 168 concatenaciones (listas desplegables, títulos de SweetAlert, `innerHTML`) y 18 `render` con datos (fotos, archivos, recibos, calificaciones, campos editables de notas y asistencia) usan `textoSeguro()`.
+- [x] Prueba en Chrome headless con textos `<img onerror>` en especialidad, alumno, sección, comunicado y categoría: **0 ejecuciones** en las 7 pantallas (sin la protección: 11 a 14 por pantalla). Todas las vistas (47) cargan sin errores de JavaScript.
+- [x] **Corregido de paso:** 56 listas desplegables lanzaban un error de JavaScript cuando no había datos (variable `cadena` sin declarar en la rama "no hay registros"), p. ej. *Reporte de asistencia del estudiante*.
+
+**Escala de notas según el país**
+- [x] Cada país trae su escala: Perú 0–20 (aprueba 11; también AD/A/B/C, aprueban AD/A/B), Ecuador 0–10 (7), Bolivia 0–100 (51), Argentina 1–10 (6), Chile 1.0–7.0 (4.0), Colombia y Panamá 1.0–5.0 (3.0), México 5–10 (6), Venezuela 1–20 (10), Paraguay 1–5 (2), Uruguay 1–12 (6), Brasil/El Salvador 0–10 (6), Costa Rica 0–100 (65), Cuba/Guatemala/Nicaragua/Puerto Rico 0–100 (60), Honduras/R. Dominicana 0–100 (70).
+- [x] *Configuración > Datos regionales*: escala del colegio (mínimo, máximo, nota aprobatoria, decimales, letras y letras que aprueban); se propone la del país y queda en el historial.
+- [x] Notas del bimestre, notas de padres y calificaciones de tareas se validan con la escala en el servidor y en la pantalla (antes: solo "no mayor a 20" en el navegador). Los colores de aprobado/desaprobado usan la nota aprobatoria configurada (antes 11 fijo).
+- [x] La calificación de tareas era entero (6.5 se guardaba 6, no admitía letras): ahora texto como las notas.
+- [x] Quitado `FILTER_SANITIZE_STRING` (obsoleto en PHP 8.1+) de la edición de notas.
+
+**Pruebas**: Bloque 8C 26/26 + prueba unitaria de la escala; regresión de todas las fases **474/474**.
+
+> **Herramientas de prueba en el repositorio (`tests/`).** Hasta la Fase 8B las suites vivían en una carpeta temporal de la sesión, que se borró el 2026-10-24. Se recrearon en `tests/` las de las Fases 7, 8A, 8B y 8C, la prueba de escapado en el navegador, el reinicio de la base de prueba y la revisión de todas las vistas (`tests/ejecutar_todo.sh`). Las suites de las Fases 1–6 y el generador de `controller/_permisos.php` se perdieron: rehacerlas es parte de la Fase 9. Mientras tanto, un controlador nuevo para un rol distinto de ADMINISTRADOR se agrega a mano en `controller/_permisos.php`.
+
+### Mejoras por módulo (pendientes, bloque 8D)
 
 | Módulo | Mejoras |
 |--------|---------|

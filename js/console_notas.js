@@ -132,11 +132,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
       }
     })
@@ -151,11 +151,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_bimestre').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_bimestre').innerHTML=cadena;
       }
     })
@@ -170,13 +170,13 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][1]+"'>"+data[i][2]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][1])+"'>"+textoSeguro(data[i][2])+"</option>";    
         }
           document.getElementById('select_bimestre_ver').innerHTML=cadena;
           document.getElementById('select_bimestre_editar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_bimestre_ver').innerHTML=cadena;
         document.getElementById('select_bimestre_editar').innerHTML=cadena;
 
@@ -195,7 +195,7 @@ function Cargar_Select_Nivelaca(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel').html(cadena);
         $('#select_nivel_editar').html(cadena);
@@ -205,7 +205,7 @@ function Cargar_Select_Nivelaca(){
         var id =$("#select_nivel_editar").val();
         Cargar_Select_Aula(id);
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_editar').html(cadena);
   
       }
@@ -225,7 +225,7 @@ function Cargar_Select_Nivelaca(){
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula').html(cadena);
             } else {
@@ -284,7 +284,7 @@ function listar_componentes() {
                 "title": "ID",
                 "render": function(data, type, row) {
                     if (type === 'display') {
-                        return '<input class="form-control criterio" type="text" value="' + (data || '') + '" readonly />';
+                        return '<input class="form-control criterio" type="text" value="' + textoSeguro(data || '') + '" readonly />';
                     }
                     return data;
                 }
@@ -583,14 +583,14 @@ $(document).ready(function() {
               "data": null,
               "title": "Competencias",
               "render": function(data, type, row, meta) {
-                  return '<input type="text" class="form-control competencia_padre" value="' + (data ? data[0] : '') + '" style="width:95%; margin: 5px;">';
+                  return '<input type="text" class="form-control competencia_padre" value="' + textoSeguro(data ? data[0] : '') + '" style="width:95%; margin: 5px;">';
               }
           },
           {
               "data": null,
               "title": "Nota",
               "render": function(data, type, row, meta) {
-                  return '<input type="text" class="form-control notapadre" value="' + (data ? data[1] : '') + '" style="width:80%; margin: 5px;">';
+                  return '<input type="text" class="form-control notapadre" value="' + textoSeguro(data ? data[1] : '') + '" style="width:80%; margin: 5px;">';
               }
           }
       ],
@@ -666,6 +666,11 @@ function Registrar_notas() {
   if (registros.length === 0) {
       return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
   }
+  // Notas según la escala del colegio (Configuración > Datos regionales)
+  let notasMalas = registros.filter(function(r) { return !notaValida(r.nota); });
+  if (notasMalas.length) {
+      return Swal.fire("Mensaje de Advertencia", notasMalas.length + " nota(s) fuera de la escala: use " + descripcionEscala() + ".", "warning");
+  }
 
   // Enviar los registros al servidor mediante AJAX
   $.ajax({
@@ -729,6 +734,11 @@ function Registrar_notas_padre() {
   // Verificar si hay registros para enviar
   if (registros.length === 0) {
       return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
+  }
+  // Notas según la escala del colegio (Configuración > Datos regionales)
+  let notasMalas = registros.filter(function(r) { return !notaValida(r.nota); });
+  if (notasMalas.length) {
+      return Swal.fire("Mensaje de Advertencia", notasMalas.length + " nota(s) fuera de la escala: use " + descripcionEscala() + ".", "warning");
   }
 
   // Enviar los registros al servidor mediante AJAX
@@ -901,7 +911,7 @@ tbl_notas_ver_padres_editar = $("#tabla_vistacomp_padre_editar").DataTable({
         "render": function(data, type, row) {
             if (type === 'display') {
                 // Renderiza un input de texto para "Competencias" con una clase específica
-                return '<input type="text" class="idpapas form-control" readonly value="' + data + '" />';
+                return '<input type="text" class="idpapas form-control" readonly value="' + textoSeguro(data) + '" />';
             }
             return data;
         }
@@ -913,7 +923,7 @@ tbl_notas_ver_padres_editar = $("#tabla_vistacomp_padre_editar").DataTable({
               "render": function(data, type, row) {
                   if (type === 'display') {
                       // Renderiza un input de texto para "Competencias" con una clase específica
-                      return '<input type="text"  class="competencias_papa form-control" value="' + data + '" />';
+                      return '<input type="text"  class="competencias_papa form-control" value="' + textoSeguro(data) + '" />';
                   }
                   return data;
               }
@@ -925,7 +935,7 @@ tbl_notas_ver_padres_editar = $("#tabla_vistacomp_padre_editar").DataTable({
               "render": function(data, type, row) {
                   if (type === 'display') {
                       // Renderiza un input de número para "Nota" con una clase específica
-                      return '<input type="text" class="nota_papa form-control" value="' + data + '" />';
+                      return '<input type="text" class="nota_papa form-control" value="' + textoSeguro(data) + '" />';
                   }
                   return data;
               }
@@ -1013,7 +1023,7 @@ function listar_notas_ver_editar() {
         "title": " ID Nota",
         "render": function(data, type, row) {
           if (type === 'display') {
-            return '<input type="number" readonly class="IDnota form-control" value="' + data + '" />';
+            return '<input type="number" readonly class="IDnota form-control" value="' + textoSeguro(data) + '" />';
           }
           return data;
         }
@@ -1024,7 +1034,7 @@ function listar_notas_ver_editar() {
         "title": "Nota",
         "render": function(data, type, row) {
           if (type === 'display') {
-            return '<input type="text" class="nota_editar form-control" value="' + data + '" />';
+            return '<input type="text" class="nota_editar form-control" value="' + textoSeguro(data) + '" />';
           }
           return data;
         }
@@ -1034,7 +1044,7 @@ function listar_notas_ver_editar() {
         "title": "Conclusión Descriptiva",
         "render": function(data, type, row) {
           if (type === 'display') {
-            return '<input type="text" class="conclusiones_editar form-control" value="' + data + '" />';
+            return '<input type="text" class="conclusiones_editar form-control" value="' + textoSeguro(data) + '" />';
           }
           return data;
         }
@@ -1094,6 +1104,11 @@ function Editar_notas() {
   if (registros.length === 0) {
       return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
   }
+  // Notas según la escala del colegio (Configuración > Datos regionales)
+  let notasMalas = registros.filter(function(r) { return !notaValida(r.nota); });
+  if (notasMalas.length) {
+      return Swal.fire("Mensaje de Advertencia", notasMalas.length + " nota(s) fuera de la escala: use " + descripcionEscala() + ".", "warning");
+  }
 
   $.ajax({
       url: "../controller/notas/controlador_editar_notas.php",
@@ -1145,6 +1160,11 @@ function Editar_notas_padre() {
   console.log(registros);
   if (registros.length === 0) {
       return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
+  }
+  // Notas según la escala del colegio (Configuración > Datos regionales)
+  let notasMalas = registros.filter(function(r) { return !notaValida(r.nota); });
+  if (notasMalas.length) {
+      return Swal.fire("Mensaje de Advertencia", notasMalas.length + " nota(s) fuera de la escala: use " + descripcionEscala() + ".", "warning");
   }
 
   $.ajax({

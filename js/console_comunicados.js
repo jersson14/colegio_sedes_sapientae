@@ -284,7 +284,7 @@ $('#tabla_comunicados').on('click','.mostrar',function(){
       var data = tbl_comunicados.row(this).data();
   }
   $("#modal_ver").modal('show');
-  document.getElementById('lb_titulo_datos2').innerHTML="<u><b>"+data.titulo+"</b></u>";
+  document.getElementById('lb_titulo_datos2').innerHTML="<u><b>"+textoSeguro(data.titulo)+"</b></u>";
 
   document.getElementById('txt_descripcion_ver').value=data.descripcion;
 
@@ -320,7 +320,7 @@ function AbrirComunicado(data) {
     $("#modal_ver").modal({backdrop:'static', keyboard:false});
     $("#modal_ver").modal('show');
     
-    document.getElementById('lb_titulo_datos2').innerHTML = "<u><b>" + data.titulo + "</b></u>";
+    document.getElementById('lb_titulo_datos2').innerHTML = "<u><b>" + textoSeguro(data.titulo) + "</b></u>";
     document.getElementById('txt_descripcion_ver').value = data.descripcion;
     
     var imgElement = document.getElementById('preview4');
@@ -354,12 +354,12 @@ function Cargar_Select_Grado(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+data[i][2]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" - "+textoSeguro(data[i][2])+"</option>";    
       }
         document.getElementById('select_grado').innerHTML=cadena;
         document.getElementById('select_grado_editar').innerHTML=cadena;
     }else{
-      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      let cadena = "<option value=''>No hay secciones en la base de datos</option>";
       document.getElementById('select_grado').innerHTML=cadena;
       document.getElementById('select_grado_editar').innerHTML=cadena;
 
@@ -524,7 +524,7 @@ $('#tabla_comunicados').on('click','.delete',function(){
       var data = tbl_comunicados.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar el comunicado con título: '+data.titulo+' con fecha '+data.fecha_formateada+'?',
+    title: 'Desea eliminar el comunicado con título: '+textoSeguro(data.titulo)+' con fecha '+textoSeguro(data.fecha_formateada)+'?',
     text: "Una vez aceptado el comunicado sera eliminado sin opción a recuperar!!!",
     icon: 'warning',
     showCancelButton: true,
@@ -613,7 +613,7 @@ function mostrarDatosModal(data) {
   $("#modal_ver").modal({ backdrop: 'static', keyboard: false });
   $("#modal_ver").modal('show');
 
-  document.getElementById('lb_titulo_datos2').innerHTML = "<u><b>" + data.titulo + "</b></u>";
+  document.getElementById('lb_titulo_datos2').innerHTML = "<u><b>" + textoSeguro(data.titulo) + "</b></u>";
   document.getElementById('txt_descripcion_ver').value = data.descripcion;
 
   var imgElement = document.getElementById('preview4');

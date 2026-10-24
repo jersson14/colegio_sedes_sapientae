@@ -198,7 +198,7 @@ $('#tabla_roles').on('click','.delete',function(){
         var data = tbl_roles.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el rol: '+data.tipo_rol+'?',
+      title: 'Desea eliminar el rol: '+textoSeguro(data.tipo_rol)+'?',
       text: "Una vez aceptado el rol sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

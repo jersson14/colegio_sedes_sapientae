@@ -217,7 +217,7 @@ function Cargar_Select_Grado() {
         cadena += "<option value='' disabled selected>--SELECCIONE--</option>";
 
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][2] + "</option>";
+          cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - " + textoSeguro(data[i][2]) + "</option>";
         }
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
@@ -260,7 +260,7 @@ function Cargar_Select_Grado() {
       if (data.length > 0) {
         cadena += "<option value='' disabled selected>--SELECCIONE--</option>";
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][2] + "'>" + data[i][1] + "</option>";
+          cadena += "<option value='" + textoSeguro(data[i][2]) + "'>" + textoSeguro(data[i][1]) + "</option>";
         }
       } else {
         // Si no hay cursos disponibles
@@ -291,7 +291,7 @@ function Cargar_Select_Grado() {
    
       if (data.length > 0) {
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+          cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
         }
       } else {
         cadena += "<option value='' disabled>No se encontraron registros</option>";
@@ -324,7 +324,7 @@ function Cargar_Select_Grado() {
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
         $('#select_nivel_buscar').html(cadena);
   
@@ -332,7 +332,7 @@ function Cargar_Select_Grado() {
         Cargar_Select_Aula(id);
   
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_nivel_buscar').html(cadena);
   
       }
@@ -352,7 +352,7 @@ function Cargar_Select_Grado() {
             if(data.length > 0){
                 let cadena = "";
                 for (let i = 0; i < data.length; i++) {
-                    cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                    cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
                 }
                 $('#select_aula_buscar').html(cadena);
             } else {
@@ -375,14 +375,14 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
           document.getElementById('select_año_editar').innerHTML=cadena;
           document.getElementById('select_año_buscar').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
         document.getElementById('select_año_buscar').innerHTML=cadena;
@@ -470,7 +470,7 @@ $('#tabla_horario_aula_editar').on('click','.delete',function(){
       var data = tbl_traer_datos.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar la hora del curso: '+data.nombre_asig+' seleccionado?',
+    title: 'Desea eliminar la hora del curso: '+textoSeguro(data.nombre_asig)+' seleccionado?',
     text: "Una vez aceptado la hora sera eliminada!!!",
     icon: 'warning',
     showCancelButton: true,
@@ -741,7 +741,7 @@ $('#tabla_horario').on('click','.delete',function(){
         var data = tbl_horario.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el horario de: '+data.Grado+'?',
+      title: 'Desea eliminar el horario de: '+textoSeguro(data.Grado)+'?',
       text: "Una vez aceptado, toda las horas asignadas a cada curso serán eliminados!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -848,8 +848,8 @@ $('#tabla_horario').on('click','.mostrar',function(){
       var data = tbl_horario.row(this).data();
   }
 $("#modal_ver_horario").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>AÑO ACADEMICO: "+data.año_escolar+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>AULA O GRADO: "+data.Grado+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>AÑO ACADEMICO: "+textoSeguro(data.año_escolar)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>AULA O GRADO: "+textoSeguro(data.Grado)+"</b>";
   listar_horas(data.id_aula);
 
 })

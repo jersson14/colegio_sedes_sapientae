@@ -221,7 +221,7 @@ function Cargar_Indicadores(){
       let cadena = "<option value=''>--SELECCIONE--</option>";  // Añadir opción "SELECCIONE" al inicio
       if(data.length > 0){
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";    
+          cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";    
         }
       } else {
         cadena += "<option value=''>No hay secciones en la base de datos</option>";

@@ -55,7 +55,7 @@ function listar_empleado(){
         {"defaultContent":""},
         {"data":"empl_fotoperfil",
             render: function(data,type,row){
-                return '<img src="../'+data+'" class="img img-responsive" style="width:40px">';
+                return '<img src="../'+textoSeguro(data)+'" class="img img-responsive" style="width:40px">';
             }   
          },
         {"data":"emple_nrodocumento"},

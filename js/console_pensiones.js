@@ -28,7 +28,7 @@ function Cargar_Niveles_Pensiones() {
     let data = JSON.parse(resp);
     let cadena = "";
     for (let i = 0; i < data.length; i++) {
-      cadena += "<option value='" + data[i][0] + "'>" + pensionEsc(data[i][1]) + "</option>";
+      cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + pensionEsc(data[i][1]) + "</option>";
     }
     $('.select-nivel').html(cadena || "<option value=''>No hay niveles registrados</option>");
     $('#select_nivel_buscar').html("<option value='0'>TODOS</option>" + cadena);

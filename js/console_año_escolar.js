@@ -219,7 +219,7 @@ $('#tabla_año_escolar').on('click','.delete',function(){
         var data = tbl_año_escolar.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el año escolar: '+data.año_escolar+'?',
+      title: 'Desea eliminar el año escolar: '+textoSeguro(data.año_escolar)+'?',
       text: "Una vez aceptado el año escolar sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

@@ -82,7 +82,7 @@ function listar_personal_administrativo(){
                   if(data=='controller/personal_administrativo/fotos/'){
                     return '<img src="../controller/personal_administrativo/fotos/VACIO.png" class="img img-responsive" style="width:40px">';
                   }else{
-                    return '<img src="../'+data+'" class="img img-responsive" style="width:40px">';
+                    return '<img src="../'+textoSeguro(data)+'" class="img img-responsive" style="width:40px">';
                   }
               }   
         }, 
@@ -148,8 +148,8 @@ function Cargar_Select_Roles() {
         
         // Construir opciones para ambos selects
         for (let i = 0; i < data.length; i++) {
-          optionsHtml1 += "<option value='" + data[i][1] + "'>" + data[i][1] + "</option>";
-          optionsHtml2 += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+          optionsHtml1 += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][1]) + "</option>";
+          optionsHtml2 += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
         }
         
         // Asignar opciones iniciales a los selects de creación
@@ -164,7 +164,7 @@ function Cargar_Select_Roles() {
           let filteredOptionsHtml = "";
           for (let i = 0; i < data.length; i++) {
             if (data[i][1] === selectedValue) {
-              filteredOptionsHtml += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+              filteredOptionsHtml += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
             }
           }
           document.getElementById(idRolId).innerHTML = filteredOptionsHtml;
@@ -486,7 +486,7 @@ $('#tabla_personal_administrativo').on('click','.delete',function(){
         var data = tb_personal_administrativo.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar al personal administrativo: '+data.Personal+'?',
+      title: 'Desea eliminar al personal administrativo: '+textoSeguro(data.Personal)+'?',
       text: "Una vez aceptado el personal administrativo sera eliminado y a su vez se eliminara el acceso al sistema!!!",
       icon: 'warning',
       showCancelButton: true,

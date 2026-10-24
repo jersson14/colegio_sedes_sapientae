@@ -123,11 +123,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" || "+data[i][4]+" || "+data[i][5]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" || "+textoSeguro(data[i][4])+" || "+textoSeguro(data[i][5])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
       }
     })
@@ -156,11 +156,11 @@ function Cargar_Bimestre_cargados(id) {
 
       if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-              cadena += "<option value='" + data[i][0] + "'>" + data[i][2] + "</option>";
+              cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][2]) + "</option>";
           }
           document.getElementById('select_bimestre_ver').innerHTML = cadena;
       } else {
-          cadena += "<option value=''>No hay secciones en la base de datos</option>";
+          let cadena = "<option value=''>No hay secciones en la base de datos</option>";
           document.getElementById('select_bimestre_ver').innerHTML = cadena;
       }
   });

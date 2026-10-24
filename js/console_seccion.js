@@ -199,7 +199,7 @@ $('#tabla_secciones').on('click','.delete',function(){
         var data = tbl_secciones.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar la sección: '+data.seccion_nombre+'?',
+      title: 'Desea eliminar la sección: '+textoSeguro(data.seccion_nombre)+'?',
       text: "Una vez aceptado la sección sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

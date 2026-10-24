@@ -184,7 +184,7 @@ function Cargar_Select_Nivelaca(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
       $('#select_nivel_buscar').html(cadena);
 
@@ -192,7 +192,7 @@ function Cargar_Select_Nivelaca(){
       Cargar_Select_Aula(id);
 
     }else{
-      cadena+="<option value=''>No se encontraron regitros</option>";
+      let cadena = "<option value=''>No se encontraron regitros</option>";
       $('#select_nivel_buscar').html(cadena);
 
     }
@@ -212,7 +212,7 @@ function Cargar_Select_Aula(id){
           if(data.length > 0){
               let cadena = "";
               for (let i = 0; i < data.length; i++) {
-                  cadena += "<option value='" + data[i][1] + "'>" + data[i][2] + "</option>";    
+                  cadena += "<option value='" + textoSeguro(data[i][1]) + "'>" + textoSeguro(data[i][2]) + "</option>";    
               }
               $('#select_aula_buscar').html(cadena);
           } else {
@@ -234,12 +234,12 @@ function Cargar_Anio(){
     if(data.length>0){
       let cadena ="";
       for (let i = 0; i < data.length; i++) {
-        cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+        cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
       }
         document.getElementById('select_año').innerHTML=cadena;
         document.getElementById('select_año_editar').innerHTML=cadena;
     }else{
-      cadena+="<option value=''>No hay secciones en la base de datos</option>";
+      let cadena = "<option value=''>No hay secciones en la base de datos</option>";
       document.getElementById('select_año').innerHTML=cadena;
       document.getElementById('select_año_editar').innerHTML=cadena;
     }
@@ -256,12 +256,12 @@ function Cargar_Select_docente(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"-"+data[i][4]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"-"+textoSeguro(data[i][4])+"</option>";    
         }
           document.getElementById('select_docente2').innerHTML=cadena;
           document.getElementById('select_docente2_editar').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay docentes en la base de datos</option>";
+        let cadena = "<option value=''>No hay docentes en la base de datos</option>";
         document.getElementById('select_docente2').innerHTML=cadena;
         document.getElementById('select_docente2_editar').innerHTML=cadena;
 
@@ -279,7 +279,7 @@ function Cargar_Select_docente(){
   
       if (data.length > 0) {
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][2] + "</option>";
+          cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - " + textoSeguro(data[i][2]) + "</option>";
         }
         $('#select_grado').html(cadena);
         $('#select_grado_editar').html(cadena);
@@ -320,7 +320,7 @@ function Cargar_Select_docente(){
   
       if (data.length > 0) {
         for (let i = 0; i < data.length; i++) {
-          cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";
+          cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + "</option>";
         }
         if (modo === 'creacion') {
           $('#select_curso').html(cadena);
@@ -393,7 +393,7 @@ $('#tabla_asigdocente').on('click','.mostrar',function(){
       var data = tbl_asigdocente.row(this).data();
   }
 $("#modal_ver_cursos").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>CURSOS DEL DOCENTE: "+data.Docente+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>CURSOS DEL DOCENTE: "+textoSeguro(data.Docente)+"</b>";
   listar_cursos_docente(data.Id_asigdocente);
 })
 //REGISTRANDO ROLES
@@ -463,7 +463,7 @@ $('#tabla_asigdocente').on('click','.delete',function(){
         var data = tbl_asigdocente.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el la asignación de cursos del docente: '+data.Docente+'?',
+      title: 'Desea eliminar el la asignación de cursos del docente: '+textoSeguro(data.Docente)+'?',
       text: "Una vez aceptado la asignación sera borrada y los cursos volveran a estar sin asignación!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -709,7 +709,7 @@ $('#tabla_asignacion_editar').on('click', '.delete', function() {
   // Mostrar el modal de edición
   $("#modal_editar").modal('show');
   Swal.fire({
-    title: 'Esta seguro que desea eliminar el curso asignado: '+data.nombre_asig+'?',
+    title: 'Esta seguro que desea eliminar el curso asignado: '+textoSeguro(data.nombre_asig)+'?',
     text: "Una vez aceptado el curso asignado sera eliminado y se pondra con el estado de SIN DOCENTE!!!",
     icon: 'warning',
     showCancelButton: true,

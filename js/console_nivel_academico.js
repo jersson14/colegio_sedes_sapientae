@@ -199,7 +199,7 @@ $('#tabla_nivel_academico').on('click','.delete',function(){
         var data = tbl_nivel_academico.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar el nivel académico: '+data.Nivel_academico+'?',
+      title: 'Desea eliminar el nivel académico: '+textoSeguro(data.Nivel_academico)+'?',
       text: "Una vez aceptado el nivel académico sera eliminado!!!",
       icon: 'warning',
       showCancelButton: true,

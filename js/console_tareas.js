@@ -250,7 +250,7 @@ $('#tabla_tarea').on('click','.activar',function(){
       var data = tbl_tareas.row(this).data();
   }
     Swal.fire({
-      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+data.tema+'</b>?',
+      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+textoSeguro(data.tema)+'</b>?',
       text: "Una vez finalizado ningún estudiante podra subir su tarea.",
       icon: 'warning',
       showCancelButton: true,
@@ -274,7 +274,7 @@ function Cargar_Select_Nivelaca(){
     let cadena = "<option value=''>Seleccionar Nivel Académico</option>";  // Agregar una opción por defecto
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += `<option value='${data[i][0]}'>${data[i][1]}</option>`;    
+        cadena += `<option value='${textoSeguro(data[i][0])}'>${textoSeguro(data[i][1])}</option>`;    
       }
       $('#select_nivel, #select_nivel_editar').html(cadena);
 
@@ -323,7 +323,7 @@ function Cargar_Select_Aula(id) {
       if (data.length > 0) {
         let cadena = "<option value=''>Seleccionar Aula</option>";  // Opción por defecto
         for (let i = 0; i < data.length; i++) {
-          cadena += `<option value='${data[i][1]}'>${data[i][2]}</option>`;    
+          cadena += `<option value='${textoSeguro(data[i][1])}'>${textoSeguro(data[i][2])}</option>`;    
         }
         $('#select_aula').html(cadena);
       } else {
@@ -348,7 +348,7 @@ function Cargar_Select_docente() {
 
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + " - " + data[i][4] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][0]) + "'>" + textoSeguro(data[i][1]) + " - " + textoSeguro(data[i][4]) + "</option>";
       }
       $('#select_docente').html(cadena);
       $('#select_docente_editar').html(cadena);
@@ -358,7 +358,7 @@ function Cargar_Select_docente() {
         Cargar_Select_Curso(id);
       }
     } else {
-      cadena += "<option value=''>No se encontraron registros</option>";
+      let cadena = "<option value=''>No se encontraron registros</option>";
       $('#select_docente').html(cadena);
       $('#select_docente_editar').html(cadena);
     }
@@ -379,7 +379,7 @@ function Cargar_Select_Curso(id, id_curso = null) {
     if (data.length > 0) {
       cadena = "<option value='' disabled selected>--SELECCIONE--</option>"; // Placeholder por defecto
       for (let i = 0; i < data.length; i++) {
-        cadena += "<option value='" + data[i][2] + "'>" + data[i][1] + "</option>";
+        cadena += "<option value='" + textoSeguro(data[i][2]) + "'>" + textoSeguro(data[i][1]) + "</option>";
       }
 
       $('#select_curso').html(cadena);
@@ -390,7 +390,7 @@ function Cargar_Select_Curso(id, id_curso = null) {
         $('#select_curso_editar').val(id_curso).trigger('change');
       }
     } else {
-      cadena += "<option value=''>No se encontraron registros</option>";
+      let cadena = "<option value=''>No se encontraron registros</option>";
       $('#select_curso').html(cadena);
       $('#select_curso_editar').html(cadena);
     }
@@ -582,7 +582,7 @@ $('#tabla_tarea').on('click','.delete',function(){
         var data = tbl_tareas.row(this).data();
     }
     Swal.fire({
-      title: 'Desea eliminar la tarea asignada con el tema: '+data.tema+'?',
+      title: 'Desea eliminar la tarea asignada con el tema: '+textoSeguro(data.tema)+'?',
       text: "Una vez aceptado la tarea sera eliminada!!!",
       icon: 'warning',
       showCancelButton: true,
@@ -636,12 +636,12 @@ $('#tabla_tarea').on('click','.delete',function(){
                   if (row.estado === 'PENDIENTE') {
                       return ''; // No mostrar nada si está pendiente
                   } else if (row.estado === 'ENVIADO'){
-                      return "<input type='number' id='txt_cali' class='form-control' value='" + (data || '') + "' />";
+                      return "<input type='text' inputmode='decimal' maxlength='5' id='txt_cali' class='form-control' value='" + textoSeguro(data || '') + "' />";
                   } else {
-                    if (data >11) {
-                      return '<span class="badge bg-primary">'+data+'</span>';
+                    if (notaAprobada(data)) {
+                      return '<span class="badge bg-primary">'+textoSeguro(data)+'</span>';
                     } else {
-                        return '<span class="badge bg-danger">'+data+'</span>';
+                        return '<span class="badge bg-danger">'+textoSeguro(data)+'</span>';
                     }
                   }
               }
@@ -652,9 +652,9 @@ $('#tabla_tarea').on('click','.delete',function(){
                   if (row.estado === 'PENDIENTE') {
                       return ''; // No mostrar nada si está pendiente
                   } else if (row.estado === 'ENVIADO') {
-                      return "<input type='text' hidden id='txt_id_tarea_deta' class='form-control' value='" + row.id_detalle_tarea  + "' /><input type='text' id='txt_observa' class='form-control' value='" + (data || '') + "' />";
+                      return "<input type='text' hidden id='txt_id_tarea_deta' class='form-control' value='" + textoSeguro(row.id_detalle_tarea)  + "' /><input type='text' id='txt_observa' class='form-control' value='" + textoSeguro(data || '') + "' />";
                   } else {
-                      return data;
+                      return textoSeguro(data);
                   }
               }
           },
@@ -701,8 +701,8 @@ $('#tabla_tarea').on('click','.mostrar',function(){
       var data = tbl_tareas.row(this).data();
   }
 $("#modal_ver_tareas").modal('show');
-  document.getElementById('lb_titulo').innerHTML="<b>CURSO - DOCENTE: "+data.Docente+"</b>";
-  document.getElementById('lb_titulo2').innerHTML="<b>TEMA / TAREA: "+data.tema+"</b>";
+  document.getElementById('lb_titulo').innerHTML="<b>CURSO - DOCENTE: "+textoSeguro(data.Docente)+"</b>";
+  document.getElementById('lb_titulo2').innerHTML="<b>TEMA / TAREA: "+textoSeguro(data.tema)+"</b>";
   listar_tareas_enviadas(data.id_tarea);
 
 })
@@ -717,8 +717,8 @@ $('#tabla_ver').on('click','.calificar',function(){
   let nota = document.getElementById('txt_cali').value;
   let obser = document.getElementById('txt_observa').value;
 
-  if(nota>20){
-      return Swal.fire("Mensaje de Advertencia","La nota no debe ser mayor a 20.","warning");
+  if(nota.length>0 && !notaValida(nota)){
+      return Swal.fire("Mensaje de Advertencia","La nota debe estar entre " + descripcionEscala() + ".","warning");
   }
   if(id.length==0||nota.length==0){
     return Swal.fire("Mensaje de Advertencia","Debe llenar la nota es un campo obligatorio.","warning");

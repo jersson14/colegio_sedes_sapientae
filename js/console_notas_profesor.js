@@ -124,13 +124,13 @@ function Cargar_Select_Grado(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+" - "+ data[i][2]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+" - "+ textoSeguro(data[i][2])+"</option>";    
         }
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
 
       }else{
-        cadena+="<option value=''>No se encontraron regitros</option>";
+        let cadena = "<option value=''>No se encontraron regitros</option>";
         $('#select_aula').html(cadena);
         $('#select_aula_editar').html(cadena);
 
@@ -148,11 +148,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_año').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_año').innerHTML=cadena;
       }
     })
@@ -167,11 +167,11 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][1]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][1])+"</option>";    
         }
           document.getElementById('select_bimestre').innerHTML=cadena;
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_bimestre').innerHTML=cadena;
       }
     })
@@ -191,12 +191,12 @@ function Cargar_Año(){
       if(data.length>0){
         let cadena ="";
         for (let i = 0; i < data.length; i++) {
-          cadena+="<option value='"+data[i][0]+"'>"+data[i][2]+"</option>";    
+          cadena+="<option value='"+textoSeguro(data[i][0])+"'>"+textoSeguro(data[i][2])+"</option>";    
         }
           document.getElementById('select_bimestre_ver').innerHTML=cadena;
 
       }else{
-        cadena+="<option value=''>No hay secciones en la base de datos</option>";
+        let cadena = "<option value=''>No hay secciones en la base de datos</option>";
         document.getElementById('select_bimestre_ver').innerHTML=cadena;
 
       }
@@ -253,7 +253,7 @@ function listar_componentes() {
               "title": "ID",
               "render": function(data, type, row) {
                   if (type === 'display') {
-                      return '<input class="form-control criterio" type="text" value="' + (data || '') + '" readonly />';
+                      return '<input class="form-control criterio" type="text" value="' + textoSeguro(data || '') + '" readonly />';
                   }
                   return data;
               }
@@ -349,6 +349,11 @@ function Registrar_notas() {
   // Verificar si hay registros para enviar
   if (registros.length === 0) {
       return Swal.fire("Mensaje de Advertencia", "No hay registros para enviar", "warning");
+  }
+  // Notas según la escala del colegio (Configuración > Datos regionales)
+  let notasMalas = registros.filter(function(r) { return !notaValida(r.nota); });
+  if (notasMalas.length) {
+      return Swal.fire("Mensaje de Advertencia", notasMalas.length + " nota(s) fuera de la escala: use " + descripcionEscala() + ".", "warning");
   }
 
   // Enviar los registros al servidor mediante AJAX
