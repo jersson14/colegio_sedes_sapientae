@@ -181,6 +181,25 @@ return [
         'controller/pensiones/controlador_listar_pensiones_filtro.php' => ['CONTADOR'],
         'controller/pensiones/controlador_modificar_pension.php' => ['CONTADOR'],
         'controller/pensiones/controlador_registro_pensiones.php' => ['CONTADOR'],
+        // planilla
+        'controller/planilla/controlador_adelanto_registrar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_adelantos_listar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_concepto_agregar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_concepto_guardar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_concepto_quitar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_conceptos_listar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_contrato_finalizar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_contrato_guardar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_contratos_listar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_detalle_actualizar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_detalle_conceptos.php' => ['CONTADOR'],
+        'controller/planilla/controlador_mis_boletas.php' => ['DOCENTE'],
+        'controller/planilla/controlador_pagar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_pago_anular.php' => ['CONTADOR'],
+        'controller/planilla/controlador_planilla_anular.php' => ['CONTADOR'],
+        'controller/planilla/controlador_planilla_detalle.php' => ['CONTADOR'],
+        'controller/planilla/controlador_planilla_generar.php' => ['CONTADOR'],
+        'controller/planilla/controlador_planillas_listar.php' => ['CONTADOR'],
         // tareas
         'controller/tareas/controlador_archivos_tarea.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/tareas/controlador_cargar_curso_id_detalle_estudiante.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
@@ -205,6 +224,7 @@ return [
         // usuario
         'controller/usuario/controlador_traer_datos.php' => ['ESTUDIANTE'],
         // reportes
+        'view/MPDF/REPORTE/boleta_docente.php' => ['CONTADOR', 'DOCENTE'],
         'view/MPDF/REPORTE/boleta_pago.php' => ['CONTADOR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/horario.php' => ['AUXILIAR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/kardex.php' => ['CONTADOR', 'ESTUDIANTE'],

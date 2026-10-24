@@ -25,7 +25,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 3 – Configuración regional (Latinoamérica)](#fase-3--configuración-regional-latinoamérica--2026-10-23) ✅
 - [Fase 4 – Métodos de pago, cuentas y recibos](#fase-4--métodos-de-pago-cuentas-y-recibos--2026-10-23) ✅
 - [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora--2026-10-23) ✅
-- [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla)
+- [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla--2026-10-23) ✅
 - [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades)
 - [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo)
 - [Fase 9 – Pruebas, documentación y despliegue](#fase-9--pruebas-documentación-y-despliegue)
@@ -346,37 +346,47 @@ Migración `database/migraciones/005_contabilidad.sql` (aplicada en `colegio2` t
 
 ---
 
-## Fase 6 – Pago a docentes (planilla)
+## Fase 6 – Pago a docentes (planilla) ✅ (2026-10-23)
 
-### 6.1 Base de datos (migración `006_planilla.sql`)
-- [ ] Tabla `tipos_contrato`: **TIEMPO COMPLETO**, **TIEMPO PARCIAL**, **POR HORAS**, (opcional: SUPLENTE / RECIBO POR HONORARIOS).
-- [ ] Tabla `contratos_docente`: `docente_id`, `tipo_contrato_id`, `fecha_inicio`, `fecha_fin`, `sueldo_base` (tiempo completo/parcial), `tarifa_hora` (por horas), `horas_semanales`, `metodo_pago_id` preferido (**EFECTIVO / TRANSFERENCIA / DEPÓSITO / CHEQUE / BILLETERA**), `cuenta_bancaria_docente`, `banco_docente`, `estado`. Un docente puede tener historial de contratos.
-- [ ] Tabla `conceptos_planilla`: ingresos (bono, horas extra, movilidad) y descuentos (tardanzas, faltas, adelantos, aportes/retenciones según país) con tipo `MONTO_FIJO` o `PORCENTAJE`.
-- [ ] Tabla `planillas`: `periodo` (año-mes), `estado` (BORRADOR / APROBADA / PAGADA / ANULADA), `usuario_id`, totales.
-- [ ] Tabla `planilla_detalle`: por docente → base, horas dictadas, ingresos, descuentos, neto.
-- [ ] Tabla `pagos_docentes`: pago real del neto (puede ser en varias partes o adelantos), `metodo_pago_id`, `cuenta_id` (de dónde sale el dinero), `referencia`, `fecha`, `voucher`.
+Migración `database/migraciones/006_planilla_docente.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_006.sql`). Totales sin cambio.
+
+### 6.1 Base de datos
+- [x] `tipos_contrato`: **TIEMPO COMPLETO** y **TIEMPO PARCIAL** (sueldo mensual) y **POR HORAS** (tarifa × horas).
+- [x] `contratos_docente`: tipo, fecha de inicio/fin, sueldo o tarifa, horas semanales, **forma de pago del docente** (efectivo, transferencia, depósito, billetera…), banco y cuenta del docente. Historial: un contrato nuevo (aumento, cambio de tipo) **finaliza el anterior** el día previo.
+- [x] `conceptos_planilla`: ingresos (BONO, HORAS EXTRA, MOVILIDAD) y descuentos (TARDANZAS, FALTAS, **APORTE DE LEY**), en monto fijo o **porcentaje del sueldo**; con valor por defecto se aplican a todos al generar.
+- [x] `planillas` (BORRADOR → APROBADA → PAGADA / ANULADA), `planilla_detalle` (copia del contrato del mes: horas, base, ingresos, descuentos, adelantos, neto, pagado) y `planilla_detalle_conceptos`.
+- [x] `pagos_docentes`: pagos de planilla y **adelantos**, cada uno con su forma de pago, caja/cuenta, referencia y **egreso** asociado.
 
 ### 6.2 Reglas de cálculo
-- [ ] **Tiempo completo:** `sueldo_base` mensual.
-- [ ] **Tiempo parcial:** `sueldo_base` mensual pactado (o proporcional a horas pactadas).
-- [ ] **Por horas:** `horas_dictadas × tarifa_hora`; las horas se toman de `horarios` / `asignatura_docente` y se pueden ajustar.
-- [ ] Descuentos por faltas/tardanzas (opcional, integrable con asistencia docente si se implementa).
-- [ ] Neto = base + ingresos − descuentos − adelantos.
+- [x] Tiempo completo / parcial: sueldo mensual del contrato (editable en el borrador, p. ej. proporcional si ingresó a mitad de mes).
+- [x] Por horas: se proponen horas semanales × 4 y se ajustan con las horas dictadas; base = horas × tarifa.
+- [x] Neto = base + ingresos − descuentos − adelantos. No se aprueba con netos negativos.
+- [ ] Tomar las horas dictadas desde `horarios`/asistencia docente → requiere registrar asistencia docente (Fase 8).
+- [ ] Retenciones de ley con cálculo automático por país → hoy es un concepto en % configurable (ver Pendientes).
 
 ### 6.3 Flujo
-1. [ ] La contadora genera la planilla del mes (se crean filas para todos los docentes con contrato activo).
-2. [ ] Revisa y ajusta horas/bonos/descuentos (estado BORRADOR).
-3. [ ] Administrador aprueba (APROBADA).
-4. [ ] Se registra el pago de cada docente según su modalidad → genera **egreso** (categoría "Remuneraciones docentes") y **movimiento de cuenta** automáticamente.
-5. [ ] Boleta de pago del docente en PDF; el docente la ve desde su perfil.
+1. [x] El contador registra los **contratos** y genera la planilla del mes (todos los docentes con contrato vigente; descuenta los adelantos pendientes).
+2. [x] Ajusta horas, sueldos, bonos y descuentos (BORRADOR).
+3. [x] El **ADMINISTRADOR aprueba** (el contador no puede; también puede volver a borrador si aún no hay pagos).
+4. [x] Se paga a cada docente (total o en partes) con la forma de pago propuesta de su contrato → **egreso** en "Remuneraciones docentes" y **salida** de la caja/cuenta elegida. Al pagar todo, la planilla queda PAGADA.
+5. [x] **Adelantos**: egreso inmediato; se descuentan en la próxima planilla (o en la del mes si está en borrador). No se anula un adelanto ya descontado en una planilla aprobada.
+6. [x] Anular un pago devuelve el dinero a la caja/cuenta y reabre lo pendiente. Los egresos de planilla no se modifican ni anulan desde la pantalla Egresos.
+7. [x] **Boleta de pago PDF** (ingresos, descuentos, adelantos, neto, pagos realizados y firmas); el docente ve las suyas en **Mis boletas de pago**.
 
 ### 6.4 Pantallas
-- [ ] Docentes → pestaña "Contrato" en el formulario existente (`view/docentes/view_docentes.php`).
-- [ ] Contabilidad → Planilla docente (lista por mes, detalle, aprobar, pagar).
-- [ ] Contabilidad → Adelantos a docentes.
-- [ ] Docente → "Mis boletas de pago".
+- [x] **Planilla docente** (ADMINISTRADOR y CONTADOR): pestañas Planillas (generar, detalle, ajustar, aprobar, pagar, boletas), Contratos, Adelantos y Conceptos.
+- [x] Docente → **Mis boletas de pago** (solo las suyas y de planillas aprobadas/pagadas).
+- [ ] Contrato desde el formulario de Docentes → se dejó en Planilla > Contratos (un solo lugar para lo económico).
+- [ ] Planilla del personal administrativo con la misma estructura → Fase 8.
 
-**Criterio de cierre:** se genera la planilla de un mes con un docente a tiempo completo (pago en efectivo) y uno por horas (pago por transferencia); ambos pagos aparecen en egresos y en sus cuentas.
+### Pruebas (BD `colegio2_test`)
+- SQL directo: 22 casos del flujo completo.
+- HTTP Fase 6: **46/46** — contratos de los 3 tipos y validaciones, adelanto, generar (y no repetir el mes), horas, aporte 10 %, bono, netos 1500/900/1100, no pagar sin aprobar, **el contador no aprueba** y el administrador sí, pagos total/parcial y con transferencia (operación obligatoria), caja 10 000 → 7 700, egresos de planilla protegidos, anulaciones, planilla PAGADA, boletas (el docente solo las suyas; el estudiante ninguna), contrato nuevo finaliza el anterior, integridad pagos = egresos.
+- Regresión: Fases 1–5 **208/208**; vistas de 6 roles sin errores.
+
+**Criterio de cierre:** ✅ se genera la planilla con un docente a tiempo completo (pago en efectivo) y otros por horas y a tiempo parcial (pago por transferencia); los pagos aparecen en egresos y salen de sus cuentas.
+
+> **Para empezar a usarlo:** *Planilla docente → Contratos* → registrar el contrato de cada docente; en *Conceptos* poner el % del aporte de ley de su país (si corresponde); luego *Planillas* → Generar.
 
 ---
 

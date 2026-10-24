@@ -512,6 +512,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
 
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                  <p>Planilla docente</p>
+                </a>
+              </li>
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
               <li class="nav-item" hidden="">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
@@ -643,6 +649,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                  <p>Planilla docente</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-credit-card"></i>
                   <p>Formas de pago y cuentas</p>
@@ -764,6 +776,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             }
             ?>
             <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_mis_boletas.php')" class="nav-link">
+                  <i class="nav-icon fas fa-money-check-alt"></i>
+                  <p>Mis boletas de pago</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-clipboard"></i>
