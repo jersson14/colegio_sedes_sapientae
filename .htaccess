@@ -1,5 +1,15 @@
 Options -Indexes
 
+# Archivos internos que nunca se sirven por la web (Fase 9): respaldos y scripts SQL, documentación,
+# scripts, logs, dependencias y el repositorio git (código e historial)
+<FilesMatch "\.(sql|md|sh|log|bak|py|lock|example|env)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(package(-lock)?\.json|composer\.(json|lock))$">
+  Require all denied
+</FilesMatch>
+RedirectMatch 404 /\.(git|gitignore|gitattributes|htpasswd)(/|$)
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /colegio_sedes_sapientae/

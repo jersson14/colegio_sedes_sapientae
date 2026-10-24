@@ -9,7 +9,7 @@ controller/tareas/**/documentos/
 config/config.local.php
 
 # Respaldos de base de datos
-respaldos/
+respaldos/*
 
 # Logs
 logs/*.log
@@ -24,3 +24,6 @@ controller/egresos/comprobantes/*
 
 # Temporales de las pruebas
 tests/tmp/
+
+# El .htaccess de respaldos sí se versiona
+!respaldos/.htaccess
