@@ -848,4 +848,4 @@ Ya resueltos: un solo país, una sola moneda configurable, solo rol CONTADOR (ve
 
 1. **Retenciones de ley en planilla** (aportes de pensión, seguro, impuesto a la renta) cambian por país; ¿se manejan como conceptos configurables (propuesto) o se necesita cálculo automático por país?
 2. **¿Facturación electrónica?** (SUNAT, SRI, SIN, AFIP…) — fuera del alcance de este plan; sería una fase aparte.
-3. El mensaje original terminaba en "a su vez debe poder…": falta completar ese requerimiento.
+3. ~~El mensaje original terminaba en "a su vez debe poder…"~~ → confirmado el 2026-10-24: no faltaba ningún requerimiento.
