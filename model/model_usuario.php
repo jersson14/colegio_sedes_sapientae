@@ -133,50 +133,6 @@
             conexionBD::cerrar_conexion();
         }
          
-        public function Cargar_Select_Datos_Seguimiento($numero,$dni){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_CARGAR_SEGUIMIENTO_TRAMITE(?,?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$numero);
-            $query ->bindParam(2,$dni);
-            $query->execute();
-            $resultado = $query->fetchAll();
-            foreach($resultado as $resp){
-                $arreglo[]=$resp;
-            }
-            return $arreglo;
-            conexionBD::cerrar_conexion();
-        }
-        public function Traer_Datos_Detalle_Seguimiento($codigo){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_CARGAR_SEGUIMIENTO_TRAMITE_DETALLE(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$codigo);
-            $query->execute();
-            $resultado = $query->fetchAll();
-            foreach($resultado as $resp){
-                $arreglo[]=$resp;
-            }
-            return $arreglo;
-            conexionBD::cerrar_conexion();
-        }
-        public function Listar_notificacion_tramite($idarea){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_NOTIFICACION_TRAMITE(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$idarea);
-            $query->execute();
-            $resultado = $query->fetchAll();
-            foreach($resultado as $resp){
-                $arreglo[]=$resp;
-            }
-            return $arreglo;
-            conexionBD::cerrar_conexion();
-        }
-
         public function Cargar_datos_usuario($id){
             $c = conexionBD::conexionPDO();
             $arreglo = array();
