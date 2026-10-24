@@ -5,12 +5,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"><b>MANTENIMIENTO DE INDICADORES</b></h1>
+        <h1 class="m-0"><b>CATEGORÍAS DE INGRESOS Y EGRESOS</b></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">INDICADORES</li>
+          <li class="breadcrumb-item active">CATEGORÍAS</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -26,7 +26,7 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Indicadores</b></h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Plan de categorías</b> <small class="text-muted">(cada categoría pertenece a un grupo; los grupos los define el sistema)</small></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
           </div>
           <div class="table-responsive" style="text-align:center">
@@ -34,11 +34,11 @@
           <table id="tabla_indicadores" class="table table-striped table-bordered" style="width:100%">
               <thead style="background-color:#0A5D86;color:#FFFFFF;">
                   <tr>
-                      <th style="text-align:center">Nro.</th>
-                      <th style="text-align:center">Tipo de Indicador</th>
+                      <th style="text-align:center">Código</th>
+                      <th style="text-align:center">Tipo</th>
                       <th style="text-align:center">Nombre</th>
                       <th style="text-align:center">Descripción</th>
-                      <th style="text-align:center">Fecha de Registro</th>
+                      <th style="text-align:center">Uso</th>
                       <th style="text-align:center">Estado</th>
                       <th style="text-align:center">Acción</th>
                   </tr>
@@ -60,7 +60,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE INDICADOR</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>NUEVA CATEGORÍA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -71,17 +71,21 @@
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo de indicador<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo<b style="color:red">(*)</b>:</label>
             <select name="" id="txt_tipo" class="form-control">
                 <option value="" disabled selected>Seleccionar</option>
-                <option value="GASTOS">GASTOS</option>
+                <option value="GASTOS">EGRESOS</option>
                 <option value="INGRESOS">INGRESOS</option>
             </select>
         </div>
+          <div class="col-12 form-group">
+            <label for="">Grupo<b style="color:red">(*)</b>:</label>
+            <select id="txt_grupo" class="form-control"><option value="">Elija primero el tipo</option></select>
+          </div>
 
           <div class="col-12 form-group">
             <label for="">Nombre<b style="color:red">(*)</b>:</label>
-            <input type="text" class="form-control" id="txt_nombre" onkeypress="return sololetras(event)" placeholder="Ingrese el nombre del indicador">
+            <input type="text" class="form-control" id="txt_nombre" placeholder="Ingrese el nombre de la categoría">
           </div>
           <div class="col-12 form-group">
             <label for="">Descripción(Opcional):</label>
@@ -101,7 +105,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL INDICADOR</b></h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR CATEGORÍA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -112,18 +116,22 @@
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo de indicador<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo<b style="color:red">(*)</b>:</label>
             <select name="" id="txt_tipo_editar" class="form-control">
                 <option value="" disabled selected>Seleccionar</option>
-                <option value="GASTOS">GASTOS</option>
+                <option value="GASTOS">EGRESOS</option>
                 <option value="INGRESOS">INGRESOS</option>
             </select>
             <input type="text" id="id_indiciador" hidden>
         </div>
+          <div class="col-12 form-group" id="fila_grupo_editar">
+            <label for="">Grupo<b style="color:red">(*)</b>:</label>
+            <select id="txt_grupo_editar" class="form-control"></select>
+          </div>
 
           <div class="col-12 form-group">
             <label for="">Nombre<b style="color:red">(*)</b>:</label>
-            <input type="text" class="form-control" id="txt_nombre_editar" onkeypress="return sololetras(event)" placeholder="Ingrese el nombre del indicador">
+            <input type="text" class="form-control" id="txt_nombre_editar" placeholder="Ingrese el nombre de la categoría">
           </div>
           <div class="col-12 form-group">
             <label for="">Descripción(Opcional):</label>
@@ -136,6 +144,7 @@
                 <option value="INACTIVO">INACTIVO</option>
               </select>
           </div>
+          <div class="col-12"><small class="text-muted" id="txt_aviso_editar"></small></div>
         </div>
       </div>
       <div class="modal-footer">

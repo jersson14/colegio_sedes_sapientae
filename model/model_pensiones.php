@@ -1,97 +1,49 @@
 <?php
     require_once 'model_conexion.php';
 
+    // Pensiones por año escolar y nivel (Fase 8): registrar, generar el cronograma y ajustar vencimientos
     class Modelo_Pensiones extends conexionBD{
-        
 
-        public function Listar_Pensiones(){
+        private function llamar($sql, $params = [], $una_fila = false){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_PENSIONES()";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query->execute();
-            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-            foreach($resultado as $resp){
-                $arreglo["data"][]=$resp;
-            }
-            return $arreglo;
+            $q = $c->prepare($sql);
+            $q->execute($params);
+            $r = $una_fila ? $q->fetch(PDO::FETCH_ASSOC) : $q->fetchAll(PDO::FETCH_ASSOC);
             conexionBD::cerrar_conexion();
+            return $r;
         }
-        public function Listar_pensiones_filtros($nivel){
+        private function codigo($sql, $params){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_PENSIONES_FILTRO(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query->bindParam(1,$nivel);
-            $query->execute();
-            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-            foreach($resultado as $resp){
-                $arreglo["data"][]=$resp;
-            }
-            return $arreglo;
+            $q = $c->prepare($sql);
+            $q->execute($params);
+            $r = $q->fetchColumn();
             conexionBD::cerrar_conexion();
+            return (int) $r;
         }
-        public function Cargar_Select_Nivel(){
-            $c = conexionBD::conexionPDO();
-            $arreglo = array();
-            $sql = "CALL SP_CARGAR_SELECT_NIVELACA()";
-            $query  = $c->prepare($sql);
-            $query->execute();
-            $resultado = $query->fetchAll();
-            foreach($resultado as $resp){
-                $arreglo[]=$resp;
-            }
-            return $arreglo;
-            conexionBD::cerrar_conexion();
+        public function Listar_Pensiones($anio, $nivel){
+            return $this->llamar("CALL SP_LISTAR_PENSIONES(?,?)", [$anio, $nivel]);
         }
-        public function Registrar_Pensiones($nivel,$mes,$fecha,$precio,$mora){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_PENSIONES(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$nivel);
-            $query ->bindParam(2,$mes);
-            $query ->bindParam(3,$fecha);
-            $query ->bindParam(4,$precio);
-            $query ->bindParam(5,$mora);
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
+        public function Anios_Escolares(){
+            return $this->llamar("SELECT `Id_año_escolar` AS id, `año_escolar` AS anio, estado, fecha_inicio, fecha_fin
+                                    FROM `año_escolar` ORDER BY fecha_inicio DESC");
         }
-        public function Modificar_Pensiones($id,$nivel,$mes,$fecha,$precio,$mora){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_PENSIONES(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$nivel);
-            $query ->bindParam(3,$mes);
-            $query ->bindParam(4,$fecha);
-            $query ->bindParam(5,$precio);
-            $query ->bindParam(6,$mora);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
+        // 1 registrada, 2 ya existe, 3 vencimiento fuera del año escolar, 0 inválido
+        public function Registrar_Pensiones($anio, $nivel, $mes, $fecha, $precio, $mora){
+            return $this->codigo("CALL SP_REGISTRAR_PENSIONES(?,?,?,?,?,?)", [$anio, $nivel, $mes, $fecha, $precio, $mora]);
         }
+        // 1 actualizada, 2 ya existe, 3 vencimiento fuera del año, 4 tiene pagos (no cambia año/nivel/mes), 0 inválido
+        public function Modificar_Pensiones($id, $anio, $nivel, $mes, $fecha, $precio, $mora){
+            return $this->codigo("CALL SP_MODIFICAR_PENSIONES(?,?,?,?,?,?,?)", [$id, $anio, $nivel, $mes, $fecha, $precio, $mora]);
+        }
+        // 1 eliminada, 2 tiene pagos registrados (no se elimina)
         public function Eliminar_Pensiones($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_PENSION(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            // 1 eliminada, 2 tiene pagos registrados (no se elimina)
-            $query->execute();
-            $row = $query->fetchColumn();
-            conexionBD::cerrar_conexion();
-            return $row;
+            return $this->codigo("CALL SP_ELIMINAR_PENSION(?)", [$id]);
+        }
+        public function Generar_Pensiones($anio, $nivel, $desde, $hasta, $dia, $precio, $mora){
+            return $this->llamar("CALL SP_GENERAR_PENSIONES(?,?,?,?,?,?,?)", [$anio, $nivel, $desde, $hasta, $dia, $precio, $mora], true);
+        }
+        public function Ajustar_Vencimientos($anio, $aplicar, $usu){
+            return $this->llamar("CALL SP_AJUSTAR_VENCIMIENTOS(?,?,?)", [$anio, $aplicar, $usu]);
         }
     }
-
-
-
-
 ?>

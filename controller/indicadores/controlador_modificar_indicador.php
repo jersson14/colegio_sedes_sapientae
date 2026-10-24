@@ -1,16 +1,13 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/validacion.php';
+require_once __DIR__ . '/../../utilitario/datos_indicador.php';
     require '../../model/model_indicadores.php';
     $MIN = new Modelo_Indicadores();//Instaciamos
-    $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
-    $tipo = strtoupper(htmlspecialchars($_POST['tipo'],ENT_QUOTES,'UTF-8'));
-    $nombre = strtoupper(htmlspecialchars($_POST['nombre'],ENT_QUOTES,'UTF-8'));
-    $descrip = strtoupper(htmlspecialchars($_POST['descrip'],ENT_QUOTES,'UTF-8'));
-    $esta = strtoupper(htmlspecialchars($_POST['esta'],ENT_QUOTES,'UTF-8'));
-
-    $consulta = $MIN->Modificar_Indicador($id,$tipo,$nombre,$descrip,$esta);
-    echo $consulta;
-
-
-
+    $id = entero_post('id', 1, 'categoría');
+    $esta = in_array($_POST['esta'] ?? '', ['ACTIVO', 'INACTIVO'], true) ? $_POST['esta'] : denegar(400, 'Estado inválido');
+    // Un grupo no tiene grupo padre: el SP ignora el valor
+    if (($_POST['padre'] ?? '') === '') { $_POST['padre'] = '1'; }
+    [$tipo, $nombre, $descrip, $padre] = datos_indicador_post();
+    echo $MIN->Modificar_Indicador($id, $tipo, $nombre, $descrip, $esta, $padre);
 ?>

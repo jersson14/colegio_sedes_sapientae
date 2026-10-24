@@ -1,69 +1,42 @@
 <?php
     require_once 'model_conexion.php';
 
+    // Categorías de ingresos y egresos dentro de los grupos del plan de cuentas (Fase 8)
     class Modelo_Indicadores extends conexionBD{
-        
 
+        private function llamar($sql, $params = []){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare($sql);
+            $q->execute($params);
+            $r = $q->fetchAll(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r;
+        }
+        private function codigo($sql, $params){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare($sql);
+            $q->execute($params);
+            $r = $q->fetchColumn();
+            conexionBD::cerrar_conexion();
+            return (int) $r;
+        }
         public function Listar_Indicadores(){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_LISTAR_INDICADORES()";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query->execute();
-            $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-            foreach($resultado as $resp){
-                $arreglo["data"][]=$resp;
-            }
-            return $arreglo;
-            conexionBD::cerrar_conexion();
+            return ['data' => $this->llamar("CALL SP_LISTAR_INDICADORES()")];
         }
-        public function Registrar_Indicador($tipo,$nombre,$descrip){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_INDICADORES(?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$tipo);
-            $query ->bindParam(2,$nombre);
-            $query ->bindParam(3,$descrip);
-
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
+        public function Listar_Grupos(){
+            return $this->llamar("CALL SP_LISTAR_GRUPOS_INDICADOR()");
         }
-        public function Modificar_Indicador($id,$tipo,$nombre,$descrip,$esta){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_INDICADOR(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$tipo);
-            $query ->bindParam(3,$nombre);
-            $query ->bindParam(4,$descrip);
-            $query ->bindParam(5,$esta);
-            $resultado = $query->execute();
-            if($row = $query->fetchColumn()){
-                return $row;
-            }
-            conexionBD::cerrar_conexion();
+        // 1 registrada, 2 ya existe, 3 grupo inválido
+        public function Registrar_Indicador($tipo, $nombre, $descrip, $padre){
+            return $this->codigo("CALL SP_REGISTRAR_INDICADORES(?,?,?,?)", [$tipo, $nombre, $descrip, $padre]);
         }
+        // 1 actualizada, 2 nombre repetido, 3 grupo inválido, 4 no se puede cambiar tipo/grupo
+        public function Modificar_Indicador($id, $tipo, $nombre, $descrip, $esta, $padre){
+            return $this->codigo("CALL SP_MODIFICAR_INDICADOR(?,?,?,?,?,?)", [$id, $tipo, $nombre, $descrip, $esta, $padre]);
+        }
+        // 1 eliminada, 2 tiene movimientos, 3 del sistema o grupo con categorías
         public function Eliminar_Indicador($id){
-            $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_ELIMINAR_INDICADOR(?)";
-            $arreglo = array();
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-    
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();
+            return $this->codigo("CALL SP_ELIMINAR_INDICADOR(?)", [$id]);
         }
     }
-
-
-
-
 ?>

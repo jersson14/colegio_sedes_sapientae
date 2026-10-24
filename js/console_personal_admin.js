@@ -371,6 +371,8 @@ function Registrar_Personal(){
             document.getElementById('txt_correo').value="";
 
           });
+            }else if(resp==3){
+            Swal.fire("Mensaje de Advertencia","El nombre de usuario ya está en uso por otra cuenta (o está vacío): elija otro","warning");
             }else{
             Swal.fire("Mensaje de Advertencia","El "+REGIONAL.doc_nombre+" del personal administrativo que intentas registrar ya se encuentra en la base de datos, revise por favor","warning");
             }

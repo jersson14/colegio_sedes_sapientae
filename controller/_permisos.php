@@ -127,6 +127,7 @@ return [
         'controller/horarios/controlador_registro_horario_aula.php' => ['AUXILIAR', 'ESTUDIANTE'],
         // indicadores
         'controller/indicadores/controlador_eliminar_indicador.php' => ['CONTADOR'],
+        'controller/indicadores/controlador_listar_grupos.php' => ['CONTADOR'],
         'controller/indicadores/controlador_listar_indicadores.php' => ['CONTADOR'],
         'controller/indicadores/controlador_modificar_indicador.php' => ['CONTADOR'],
         'controller/indicadores/controlador_registro_indicadores.php' => ['CONTADOR'],
@@ -176,9 +177,11 @@ return [
         'controller/pago_pension/controlador_modificar_pago_solo.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_saldo_pension.php' => ['AUXILIAR', 'CONTADOR', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // pensiones
+        'controller/pensiones/controlador_ajustar_vencimientos.php' => ['CONTADOR'],
+        'controller/pensiones/controlador_anios_escolares.php' => ['CONTADOR'],
         'controller/pensiones/controlador_eliminar_pensiones.php' => ['CONTADOR'],
+        'controller/pensiones/controlador_generar_pensiones.php' => ['CONTADOR'],
         'controller/pensiones/controlador_listar_pensiones.php' => ['CONTADOR'],
-        'controller/pensiones/controlador_listar_pensiones_filtro.php' => ['CONTADOR'],
         'controller/pensiones/controlador_modificar_pension.php' => ['CONTADOR'],
         'controller/pensiones/controlador_registro_pensiones.php' => ['CONTADOR'],
         // planilla

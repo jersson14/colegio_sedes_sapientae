@@ -460,11 +460,13 @@ function Modificar_Usuario(){
       correo:correo
     }
   }).done(function(resp){
-    if(resp>0){
+    if(resp==1){
         Swal.fire("Mensaje de Confirmación","Datos del Usuario Actualizado","success").then((value)=>{
           tbl_usuario.ajax.reload();
         $("#modal_editar").modal('hide');
         });
+    }else if(resp==2){
+      return Swal.fire("Mensaje de Advertencia","Ese nombre de usuario ya lo usa otra cuenta","warning");
     }else{
       return Swal.fire("Mensaje de Error","No se completo la actualización","error");
 

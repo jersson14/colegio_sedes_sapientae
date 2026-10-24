@@ -419,15 +419,49 @@ Pantalla **Reportes financieros** (ADMINISTRADOR y CONTADOR) con filtros por per
 
 ## Fase 8 – Mejoras generales por módulo
 
-Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la seguridad y del formato regional).
+Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la seguridad y del formato regional). Se avanza por bloques:
+
+| Bloque | Contenido | Estado |
+|--------|-----------|--------|
+| **8A** | Integridad de datos: pensiones por año escolar, usuarios únicos, categorías con grupo | ✅ 2026-10-24 |
+| **8B** | Planilla del personal administrativo (misma estructura que la docente) y asistencia docente para las horas de la planilla | Pendiente |
+| **8C** | Seguridad en pantallas: escapar los datos que muestran las tablas (DataTables) en todos los módulos; validación de notas según la escala del país | Pendiente |
+| **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, adjuntos de comunicados, anti-spam del landing, auditoría de tablas financieras | Pendiente |
+
+### Bloque 8A ✅ (2026-10-24)
+
+Migración `database/migraciones/008_integridad_pensiones_usuarios_categorias.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_008.sql`). Totales sin cambio.
+
+**Pensiones por año escolar**
+- [x] `pensiones.id_anio` (obligatorio, con llave foránea) y **único año + nivel + mes**. Las existentes se asignaron al año de las matrículas que las pagaron (o al año activo): las 30 quedaron en el año escolar activo.
+- [x] El cobro solo ofrece y acepta pensiones del **nivel y del año escolar de la matrícula**; la morosidad, la proyección y el panel también. Antes, al crear las pensiones del año siguiente, cada alumno habría aparecido debiendo las de ambos años.
+- [x] Pantalla Pensiones: filtro por año escolar y nivel, columna de pagos, **Generar cronograma** (un nivel, meses desde/hasta —puede cruzar el fin de año, p. ej. septiembre → junio—, día de vencimiento o último día, precio y mora; no toca los meses existentes).
+- [x] Validación: el vencimiento debe caer dentro del calendario del año escolar (±2 meses). Con pagos no se cambia año, nivel ni mes (sí vencimiento, precio y mora) y no se elimina.
+- [x] **Ajustar vencimientos al año escolar**: aviso en Pensiones con vista previa y confirmación; mantiene el día y pone el año que corresponde al mes; queda historial en `pensiones_ajustes`. **No se aplicó solo**: en producción hay 27 pensiones con vencimiento 2024/2025 en el año escolar 2026 → usar el botón *Revisar y ajustar* en Pensiones.
+- [x] **Corregido:** los procedimientos de pensiones comparaban `mes = MES` (el parámetro tapaba a la columna), así que la validación de "mes repetido" fallaba; ahora los parámetros llevan prefijo `P_`.
+
+**Usuarios únicos**
+- [x] Índice único en `usuario.usu_usuario`. Había 3 nombres repetidos/vacíos entre estudiantes (el login no podía distinguirlos). Se conservó el primero; los demás usan **el documento del alumno** como usuario; el que no pertenecía a nadie quedó inactivo. Registro en `usuarios_renombrados`:
+  - JOAQUIN2 (2.º, Joaquín Jorge Peña) → `22626969`; usuario vacío (Alexander Peralta) → `55516555`; usuario vacío (Mary Carmen Farfán) → `15515115`; ALEXANDE sin alumno → `ALEXANDE_65` (inactivo).
+- [x] Alta de docentes y personal: rechaza usuario vacío o ya usado (antes fallaba con error de BD o creaba repetidos) y une a cada persona con **su** usuario (antes `MAX(usu_id)`, que con dos altas simultáneas cruzaba cuentas). Modificar usuario no permite tomar el nombre de otra cuenta.
+- [x] `SP_REGISTRAR_USUARIO` usaba columnas que no existen; corregido.
+
+**Categorías (plan de cuentas)**
+- [x] Al crear o editar una categoría se elige su **grupo** (4.x ingresos, 5.x egresos) y recibe código (p. ej. 5.2.3). Las existentes recibieron código.
+- [x] **Corregido:** editar una categoría siempre validaba mal (variable mal escrita) y el borrado eliminaba categorías con movimientos (en reportes quedaban "SIN CATEGORÍA"). Ahora no se borran las que tienen ingresos/egresos (se desactivan), los grupos ni las que usa el sistema (pensiones, planilla, comisiones); estas tampoco cambian de tipo ni de grupo.
+- [x] Nombres validados en el servidor y escapados al mostrarlos.
+
+**Pruebas (BD `colegio2_test`)**: Bloque 8A **68/68**; regresión Fases 1–7 **329/329** (se actualizó la prueba de pensiones de la Fase 2 al nuevo formato con año escolar); Pensiones y Categorías revisadas en Chrome headless sin errores de JavaScript.
+
+### Mejoras por módulo (pendientes, bloques 8B–8D)
 
 | Módulo | Mejoras |
 |--------|---------|
 | **Usuarios / Roles** | Permisos por módulo configurables (tabla `rol_permisos`) en lugar de `if ($_SESSION['S_ROL'] == ...)` repetidos en `view/index.php`; cambio de contraseña obligatorio en primer ingreso; recuperar contraseña por email. |
 | **Empresa** | Datos regionales (Fase 3), logo validado, datos tributarios (RUC/NIT/CUIT/RUT). |
-| **Alumnos** | Validación de documento según país; evitar duplicados por documento; buscador con paginación del servidor (DataTables server-side) para colegios grandes; ficha de apoderado con más de 2 responsables. |
+| **Alumnos** | ~~Validación de documento según país~~ (Fase 3); evitar duplicados por documento; buscador con paginación del servidor (DataTables server-side) para colegios grandes; ficha de apoderado con más de 2 responsables. |
 | **Matrícula** | Validar vacantes por aula; impedir doble matrícula del mismo alumno en el mismo año; generar automáticamente el cronograma de pensiones del alumno al matricular; descuentos/becas (% o monto) por alumno. |
-| **Pensiones** | **Vincular cada pensión al año escolar** (hoy no tienen año y 27 tienen vencimientos de 2024/2025 usados en 2026; afecta cobro, mora y morosidad); generar las 10/12 pensiones del año en un clic por nivel; mora fija o % por día/mes; becas y descuentos por hermanos. |
+| **Pensiones** | ~~Vincular al año escolar~~ y ~~generar el cronograma en un clic~~ (8A ✅); mora fija o % por día/mes; becas y descuentos por hermanos. |
 | **Docentes** | Contrato y modalidad de pago (Fase 6); validación de documento; historial. |
 | **Personal administrativo** | Reutilizar la planilla de la Fase 6 para personal administrativo (misma estructura). |
 | **Asistencia** | Registro de asistencia docente (sirve para descuentos de planilla); alertas a padres por inasistencias. |

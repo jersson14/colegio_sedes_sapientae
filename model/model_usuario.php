@@ -96,13 +96,11 @@
             $query ->bindParam(2,$usu);
             $query ->bindParam(3,$rol);
             $query ->bindParam(4,$correo);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            // 1 actualizado, 2 el nombre de usuario ya lo usa otra cuenta, 0 vacío
+            $query->execute();
+            $r = (int) $query->fetchColumn();
             conexionBD::cerrar_conexion();
+            return $r;
         }
         public function Modificar_Usuario_Contra($id,$con){
             $c = conexionBD::conexionPDO();
