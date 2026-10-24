@@ -1,18 +1,18 @@
 <?php
 require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
-// Boleta de pago del docente (Fase 6): sueldo/horas, ingresos, descuentos, adelantos, neto y pagos.
+// Boleta de pago del docente (Fase 6) o del personal administrativo (Fase 8B): sueldo/horas, ingresos, descuentos, adelantos, neto y pagos.
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
 $id = (int) ($_GET['id'] ?? 0);
 
 $st = $mysqli->prepare("SELECT d.*, p.anio, p.mes, p.estado AS estado_planilla,
         ELT(p.mes, 'ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE') AS mes_nombre,
-        CONCAT_WS(' ', o.docente_nombre, o.docente_apelli) AS docente, o.docente_dni, o.id_asusuario,
+        CONCAT_WS(' ', o.nombres, o.apellidos) AS docente, o.documento AS docente_dni, o.usuario_id AS id_asusuario, o.cargo, p.tipo_personal,
         c.banco_docente, c.cuenta_docente, mp.nombre AS metodo,
         e.emp_razon, e.emp_logo, e.emp_direccion, e.identificacion_tributaria, pa.id_tributario
     FROM planilla_detalle d
     INNER JOIN planillas p ON p.id_planilla = d.id_planilla
-    INNER JOIN docentes o ON o.Id_docente = d.docente_id
+    INNER JOIN vw_personal_planilla o ON o.tipo = d.persona_tipo AND o.id = d.persona_id
     INNER JOIN contratos_docente c ON c.id_contrato = d.contrato_id
     LEFT JOIN metodos_pago mp ON mp.id_metodo = c.metodo_pago_id
     CROSS JOIN (SELECT * FROM empresa ORDER BY empresa_id LIMIT 1) e
@@ -25,8 +25,8 @@ if (!$r) {
     http_response_code(404);
     exit('Boleta no encontrada');
 }
-// El docente solo ve sus boletas, y solo de planillas aprobadas o pagadas
-if (rol_actual() === 'DOCENTE' && ((int) $r['id_asusuario'] !== (int) usuario_actual_id() || !in_array($r['estado_planilla'], ['APROBADA', 'PAGADA'], true))) {
+// Fuera de administración y contabilidad, cada persona solo ve sus boletas, y solo de planillas aprobadas o pagadas
+if (!in_array(rol_actual(), ['ADMINISTRADOR', 'CONTADOR'], true) && ((int) $r['id_asusuario'] !== (int) usuario_actual_id() || !in_array($r['estado_planilla'], ['APROBADA', 'PAGADA'], true))) {
     registrar_acceso_denegado('boleta_docente.php', 'BOLETA_AJENA');
     http_response_code(403);
     exit('No tiene permiso para ver esta boleta');
@@ -76,7 +76,7 @@ $html = '
 </tr></table>
 <p class="titulo">BOLETA DE PAGO – ' . $e($r['mes_nombre']) . ' ' . $e($r['anio']) . '</p>
 <table>
-  <tr><th>Docente</th><td>' . $e($r['docente']) . '</td><th>' . nombre_documento() . '</th><td>' . $e($r['docente_dni']) . '</td></tr>
+  <tr><th>' . ($r['tipo_personal'] === 'DOCENTE' ? 'Docente' : 'Trabajador') . '</th><td>' . $e($r['docente']) . ($r['tipo_personal'] === 'DOCENTE' ? '' : ' (' . $e($r['cargo']) . ')') . '</td><th>' . nombre_documento() . '</th><td>' . $e($r['docente_dni']) . '</td></tr>
   <tr><th>Contrato</th><td>' . $e($r['tipo_contrato']) . '</td><th>Forma de pago</th><td>' . $e($r['metodo'])
      . ($r['cuenta_docente'] ? ' · ' . $e($r['banco_docente']) . ' ' . $e($r['cuenta_docente']) : '') . '</td></tr>
 </table>

@@ -31,6 +31,10 @@ return [
         'controller/asignatura_docente/controlador_listar_tabla_detalle_curso.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // asignaturas
         'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        // asistencia_docente
+        'controller/asistencia_docente/controlador_dia.php' => ['AUXILIAR'],
+        'controller/asistencia_docente/controlador_guardar.php' => ['AUXILIAR'],
+        'controller/asistencia_docente/controlador_resumen.php' => ['AUXILIAR'],
         // asistencias
         'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         'controller/asistencias/controlador_editar_asistencia.php' => ['AUXILIAR'],
@@ -196,7 +200,7 @@ return [
         'controller/planilla/controlador_contratos_listar.php' => ['CONTADOR'],
         'controller/planilla/controlador_detalle_actualizar.php' => ['CONTADOR'],
         'controller/planilla/controlador_detalle_conceptos.php' => ['CONTADOR'],
-        'controller/planilla/controlador_mis_boletas.php' => ['DOCENTE'],
+        'controller/planilla/controlador_mis_boletas.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],
         'controller/planilla/controlador_pagar.php' => ['CONTADOR'],
         'controller/planilla/controlador_pago_anular.php' => ['CONTADOR'],
         'controller/planilla/controlador_planilla_anular.php' => ['CONTADOR'],
@@ -237,7 +241,7 @@ return [
         // usuario
         'controller/usuario/controlador_traer_datos.php' => ['ESTUDIANTE'],
         // reportes
-        'view/MPDF/REPORTE/boleta_docente.php' => ['CONTADOR', 'DOCENTE'],
+        'view/MPDF/REPORTE/boleta_docente.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],
         'view/MPDF/REPORTE/boleta_pago.php' => ['CONTADOR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/estado_resultados.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/flujo_caja.php' => ['CONTADOR'],

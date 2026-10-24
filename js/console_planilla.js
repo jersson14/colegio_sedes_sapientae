@@ -1,5 +1,8 @@
-// Planilla docente (Fase 6): contratos, planilla mensual, pagos, adelantos y conceptos
+// Planilla de docentes (Fase 6) y del personal administrativo (Fase 8B): contratos, planilla mensual, pagos, adelantos y conceptos
 var PL = {contratos: [], tipos: [], conceptos: [], detalle: [], planilla: null};
+// Tipo de personal elegido arriba de la pantalla: DOCENTE o ADMINISTRATIVO
+var tipoPL = function() { return $("#select_tipo_personal").val() || 'DOCENTE'; };
+var nombreTipoPL = function() { return tipoPL() == 'DOCENTE' ? 'docentes' : 'personal administrativo'; };
 var escPL = function(v) { return $('<div>').text(v === null || v === undefined ? '' : v).html(); };
 var hoyPL = function() { return new Date().toLocaleDateString('en-CA'); };
 var esAdminPL = function() { return $("#txtprincipalrol").val() == 'ADMINISTRADOR'; };
@@ -20,15 +23,27 @@ function Iniciar_Planilla() {
   $(document).off('change.pl', '#select_metodo_ade').on('change.pl', '#select_metodo_ade', function() { sugerirCuenta('#select_metodo_ade', '#select_cuenta_ade', '#txt_ref_ade'); });
   $(document).off('change.pl', '#select_metodo_pagar_doc').on('change.pl', '#select_metodo_pagar_doc', function() { sugerirCuenta('#select_metodo_pagar_doc', '#select_cuenta_pagar_doc', '#txt_ref_pagar_doc'); });
   $(document).off('change.pl', '#select_tipo_contrato').on('change.pl', '#select_tipo_contrato', Mostrar_Campos_Contrato);
+  $(document).off('change.pl', '#select_tipo_personal').on('change.pl', '#select_tipo_personal', Cambiar_Tipo_Personal);
   Listar_Planillas();
   Listar_Contratos();
   Listar_Adelantos();
   Listar_Conceptos();
 }
 
+// Al cambiar de docentes a personal administrativo (o al revés) se recarga todo lo que depende del tipo
+function Cambiar_Tipo_Personal() {
+  PL.planilla = null;
+  $("#panel_detalle").hide();
+  $(".lb-tipo-personal").text(tipoPL() == 'DOCENTE' ? 'Docente' : 'Trabajador');
+  $(".lb-tipo-personal-plural").text(tipoPL() == 'DOCENTE' ? 'Docentes' : 'Trabajadores');
+  Listar_Planillas();
+  Listar_Contratos();
+  Listar_Adelantos();
+}
+
 // ---------- Planillas ----------
 function Listar_Planillas() {
-  $.ajax({ url: "../controller/planilla/controlador_planillas_listar.php", type: 'POST', data: { anio: $("#txt_anio_pla").val() } }).done(function(resp) {
+  $.ajax({ url: "../controller/planilla/controlador_planillas_listar.php", type: 'POST', data: { anio: $("#txt_anio_pla").val(), tipo_personal: tipoPL() } }).done(function(resp) {
     let filas = "";
     resp.data.forEach(function(p) {
       filas += "<tr><td><b>" + p.mes_nombre + " " + p.anio + "</b></td><td>" + p.docentes + "</td><td class='text-right'>" + formatoMoneda(p.total_bruto)
@@ -44,10 +59,10 @@ function Listar_Planillas() {
 
 function Generar_Planilla() {
   let mes = $("#select_mes_pla option:selected").text(), anio = $("#txt_anio_pla").val();
-  Swal.fire({ title: '¿Generar la planilla de ' + mes + ' ' + anio + '?', text: 'Se incluyen todos los docentes con contrato vigente en ese mes y se descuentan sus adelantos pendientes.',
+  Swal.fire({ title: '¿Generar la planilla de ' + mes + ' ' + anio + '?', text: 'Planilla de ' + nombreTipoPL() + ': se incluye a todos los que tienen contrato vigente en ese mes y se descuentan sus adelantos pendientes.' + (tipoPL() == 'DOCENTE' ? ' Los contratos por horas toman las horas de la asistencia docente.' : ''),
               icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, generar' }).then((r) => {
     if (!r.isConfirmed) { return; }
-    $.ajax({ url: "../controller/planilla/controlador_planilla_generar.php", type: 'POST', data: { anio: anio, mes: $("#select_mes_pla").val() } }).done(function(resp) {
+    $.ajax({ url: "../controller/planilla/controlador_planilla_generar.php", type: 'POST', data: { anio: anio, mes: $("#select_mes_pla").val(), tipo_personal: tipoPL() } }).done(function(resp) {
       if (resp.codigo == 1) {
         Swal.fire("Mensaje de Confirmación", resp.mensaje, "success");
         Listar_Planillas();
@@ -66,7 +81,7 @@ function Ver_Planilla(id) {
     PL.planilla = id;
     let estado = resp.data.length ? resp.data[0].estado_planilla : '';
     let p = resp.data[0] || {};
-    $("#titulo_detalle").text("Detalle de la planilla");
+    $("#titulo_detalle").text("Detalle de la planilla de " + nombreTipoPL());
     $("#estado_detalle").html(badgePL(estado));
     let botones = "";
     if (estado == 'BORRADOR') {
@@ -84,8 +99,9 @@ function Ver_Planilla(id) {
       let acciones = "<a class='btn btn-default btn-sm' target='_blank' href='../view/MPDF/REPORTE/boleta_docente.php?id=" + d.id_detalle + "' title='Boleta'><i class='fas fa-print'></i></a> ";
       if (estado == 'BORRADOR') { acciones += "<button class='btn btn-primary btn-sm' onclick='Abrir_Detalle(" + d.id_detalle + ")'><i class='fas fa-edit'></i> Ajustar</button>"; }
       if (estado == 'APROBADA' || estado == 'PAGADA') { acciones += "<button class='btn btn-success btn-sm' onclick='Abrir_Pago(" + d.id_detalle + ")'><i class='fas fa-money-bill-wave'></i> " + (parseFloat(d.saldo) > 0 ? 'Pagar' : 'Pagos') + "</button>"; }
-      filas += "<tr" + (parseFloat(d.neto) < 0 ? " class='table-danger'" : "") + "><td><b>" + escPL(d.docente) + "</b><br><small>" + escPL(d.conceptos) + "</small></td><td>" + escPL(d.tipo_contrato)
-             + "</td><td class='text-right'>" + (d.calculo == 'POR_HORA' ? d.horas : '-') + "</td><td class='text-right'>" + formatoMoneda(d.base)
+      filas += "<tr" + (parseFloat(d.neto) < 0 ? " class='table-danger'" : "") + "><td><b>" + escPL(d.docente) + "</b>" + (d.cargo && d.cargo != 'DOCENTE' ? " <small class='text-muted'>(" + escPL(d.cargo) + ")</small>" : "")
+             + "<br><small>" + escPL(d.conceptos) + "</small>" + Asistencia_Detalle_PL(d) + "</td><td>" + escPL(d.tipo_contrato)
+             + "</td><td class='text-right'>" + (d.calculo == 'POR_HORA' ? d.horas + "<br><small class='text-muted'>" + ({ASISTENCIA: 'asistencia', ESTIMADO: 'estimado', MANUAL: 'ajustado'}[d.horas_origen] || '') + "</small>" : '-') + "</td><td class='text-right'>" + formatoMoneda(d.base)
              + "</td><td class='text-right text-success'>" + formatoMoneda(d.ingresos) + "</td><td class='text-right text-danger'>" + formatoMoneda(d.descuentos)
              + "</td><td class='text-right text-danger'>" + formatoMoneda(d.adelantos) + "</td><td class='text-right'><b>" + formatoMoneda(d.neto) + "</b></td><td class='text-right'>"
              + formatoMoneda(d.pagado) + "</td><td>" + escPL(d.metodo) + (d.cuenta_docente ? "<br><small>" + escPL(d.banco_docente) + " " + escPL(d.cuenta_docente) + "</small>" : "")
@@ -218,7 +234,7 @@ function Pagar_Detalle() {
            data: { id: id, monto: $("#txt_monto_pagar_doc").val(), fecha: $("#txt_fecha_pagar_doc").val(), metodo: $("#select_metodo_pagar_doc").val(),
                    cuenta: $("#select_cuenta_pagar_doc").val(), referencia: $("#txt_ref_pagar_doc").val() } }).done(function(resp) {
     if (resp.codigo != 1) { return Swal.fire("Mensaje de Advertencia", resp.mensaje, "warning"); }
-    Swal.fire("Mensaje de Confirmación", "Pago registrado. Se generó el egreso en Remuneraciones docentes.", "success");
+    Swal.fire("Mensaje de Confirmación", "Pago registrado. Se generó el egreso en Remuneraciones " + (tipoPL() == 'DOCENTE' ? "docentes." : "administrativas."), "success");
     $("#modal_pagar").modal('hide');
     Listar_Planillas();
     Ver_Planilla(PL.planilla);
@@ -239,15 +255,23 @@ function Anular_Pago_Docente(id, id_detalle) {
   });
 }
 
+// Resumen de la asistencia docente del mes (faltas y tardanzas para decidir descuentos)
+function Asistencia_Detalle_PL(d) {
+  if (!d.docente_id || !d.asis_dias) { return tipoPL() == 'DOCENTE' ? "<br><small class='text-muted'>Sin asistencia registrada en el mes</small>" : ""; }
+  return "<br><small><i class='fas fa-user-check'></i> " + d.asis_dias + " día(s), " + parseFloat(d.asis_horas).toFixed(2) + " h dictadas"
+       + (d.asis_faltas > 0 ? ", <b class='text-danger'>" + d.asis_faltas + " falta(s)</b>" : "")
+       + (d.asis_tardanzas > 0 ? ", <b class='text-warning'>" + d.asis_tardanzas + " tardanza(s) (" + d.asis_minutos + " min)</b>" : "") + "</small>";
+}
+
 // ---------- Contratos ----------
 function Listar_Contratos() {
-  $.ajax({ url: "../controller/planilla/controlador_contratos_listar.php", type: 'POST' }).done(function(resp) {
+  $.ajax({ url: "../controller/planilla/controlador_contratos_listar.php", type: 'POST', data: { tipo_personal: tipoPL() } }).done(function(resp) {
     PL.contratos = resp.data;
     PL.tipos = resp.tipos;
     let filas = "", docentes = "";
     resp.data.forEach(function(c) {
       let monto = c.id_contrato ? (c.calculo == 'POR_HORA' ? formatoMoneda(c.tarifa_hora) + " / hora" : formatoMoneda(c.sueldo_base) + " / mes") : "";
-      filas += "<tr><td><b>" + escPL(c.docente) + "</b><br><small>" + escPL(c.docente_dni) + "</small></td><td>" + (c.tipo_contrato ? escPL(c.tipo_contrato) : "<span class='badge bg-warning'>SIN CONTRATO</span>")
+      filas += "<tr><td><b>" + escPL(c.docente) + "</b><br><small>" + escPL(c.docente_dni) + (c.cargo && c.cargo != 'DOCENTE' ? " · " + escPL(c.cargo) : "") + "</small></td><td>" + (c.tipo_contrato ? escPL(c.tipo_contrato) : "<span class='badge bg-warning'>SIN CONTRATO</span>")
              + "</td><td>" + (c.fecha_inicio_txt || '') + "</td><td class='text-right'>" + monto + "</td><td class='text-right'>" + (c.id_contrato ? c.horas_semanales : '')
              + "</td><td>" + escPL(c.metodo || '') + "</td><td>" + escPL((c.banco_docente || '') + ' ' + (c.cuenta_docente || '')) + "</td><td class='text-right'>"
              + (parseFloat(c.adelantos_pendientes) > 0 ? formatoMoneda(c.adelantos_pendientes) : '') + "</td><td>"
@@ -257,7 +281,7 @@ function Listar_Contratos() {
       if (c.id_contrato) { docentes += "<option value='" + c.Id_docente + "'>" + escPL(c.docente) + "</option>"; }
     });
     $("#tbody_contratos").html(filas);
-    $("#select_docente_ade").html(docentes || "<option value=''>No hay docentes con contrato</option>");
+    $("#select_docente_ade").html(docentes || "<option value=''>Nadie tiene contrato</option>");
     let tipos = "";
     resp.tipos.forEach(t => tipos += "<option value='" + t.id_tipo_contrato + "' data-calculo='" + t.calculo + "'>" + escPL(t.nombre) + "</option>");
     $("#select_tipo_contrato").html(tipos);
@@ -293,7 +317,7 @@ function Abrir_Contrato(docente, nuevo) {
 
 function Guardar_Contrato() {
   $.ajax({ url: "../controller/planilla/controlador_contrato_guardar.php", type: 'POST',
-           data: { id: $("#txt_id_contrato").val(), docente: $("#txt_docente_contrato").val(), tipo: $("#select_tipo_contrato").val(), inicio: $("#txt_inicio_contrato").val(),
+           data: { id: $("#txt_id_contrato").val(), tipo_personal: tipoPL(), docente: $("#txt_docente_contrato").val(), tipo: $("#select_tipo_contrato").val(), inicio: $("#txt_inicio_contrato").val(),
                    sueldo: $("#txt_sueldo_contrato").val(), tarifa: $("#txt_tarifa_contrato").val(), horas: $("#txt_horas_contrato").val(), metodo: $("#select_metodo_contrato").val(),
                    banco: $("#txt_banco_contrato").val(), cuenta: $("#txt_cuenta_contrato").val(), observacion: $("#txt_obs_contrato").val() } }).done(function(resp) {
     if (resp.codigo != 1) { return Swal.fire("Mensaje de Advertencia", resp.mensaje, "warning"); }
@@ -317,7 +341,7 @@ function Finalizar_Contrato() {
 // ---------- Adelantos ----------
 function Registrar_Adelanto() {
   $.ajax({ url: "../controller/planilla/controlador_adelanto_registrar.php", type: 'POST',
-           data: { docente: $("#select_docente_ade").val(), monto: $("#txt_monto_ade").val(), fecha: $("#txt_fecha_ade").val(), metodo: $("#select_metodo_ade").val(),
+           data: { tipo_personal: tipoPL(), docente: $("#select_docente_ade").val(), monto: $("#txt_monto_ade").val(), fecha: $("#txt_fecha_ade").val(), metodo: $("#select_metodo_ade").val(),
                    cuenta: $("#select_cuenta_ade").val(), referencia: $("#txt_ref_ade").val(), observacion: $("#txt_obs_ade").val() } }).done(function(resp) {
     if (resp.codigo != 1) { return Swal.fire("Mensaje de Advertencia", resp.mensaje, "warning"); }
     Swal.fire("Mensaje de Confirmación", resp.mensaje, "success");
@@ -329,7 +353,7 @@ function Registrar_Adelanto() {
 }
 
 function Listar_Adelantos() {
-  $.ajax({ url: "../controller/planilla/controlador_adelantos_listar.php", type: 'POST', data: { desde: $("#txt_desde_ade").val(), hasta: $("#txt_hasta_ade").val() } }).done(function(resp) {
+  $.ajax({ url: "../controller/planilla/controlador_adelantos_listar.php", type: 'POST', data: { desde: $("#txt_desde_ade").val(), hasta: $("#txt_hasta_ade").val(), tipo_personal: tipoPL() } }).done(function(resp) {
     let filas = "";
     resp.data.forEach(function(a) {
       filas += "<tr><td>" + a.fecha_txt + "</td><td>" + escPL(a.docente) + "</td><td class='text-right'>" + formatoMoneda(a.monto) + "</td><td>" + escPL(a.metodo)

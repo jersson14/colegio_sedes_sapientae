@@ -424,7 +424,7 @@ Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la segurid
 | Bloque | Contenido | Estado |
 |--------|-----------|--------|
 | **8A** | Integridad de datos: pensiones por año escolar, usuarios únicos, categorías con grupo | ✅ 2026-10-24 |
-| **8B** | Planilla del personal administrativo (misma estructura que la docente) y asistencia docente para las horas de la planilla | Pendiente |
+| **8B** | Planilla del personal administrativo (misma estructura que la docente) y asistencia docente para las horas de la planilla | ✅ 2026-10-24 |
 | **8C** | Seguridad en pantallas: escapar los datos que muestran las tablas (DataTables) en todos los módulos; validación de notas según la escala del país | Pendiente |
 | **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, adjuntos de comunicados, anti-spam del landing, auditoría de tablas financieras | Pendiente |
 
@@ -453,7 +453,27 @@ Migración `database/migraciones/008_integridad_pensiones_usuarios_categorias.sq
 
 **Pruebas (BD `colegio2_test`)**: Bloque 8A **68/68**; regresión Fases 1–7 **329/329** (se actualizó la prueba de pensiones de la Fase 2 al nuevo formato con año escolar); Pensiones y Categorías revisadas en Chrome headless sin errores de JavaScript.
 
-### Mejoras por módulo (pendientes, bloques 8B–8D)
+### Bloque 8B ✅ (2026-10-24)
+
+Migración `database/migraciones/009_planilla_administrativa_asistencia.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_009.sql`). Totales sin cambio; la planilla docente de octubre ya aprobada se conserva.
+
+**Planilla del personal administrativo**
+- [x] Contratos, planilla mensual, adelantos, pagos y boletas sirven ahora para **docentes o personal administrativo** (auxiliar, enfermera, psicóloga, contadora…). Las tablas de la Fase 6 tienen `docente_id` **o** `personal_id` (restricción que exige uno solo) y la vista `vw_personal_planilla` une a ambos.
+- [x] Pantalla **Planilla de personal** (antes "Planilla docente") con selector *Docentes / Personal administrativo*: cada tipo tiene su propia planilla del mes, aprobación (solo ADMINISTRADOR), adelantos y pagos.
+- [x] Los pagos y adelantos del personal administrativo van a **5.1.2 REMUNERACIONES ADMINISTRATIVAS** (los docentes siguen en 5.1.1); salen de la caja/banco elegido igual que en la Fase 6.
+- [x] **Mis boletas de pago** también para auxiliar, enfermera, psicóloga y contadora; cada uno ve solo las suyas (la boleta PDF lo controla).
+- [x] El reporte *Costo de planilla* separa "DOCENTES · …" y "ADMINISTRATIVOS · …".
+
+**Asistencia docente**
+- [x] Tabla `asistencia_docente` (un registro por docente y día): PRESENTE, TARDANZA (con minutos), FALTA (0 horas) o JUSTIFICADA, horas programadas y **horas dictadas**.
+- [x] Pantalla **Asistencia docente** (ADMINISTRADOR y AUXILIAR): registrar el día con las horas de su **horario** propuestas (desde `horarios` del año escolar), "marcar todos presentes", y resumen del mes exportable a Excel.
+- [x] Al **generar la planilla docente**, los contratos **por horas** cobran la suma de horas dictadas del mes (antes: horas semanales × 4, que queda solo si no hay asistencia registrada). El detalle muestra de dónde salieron las horas (asistencia / estimado / ajustado) y el resumen de faltas y tardanzas para decidir descuentos.
+- [x] Con la planilla docente del mes aprobada, su asistencia ya no se modifica.
+- [ ] Descuento automático por faltas/tardanzas de los contratos mensuales → depende de la política de cada colegio/país; hoy se ve el resumen y se agrega el concepto FALTAS/TARDANZAS a mano.
+
+**Pruebas (BD `colegio2_test`)**: Bloque 8B **51/51** (contratos y planillas por tipo sin mezclarse, asistencia → 9 h × 25 = 225, adelanto y pago del auxiliar en 5.1.2, caja 10 000 → 8 500, bloqueo de asistencia tras aprobar, boletas propias y ajenas, reporte); regresión Fases 1–8A **397/397**; Planilla y Asistencia docente revisadas en Chrome headless sin errores.
+
+### Mejoras por módulo (pendientes, bloques 8C–8D)
 
 | Módulo | Mejoras |
 |--------|---------|
@@ -463,8 +483,8 @@ Migración `database/migraciones/008_integridad_pensiones_usuarios_categorias.sq
 | **Matrícula** | Validar vacantes por aula; impedir doble matrícula del mismo alumno en el mismo año; generar automáticamente el cronograma de pensiones del alumno al matricular; descuentos/becas (% o monto) por alumno. |
 | **Pensiones** | ~~Vincular al año escolar~~ y ~~generar el cronograma en un clic~~ (8A ✅); mora fija o % por día/mes; becas y descuentos por hermanos. |
 | **Docentes** | Contrato y modalidad de pago (Fase 6); validación de documento; historial. |
-| **Personal administrativo** | Reutilizar la planilla de la Fase 6 para personal administrativo (misma estructura). |
-| **Asistencia** | Registro de asistencia docente (sirve para descuentos de planilla); alertas a padres por inasistencias. |
+| **Personal administrativo** | ~~Reutilizar la planilla de la Fase 6~~ (8B ✅). |
+| **Asistencia** | ~~Registro de asistencia docente~~ (8B ✅); alertas a padres por inasistencias. |
 | **Notas / Exámenes / Tareas** | Validar rangos de nota según la escala del país (0–20 Perú, 1–10 Ecuador, 1–7 Chile…) desde configuración; bloquear edición de periodos cerrados. |
 | **Horarios / Aulas** | Validar choque de horario de docente y aula. |
 | **Comunicados / Solicitudes** | Validar archivos adjuntos; notificaciones; estado leído. |

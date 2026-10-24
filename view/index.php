@@ -515,7 +515,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
                   <i class="nav-icon fas fa-file-invoice-dollar"></i>
-                  <p>Planilla docente</p>
+                  <p>Planilla de personal</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia_docente/view_asistencia_docente.php')" class="nav-link">
+                  <i class="nav-icon fas fa-user-check"></i>
+                  <p>Asistencia docente</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -657,7 +663,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
                   <i class="nav-icon fas fa-file-invoice-dollar"></i>
-                  <p>Planilla docente</p>
+                  <p>Planilla de personal</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -748,6 +754,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia_docente/view_asistencia_docente.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Asistencia docente</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
@@ -787,6 +799,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <?php
             }
             ?>
+            <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "CONTADOR") { ?>
+              <!-- Personal administrativo: sus boletas de pago (Fase 8B) -->
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_mis_boletas.php')" class="nav-link">
+                  <i class="nav-icon fas fa-money-check-alt"></i>
+                  <p>Mis boletas de pago</p>
+                </a>
+              </li>
+            <?php } ?>
             <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_mis_boletas.php')" class="nav-link">

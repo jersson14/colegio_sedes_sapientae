@@ -3,11 +3,11 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-6"><h1 class="m-0"><b>PLANILLA DOCENTE</b></h1></div>
+      <div class="col-sm-6"><h1 class="m-0"><b>PLANILLA DE PERSONAL</b></h1></div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">PLANILLA DOCENTE</li>
+          <li class="breadcrumb-item active">PLANILLA</li>
         </ol>
       </div>
     </div>
@@ -16,6 +16,16 @@
 
 <div class="content">
   <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label>Personal:</label>
+        <select class="form-control" id="select_tipo_personal">
+          <option value="DOCENTE">DOCENTES</option>
+          <option value="ADMINISTRATIVO">PERSONAL ADMINISTRATIVO</option>
+        </select>
+      </div>
+      <div class="col-md-8"><small class="text-muted d-block mt-md-4 pt-md-2">Cada tipo de personal tiene su propia planilla mensual y aprobación. Los pagos van a Remuneraciones docentes (5.1.1) o administrativas (5.1.2).</small></div>
+    </div>
     <div class="card card-primary card-outline card-outline-tabs">
       <div class="card-header p-0 border-bottom-0">
         <ul class="nav nav-tabs" role="tablist">
@@ -44,7 +54,7 @@
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
                 <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                  <tr><th>Mes</th><th>Docentes</th><th class="text-right">Bruto</th><th class="text-right">Descuentos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Estado</th><th>Aprobada por</th><th>Acción</th></tr>
+                  <tr><th>Mes</th><th class="lb-tipo-personal-plural">Docentes</th><th class="text-right">Bruto</th><th class="text-right">Descuentos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Estado</th><th>Aprobada por</th><th>Acción</th></tr>
                 </thead>
                 <tbody id="tbody_planillas"></tbody>
               </table>
@@ -56,7 +66,7 @@
               <div class="table-responsive">
                 <table class="table table-sm table-bordered table-striped">
                   <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                    <tr><th>Docente</th><th>Contrato</th><th class="text-right">Horas</th><th class="text-right">Base</th><th class="text-right">Ingresos</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Forma de pago</th><th>Acción</th></tr>
+                    <tr><th class="lb-tipo-personal">Docente</th><th>Contrato</th><th class="text-right">Horas</th><th class="text-right">Base</th><th class="text-right">Ingresos</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Forma de pago</th><th>Acción</th></tr>
                   </thead>
                   <tbody id="tbody_detalle"></tbody>
                 </table>
@@ -69,7 +79,7 @@
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
                 <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                  <tr><th>Docente</th><th>Contrato</th><th>Desde</th><th class="text-right">Sueldo / tarifa</th><th class="text-right">Horas/sem.</th><th>Forma de pago</th><th>Cuenta del docente</th><th class="text-right">Adelantos pendientes</th><th>Acción</th></tr>
+                  <tr><th class="lb-tipo-personal">Docente</th><th>Contrato</th><th>Desde</th><th class="text-right">Sueldo / tarifa</th><th class="text-right">Horas/sem.</th><th>Forma de pago</th><th>Cuenta bancaria</th><th class="text-right">Adelantos pendientes</th><th>Acción</th></tr>
                 </thead>
                 <tbody id="tbody_contratos"></tbody>
               </table>
@@ -79,7 +89,7 @@
           <!-- Adelantos -->
           <div class="tab-pane fade" id="tab_adelantos" role="tabpanel">
             <div class="row">
-              <div class="col-md-4 form-group"><label>Docente<b style="color:red">(*)</b>:</label><select class="form-control" id="select_docente_ade"></select></div>
+              <div class="col-md-4 form-group"><label><span class="lb-tipo-personal">Docente</span><b style="color:red">(*)</b>:</label><select class="form-control" id="select_docente_ade"></select></div>
               <div class="col-md-2 form-group"><label>Monto<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_ade"></div>
               <div class="col-md-2 form-group"><label>Fecha:</label><input type="date" class="form-control" id="txt_fecha_ade"></div>
               <div class="col-md-2 form-group"><label>Forma de pago:</label><select class="form-control" id="select_metodo_ade"></select></div>
@@ -97,7 +107,7 @@
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
                 <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                  <tr><th>Fecha</th><th>Docente</th><th class="text-right">Monto</th><th>Forma de pago</th><th>Referencia</th><th>Observación</th><th>Situación</th><th>Estado</th><th></th></tr>
+                  <tr><th>Fecha</th><th class="lb-tipo-personal">Docente</th><th class="text-right">Monto</th><th>Forma de pago</th><th>Referencia</th><th>Observación</th><th>Situación</th><th>Estado</th><th></th></tr>
                 </thead>
                 <tbody id="tbody_adelantos"></tbody>
               </table>
@@ -115,7 +125,7 @@
                 <tbody id="tbody_conceptos"></tbody>
               </table>
             </div>
-            <small class="text-muted">Un concepto con valor por defecto mayor a 0 se aplica a todos los docentes al generar la planilla (p. ej. el porcentaje del aporte de ley de su país).</small>
+            <small class="text-muted">Un concepto con valor por defecto mayor a 0 se aplica a todos (docentes y personal administrativo) al generar su planilla (p. ej. el porcentaje del aporte de ley de su país).</small>
           </div>
         </div>
       </div>
@@ -138,8 +148,8 @@
         <div class="col-md-4 form-group grupo-hora"><label>Tarifa por hora<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_tarifa_contrato"></div>
         <div class="col-md-4 form-group"><label>Horas semanales:</label><input type="number" step="0.5" min="0" class="form-control" id="txt_horas_contrato"></div>
         <div class="col-md-4 form-group"><label>Forma de pago<b style="color:red">(*)</b>:</label><select class="form-control" id="select_metodo_contrato"></select></div>
-        <div class="col-md-4 form-group"><label>Banco del docente:</label><input type="text" class="form-control" id="txt_banco_contrato" maxlength="100"></div>
-        <div class="col-md-4 form-group"><label>N.° de cuenta del docente:</label><input type="text" class="form-control" id="txt_cuenta_contrato" maxlength="40"></div>
+        <div class="col-md-4 form-group"><label>Banco:</label><input type="text" class="form-control" id="txt_banco_contrato" maxlength="100"></div>
+        <div class="col-md-4 form-group"><label>N.° de cuenta:</label><input type="text" class="form-control" id="txt_cuenta_contrato" maxlength="40"></div>
         <div class="col-md-12 form-group"><label>Observación:</label><input type="text" class="form-control" id="txt_obs_contrato" maxlength="255"></div>
       </div>
     </div>

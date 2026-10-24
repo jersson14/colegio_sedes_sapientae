@@ -60,6 +60,15 @@ function rango_fechas_post($campo_desde = 'desde', $campo_hasta = 'hasta') {
     return [$desde, $hasta];
 }
 
+/** Tipo de personal de la planilla (Fase 8B): DOCENTE (por defecto) o ADMINISTRATIVO. */
+function tipo_personal_post($campo = 'tipo_personal') {
+    $v = $_POST[$campo] ?? 'DOCENTE';
+    if (!in_array($v, ['DOCENTE', 'ADMINISTRATIVO'], true)) {
+        denegar(400, 'Tipo de personal inválido');
+    }
+    return $v;
+}
+
 /** Responde JSON y termina. */
 function responder_json($datos) {
     header('Content-Type: application/json; charset=utf-8');
