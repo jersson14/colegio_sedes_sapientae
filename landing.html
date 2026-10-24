@@ -310,6 +310,12 @@
                 </div>
                 <div class="contact-form-container">
                     <form class="contact-form" id="contactForm">
+                        <!-- Anti-spam: campo trampa (las personas no lo ven; los robots suelen llenarlo) y hora de apertura -->
+                        <div style="position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden" aria-hidden="true">
+                            <label for="sitio_web">No complete este campo</label>
+                            <input type="text" id="sitio_web" name="sitio_web" tabindex="-1" autocomplete="off">
+                        </div>
+                        <input type="hidden" name="abierto_ms" id="abierto_ms">
                         <div class="form-group">
                             <label for="nombre">Nombre Completo</label>
                             <input type="text" id="nombre" name="nombre" required>

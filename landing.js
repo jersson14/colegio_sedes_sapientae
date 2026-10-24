@@ -144,6 +144,8 @@ animatedElements.forEach(el => {
 // CONTACT FORM HANDLING
 // ===================================
 const contactForm = document.getElementById('contactForm');
+// Anti-spam: se envía cuántos milisegundos estuvo abierto el formulario (un robot lo envía al instante)
+const formularioAbierto = Date.now();
 
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -168,6 +170,7 @@ contactForm.addEventListener('submit', async (e) => {
     submitButton.innerHTML = '<span>Enviando...</span>';
 
     // Get form data
+    document.getElementById('abierto_ms').value = Date.now() - formularioAbierto;
     const formData = new FormData(contactForm);
     const data = Object.fromEntries(formData);
 

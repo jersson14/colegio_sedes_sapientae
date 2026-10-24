@@ -7,9 +7,6 @@ require_once __DIR__ . '/_seguridad.php';
 
 // Configurar headers para JSON
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 // Función para sanitizar datos de entrada
 function sanitizar_input($data) {
@@ -49,6 +46,19 @@ try {
         $datos = $_POST;
     }
     
+    // Anti-spam (Fase 8D): el campo trampa debe venir vacío y el formulario debe haber estado abierto al menos 3 s.
+    // A un robot se le responde "éxito" sin guardar nada, para no darle pistas.
+    if (trim((string) ($datos['sitio_web'] ?? '')) !== '' || (int) ($datos['abierto_ms'] ?? 0) < 3000) {
+        echo json_encode(array('status' => 'success', 'message' => '¡Gracias por tu interés! Hemos recibido tu solicitud.'));
+        exit;
+    }
+    foreach (array('nombre' => 150, 'email' => 150, 'telefono' => 20, 'mensaje' => 1000) as $campo => $max) {
+        if (isset($datos[$campo]) && mb_strlen((string) $datos[$campo], 'UTF-8') > $max) {
+            echo json_encode(array('status' => 'error', 'message' => 'El campo ' . $campo . ' es demasiado largo (máximo ' . $max . ' caracteres)'));
+            exit;
+        }
+    }
+
     // Validar que existan todos los campos requeridos
     $campos_requeridos = array('nombre', 'email', 'telefono', 'nivel', 'mensaje');
     $errores = array();
@@ -120,6 +130,12 @@ try {
     require_once '../model/model_solicitudes.php';
     $solicitud_model = new Solicitud_Model();
     
+    // Máximo 3 solicitudes por hora desde la misma IP (el control por email se evita cambiando de email)
+    if ($solicitud_model->Solicitudes_Recientes_IP($_SERVER['REMOTE_ADDR'] ?? '') >= 3) {
+        echo json_encode(array('status' => 'warning', 'message' => 'Ya recibimos varias solicitudes desde tu conexión. Intenta más tarde o llámanos.'));
+        exit;
+    }
+
     // Verificar si el email ya envió una solicitud recientemente (anti-spam)
     if ($solicitud_model->Email_Reciente($email)) {
         echo json_encode(array(
@@ -157,8 +173,8 @@ try {
 } catch (Exception $e) {
     echo json_encode(array(
         'status' => 'error',
-        'message' => 'Error al procesar la solicitud. Por favor, intenta nuevamente.',
-        'error_detail' => $e->getMessage()
+        'message' => 'Error al procesar la solicitud. Por favor, intenta nuevamente.'
     ));
+    error_log('controlador_solicitudes: ' . $e->getMessage());
 }
 ?>

@@ -643,17 +643,18 @@ function Registrar_horario_aula() {
             componentes: JSON.stringify(componentes)
         }
     }).done(function(resp) {
-        if (resp > 0) {
-            if (resp == 1) {
-                Swal.fire("Mensaje de Confirmación", "Horario registrado satisfactoriamente!!!", "success").then(() => {
-                    tbl_horario.ajax.reload(); // Recarga la tabla de datos
-                    $("#modal_registro").modal('hide'); // Cierra el modal de registro
-                });
-            } else {
-                Swal.fire("Mensaje de Advertencia", "El horario que estás intentando registrar ya existe en la base de datos, revise por favor", "warning");
-            }
+        // codigo 1 registrado, 2 ya existía, 3 cruce de aula o docente (no se guardó nada), 0 error
+        if (resp.codigo == 1) {
+            Swal.fire("Mensaje de Confirmación", "Horario registrado satisfactoriamente!!!", "success").then(() => {
+                tbl_horario.ajax.reload(); // Recarga la tabla de datos
+                $("#modal_registro").modal('hide'); // Cierra el modal de registro
+            });
+        } else if (resp.codigo == 2) {
+            Swal.fire("Mensaje de Advertencia", "El horario que estás intentando registrar ya existe en la base de datos, revise por favor", "warning");
+        } else if (resp.codigo == 3) {
+            Swal.fire("Cruce de horario", textoSeguro(resp.mensaje) + ". No se guardó ningún bloque.", "warning");
         } else {
-            Swal.fire("Mensaje de Error", "No se completó el registro del horario!!", "error");
+            Swal.fire("Mensaje de Error", textoSeguro(resp.mensaje || "No se completó el registro del horario"), "error");
         }
     });
 }
@@ -691,14 +692,15 @@ function Modificar_horarios_aula() {
       componentes: JSON.stringify(componentes)  // Enviar solo los datos de la tabla actual
     }
   }).done(function(resp) {
-    console.log("Respuesta del servidor:", resp);  // Verificar la respuesta del servidor
-    if (resp == 1) {
-      Swal.fire("Mensaje de Confirmación", "Componentes modificados satisfactoriamente!!!", "success").then(() => {
-        tbl_horario.ajax.reload();  // Recargar la tabla original (si es necesario)
-        $("#modal_editar").modal('hide');  // Ocultar el modal de edición
+    if (resp.codigo == 1 || resp.codigo == 2) {
+      Swal.fire("Mensaje de Confirmación", resp.codigo == 1 ? "Horario actualizado satisfactoriamente!!!" : "No había bloques nuevos que guardar", "success").then(() => {
+        tbl_horario.ajax.reload();
+        $("#modal_editar").modal('hide');
       });
+    } else if (resp.codigo == 3) {
+      Swal.fire("Cruce de horario", textoSeguro(resp.mensaje) + ". No se guardó ningún bloque.", "warning");
     } else {
-      Swal.fire("Mensaje de Información", "No se modificaron componentes porque ya existen", "warning");
+      Swal.fire("Mensaje de Error", textoSeguro(resp.mensaje || "No se completó la modificación"), "error");
     }
   });
 }

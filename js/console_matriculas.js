@@ -81,7 +81,7 @@ function listar_matriculados(){
         {"data":"provincia"},
         {"data":"departamento"},
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fa fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
         
     ],
 
@@ -184,7 +184,7 @@ function listar_matriculados_filtro(){
       {"data":"provincia"},
       {"data":"departamento"},
 
-      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
+      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fa fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
       
   ],
 
@@ -505,6 +505,8 @@ function Registrar_matriculado(){
         Swal.fire("Mensaje de Advertencia","Ingrese el usuario y contraseña del estudiante (es su primera matrícula)","warning");
       }else if(resp==5){
         Swal.fire("Mensaje de Advertencia","Revise la forma de pago: seleccione la caja o cuenta e indique el n.° de operación si corresponde","warning");
+      }else if(resp==6){
+        Swal.fire("Mensaje de Advertencia","El aula elegida ya no tiene vacantes en ese año escolar (revise su capacidad en Aulas)","warning");
       }else{
         Swal.fire("Mensaje de Advertencia","El estudiante ya está matriculado en ese año académico, revise por favor","warning");
       }
@@ -552,6 +554,8 @@ function Modificar_Matricula(){
             tbl_matricula.ajax.reload();
             $("#modal_editar").modal('hide');
         });
+      }else if(resp==3){
+        Swal.fire("Mensaje de Advertencia","El aula elegida ya no tiene vacantes en ese año escolar (revise su capacidad en Aulas)","warning");
       }else{
         Swal.fire("Mensaje de Advertencia","El estudiante y año académico que intentas actualizar ya se encuentra en la base de datos, revise por favor.","warning");
       }
@@ -697,3 +701,39 @@ function Sugerir_Cuenta_Matricula(){
   $("#txt_ref_matricula").attr('placeholder', m.requiere_referencia == 1 ? 'Obligatorio' : 'Opcional');
 }
 $(document).off('change.fpm', '#select_metodo_matricula').on('change.fpm', '#select_metodo_matricula', Sugerir_Cuenta_Matricula);
+
+
+// ---------- Beca o descuento en las pensiones (Fase 8D) ----------
+$('#tabla_matricula').on('click', '.beca', function() {
+  var data = tbl_matricula.row($(this).parents('tr')).data();
+  if (tbl_matricula.row(this).child.isShown()) { data = tbl_matricula.row(this).data(); }
+  $.ajax({ url: "../controller/matricula/controlador_beca_traer.php", type: 'POST', data: { id: data.id_matricula } }).done(function(r) {
+    let b = r.data;
+    $("#txt_id_matricula_beca").val(data.id_matricula);
+    $("#lb_beca_alumno").text(textoPlano(data.Estudiante) + " – " + textoPlano(data.Grado) + " (" + textoPlano(data["año_escolar"]) + ")");
+    $("#select_beca_tipo").val(b.beca_tipo);
+    $("#txt_beca_valor").val(b.beca_tipo == 'NINGUNA' ? '' : b.beca_valor);
+    $("#txt_beca_desde").val(b.beca_desde || '');
+    $("#txt_beca_motivo").val(b.beca_motivo || '');
+    Mostrar_Campos_Beca();
+    $("#modal_beca").modal('show');
+  });
+});
+$(document).off('change.beca', '#select_beca_tipo').on('change.beca', '#select_beca_tipo', Mostrar_Campos_Beca);
+function Mostrar_Campos_Beca() {
+  let tipo = $("#select_beca_tipo").val();
+  $(".beca-campos").toggle(tipo != 'NINGUNA');
+  $("#lb_beca_valor").text(tipo == 'PORCENTAJE' ? 'Porcentaje de descuento (%):' : 'Monto de descuento por pensión:');
+}
+function Guardar_Beca() {
+  $.ajax({ url: "../controller/matricula/controlador_beca_guardar.php", type: 'POST',
+           data: { id: $("#txt_id_matricula_beca").val(), tipo: $("#select_beca_tipo").val(), valor: $("#txt_beca_valor").val() || '0',
+                   desde: $("#txt_beca_desde").val(), motivo: $("#txt_beca_motivo").val() } }).done(function(r) {
+    if (r.codigo == 1) {
+      Swal.fire("Mensaje de Confirmación", textoSeguro(r.mensaje) + ". Las pensiones que vencen desde la fecha indicada ya muestran el precio con descuento.", "success");
+      $("#modal_beca").modal('hide');
+    } else {
+      Swal.fire("Mensaje de Advertencia", textoSeguro(r.mensaje), "warning");
+    }
+  });
+}

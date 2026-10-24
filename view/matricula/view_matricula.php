@@ -350,6 +350,40 @@
 </div>
 
 
+<!-- Beca o descuento en las pensiones (Fase 8D) -->
+<div class="modal fade" id="modal_beca" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#17A2B8;">
+        <h5 class="modal-title" style="color:white"><b>BECA O DESCUENTO</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="txt_id_matricula_beca">
+        <p><b id="lb_beca_alumno"></b></p>
+        <div class="row">
+          <div class="col-12 form-group">
+            <label>Tipo:</label>
+            <select class="form-control" id="select_beca_tipo">
+              <option value="NINGUNA">Sin beca ni descuento</option>
+              <option value="PORCENTAJE">Porcentaje de la pensión</option>
+              <option value="MONTO">Monto fijo por pensión</option>
+            </select>
+          </div>
+          <div class="col-6 form-group beca-campos"><label id="lb_beca_valor">Valor:</label><input type="text" inputmode="decimal" class="form-control" id="txt_beca_valor"></div>
+          <div class="col-6 form-group beca-campos"><label>Desde las pensiones que vencen el:</label><input type="date" class="form-control" id="txt_beca_desde"></div>
+          <div class="col-12 form-group beca-campos"><label>Motivo<b style="color:red">(*)</b>:</label><input type="text" class="form-control" id="txt_beca_motivo" maxlength="255" placeholder="p. ej. beca por rendimiento, descuento por hermanos"></div>
+          <div class="col-12"><small class="text-muted">Se aplica a las pensiones (no a la mora ni a la matrícula). Si deja la fecha vacía, se aplica a todas las del año. Lo ya pagado no cambia; el cambio queda en la auditoría.</small></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+        <button type="button" class="btn btn-success" onclick="Guardar_Beca()"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Inicialización de Select2 con la función personalizada
 function initializeSelect2(selector) {

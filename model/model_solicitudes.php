@@ -198,6 +198,14 @@ class Solicitud_Model extends conexionBD {
      * @param string $email - Email a validar
      * @return bool - True si ya existe una solicitud reciente
      */
+    // Solicitudes registradas desde la IP en la última hora (anti-spam, Fase 8D)
+    public function Solicitudes_Recientes_IP($ip) {
+        $stmt = $this->conexion->prepare("SELECT COUNT(*) FROM solicitudes_informacion
+                                           WHERE ip_registro = ? AND fecha_registro > DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+        $stmt->execute([$ip]);
+        return (int) $stmt->fetchColumn();
+    }
+
     public function Email_Reciente($email) {
         try {
             // Verificar si hay una solicitud del mismo email en las últimas 24 horas

@@ -19,6 +19,11 @@ class conexionBD {
             date_default_timezone_set(config_regional()['zona_horaria']);
             $this->pdo->exec("SET time_zone = '" . (new DateTime())->format('P') . "'");
 
+            // Auditoría (Fase 8D): los triggers guardan quién hizo cada cambio y desde qué IP
+            $usuario = (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['S_ID'])) ? (int) $_SESSION['S_ID'] : null;
+            $q = $this->pdo->prepare("SET @app_usuario = ?, @app_ip = ?");
+            $q->execute([$usuario, substr($_SERVER['REMOTE_ADDR'] ?? 'cli', 0, 45)]);
+
             return $this->pdo;
 
         } catch (PDOException $e) {

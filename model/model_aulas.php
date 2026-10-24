@@ -58,14 +58,15 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Aulas($grado,$seccion,$nivel,$descrip){
+        public function Registrar_Aulas($grado,$seccion,$nivel,$descrip,$capacidad = null){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_AULAS(?,?,?,?)";
+            $sql = "CALL SP_REGISTRAR_AULAS(?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$grado);
             $query ->bindParam(2,$seccion);
             $query ->bindParam(3,$nivel);
             $query ->bindParam(4,$descrip);
+            $query ->bindValue(5,$capacidad); // NULL = sin límite de vacantes
 
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){
@@ -73,9 +74,9 @@
             }
             conexionBD::cerrar_conexion();
         }
-        public function Modificar_Aulas($id,$grado,$seccion,$nivel,$descrip,$estatus){
+        public function Modificar_Aulas($id,$grado,$seccion,$nivel,$descrip,$estatus,$capacidad = null){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_AULAS(?,?,?,?,?,?)";
+            $sql = "CALL SP_MODIFICAR_AULAS(?,?,?,?,?,?,?)";
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$id);
             $query ->bindParam(2,$grado);
@@ -83,6 +84,7 @@
             $query ->bindParam(4,$nivel);
             $query ->bindParam(5,$descrip);
             $query ->bindParam(6,$estatus);
+            $query ->bindValue(7,$capacidad);
             $resultado = $query->execute();
             if($row = $query->fetchColumn()){
                 return $row;

@@ -163,6 +163,23 @@
             }
             conexionBD::cerrar_conexion();
         }
+        // Beca o descuento en las pensiones (Fase 8D)
+        public function Traer_Beca($id){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("SELECT id_matricula, beca_tipo, beca_valor, beca_desde, beca_motivo FROM matricula WHERE id_matricula = ?");
+            $q->execute([$id]);
+            $r = $q->fetch(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r;
+        }
+        public function Guardar_Beca($id, $tipo, $valor, $desde, $motivo){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("CALL SP_GUARDAR_BECA(?,?,?,?,?)");
+            $q->execute([$id, $tipo, $valor, $desde, $motivo]);
+            $r = $q->fetch(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r;
+        }
     }
 
 

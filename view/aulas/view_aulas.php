@@ -59,6 +59,7 @@
                       <th style="text-align:center">Sección</th>
                       <th style="text-align:center">Nivel Academico</th>
                       <th style="text-align:center">Descripción</th>
+                      <th style="text-align:center" title="Matriculados en el año escolar activo / capacidad">Matriculados</th>
                       <th style="text-align:center">Fecha de Registro</th>
                       <th style="text-align:center">Estado</th>
                       <th style="text-align:center">Acción</th>
@@ -109,6 +110,10 @@
             <label for="">Descripción<b style="color:red">(*)</b>:</label>
             <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
+          <div class="col-6 form-group">
+            <label for="">Capacidad (vacantes):</label>
+            <input type="number" min="1" class="form-control" id="txt_capacidad" placeholder="Sin límite">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -151,6 +156,10 @@
           <div class="col-12 form-group">
             <label for="">Descripción<b style="color:red">(*)</b>:</label>
             <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;"></textarea>
+          </div>
+          <div class="col-6 form-group">
+            <label for="">Capacidad (vacantes):</label>
+            <input type="number" min="1" class="form-control" id="txt_capacidad_editar" placeholder="Sin límite">
           </div>
           <div class="col-12 form-group">
             <label for="">Estado<b style="color:red">(*)</b>:</label>

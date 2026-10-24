@@ -72,6 +72,11 @@ function listar_aulas(){
         }
         },
         {"data":"descripcion"},
+        {"data":"matriculados", render: function(data, type, row) {
+            if (!row.capacidad) { return data + ' <small class="text-muted">(sin límite)</small>'; }
+            return '<span class="badge ' + (Number(data) >= Number(row.capacidad) ? 'bg-danger' : 'bg-success') + '">' + data + ' / ' + row.capacidad + '</span>';
+          }
+        },
         {"data":"fecha_formateada"},
         {"data":"estado",
             render: function(data,type,row){
@@ -174,6 +179,11 @@ function listar_aulas_filtro(){
       }
       },
       {"data":"descripcion"},
+      {"data":"matriculados", render: function(data, type, row) {
+          if (!row.capacidad) { return data + ' <small class="text-muted">(sin límite)</small>'; }
+          return '<span class="badge ' + (Number(data) >= Number(row.capacidad) ? 'bg-danger' : 'bg-success') + '">' + data + ' / ' + row.capacidad + '</span>';
+        }
+      },
       {"data":"fecha_formateada"},
       {"data":"estado",
           render: function(data,type,row){
@@ -260,6 +270,7 @@ $('#tabla_aulas').on('click','.editar',function(){
   $("#select_nivel_aca_editar").select2().val(data.id_nivel_academico).trigger('change.select2');
   document.getElementById('txt_descripcion_editar').value=data.descripcion;
   document.getElementById('txt_estatus').value=data.estado;
+  document.getElementById('txt_capacidad_editar').value=data.capacidad || '';
 })
 
 //ABRIENDO MODAL REGISTRO
@@ -285,7 +296,8 @@ function Registrar_aula(){
         grado:grado,
         seccion:seccion,
         nivel:nivel,
-        descrip:descrip
+        descrip:descrip,
+        capacidad:document.getElementById('txt_capacidad').value
     }
   }).done(function(resp){
     if(resp>0){
@@ -326,7 +338,8 @@ function Modificar_Rol(){
       seccion:seccion,
       nivel:nivel,
       descrip:descrip,
-      estatus:estatus
+      estatus:estatus,
+      capacidad:document.getElementById('txt_capacidad_editar').value
     }
   }).done(function(resp){
     if(resp>0){
@@ -335,6 +348,8 @@ function Modificar_Rol(){
             tbl_aulas.ajax.reload();
             $("#modal_editar").modal('hide');
         });
+      }else if(resp==3){
+        Swal.fire("Mensaje de Advertencia","La capacidad no puede ser menor que los alumnos ya matriculados en el año escolar activo.","warning");
       }else{
         Swal.fire("Mensaje de Advertencia","El grado académico que intentas actualizar ya se encuentra en la base de datos, revise por favor.","warning");
       }

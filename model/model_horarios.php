@@ -264,6 +264,35 @@
             }
             conexionBD::cerrar_conexion();
         }
+        // Registra varios bloques de horario en una sola transacción (Fase 8D): si alguno cruza el aula o el docente
+        // (con lo ya guardado o con otra fila del mismo envío) no se guarda ninguno.
+        // Devuelve ['codigo' => 1 ok | 2 nada nuevo | 3 cruce | 0 inválido, 'mensaje' => ..., 'nuevos' => n]
+        public function Registrar_Horarios_Lote(array $bloques){
+            $c = conexionBD::conexionPDO();
+            $nuevos = 0;
+            try {
+                $c->beginTransaction();
+                foreach ($bloques as $b) {
+                    $q = $c->prepare("CALL SP_REGISTRAR_HORARIO_AULA(?, ?, ?)");
+                    $q->execute([$b['idhora'], $b['idasig'], $b['dia']]);
+                    $r = $q->fetch(PDO::FETCH_ASSOC);
+                    $q->closeCursor();
+                    if ((int) $r['codigo'] === 1) { $nuevos++; continue; }
+                    if ((int) $r['codigo'] === 2) { continue; }
+                    $c->rollBack();
+                    conexionBD::cerrar_conexion();
+                    return ['codigo' => (int) $r['codigo'] === 0 ? 0 : 3, 'mensaje' => $r['mensaje'], 'nuevos' => 0];
+                }
+                $c->commit();
+            } catch (PDOException $e) {
+                if ($c->inTransaction()) { $c->rollBack(); }
+                error_log('Registrar_Horarios_Lote: ' . $e->getMessage());
+                conexionBD::cerrar_conexion();
+                return ['codigo' => 0, 'mensaje' => 'No se pudo guardar el horario', 'nuevos' => 0];
+            }
+            conexionBD::cerrar_conexion();
+            return ['codigo' => $nuevos > 0 ? 1 : 2, 'mensaje' => $nuevos > 0 ? "$nuevos bloque(s) registrado(s)" : 'No hay bloques nuevos', 'nuevos' => $nuevos];
+        }
     }
 
 

@@ -64,12 +64,11 @@
             $query ->bindParam(4,$diagno);
             $query ->bindParam(5,$observa);
             $query ->bindParam(6,$idusu);
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            // 1 si se modificó (el registro existe y es de este tipo de atención), 0 si no
+            $query->execute();
+            $r = (int) $query->fetchColumn();
+            conexionBD::cerrar_conexion();
+            return $r;
             conexionBD::cerrar_conexion();
         }
        

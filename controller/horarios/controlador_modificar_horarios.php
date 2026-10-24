@@ -1,39 +1,18 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
-require '../../model/model_horarios.php';
-$MH = new Modelo_Horarios();
-
-$horas_aula = json_decode($_POST['componentes'], true); // Decodificar JSON a un array PHP
-$exito = true; // Bandera de éxito global
-$registros_nuevos = false; // Bandera para detectar si algunos registros son nuevos
-
-foreach ($horas_aula as $hora) {
-    // Llamar al método para modificar el registro de hora y aula
-    $resultado = $MH->Modificar_Horario(
-        $hora['idhora'],   // ID de la hora
-        $hora['idasig'],   // ID de la asignatura
-        $hora['dia']       // Día del horario
-    );
-
-    if ($resultado == 1) {
-        // Registro de hora y aula modificado
-        $registros_nuevos = true; // Detectar si al menos uno fue registrado
-    } elseif ($resultado == 0) {
-        // Si el registro ya existe o no se realizó ninguna modificación, no hacemos nada
-    } else {
-        // Si ocurre algún error, marcamos como fallo
-        $exito = false;
-        break;
+require_once __DIR__ . '/../../utilitario/validacion.php';
+    require '../../model/model_horarios.php';
+    $MHR = new Modelo_Horarios();
+    // Bloques [{idhora, idasig, dia}]: se guardan todos o ninguno; un cruce de aula o de docente se explica en el mensaje
+    $bloques = json_decode($_POST['componentes'] ?? '', true);
+    if (!is_array($bloques) || !$bloques || count($bloques) > 200) {
+        denegar(400, 'No hay bloques de horario para guardar');
     }
-}
-
-if ($exito) {
-    if ($registros_nuevos) {
-        echo 1; // Algunos registros fueron modificados
-    } else {
-        echo 2; // No se modificaron nuevos registros
+    foreach ($bloques as $b) {
+        if (!is_array($b) || !filter_var($b['idhora'] ?? null, FILTER_VALIDATE_INT) || !filter_var($b['idasig'] ?? null, FILTER_VALIDATE_INT)
+            || !in_array($b['dia'] ?? '', ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'], true)) {
+            denegar(400, 'Bloque de horario inválido');
+        }
     }
-} else {
-    echo 0; // Error en la modificación
-}
+    responder_json($MHR->Registrar_Horarios_Lote($bloques));
 ?>

@@ -27,7 +27,6 @@ return [
         'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/asignatura_docente/controlador_cargar_select_asignatura.php' => ['ESTUDIANTE'],
         'controller/asignatura_docente/controlador_detalle_asignatura_docente.php' => ['ESTUDIANTE'],
-        'controller/asignatura_docente/controlador_eliminar_asignatura_unica.php' => ['ESTUDIANTE'],
         'controller/asignatura_docente/controlador_listar_tabla_detalle_curso.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // asignaturas
         'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
@@ -51,14 +50,14 @@ return [
         // atencion_enfermeria
         'controller/atencion_enfermeria/controlador_listar_atención_enfermeria.php' => ['ENFERMERA'],
         'controller/atencion_enfermeria/controlador_listar_atención_enfermeria_filtros.php' => ['ENFERMERA'],
-        'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php' => ['ENFERMERA', 'PSICOLOGA'],
-        'controller/atencion_enfermeria/controlador_registro_enfermeria.php' => ['ENFERMERA', 'PSICOLOGA'],
+        'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php' => ['ENFERMERA'],
+        'controller/atencion_enfermeria/controlador_registro_enfermeria.php' => ['ENFERMERA'],
         // atencion_psicologica
         'controller/atencion_psicologica/controlador_cargar_matriculado_año.php' => ['ENFERMERA', 'PSICOLOGA'],
         'controller/atencion_psicologica/controlador_listar_atención_psicologica.php' => ['PSICOLOGA'],
         'controller/atencion_psicologica/controlador_listar_atención_psicologica_filtros.php' => ['PSICOLOGA'],
-        'controller/atencion_psicologica/controlador_modificar_atencion_psico.php' => ['ENFERMERA', 'PSICOLOGA'],
-        'controller/atencion_psicologica/controlador_registro_psicologia.php' => ['ENFERMERA', 'PSICOLOGA'],
+        'controller/atencion_psicologica/controlador_modificar_atencion_psico.php' => ['PSICOLOGA'],
+        'controller/atencion_psicologica/controlador_registro_psicologia.php' => ['PSICOLOGA'],
         // aula_horas
         'controller/aula_horas/controlador_eliminar_aula_horas.php' => ['AUXILIAR'],
         'controller/aula_horas/controlador_eliminar_horas_curso_unico.php' => ['AUXILIAR'],
@@ -127,8 +126,8 @@ return [
         'controller/horarios/controlador_listar_horarios_estudiante_todo.php' => ['ESTUDIANTE'],
         'controller/horarios/controlador_listar_horarios_filtro.php' => ['AUXILIAR'],
         'controller/horarios/controlador_listar_horarios_id.php' => ['AUXILIAR', 'ESTUDIANTE'],
-        'controller/horarios/controlador_modificar_horarios.php' => ['AUXILIAR', 'ESTUDIANTE'],
-        'controller/horarios/controlador_registro_horario_aula.php' => ['AUXILIAR', 'ESTUDIANTE'],
+        'controller/horarios/controlador_modificar_horarios.php' => ['AUXILIAR'],
+        'controller/horarios/controlador_registro_horario_aula.php' => ['AUXILIAR'],
         // indicadores
         'controller/indicadores/controlador_eliminar_indicador.php' => ['CONTADOR'],
         'controller/indicadores/controlador_listar_grupos.php' => ['CONTADOR'],

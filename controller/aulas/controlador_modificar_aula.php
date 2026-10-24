@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
+require_once __DIR__ . '/../../utilitario/validacion.php';
     require '../../model/model_aulas.php';
     $MAU = new Modelo_Aulas();//Instaciamos
     $id = strtoupper(htmlspecialchars($_POST['id'],ENT_QUOTES,'UTF-8'));
@@ -9,7 +10,9 @@ require_once __DIR__ . '/../_seguridad.php';
     $descrip = strtoupper(htmlspecialchars($_POST['descrip'],ENT_QUOTES,'UTF-8'));
     $estatus = strtoupper(htmlspecialchars($_POST['estatus'],ENT_QUOTES,'UTF-8'));
 
-    $consulta = $MAU->Modificar_Aulas($id,$grado,$seccion,$nivel,$descrip,$estatus);
+    // Capacidad: vacía = sin límite de vacantes
+    $capacidad = trim($_POST['capacidad'] ?? '') === '' ? null : entero_post('capacidad', 1, 'capacidad');
+    $consulta = $MAU->Modificar_Aulas($id,$grado,$seccion,$nivel,$descrip,$estatus,$capacidad);
     echo $consulta;
 
 

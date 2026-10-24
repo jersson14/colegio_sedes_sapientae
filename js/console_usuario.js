@@ -516,7 +516,6 @@ function Traer_Datos(){
       id: id,
     }
   }).done(function(resp) {
-    console.log(resp); // Para verificar la respuesta
     let data = JSON.parse(resp);
 
     if (data.length > 0) {
@@ -529,7 +528,12 @@ function Traer_Datos(){
       document.getElementById('txt_seccion').value = estudiante.seccion_nombre;
       document.getElementById('txttipo_alum').value = estudiante.tipo_alum;
       document.getElementById('txt_proceden').value = estudiante.departamento;
-      const fechaPago = estudiante.FECHA_pago; // "21-09-2024"
+      const fechaPago = estudiante.FECHA_pago; // "21-09-2024"; vacío si aún no tiene pagos de pensión
+      document.getElementById('txt_mes_siguiente').value = estudiante.Mes_Toca_Pagar || '';
+      if (!fechaPago) {
+        document.getElementById('txt_ultimo_pago').value = 'Sin pagos registrados';
+        return;
+      }
 
       // Dividir la fecha en partes
       const partes = fechaPago.split("-");

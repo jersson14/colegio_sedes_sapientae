@@ -426,7 +426,7 @@ Aplicar en cada módulo una vez cerradas las fases 1–3 (dependen de la segurid
 | **8A** | Integridad de datos: pensiones por año escolar, usuarios únicos, categorías con grupo | ✅ 2026-10-24 |
 | **8B** | Planilla del personal administrativo (misma estructura que la docente) y asistencia docente para las horas de la planilla | ✅ 2026-10-24 |
 | **8C** | Seguridad en pantallas: escapar los datos que muestran las tablas (DataTables) en todos los módulos; validación de notas según la escala del país | ✅ 2026-10-24 |
-| **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, adjuntos de comunicados, anti-spam del landing, auditoría de tablas financieras; **retirar módulos de otro proyecto que no existen en la BD** (empleado, tipo de documento, trámites/áreas: sus controladores muestran errores fatales de PHP con la ruta del servidor) | Pendiente |
+| **8D** | Matrícula (vacantes por aula, becas/descuentos), choque de horarios, confidencialidad de enfermería/psicología, anti-spam del landing, auditoría de tablas financieras; retiro de módulos de otro proyecto | ✅ 2026-10-24 |
 
 ### Bloque 8A ✅ (2026-10-24)
 
@@ -495,7 +495,36 @@ Migración `database/migraciones/010_escala_notas.sql`.
 
 > **Herramientas de prueba en el repositorio (`tests/`).** Hasta la Fase 8B las suites vivían en una carpeta temporal de la sesión, que se borró el 2026-10-24. Se recrearon en `tests/` las de las Fases 7, 8A, 8B y 8C, la prueba de escapado en el navegador, el reinicio de la base de prueba y la revisión de todas las vistas (`tests/ejecutar_todo.sh`). Las suites de las Fases 1–6 y el generador de `controller/_permisos.php` se perdieron: rehacerlas es parte de la Fase 9. Mientras tanto, un controlador nuevo para un rol distinto de ADMINISTRADOR se agrega a mano en `controller/_permisos.php`.
 
-### Mejoras por módulo (pendientes, bloque 8D)
+### Bloque 8D ✅ (2026-10-24)
+
+Migración `database/migraciones/011_matricula_horarios_salud_auditoria.sql`, generada con `database/generadores/generar_011.php` (toma los procedimientos vigentes y las columnas reales de cada tabla).
+
+**Limpieza**
+- [x] Retirados los módulos de otro proyecto (empleado, tipo de documento, áreas y trámites: 39 archivos). No estaban en el menú y sus tablas no existen; respondían con errores fatales de PHP que mostraban la ruta del servidor.
+
+**Permisos corregidos** (errores del mapeo automático por nombres de función)
+- [x] El **estudiante podía registrar y modificar horarios** y eliminar asignaciones de cursos de docentes: ahora solo el auxiliar (y el administrador).
+- [x] **Confidencialidad de salud**: la enfermera podía registrar y modificar atenciones psicológicas y la psicóloga las de enfermería. Ahora cada una solo las suyas, y los procedimientos de modificación filtran por tipo (con el id de otro tipo no se modifica nada).
+
+**Matrícula: becas y vacantes**
+- [x] **Beca o descuento** por matrícula (botón *Beca* en Matrículas): porcentaje o monto por pensión, con motivo y fecha desde (se aplica a las pensiones que vencen desde esa fecha; lo cobrado no cambia). El precio con beca lo usan el cobro, la corrección de pagos, la morosidad, la proyección y el panel (`FN_PRECIO_PENSION`).
+- [x] **Capacidad por aula** (opcional; vacía = sin límite) y columna *Matriculados / capacidad* en Aulas. No se matricula (ni se cambia de aula) a un aula llena; la capacidad no puede bajar de los matriculados del año activo.
+
+**Horarios sin cruces**
+- [x] Al registrar o editar el horario se rechaza el bloque si **el aula ya tiene otro curso** a esa hora o si **el docente ya dicta en otra aula** en un horario que se superpone (se explica cuál). Todas las filas se guardan en una transacción: si una cruza, no se guarda ninguna (antes quedaban horarios a medias).
+
+**Formulario público (landing)**
+- [x] Campo trampa oculto, tiempo mínimo de 3 s con el formulario abierto, máximo 3 solicitudes por hora por IP y largo máximo de los campos. Se quitó `Access-Control-Allow-Origin: *` y el detalle de errores internos en la respuesta.
+
+**Auditoría**
+- [x] Tabla `auditoria` llenada por triggers en 19 tablas (recibos, formas de pago, pagos de pensión, ingresos, egresos, pensiones, matrículas y becas, cajas, transferencias, cierres, formas de pago, planillas, contratos, conceptos, categorías, configuración del colegio y usuarios): quién, cuándo, desde qué IP, antes y después. La contraseña solo se informa como "cambiada". Los cambios sin efecto real no se registran.
+- [x] Pantalla **Configuración → Auditoría** (solo administrador) con filtros por tabla, fechas y número de registro; muestra campo por campo qué cambió; exportable a Excel.
+
+**Ya resuelto en fases anteriores:** imágenes de comunicados validadas (Fase 1).
+
+**Pruebas**: Bloque 8D 44/44 (`tests/pruebas_fase8d.sh`).
+
+### Mejoras por módulo (pendientes para después de la Fase 8)
 
 | Módulo | Mejoras |
 |--------|---------|
