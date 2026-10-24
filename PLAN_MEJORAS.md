@@ -24,7 +24,7 @@ Este documento sirve para avanzar **por fases**. Cada fase es entregable por sí
 - [Fase 2 – Corrección de lógica en módulos existentes](#fase-2--corrección-de-lógica-en-módulos-existentes--2026-10-23) ✅
 - [Fase 3 – Configuración regional (Latinoamérica)](#fase-3--configuración-regional-latinoamérica--2026-10-23) ✅
 - [Fase 4 – Métodos de pago, cuentas y recibos](#fase-4--métodos-de-pago-cuentas-y-recibos--2026-10-23) ✅
-- [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora)
+- [Fase 5 – Módulo de contabilidad (rol Contador/a)](#fase-5--módulo-de-contabilidad-rol-contadora--2026-10-23) ✅
 - [Fase 6 – Pago a docentes (planilla)](#fase-6--pago-a-docentes-planilla)
 - [Fase 7 – Reportes financieros y utilidades](#fase-7--reportes-financieros-y-utilidades)
 - [Fase 8 – Mejoras generales por módulo](#fase-8--mejoras-generales-por-módulo)
@@ -297,42 +297,52 @@ Migración `database/migraciones/004_metodos_pago_recibos.sql` (aplicada en `col
 
 ---
 
-## Fase 5 – Módulo de contabilidad (rol Contador/a)
+## Fase 5 – Módulo de contabilidad (rol Contador/a) ✅ (2026-10-23)
 
 **Objetivo:** que la contadora maneje todo el dinero del colegio desde un solo módulo.
 
+Migración `database/migraciones/005_contabilidad.sql` (aplicada en `colegio2` tras el respaldo `respaldos/colegio2_*_antes_005.sql`). Totales sin cambio (ingresos 9 490.00, egresos 1 751.99).
+
 ### 5.1 Rol y menú
-- [ ] Insertar rol `CONTADOR` en `roles` y permitir crear usuarios contadores (`personal_admi.personal_adm_tipo = 'CONTADOR'`).
-- [ ] En `view/index.php` agregar bloque de menú para `CONTADOR`:
-  - Dashboard financiero
-  - Pensiones y cobranzas (consultar, registrar pagos, morosos)
-  - Ingresos
-  - Egresos
-  - Pago a docentes / planilla
-  - Cuentas y cajas (movimientos, depósitos, transferencias)
-  - Reportes y utilidades
-  - Configuración contable (categorías, métodos de pago, cuentas)
-- [ ] El CONTADOR **no** ve notas, tareas, enfermería ni psicología.
+- [x] Rol **CONTADOR** creado. Se registra como cualquier personal administrativo eligiendo el tipo "CONTADOR" (el usuario ya no se corta a 20 caracteres).
+- [x] Menú propio: **Cobranzas** (Pago de pensiones, Pensiones), **Ingresos y egresos** (Ingresos, Egresos, Categorías), **Cajas y bancos**, **Formas de pago y cuentas**.
+- [x] Panel de inicio: ingresos y egresos de hoy y del mes, resultado del mes, recibos emitidos hoy y saldo de cada caja/cuenta con su último cierre.
+- [x] El CONTADOR **no** accede a alumnos, usuarios, notas, tareas, enfermería ni psicología (permisos generados desde su menú; probado).
+- [x] El ADMINISTRADOR también tiene "Cajas y bancos".
+- [ ] Planilla docente → Fase 6. Reportes de utilidades → Fase 7.
 
 ### 5.2 Categorías contables
-- [ ] Ampliar `indicadores` (hoy `GASTOS`/`INGRESOS`) a un **plan de cuentas simplificado** con jerarquía: `codigo`, `nombre`, `tipo` (INGRESO/EGRESO), `padre_id`.
-  - Ingresos: Pensiones, Matrículas, Admisión, Moras, Otros ingresos (uniformes, eventos, certificados…)
-  - Egresos: **Remuneraciones docentes**, Remuneraciones administrativas, Servicios (luz, agua, internet), Alquiler, Mantenimiento, Materiales, Impuestos, Comisiones bancarias, Otros
-- [ ] Migrar los indicadores existentes a la nueva estructura sin perder los movimientos.
+- [x] `indicadores` con `codigo`, `padre_id` y `es_grupo`: **plan de cuentas simplificado** con grupos 4.1 Ingresos académicos, 4.2 Otros ingresos, 5.1 Remuneraciones (docentes / administrativas), 5.2 Servicios básicos, 5.3 Alquiler y mantenimiento, 5.4 Materiales, 5.5 Impuestos y comisiones (comisiones bancarias), 5.9 Otros egresos.
+- [x] Las categorías existentes se ubicaron en su grupo (pensiones → académicos, uniformes → otros ingresos, luz y agua → servicios). Los grupos no se pueden elegir en un movimiento; los selectores muestran "GRUPO › categoría".
+- [ ] Elegir el grupo al crear una categoría desde la pantalla Categorías (hoy queda sin grupo) → Fase 8.
 
 ### 5.3 Movimientos de caja y bancos
-- [ ] Tabla `movimientos_cuenta`: `cuenta_id`, `fecha`, `tipo` (INGRESO/EGRESO/TRANSFERENCIA_ENTRADA/TRANSFERENCIA_SALIDA/AJUSTE), `monto`, `origen` (PAGO_PENSION, EGRESO, PAGO_DOCENTE, DEPOSITO, MANUAL), `origen_id`, `referencia`, `usuario_id`, `estado`.
-- [ ] Todo ingreso y egreso afecta una cuenta → saldo de cada caja/banco siempre calculable.
-- [ ] **Depósitos:** pasar efectivo de caja a una cuenta bancaria (2 movimientos enlazados) con n.° de operación y voucher.
-- [ ] Transferencias entre cuentas.
-- [ ] **Cierre de caja diario:** saldo inicial, ingresos, egresos, saldo esperado vs. contado, diferencia, observación, usuario.
-- [ ] Conciliación bancaria básica: marcar movimientos como "conciliados" contra el extracto.
+- [x] `movimientos_cuenta`: **libro único** de entradas y salidas de cada caja/cuenta, con origen (PAGO, INGRESO, EGRESO, TRANSFERENCIA, AJUSTE; PLANILLA para la Fase 6). Lo alimentan automáticamente:
+  - cada forma de pago de un recibo (pensiones y matrícula); al anular el recibo, sale de la caja;
+  - ingresos manuales y egresos (al modificarlos se actualiza el movimiento; al anularlos se anula);
+  - depósitos/transferencias y ajustes de cierre.
+- [x] **Saldo** de cada cuenta = saldo inicial (con su fecha) + movimientos válidos. No se puede gastar ni depositar más efectivo del que hay en una **caja**; un banco sí puede quedar en negativo (sobregiro o depósitos aún no registrados).
+- [x] **Depósitos** (caja → banco), **transferencias** entre cuentas y **retiros** (banco → caja), con n.° de operación; se pueden anular (revierte ambas cuentas).
+- [x] **Cierre de caja diario**: saldo al inicio, entradas, salidas, esperado vs. contado y diferencia; si hay diferencia exige explicación y, opcionalmente, registra un **ajuste** para que el saldo quede igual a lo contado. Un cierre por caja y día.
+- [x] **Conciliación bancaria**: en los movimientos de bancos/billeteras se marca cada uno como verificado contra el extracto.
+- [x] Pantalla **Cajas y bancos**: tarjetas con el saldo de cada cuenta, extracto por fechas con saldo acumulado, depósitos/transferencias y cierre de caja con historial.
 
-### 5.4 Egresos mejorados
-- [ ] Al registrar un egreso: categoría, proveedor/beneficiario, método de pago, cuenta de salida, n.° de comprobante (factura/boleta/recibo), adjunto.
-- [ ] Egresos que provienen de planilla docente se generan automáticamente (Fase 6) y no se editan a mano.
+### 5.4 Egresos e ingresos mejorados
+- [x] Egreso: fecha (no futura), categoría, forma de pago, **caja/cuenta de salida**, n.° de operación, **beneficiario/proveedor**, **n.° de comprobante** y **comprobante escaneado** opcional (carpeta protegida; se abre con sesión).
+- [x] Ingreso manual: fecha, forma de pago, caja/cuenta de entrada y referencia.
+- [x] Listados con columna "Forma de pago" (método · cuenta, beneficiario, comprobante y enlace al adjunto).
+- [x] **Corregido:** el filtro de ingresos/egresos combinaba categoría **O** fechas (filtrar "luz en octubre" traía toda la luz de cualquier fecha y todo octubre); ahora es categoría **Y** fechas.
+- [x] **Corregido:** "Ingresos diversos" mostraba también los ingresos de pensiones del día.
+- [x] **Corregido:** el PHP del servidor usa `Europe/Berlin` en `php.ini`; las fechas de PHP iban 6–7 horas adelantadas a las de MySQL (por la noche un egreso "de hoy" se rechazaba como futuro). Ahora la zona horaria configurada se aplica al iniciar cada petición.
+- [ ] Los egresos de la planilla docente se generarán solos en la Fase 6.
 
-**Criterio de cierre:** la contadora inicia sesión, ve solo su menú, registra un egreso con cuenta y comprobante, deposita el efectivo del día al banco y el saldo de ambas cuentas cuadra.
+### Pruebas (BD `colegio2_test`)
+- HTTP Fase 5: **53/53** — menú y panel del contador, permisos (sí egresos/cajas; no alumnos/usuarios; docente no entra a contabilidad), saldo inicial, cobro en efectivo suma a la caja, egresos (grupo y fecha futura rechazados, saldo insuficiente en caja, banco en negativo, operación obligatoria, comprobante PDF), modificar/anular egreso ajusta la caja, filtro categoría Y fecha, ingreso al banco, depósito (con y sin saldo, misma cuenta, anulación), recibo anulado sale de la caja, extracto = saldo, conciliación, cierre con faltante y ajuste, matrícula en efectivo entra a la caja, integridad (cada forma de pago y cada egreso con cuenta tiene su movimiento).
+- Regresión: Fase 1 **43/43**, Fase 2 **41/41**, Fase 3 **26/26**, Fase 4 **45/45**; panel y vistas de 6 roles (incluido CONTADOR) sin errores.
+
+**Criterio de cierre:** ✅ la contadora inicia sesión, ve solo su menú, registra un egreso con cuenta y comprobante, deposita el efectivo del día al banco y el saldo de ambas cuentas cuadra.
+
+> **Antes de usarlo en el colegio:** en *Formas de pago y cuentas* poner el **saldo inicial** real de la caja y de cada banco con la fecha desde la que se lleva el control; luego crear el usuario de la contadora en *Personal administrativo* con tipo **CONTADOR**.
 
 ---
 

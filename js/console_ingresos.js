@@ -65,6 +65,9 @@ function listar_ingresos_diversos(){
               }
       }   
       },        {"data":"observacion"},
+      {"data":"metodo", render: function(data,type,row){
+          return data ? $('<div>').text(data + (row.cuenta ? ' · ' + row.cuenta : '')).html() : '-';
+      }},
 
         {"data":"fecha_formateada"},
         {"data":"estado",
@@ -172,6 +175,9 @@ function listar_ingresos_diversos_filtro(){
             }
     }   
     },        {"data":"observacion"},
+      {"data":"metodo", render: function(data,type,row){
+          return data ? $('<div>').text(data + (row.cuenta ? ' · ' + row.cuenta : '')).html() : '-';
+      }},
 
       {"data":"fecha_formateada"},
       {"data":"estado",
@@ -243,6 +249,10 @@ $('#tabla_ingresos_diversos').on('click','.editar',function(){
   document.getElementById('txt_cantidad_editar').value=data.cantidad;
   document.getElementById('txt_monto_editar').value=data.monto;
   document.getElementById('txt_observación_editar').value=data.observacion;
+  $("#txt_fecha_editar").val(data.created_at);
+  $("#txt_referencia_editar").val(data.referencia || '');
+  prepararFormaPago('#select_metodo_editar', '#select_cuenta_editar', '#txt_referencia_editar',
+                    {metodo: data.metodo_pago_id, cuenta: data.cuenta_id, metodo_nombre: data.metodo});
 
 })
 
@@ -250,6 +260,8 @@ $('#tabla_ingresos_diversos').on('click','.editar',function(){
 function AbrirRegistro(){
   $("#modal_registro").modal({backdrop:'static',keyboard:false})
   $("#modal_registro").modal('show');
+  $("#txt_fecha").val(new Date().toLocaleDateString('en-CA'));
+  prepararFormaPago('#select_metodo', '#select_cuenta', '#txt_referencia');
 }
 
 //REGISTRANDO NIVEL ACADEMICO
@@ -277,19 +289,23 @@ function Registrar_ingreso() {
       cantidad: cantidad,
       monto: monto,
       obse: obse,
-      usu: usu
+      fecha: $("#txt_fecha").val(),
+      metodo: $("#select_metodo").val(),
+      cuenta: $("#select_cuenta").val(),
+      referencia: $("#txt_referencia").val()
     }
   }).done(function (resp) {
-    if (resp > 0) {
+    if (resp.codigo == 1) {
       Swal.fire("Mensaje de Confirmación", "¡Nuevo ingreso registrado satisfactoriamente!", "success").then((value) => {
         document.getElementById('txt_cantidad').value = "";
         document.getElementById('txt_monto').value = "";
         document.getElementById('txt_observación').value = "";
+        $("#txt_referencia").val("");
         tbl_ingresos_diversos.ajax.reload();
         $("#modal_registro").modal('hide');
       });
     } else {
-      Swal.fire("Mensaje de Error", "No se completó el registro", "error");
+      Swal.fire("Mensaje de Advertencia", resp.mensaje, "warning");
     }
   });
 }
@@ -319,17 +335,21 @@ function Modificar_Ingreso(){
       cantidad:cantidad,
       monto:monto,
       obser:obser,
-      usu:usu
+      usu:usu,
+      fecha: $("#txt_fecha_editar").val(),
+      metodo: $("#select_metodo_editar").val(),
+      cuenta: $("#select_cuenta_editar").val(),
+      referencia: $("#txt_referencia_editar").val(),
     }
   }).done(function(resp){
-    if(resp>0){
+    if(resp.codigo==1){
         Swal.fire("Mensaje de Confirmación","Datos actualizados correctamente","success").then((value)=>{
         tbl_ingresos_diversos.ajax.reload();
         $("#modal_editar").modal('hide');
         });
     
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Advertencia",resp.mensaje,"warning");
     }
   })
 }

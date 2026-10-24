@@ -76,42 +76,21 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Ingresos($indi,$cantidad,$monto,$obse,$usu){
+        public function Registrar_Ingresos($indi,$cantidad,$monto,$obse,$usu,$fecha,$metodo,$cuenta,$ref){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_INGRESOS(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$indi);
-            $query ->bindParam(2,$cantidad);
-            $query ->bindParam(3,$monto);
-            $query ->bindParam(4,$obse);
-            $query ->bindParam(5,$usu);
-
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            $query = $c->prepare("CALL SP_REGISTRAR_INGRESOS(?,?,?,?,?,?,?,?,?)");
+            $query->execute([$indi,$cantidad,$monto,$obse,$usu,$fecha,$metodo,$cuenta,$ref]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
             conexionBD::cerrar_conexion();
+            return $r;
         }
-        public function Modificar_Ingresos($id,$indi,$cantidad,$monto,$obser,$usu){
+        public function Modificar_Ingresos($id,$indi,$cantidad,$monto,$obser,$usu,$fecha,$metodo,$cuenta,$ref){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_INGRESOS(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$indi);
-            $query ->bindParam(3,$cantidad);
-            $query ->bindParam(4,$monto);
-            $query ->bindParam(5,$obser);
-            $query ->bindParam(6,$usu);
-          
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();;
+            $query = $c->prepare("CALL SP_MODIFICAR_INGRESOS(?,?,?,?,?,?,?,?,?,?)");
+            $query->execute([$id,$indi,$cantidad,$monto,$obser,$usu,$fecha,$metodo,$cuenta,$ref]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r;
         }
         public function Anular_Ingresos($id,$obser,$usu){
             $c = conexionBD::conexionPDO();

@@ -17,3 +17,7 @@ logs/*.log
 # Vouchers de pago subidos
 controller/pago_pension/vouchers/*
 !controller/pago_pension/vouchers/.htaccess
+
+# Comprobantes de egresos subidos
+controller/egresos/comprobantes/*
+!controller/egresos/comprobantes/.htaccess

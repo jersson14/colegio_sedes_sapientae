@@ -19,6 +19,10 @@ function iniciar_sesion_segura() {
         'samesite' => 'Lax',
     ]);
     session_start();
+    // Zona horaria del país configurado desde el inicio de la petición: así date() en PHP coincide con
+    // CURDATE()/NOW() de MySQL (el php.ini del servidor puede tener otra, p. ej. Europe/Berlin)
+    require_once __DIR__ . '/regional.php';
+    date_default_timezone_set(config_regional()['zona_horaria']);
 }
 
 function hay_sesion() {

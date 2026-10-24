@@ -76,42 +76,22 @@
             return $arreglo;
             conexionBD::cerrar_conexion();
         }
-        public function Registrar_Egreso($indi,$cantidad,$monto,$obse,$usu){
+        // Devuelve ['codigo'=>1|0|3, 'mensaje'=>..., 'id'=>...] (3 = saldo de caja insuficiente)
+        public function Registrar_Egreso($indi,$cantidad,$monto,$obse,$usu,$fecha,$metodo,$cuenta,$ref,$benef,$comprob,$adjunto){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_REGISTRAR_EGRESOS(?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$indi);
-            $query ->bindParam(2,$cantidad);
-            $query ->bindParam(3,$monto);
-            $query ->bindParam(4,$obse);
-            $query ->bindParam(5,$usu);
-
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
+            $query = $c->prepare("CALL SP_REGISTRAR_EGRESOS(?,?,?,?,?,?,?,?,?,?,?,?)");
+            $query->execute([$indi,$cantidad,$monto,$obse,$usu,$fecha,$metodo,$cuenta,$ref,$benef,$comprob,$adjunto]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
             conexionBD::cerrar_conexion();
+            return $r;
         }
-        public function Modificar_Egresos($id,$indi,$cantidad,$monto,$obser,$usu){
+        public function Modificar_Egresos($id,$indi,$cantidad,$monto,$obser,$usu,$fecha,$metodo,$cuenta,$ref,$benef,$comprob){
             $c = conexionBD::conexionPDO();
-            $sql = "CALL SP_MODIFICAR_EGRESOS(?,?,?,?,?,?)";
-            $query  = $c->prepare($sql);
-            $query ->bindParam(1,$id);
-            $query ->bindParam(2,$indi);
-            $query ->bindParam(3,$cantidad);
-            $query ->bindParam(4,$monto);
-            $query ->bindParam(5,$obser);
-            $query ->bindParam(6,$usu);
-          
-            $resul = $query->execute();
-            if($resul){
-                return 1;
-            }else{
-                return 0;
-            }
-            conexionBD::cerrar_conexion();;
+            $query = $c->prepare("CALL SP_MODIFICAR_EGRESOS(?,?,?,?,?,?,?,?,?,?,?,?)");
+            $query->execute([$id,$indi,$cantidad,$monto,$obser,$usu,$fecha,$metodo,$cuenta,$ref,$benef,$comprob]);
+            $r = $query->fetch(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            return $r;
         }
         public function Anular_Egreso($id,$obser,$usu){
             $c = conexionBD::conexionPDO();

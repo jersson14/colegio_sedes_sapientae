@@ -66,6 +66,7 @@
                       <th style="text-align:center">Cantidad</th>
                       <th style="text-align:center">Monto Ingresado</th>
                       <th style="text-align:center">Observación</th>
+                      <th style="text-align:center">Forma de pago</th>
                       <th style="text-align:center">Fecha de Registro</th>
                       <th style="text-align:center">Estado</th>
 
@@ -223,7 +224,23 @@
           </div>
           <div class="col-6 form-group">
             <label for="">Monto<b style="color:red">(*)</b>:</label>
-            <input type="number" class="form-control" id="txt_monto"  placeholder="Ingrese el monto a registrar">
+            <input type="number" step="0.01" min="0" class="form-control" id="txt_monto"  placeholder="Ingrese el monto a registrar">
+          </div>
+          <div class="col-6 form-group">
+            <label>Fecha<b style="color:red">(*)</b>:</label>
+            <input type="date" class="form-control" id="txt_fecha">
+          </div>
+          <div class="col-6 form-group">
+            <label>Forma de pago<b style="color:red">(*)</b>:</label>
+            <select class="form-control" id="select_metodo" style="width:100%"></select>
+          </div>
+          <div class="col-6 form-group">
+            <label>Ingresa a (caja / cuenta)<b style="color:red">(*)</b>:</label>
+            <select class="form-control" id="select_cuenta" style="width:100%"></select>
+          </div>
+          <div class="col-6 form-group">
+            <label>N.° operación / referencia:</label>
+            <input type="text" class="form-control" id="txt_referencia" maxlength="60">
           </div>
           <div class="col-12 form-group">
             <label for="">Observación(Opcional):</label>
@@ -266,7 +283,23 @@
           </div>
           <div class="col-6 form-group">
             <label for="">Monto<b style="color:red">(*)</b>:</label>
-            <input type="number" class="form-control" id="txt_monto_editar"  placeholder="Ingrese el monto a registrar">
+            <input type="number" step="0.01" min="0" class="form-control" id="txt_monto_editar"  placeholder="Ingrese el monto a registrar">
+          </div>
+          <div class="col-6 form-group">
+            <label>Fecha<b style="color:red">(*)</b>:</label>
+            <input type="date" class="form-control" id="txt_fecha_editar">
+          </div>
+          <div class="col-6 form-group">
+            <label>Forma de pago<b style="color:red">(*)</b>:</label>
+            <select class="form-control" id="select_metodo_editar" style="width:100%"></select>
+          </div>
+          <div class="col-6 form-group">
+            <label>Ingresa a (caja / cuenta)<b style="color:red">(*)</b>:</label>
+            <select class="form-control" id="select_cuenta_editar" style="width:100%"></select>
+          </div>
+          <div class="col-6 form-group">
+            <label>N.° operación / referencia:</label>
+            <input type="text" class="form-control" id="txt_referencia_editar" maxlength="60">
           </div>
           <div class="col-12 form-group">
             <label for="">Observación(Opcional):</label>

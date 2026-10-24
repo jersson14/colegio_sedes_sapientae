@@ -499,8 +499,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_indicadores.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
-                        Indicadores
+                        Categorías
                       </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Cajas y bancos</p>
                     </a>
                   </li>
                 </ul>
@@ -576,6 +582,73 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <?php
             }
             ?>
+            <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
+              <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONTABILIDAD</b></li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-hand-holding-usd"></i>
+                  <p>
+                    Cobranzas
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Pago de pensiones</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Pensiones (precios y vencimientos)</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-coins"></i>
+                  <p>
+                    Ingresos y egresos
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Ingresos</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Egresos o gastos</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_indicadores.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Categorías</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
+                  <i class="nav-icon fas fa-university"></i>
+                  <p>Cajas y bancos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
+                  <i class="nav-icon fas fa-credit-card"></i>
+                  <p>Formas de pago y cuentas</p>
+                </a>
+              </li>
+            <?php } ?>
             <?php if ($_SESSION['S_ROL'] == "ENFERMERA") { ?>
               <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -1182,6 +1255,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <?php
       }
   ?>
+  <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
+    <!-- Panel del contador (Fase 5) -->
+    <div class="content">
+      <div class="container-fluid"><br>
+        <div class="row">
+          <div class="col-lg-2 col-6"><div class="small-box bg-success"><div class="inner"><h4 id="pc_ingresos_hoy">-</h4><p>Ingresos de hoy</p></div><div class="icon"><i class="fas fa-arrow-down"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-danger"><div class="inner"><h4 id="pc_egresos_hoy">-</h4><p>Egresos de hoy</p></div><div class="icon"><i class="fas fa-arrow-up"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-info"><div class="inner"><h4 id="pc_ingresos_mes">-</h4><p>Ingresos del mes</p></div><div class="icon"><i class="fas fa-calendar-plus"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-warning"><div class="inner"><h4 id="pc_egresos_mes">-</h4><p>Egresos del mes</p></div><div class="icon"><i class="fas fa-calendar-minus"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-primary"><div class="inner"><h4 id="pc_utilidad_mes">-</h4><p>Resultado del mes</p></div><div class="icon"><i class="fas fa-balance-scale"></i></div></div></div>
+          <div class="col-lg-2 col-6"><div class="small-box bg-secondary"><div class="inner"><h4 id="pc_recibos_hoy">-</h4><p>Recibos emitidos hoy</p></div><div class="icon"><i class="fas fa-receipt"></i></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title"><i class="fas fa-university"></i> <b>Saldos de cajas y cuentas</b></h3>
+            <a href="#" class="float-right" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php');return false;">Ir a Cajas y bancos <i class="fas fa-arrow-circle-right"></i></a></div>
+          <div class="card-body p-0">
+            <table class="table table-sm table-striped mb-0">
+              <thead><tr><th>Caja / cuenta</th><th>Tipo</th><th class="text-right">Entradas hoy</th><th class="text-right">Salidas hoy</th><th class="text-right">Saldo</th><th>Último cierre</th></tr></thead>
+              <tbody id="pc_cuentas"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php } ?>
   <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR") { ?>
 
     <!-- Main content -->
@@ -1821,6 +1919,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 <script>
+
+  // Panel de inicio del contador
+  function Panel_Contable() {
+    $.ajax({ url: "../controller/contabilidad/controlador_panel.php", type: 'POST' }).done(function(r) {
+      $("#pc_ingresos_hoy").text(formatoMoneda(r.ingresos_hoy));
+      $("#pc_egresos_hoy").text(formatoMoneda(r.egresos_hoy));
+      $("#pc_ingresos_mes").text(formatoMoneda(r.ingresos_mes));
+      $("#pc_egresos_mes").text(formatoMoneda(r.egresos_mes));
+      $("#pc_utilidad_mes").text(formatoMoneda(r.ingresos_mes - r.egresos_mes));
+      $("#pc_recibos_hoy").text(r.recibos_hoy);
+      let filas = "";
+      r.cuentas.forEach(function(c) {
+        filas += "<tr><td><b>" + $('<div>').text(c.nombre).html() + "</b></td><td>" + c.tipo + "</td><td class='text-right text-success'>" + formatoMoneda(c.entradas_hoy)
+               + "</td><td class='text-right text-danger'>" + formatoMoneda(c.salidas_hoy) + "</td><td class='text-right'><b>" + formatoMoneda(c.saldo)
+               + "</b></td><td>" + (c.ultimo_cierre || '<span class="text-muted">sin cierres</span>') + "</td></tr>";
+      });
+      $("#pc_cuentas").html(filas || "<tr><td colspan='6' class='text-center text-muted'>No hay cajas ni cuentas activas</td></tr>");
+    });
+  }
   function cargar_contenido(id, vista) {
     $("#" + id).load(vista, function() {
       aplicarRegional(this);
@@ -1919,6 +2036,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   window.REGIONAL = <?php echo json_encode(config_regional_publica(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;
 </script>
 <script src="../js/regional.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/formas_pago_comun.js?rev=<?php echo time(); ?>"></script>
 <!-- Bootstrap 4 -->
 <script src="../plantilla/plugins//bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
@@ -1957,6 +2075,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
     listar_tareas_menu();
     listar_examenes_menu();
+    <?php } ?>
+    <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
+    Panel_Contable();
     <?php } ?>
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
     Total_estudiantes();

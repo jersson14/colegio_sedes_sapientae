@@ -96,6 +96,16 @@ function guardar_voucher($voucher) {
     return move_uploaded_file($voucher['tmp'], $dir . '/' . $nombre) ? 'controller/pago_pension/vouchers/' . $nombre : null;
 }
 
+/** Guarda un archivo ya validado (validar_voucher_subido) en $carpeta_relativa; devuelve su ruta relativa a la raíz. */
+function guardar_archivo_validado($archivo, $carpeta_relativa, $prefijo) {
+    $dir = __DIR__ . '/../' . $carpeta_relativa;
+    if (!is_dir($dir)) {
+        mkdir($dir, 0750, true);
+    }
+    $nombre = $prefijo . '-' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.' . $archivo['ext'];
+    return move_uploaded_file($archivo['tmp'], $dir . '/' . $nombre) ? $carpeta_relativa . '/' . $nombre : null;
+}
+
 /**
  * Borra un archivo solo si está dentro de $carpeta_relativa (rutas relativas a la raíz del sistema)
  * y no es una imagen por defecto. Evita que una ruta enviada por el navegador borre otros archivos.

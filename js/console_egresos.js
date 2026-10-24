@@ -66,6 +66,13 @@ function listar_egresos_diversos(){
       }   
       },        
       {"data":"observacion"},
+      {"data":"metodo", render: function(data,type,row){
+          let t = data ? $('<div>').text(data + (row.cuenta ? ' · ' + row.cuenta : '')).html() : '-';
+          if (row.beneficiario) { t += '<br><small>' + $('<div>').text(row.beneficiario).html() + '</small>'; }
+          if (row.nro_comprobante) { t += '<br><small>Comp. ' + $('<div>').text(row.nro_comprobante).html() + '</small>'; }
+          if (row.adjunto) { t += ' <a href="../controller/egresos/controlador_ver_comprobante.php?id=' + row.id_egresos + '" target="_blank" title="Ver comprobante"><i class="fas fa-paperclip"></i></a>'; }
+          return t;
+      }},
 
         {"data":"fecha_formateada"},
         {"data":"estado",
@@ -173,6 +180,13 @@ function listar_egresos_diversos_filtro(){
             }
     }   
     },        {"data":"observacion"},
+      {"data":"metodo", render: function(data,type,row){
+          let t = data ? $('<div>').text(data + (row.cuenta ? ' · ' + row.cuenta : '')).html() : '-';
+          if (row.beneficiario) { t += '<br><small>' + $('<div>').text(row.beneficiario).html() + '</small>'; }
+          if (row.nro_comprobante) { t += '<br><small>Comp. ' + $('<div>').text(row.nro_comprobante).html() + '</small>'; }
+          if (row.adjunto) { t += ' <a href="../controller/egresos/controlador_ver_comprobante.php?id=' + row.id_egresos + '" target="_blank" title="Ver comprobante"><i class="fas fa-paperclip"></i></a>'; }
+          return t;
+      }},
 
       {"data":"fecha_formateada"},
       {"data":"estado",
@@ -245,6 +259,12 @@ $('#tabla_egresos_diversos').on('click','.editar',function(){
   document.getElementById('txt_cantidad_editar').value=data.cantidad;
   document.getElementById('txt_monto_editar').value=data.monto;
   document.getElementById('txt_observación_editar').value=data.observacion;
+  $("#txt_fecha_editar").val(data.created_at);
+  $("#txt_referencia_editar").val(data.referencia || '');
+  $("#txt_beneficiario_editar").val(data.beneficiario || '');
+  $("#txt_comprobante_editar").val(data.nro_comprobante || '');
+  prepararFormaPago('#select_metodo_editar', '#select_cuenta_editar', '#txt_referencia_editar',
+                    {metodo: data.metodo_pago_id, cuenta: data.cuenta_id, metodo_nombre: data.metodo});
 
 })
 
@@ -252,6 +272,8 @@ $('#tabla_egresos_diversos').on('click','.editar',function(){
 function AbrirRegistro(){
   $("#modal_registro").modal({backdrop:'static',keyboard:false})
   $("#modal_registro").modal('show');
+  $("#txt_fecha").val(new Date().toLocaleDateString('en-CA'));
+  prepararFormaPago('#select_metodo', '#select_cuenta', '#txt_referencia');
 }
 
 //REGISTRANDO NIVEL ACADEMICO
@@ -271,27 +293,37 @@ function Registrar_egreso() {
     return Swal.fire("Mensaje de Advertencia", "El indicador y cantidad son obligatorio llenar", "warning");
   }
 
+  let formData = new FormData();
+  formData.append('indi', indi);
+  formData.append('cantidad', cantidad);
+  formData.append('monto', monto);
+  formData.append('obse', obse);
+  formData.append('fecha', $("#txt_fecha").val());
+  formData.append('metodo', $("#select_metodo").val());
+  formData.append('cuenta', $("#select_cuenta").val());
+  formData.append('referencia', $("#txt_referencia").val());
+  formData.append('beneficiario', $("#txt_beneficiario").val());
+  formData.append('comprobante', $("#txt_comprobante").val());
+  let adjunto = $("#file_adjunto")[0] ? $("#file_adjunto")[0].files[0] : null;
+  if (adjunto) { formData.append('adjunto', adjunto); }
   $.ajax({
     url: "../controller/egresos/controlador_registrar_egreso.php",
     type: 'POST',
-    data: {
-      indi: indi,
-      cantidad: cantidad,
-      monto: monto,
-      obse: obse,
-      usu: usu
-    }
+    data: formData,
+    contentType: false,
+    processData: false
   }).done(function (resp) {
-    if (resp > 0) {
+    if (resp.codigo == 1) {
       Swal.fire("Mensaje de Confirmación", "¡Nuevo egreso registrado satisfactoriamente!", "success").then((value) => {
         document.getElementById('txt_cantidad').value = "";
         document.getElementById('txt_monto').value = "";
         document.getElementById('txt_observación').value = "";
+        $("#txt_referencia, #txt_beneficiario, #txt_comprobante, #file_adjunto").val("");
         tbl_egresos_diversos.ajax.reload();
         $("#modal_registro").modal('hide');
       });
     } else {
-      Swal.fire("Mensaje de Error", "No se completó el registro", "error");
+      Swal.fire("Mensaje de Advertencia", resp.mensaje, "warning");
     }
   });
 }
@@ -321,17 +353,23 @@ function Modificar_Egreso(){
       cantidad:cantidad,
       monto:monto,
       obser:obser,
-      usu:usu
+      usu:usu,
+      fecha: $("#txt_fecha_editar").val(),
+      metodo: $("#select_metodo_editar").val(),
+      cuenta: $("#select_cuenta_editar").val(),
+      referencia: $("#txt_referencia_editar").val(),
+      beneficiario: $("#txt_beneficiario_editar").val(),
+      comprobante: $("#txt_comprobante_editar").val(),
     }
   }).done(function(resp){
-    if(resp>0){
+    if(resp.codigo==1){
         Swal.fire("Mensaje de Confirmación","Datos actualizados correctamente","success").then((value)=>{
         tbl_egresos_diversos.ajax.reload();
         $("#modal_editar").modal('hide');
         });
     
     }else{
-      return Swal.fire("Mensaje de Error","No se completo la actualización.","error");
+      return Swal.fire("Mensaje de Advertencia",resp.mensaje,"warning");
     }
   })
 }
