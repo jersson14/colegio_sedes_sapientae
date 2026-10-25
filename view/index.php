@@ -2046,7 +2046,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     "sSearch": "Buscar:",
     "sUrl": "",
     "sInfoThousands": ",",
-    "sLoadingRecords": "<b>No se encontraron datos</b>",
+    "sLoadingRecords": "Cargando...",
     "oPaginate": {
       "sFirst": "Primero",
       "sLast": "Último",

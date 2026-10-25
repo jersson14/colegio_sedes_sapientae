@@ -41,6 +41,11 @@ const espera = ms => new Promise(r => setTimeout(r, ms));
     await espera(2500);
     const alerta = await evaluar("$('.swal2-popup:visible .swal2-title').text()");
     if (alerta) { errores.push('alerta: ' + alerta); }
+    // ninguna tabla debe quedarse en "Procesando..." ni mostrar el aviso de error de carga
+    const colgadas = await evaluar("$('.dataTables_processing:visible').map(function(){return this.id}).get().join(',')");
+    if (colgadas) { errores.push('tabla en Procesando: ' + colgadas); }
+    const fallidas = await evaluar("$('td.dataTables_empty.text-danger:visible').closest('table').map(function(){return this.id}).get().join(',')");
+    if (fallidas) { errores.push('tabla sin poder cargar: ' + fallidas); }
     console.log(v + ': ' + (errores.length ? 'ERRORES ' + errores.join(' | ') : 'ok'));
     total += errores.length;
   }

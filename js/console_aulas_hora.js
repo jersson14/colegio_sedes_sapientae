@@ -248,9 +248,9 @@ function Cargar_Select_Grado(){
 
         }
         else{
-          let cadena = "<option value=''>No se encontraron regitros</option>";
-          $('#txt_nivel').html(cadena);
-          $("#txt_nivel_editar").val(data[0][1]);
+          // sin aula: se limpia el nivel (antes leía data[0] de una lista vacía y fallaba)
+          $("#txt_nivel").val('');
+          $("#txt_nivel_editar").val('');
 
       }
     })

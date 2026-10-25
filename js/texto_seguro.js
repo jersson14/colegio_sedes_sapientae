@@ -23,6 +23,32 @@
     return window.textoPlano(v).replace(/[&<>"'`]/g, function (c) { return reemplazos[c]; });
   };
 
+  // DataTables: que ninguna tabla se quede en "Procesando..." (Fase 9).
+  // - Respuesta vacía en formato antiguo ({aaData: []}) o como lista ([]): se normaliza a "data" antes de que la tabla
+  //   la lea (si no, la tabla fallaba por dentro y nunca quitaba el aviso).
+  // - Error del servidor (respuesta que no es JSON, caída): se muestra un mensaje en la tabla en vez de alert().
+  if (window.jQuery && jQuery.fn.dataTable) {
+    jQuery.fn.dataTable.ext.errMode = function (settings, techNote, message) {
+      if (window.console) { console.warn('DataTables: ' + message); }
+    };
+    jQuery(document).on('xhr.dt', function (e, settings, json) {
+      if (json && typeof json === 'object') {
+        if (json.data === undefined) {
+          json.data = Array.isArray(json) ? json : (Array.isArray(json.aaData) ? json.aaData : []);
+        }
+        return;
+      }
+      // json null = la petición falló o no devolvió JSON
+      setTimeout(function () {
+        var api = new jQuery.fn.dataTable.Api(settings);
+        var columnas = api.columns(':visible').count() || 1;
+        jQuery(api.table().body()).html('<tr class="odd"><td colspan="' + columnas + '" class="dataTables_empty text-danger">'
+          + 'No se pudieron cargar los datos. Intente de nuevo; si continúa, avise al administrador.</td></tr>');
+        jQuery(api.table().container()).find('.dataTables_processing').hide();
+      });
+    });
+  }
+
   // DataTables: toda columna sin "render" propio se muestra escapada (antes se insertaba como HTML).
   // Las columnas con render propio construyen su HTML y usan textoSeguro() para los datos.
   if (window.jQuery && jQuery.fn.dataTable) {

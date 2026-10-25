@@ -13,7 +13,7 @@ $MASIS = new Modelo_Asistencia();
             "sEcho": 1,
             "iTotalRecords": "0",
             "iTotalDisplayRecords": "0",
-            "aaData": []
+            "aaData": [], "data": []
         }';
     }
 ?>
