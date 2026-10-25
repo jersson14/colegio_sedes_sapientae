@@ -43,6 +43,11 @@ return [
         'controller/asistencias/controlador_listar_asistencias.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_asistencias_fechas.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_registro_asistencias.php' => ['AUXILIAR'],
+        // registro de tareas (Fase 11): el docente solo con sus cursos (se controla en el controlador)
+        'controller/registro_tareas/controlador_registro.php' => ['AUXILIAR', 'DOCENTE'],
+        // registro mensual de asistencia (Fase 11): el docente solo con sus aulas (se controla en el controlador)
+        'controller/registro_asistencia/controlador_guardar.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/registro_asistencia/controlador_planilla.php' => ['AUXILIAR', 'DOCENTE'],
         // atencion_enfermeria
         'controller/atencion_enfermeria/controlador_listar_atención_enfermeria.php' => ['ENFERMERA'],
         'controller/atencion_enfermeria/controlador_listar_atención_enfermeria_filtros.php' => ['ENFERMERA'],
@@ -192,6 +197,7 @@ return [
         'controller/planilla/controlador_planillas_listar.php' => ['CONTADOR'],
         // reportes
         'controller/reportes/controlador_cierres.php' => ['CONTADOR'],
+        'controller/reportes/controlador_reporte_estudiantes.php' => ['AUXILIAR', 'CONTADOR'],
         'controller/reportes/controlador_filtros.php' => ['CONTADOR'],
         'controller/reportes/controlador_flujo_caja.php' => ['CONTADOR'],
         'controller/reportes/controlador_mensual.php' => ['CONTADOR'],
@@ -224,6 +230,7 @@ return [
         // usuario
         'controller/usuario/controlador_traer_datos.php' => ['ESTUDIANTE'],
         // reportes
+        'view/MPDF/REPORTE/asistencia_mensual.php' => ['AUXILIAR', 'DOCENTE'],
         'view/MPDF/REPORTE/boleta_docente.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],
         'view/MPDF/REPORTE/boleta_pago.php' => ['CONTADOR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/estado_resultados.php' => ['CONTADOR'],

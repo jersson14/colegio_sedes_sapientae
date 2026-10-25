@@ -600,6 +600,34 @@ Migración `database/migraciones/011_matricula_horarios_salud_auditoria.sql`, ge
 
 ---
 
+## Fase 11 – Asistencia y tareas en planilla, filtros y reportes a medida ✅ (2026-10-25)
+
+Referencia: hoja de asistencia mensual en papel (estudiantes × días, semanas de colores, códigos P/T/F/J y totales) y los sistemas escolares que permiten marcar a todos como presentes y corregir solo las excepciones.
+
+**Registro mensual de asistencia** — migración `013_asistencia_mensual.sql`
+- [x] Planilla por aula y mes (lunes a viernes por semana): clic o teclado para marcar P/T/F/J, "Hoy: todos presentes", marcar o limpiar un día completo, totales y % por estudiante, asistentes por día. Se guarda todo junto.
+- [x] PDF con el formato de la hoja de asistencia (también **en blanco** para llenar a mano) y Excel.
+- [x] Administrador y auxiliar: todas las aulas. **Docente**: solo las aulas donde enseña (nuevo en su menú).
+- [x] Corregido: `SP_REGISTRAR_ASISTENCIA` comparaba con la fecha de creación (no detectaba duplicados al registrar días anteriores) y guardaba el mes actual. Índice único estudiante + día.
+
+**Registro de tareas** — migración `014_tareas_asignacion.sql`
+- [x] Cuadrícula estudiantes × tareas por curso y periodo: nota (verde/roja), entregada por calificar, pendiente o no entregó; entregadas y promedio. Calificar desde la casilla; Excel e imprimir.
+- [x] **Corregido: las tareas nuevas no llegaban a ningún estudiante** si el año escolar no se llamaba igual que el año del calendario (el actual se llama "2025" con fechas de 2026). Ahora se usa el año escolar del curso del docente; las tareas pendientes reciben a los estudiantes que faltaban (también los matriculados después). La calificación inicial queda vacía en vez de 0.
+
+**Filtros y columnas en todas las tablas** (`js/tablas_mejoras.js`, sin tocar cada pantalla)
+- [x] Botón **Filtros**: un filtro por columna (lista si hay pocos valores, búsqueda si no) y **Limpiar**.
+- [x] Botón **Columnas**: elegir columnas visibles (se recuerda por navegador). Excel/PDF/Imprimir exportan solo lo visible y filtrado, sin la columna de acciones.
+
+**Reporte de estudiantes a medida**
+- [x] 28 campos en 5 grupos (estudiante, padres, matrícula, seguimiento, pensiones) en el orden elegido; filtros por año, nivel, aula, sexo, nuevo/antiguo, búsqueda y "solo con deuda vencida" (coincide con Morosidad). Listas rápidas y "mi reporte" guardado. Campos solo del catálogo del servidor.
+- [x] Administrador, auxiliar y contadora.
+
+**Documentación y pruebas**
+- [x] `docs/guia_rapida.md` para docentes, auxiliares y dirección.
+- [x] `tests/pruebas_fase11.sh` (36). Total **258 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador (incluye detectar tablas que se quedan en "Procesando").
+
+---
+
 ## Anexo A – Monedas y países
 
 | País | Código | Moneda | Símbolo | Decimales | Formato ejemplo | Zona horaria | Documento |

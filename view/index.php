@@ -354,6 +354,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
+                      <i class="nav-icon fas fa-table text-warning"></i>
+                      <p>Registro mensual</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Asistencia
@@ -407,6 +413,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       <p>
                         Tareas
                       </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','tareas/view_registro_tareas.php')" class="nav-link">
+                      <i class="nav-icon fas fa-th text-info"></i>
+                      <p>Registro de tareas</p>
                     </a>
                   </li>
                 </ul>
@@ -528,6 +540,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php')" class="nav-link">
                   <i class="nav-icon fas fa-chart-line"></i>
                   <p>Reportes financieros</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reporte_estudiantes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-list-alt"></i>
+                  <p>Reporte de estudiantes</p>
                 </a>
               </li>
               <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
@@ -679,6 +697,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reporte_estudiantes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-list-alt"></i>
+                  <p>Reporte de estudiantes</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-credit-card"></i>
                   <p>Formas de pago y cuentas</p>
@@ -746,6 +770,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
+                      <i class="nav-icon fas fa-table text-warning"></i>
+                      <p>Registro mensual</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Asistencia
@@ -800,7 +830,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       </p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','tareas/view_registro_tareas.php')" class="nav-link">
+                      <i class="nav-icon fas fa-th text-info"></i>
+                      <p>Registro de tareas</p>
+                    </a>
+                  </li>
                 </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reporte_estudiantes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-list-alt"></i>
+                  <p>Reporte de estudiantes</p>
+                </a>
               </li>
             <?php
             }
@@ -843,6 +885,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       <p>
                         Tareas
                       </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','tareas/view_registro_tareas.php')" class="nav-link">
+                      <i class="nav-icon fas fa-th text-info"></i>
+                      <p>Registro de tareas</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
+                      <i class="nav-icon fas fa-table text-warning"></i>
+                      <p>Asistencia de mis aulas</p>
                     </a>
                   </li>
                 </ul>
@@ -2144,6 +2198,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../utilitario/DataTables/datatables.min.js"></script>
 <!-- Escapa los datos al mostrarlos (DataTables por defecto y textoSeguro() para el HTML armado a mano) -->
 <script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/tablas_mejoras.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
