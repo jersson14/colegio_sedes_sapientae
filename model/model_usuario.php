@@ -52,6 +52,7 @@
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
             foreach($resultado as $resp){
+                unset($resp["usu_contra"]); // la clave (aunque cifrada) no se envía al navegador
                 $arreglo["data"][]=$resp;
             }
             return $arreglo;

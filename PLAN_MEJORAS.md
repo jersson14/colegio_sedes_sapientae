@@ -575,6 +575,31 @@ Migración `database/migraciones/011_matricula_horarios_salud_auditoria.sql`, ge
 
 ---
 
+## Fase 10 – Videos en las tareas y revisión de estudiantes/docentes ✅ (2026-10-25)
+
+**Videos en las tareas (docente y administrador)** — migración `012_videos_tareas.sql`
+- [x] Se pueden **subir videos** (MP4, WebM, MOV) junto con los documentos; hasta 100 MB por video (`config.php` → `video_max_mb`, limitado por lo que acepte el servidor: `.htaccess` / `.user.ini`). Se revisa que el contenido sea realmente video.
+- [x] **Enlaces de video** (uno por línea, hasta 10): YouTube, Google Drive y Vimeo se reproducen **dentro de la plataforma**; otros sitios quedan como enlace. Recomendado para videos largos (no ocupan espacio ni ancho de banda del hosting).
+- [x] Página "Ver material" para docente, administrador y estudiante: reproductor para videos subidos (se transmiten por partes, se puede adelantar), videos incrustados y lista de documentos.
+- [x] Al **editar** una tarea, los archivos nuevos se suman a los actuales y se marcan los que se quieren quitar (antes subir un archivo borraba todo el material).
+- [x] Barra de avance al subir; todos los archivos elegidos se validan (antes solo el primero, y rechazaba .doc/.xls/.ppt que el servidor sí acepta).
+- [x] Corregido: si el envío superaba el límite del servidor, la tarea se guardaba sin archivos y sin aviso.
+
+**Revisión de los módulos de estudiantes y docentes**
+- [x] **Cada docente solo maneja tareas de sus cursos**: antes, con una petición armada, podía publicar, modificar, eliminar o finalizar tareas de otro docente, ver sus envíos y calificarlos.
+- [x] Envíos de estudiantes: la carpeta se nombraba con la hora en segundos y **dos envíos en el mismo segundo compartían carpeta** (cada uno veía el archivo del otro). Ahora cada carpeta es única.
+- [x] Las listas de docentes, personal administrativo y usuarios enviaban al navegador la **clave cifrada** (`usu_contra`) de cada usuario; ya no se envía.
+- [x] Eliminar un estudiante con matrícula o un docente con cursos/contratos/pagos mostraba un error de PHP (y en producción nada): ahora avisa por qué no se puede y que el historial se conserva.
+- [x] Pruebas: `tests/pruebas_fase10_videos.sh` (33). Total con las fases anteriores: **222 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador.
+
+**Recomendado a continuación (no hecho, por confirmar)**
+- [ ] Notas y exámenes: aplicar la misma regla "cada docente solo en sus cursos" (hoy un docente podría registrar notas o exámenes de un curso ajeno con una petición armada).
+- [ ] Envío de tareas del estudiante: hoy puede reenviar una tarea ya **calificada** o **finalizada** (vuelve a "ENVIADO") y después de la fecha de entrega sin marca de atraso. Decidir: bloquear, permitir con marca "fuera de plazo", o permitir hasta que el docente califique.
+- [ ] Estudiantes y docentes no tienen botón Activar/Desactivar (solo Eliminar); para un docente que se va, hoy se desactiva su usuario en Usuarios. Agregar el botón en cada módulo.
+- [ ] La edad del estudiante se guarda al registrarlo y no se actualiza; calcularla siempre desde la fecha de nacimiento.
+
+---
+
 ## Anexo A – Monedas y países
 
 | País | Código | Moneda | Símbolo | Decimales | Formato ejemplo | Zona horaria | Documento |

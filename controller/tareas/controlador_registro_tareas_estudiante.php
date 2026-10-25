@@ -18,11 +18,7 @@ if (rol_actual() === 'ESTUDIANTE') {
 }
 
 // Crear una carpeta única para este conjunto de archivos en "tarea_alumnos"
-$timestamp = time();
-$carpeta = 'controller/tareas/documentos/tarea_alumnos_' . $timestamp; // Cambiar la ruta base
-if (!is_dir($carpeta)) {
-    mkdir($carpeta, 0777, true);
-}
+$carpeta = crear_carpeta_tarea();
 
 // Verificar si hay archivos enviados
 if (isset($_FILES['archivos']) && !empty($_FILES['archivos']['name'][0])) {

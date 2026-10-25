@@ -77,7 +77,13 @@
             $query  = $c->prepare($sql);
             $query ->bindParam(1,$id);
     
-            $resul = $query->execute();
+            // Con matrícula, cursos, contratos o pagos la base no deja borrar (claves foráneas): se responde 0
+            try {
+                $resul = $query->execute();
+            } catch (PDOException $e) {
+                if ($e->getCode() == 23000) { return 0; }
+                throw $e;
+            }
             if($resul){
                 return 1;
             }else{

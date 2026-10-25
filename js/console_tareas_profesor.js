@@ -78,7 +78,7 @@ function listar_tareas_id(){
                   if(data==''){
                       return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                   }else{
-                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
               }   
           },    
@@ -190,7 +190,7 @@ function listar_tareas(){
                   if(data==''){
                       return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                   }else{
-                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
               }   
           },    
@@ -345,7 +345,7 @@ function listar_tareas_menu(){
                 if(data==''){
                     return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                 }else{
-                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                 }
             }   
         },    
@@ -476,6 +476,9 @@ $('#tabla_tarea').on('click', '.editar', function() {
   document.getElementById('txt_fecha_entre_editar').value = data.fecha_entrega;
   document.getElementById('txt_descripcion_editar').value = data.descripcion;
   document.getElementById('archivo_actual').value = data.archivo_tarea;
+  // Material actual (archivos con opción de quitar) y enlaces de video guardados
+  $('#txt_archivo_editar').val(''); $('#fileList2').html('');
+  MaterialTarea.cargarActual(data.archivo_tarea, 'material_actual', 'txt_enlaces_editar');
   
   // Cargar select de grado y esperar a que se complete
   $("#select_grado_editar").val(data.Id_aula).trigger('change');
@@ -497,27 +500,28 @@ function AbrirRegistro(){
 
 //REGISTRANDO ROLES
 function Registrar_Tarea() {
-  // DATOS DEL REMITENTE
+  // DATOS DE LA TAREA
   let asig = document.getElementById('select_curso').value;
   let tema = document.getElementById('txt_tema').value;
   let fecha = document.getElementById('txt_fecha_entre').value;
   let descrip = document.getElementById('txt_descripcion').value;
   let archivos = $("#txt_archivo")[0].files;
-
-  if (archivos.length == 0) {
-      return Swal.fire("Mensaje de Advertencia", "Seleccione algún tipo de documento", "warning");
-  }
+  let enlaces = MaterialTarea.enlaces('txt_enlaces');
+  if (enlaces === null) { return; }
 
   if (asig.length == 0 || tema.length == 0 || fecha.length == 0 || descrip.length == 0) {
       return Swal.fire("Mensaje de Advertencia", "Llene todo los campos de la tarea", "warning");
   }
+  if (archivos.length == 0 && enlaces.length == 0) {
+      return Swal.fire("Mensaje de Advertencia", "Adjunte al menos un archivo, un video o un enlace de video", "warning");
+  }
 
   let formData = new FormData();
-  //////DATOS DEL REMITENTE/////
   formData.append("asig", asig);
   formData.append("tema", tema);
   formData.append("fecha", fecha);
   formData.append("descrip", descrip);
+  formData.append("enlaces", enlaces);
 
   // Añadir múltiples archivos al formData
   for (let i = 0; i < archivos.length; i++) {
@@ -530,16 +534,15 @@ function Registrar_Tarea() {
       data: formData,
       contentType: false,
       processData: false,
+      xhr: MaterialTarea.xhrConProgreso,
       success: function(resp) {
           if (resp.length > 0) {
               if (resp == 1) {
                   Swal.fire("Mensaje de Confirmación", "Nueva Tarea asignada Correctamente!!!", "success").then((value) => {
                       tbl_tareas.ajax.reload();
                       $("#modal_registro").modal('hide');
-                      document.getElementById('tema').value = "";
-                      document.getElementById('fecha').value = "";
-                      document.getElementById('descrip').value = "";
-
+                      $("#txt_tema, #txt_descripcion, #txt_enlaces, #txt_archivo").val('');
+                      $("#fileList").html('');
                   });
               } else {
                   Swal.fire("Mensaje de Advertencia", "La tarea que esta intentando registrar ya se encuentra en la base de datos, revise por favor.", "warning");
@@ -551,7 +554,7 @@ function Registrar_Tarea() {
   });
   return false;
 }
-//EDITANDO ROL
+//EDITANDO TAREA
 function Modificar_Tarea() {
   // Datos del formulario
   let id = document.getElementById('txt_id_tarea').value;
@@ -559,29 +562,29 @@ function Modificar_Tarea() {
   let tema = document.getElementById('txt_tema_editar').value;
   let fecha = document.getElementById('txt_fecha_entre_editar').value;
   let descrip = document.getElementById('txt_descripcion_editar').value;
-  let archivoactual = document.getElementById('archivo_actual').value;
   let archivos = $("#txt_archivo_editar")[0].files;
+  let enlaces = MaterialTarea.enlaces('txt_enlaces_editar');
+  if (enlaces === null) { return; }
 
   // Validaciones
   if (id.length === 0 || asig.length === 0 || tema.length === 0 || fecha.length === 0 || descrip.length === 0) {
     return Swal.fire("Mensaje de Advertencia", "Tiene campos vacíos en el registro, revise por favor", "warning");
   }
-
-  if (archivos.length === 0 && archivoactual.length === 0) {
-    return Swal.fire("Mensaje de Advertencia", "Seleccione algún tipo de documento", "warning");
+  let quedan = $('#material_actual .quitar-archivo:not(:checked)').length;
+  if (archivos.length === 0 && quedan === 0 && enlaces.length === 0) {
+    return Swal.fire("Mensaje de Advertencia", "La tarea debe tener al menos un archivo, un video o un enlace de video", "warning");
   }
 
   let formData = new FormData();
-
-  // Añadir datos al FormData
   formData.append("id", id);
   formData.append("asig", asig);
   formData.append("tema", tema);
   formData.append("fecha", fecha);
   formData.append("descrip", descrip);
-  formData.append("archivoactual", archivoactual);
+  formData.append("enlaces", enlaces);
+  formData.append("quitar", MaterialTarea.quitar('material_actual'));
 
-  // Añadir nuevos archivos al formData
+  // Archivos nuevos (se suman a los actuales)
   for (let i = 0; i < archivos.length; i++) {
     formData.append("archivos[]", archivos[i]);
   }
@@ -592,6 +595,7 @@ function Modificar_Tarea() {
     data: formData,
     contentType: false,
     processData: false,
+    xhr: MaterialTarea.xhrConProgreso,
     success: function(resp) {
       if (resp.length > 0) {
         if (resp == 1) {
@@ -599,13 +603,8 @@ function Modificar_Tarea() {
             tbl_tareas.ajax.reload();
             $("#modal_editar").modal('hide');
             // Resetear campos del formulario
-            document.getElementById('txt_id_tarea').value = "";
-            document.getElementById('select_curso_editar').value = "";
-            document.getElementById('txt_tema_editar').value = "";
-            document.getElementById('txt_fecha_entre_editar').value = "";
-            document.getElementById('txt_descripcion_editar').value = "";
-            document.getElementById('archivo_actual').value = "";
-            $("#txt_archivo_editar").val('');
+            $("#txt_id_tarea, #txt_tema_editar, #txt_fecha_entre_editar, #txt_descripcion_editar, #archivo_actual, #txt_enlaces_editar, #txt_archivo_editar").val('');
+            $("#fileList2, #material_actual").html('');
           });
         } else {
           Swal.fire("Mensaje de Advertencia", "El registro que intenta actualizar ya se encuentra registrado en la base de datos, revise por favor", "warning");
@@ -691,7 +690,7 @@ $('#tabla_tarea').on('click','.delete',function(){
                     if (data == '') {
                         return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                     } else {
-                        return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                        return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                     }
                 }
             },

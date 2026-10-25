@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_tareas.js?rev=<?php echo time();?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; require_once __DIR__ . '/material_tarea.php'; ?><script src="../js/console_tareas.js?rev=<?php echo time();?>"></script>
 
 <div class="content-header">
   <div class="container-fluid">
@@ -129,13 +129,18 @@
             <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
           <div class="col-12 form-group">
-            <label for="txt_archivo" >Adjuntar Archivo<b style="color:red">(*)</b>:</label>
+            <label for="txt_archivo" >Adjuntar archivos o videos<b style="color:red">(*)</b>:</label>
             <form id="form_tramite" method="post" enctype="multipart/form-data">
-                <input class="form-control" type="file" id="txt_archivo" name="archivos[]" multiple ><br>
+                <input class="form-control" type="file" id="txt_archivo" name="archivos[]" multiple accept="<?php echo ACEPTA_MATERIAL; ?>"><br>
                 <ul id="fileList" class="file-list"></ul>
-                <label for="txt_archivo" style="font-size:16px;color:red">La carga de archivos solo se permiten pdf, docs, excel e imagenes.</label>
+                <small class="text-muted"><?php echo AYUDA_MATERIAL; ?></small>
             </form>
         </div>
+          <div class="col-12 form-group">
+            <label for="txt_enlaces"><i class="fas fa-video text-danger"></i> Enlaces de video <small class="text-muted">(opcional, uno por línea)</small>:</label>
+            <textarea id="txt_enlaces" rows="2" class="form-control" placeholder="https://youtu.be/...&#10;https://drive.google.com/file/d/..."></textarea>
+            <small class="text-muted">YouTube, Google Drive y Vimeo se ven dentro de la plataforma. Recomendado para videos largos.</small>
+          </div>
       </div>
       </div>
       <div class="modal-footer">
@@ -184,14 +189,19 @@
             <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
           <div class="col-12 form-group">
-            <label for="txt_archivo" >Adjuntar Archivo<b style="color:red">(*)</b>:</label>
+            <div id="material_actual"></div>
+            <label for="txt_archivo_editar" >Agregar archivos o videos:</label>
             <form id="form_tramite" method="post" enctype="multipart/form-data">
                 <input type="text" id="archivo_actual" hidden>
-                <input class="form-control" type="file" id="txt_archivo_editar" name="archivos2[]" multiple ><br>
+                <input class="form-control" type="file" id="txt_archivo_editar" name="archivos2[]" multiple accept="<?php echo ACEPTA_MATERIAL; ?>"><br>
                 <ul id="fileList2" class="file-list"></ul>
-                <label for="txt_archivo" style="font-size:16px;color:red">La carga de archivos solo se permiten pdf, docs, excel e imagenes.</label>
+                <small class="text-muted"><?php echo AYUDA_MATERIAL; ?> Se suman a los archivos actuales.</small>
             </form>
         </div>
+          <div class="col-12 form-group">
+            <label for="txt_enlaces_editar"><i class="fas fa-video text-danger"></i> Enlaces de video <small class="text-muted">(uno por línea)</small>:</label>
+            <textarea id="txt_enlaces_editar" rows="2" class="form-control" placeholder="https://youtu.be/..."></textarea>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -281,57 +291,9 @@ $('#modal_registro').on('shown.bs.modal', function () {
   $('#txt_tema').trigger('focus')
 })
 
-$('input[type="file"]').on('change', function(){
-    var ext = $( this ).val().split('.').pop();
-    console.log($( this ).val());
-    if($(this).val() !=''){
-    if(ext == "PDF" || ext =="pdf" || ext == "xlsx" || ext =="xlsm"|| ext == "docx" || ext =="png"|| ext =="jpg"){
-        if($(this)[0].files[0].size > 31457280){//----- 30 MB
-        //if($(this)[0].files[0].size> 1048576){ ------- 1 MB
-        //if($(this)[0].files[0].size> 10485760){ ------- 10 MB
-            Swal.fire("El archivo seleccionado es demasiado pesado",
-            "<label style='color:#9B0000;'>Seleccionar un archivo mas liviano</label>","waning");
-            $("#txt_archivo").val("");
-            return;
-            //$("#btn_subir").prop("disabled",true);
-        }else{
-            //$("#btn_subir").attr("disabled",false);
-        }
-        $("#txtformato").val(ext);
-    }
-    else{
-        $("#txt_archivo").val("");
-        Swal.fire("Mensaje de Error","Extensión no permitida: " + ext,
-        "error");
-    }
-    }
-});
-
-document.getElementById('txt_archivo').addEventListener('change', function() {
-  const fileList = document.getElementById('fileList');
-  fileList.innerHTML = '';
-
-  for (const file of this.files) {
-      const listItem = document.createElement('li');
-      listItem.textContent = file.name;
-      fileList.appendChild(listItem);
-  }
-
-  
-});
-
-document.getElementById('txt_archivo_editar').addEventListener('change', function() {
-  const fileList = document.getElementById('fileList2');
-  fileList.innerHTML = '';
-
-  for (const file of this.files) {
-      const listItem = document.createElement('li');
-      listItem.textContent = file.name;
-      fileList.appendChild(listItem);
-  }
-
-  
-});
+// Revisa tipo y tamaño de cada archivo (documentos y videos) y los lista
+MaterialTarea.conectar('txt_archivo', 'fileList');
+MaterialTarea.conectar('txt_archivo_editar', 'fileList2');
 
 var n = new Date();
 var y = n.getFullYear();

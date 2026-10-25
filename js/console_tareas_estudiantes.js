@@ -81,7 +81,7 @@ function listar_tareas_id(){
                 if(data==''){
                     return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                 }else{
-                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                  return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                 }
             }   
         },    
@@ -206,7 +206,7 @@ function listar_tareas(){
                   if(data==''){
                       return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
                   }else{
-                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file-download'></i> Descargar tarea</a>";
+                    return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
               }   
           },    

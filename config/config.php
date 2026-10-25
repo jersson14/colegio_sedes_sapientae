@@ -18,6 +18,8 @@ $config = [
     // Intentos fallidos de login antes de bloquear y minutos de bloqueo
     'login_max_intentos'    => 5,
     'login_minutos_bloqueo' => 15,
+    // Tamaño máximo (MB) de cada video subido a una tarea; el servidor debe aceptarlo (ver .htaccess / .user.ini)
+    'video_max_mb' => 100,
 ];
 
 if (file_exists(__DIR__ . '/config.local.php')) {

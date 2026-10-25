@@ -2,13 +2,21 @@ Options -Indexes
 
 # Archivos internos que nunca se sirven por la web (Fase 9): respaldos y scripts SQL, documentación,
 # scripts, logs, dependencias y el repositorio git (código e historial)
-<FilesMatch "\.(sql|md|sh|log|bak|py|lock|example|env)$">
+<FilesMatch "\.(sql|md|sh|log|bak|py|lock|example|env|ini)$">
   Require all denied
 </FilesMatch>
 <FilesMatch "^(package(-lock)?\.json|composer\.(json|lock))$">
   Require all denied
 </FilesMatch>
 RedirectMatch 404 /\.(git|gitignore|gitattributes|htpasswd)(/|$)
+
+# Videos de las tareas: subidas de hasta ~100 MB (config.php 'video_max_mb'). Con PHP como módulo de Apache
+# (XAMPP) se ajusta aquí; en hostings con PHP-FPM/CGI lo hace el archivo .user.ini.
+<IfModule php_module>
+  php_value upload_max_filesize 110M
+  php_value post_max_size 120M
+  php_value max_input_time 600
+</IfModule>
 
 <IfModule mod_rewrite.c>
   RewriteEngine On

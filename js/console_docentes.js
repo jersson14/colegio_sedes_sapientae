@@ -442,7 +442,7 @@ function Eliminar_Docente(id){
 
           });
       }else{
-        return Swal.fire("Mensaje de Advetencia","No se puede eliminar este docente por que esta siendo utilizado en la matricula, verifique por favor","warning");
+        return Swal.fire("Mensaje de Advetencia","No se puede eliminar: el docente tiene cursos, contratos, pagos o comunicados registrados. Para que ya no ingrese al sistema, desactive su usuario en Usuarios.","warning");
   
       }
     })

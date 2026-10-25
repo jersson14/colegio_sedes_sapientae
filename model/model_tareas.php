@@ -223,6 +223,51 @@
             }
             conexionBD::cerrar_conexion();
         }
+        // El curso (detalle_asignatura_docente) está asignado al docente con ese usuario
+        public function Curso_Es_Del_Docente($iddetalle, $usu_id){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("SELECT 1 FROM detalle_asignatura_docente dd
+                                  INNER JOIN asignatura_docente ad ON ad.Id_asigdocente = dd.Id_asig_docente
+                                  INNER JOIN docentes d ON d.Id_docente = ad.Id_docente
+                                  WHERE dd.Id_detalle_asig_docente = ? AND d.id_asusuario = ? LIMIT 1");
+            $query->execute([$iddetalle, $usu_id]);
+            return (bool) $query->fetchColumn();
+        }
+        // La tarea es de un curso del docente con ese usuario
+        public function Tarea_Es_Del_Docente($idtarea, $usu_id){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("SELECT id_detalle_asignatura FROM tareas WHERE id_tarea = ?");
+            $query->execute([$idtarea]);
+            $iddetalle = $query->fetchColumn();
+            return $iddetalle !== false && $this->Curso_Es_Del_Docente($iddetalle, $usu_id);
+        }
+        // El envío (detalle_tarea) es de una tarea del docente con ese usuario
+        public function Envio_Es_Del_Docente($iddetalle, $usu_id){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("SELECT id_tarea FROM detalle_tarea WHERE id_detalle_tarea = ?");
+            $query->execute([$iddetalle]);
+            $idtarea = $query->fetchColumn();
+            return $idtarea !== false && $this->Tarea_Es_Del_Docente($idtarea, $usu_id);
+        }
+        // Carpeta guardada de la tarea ('' si no existe)
+        public function Carpeta_Tarea($idtarea){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("SELECT IFNULL(archivo_tarea,'') FROM tareas WHERE id_tarea = ?");
+            $query->execute([$idtarea]);
+            return (string) $query->fetchColumn();
+        }
+        // Enlaces de video de la tarea (JSON en tareas.enlaces_video), por la carpeta de la tarea
+        public function Guardar_Enlaces_Video($carpeta, $enlaces_json){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("UPDATE tareas SET enlaces_video = ? WHERE archivo_tarea = ?");
+            return $query->execute([$enlaces_json, $carpeta]) ? 1 : 0;
+        }
+        public function Enlaces_Video($carpeta){
+            $c = conexionBD::conexionPDO();
+            $query = $c->prepare("SELECT enlaces_video FROM tareas WHERE archivo_tarea = ? LIMIT 1");
+            $query->execute([$carpeta]);
+            return (string) $query->fetchColumn();
+        }
         // Devuelve la carpeta enviada actualmente si el detalle es del usuario; null si no le pertenece
         public function Detalle_Tarea_Propio($iddetalle,$usu_id){
             $c = conexionBD::conexionPDO();
