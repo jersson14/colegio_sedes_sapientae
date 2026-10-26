@@ -109,7 +109,7 @@ $('#tabla_empresa').on('click','.editar',function(){
     })
   }
   function validar_email(email) {
-    var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    var regex = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
     return regex.test(email) ? true : false;
   }
   $('#tabla_empresa').on('click','.foto',function(){

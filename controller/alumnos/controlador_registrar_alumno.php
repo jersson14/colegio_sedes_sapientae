@@ -23,6 +23,10 @@ require_once __DIR__ . '/../../utilitario/archivos.php';
     $nomma = strtoupper(htmlspecialchars($_POST['nomma'],ENT_QUOTES,'UTF-8'));
     $celma = telefono_post('celma', true, 'celular de la mamá');
 
+    // ¿La misma persona ya está registrada con otro documento? (se pregunta antes de grabar)
+    require_once __DIR__ . '/../../utilitario/duplicados.php';
+    exigir_confirmar_duplicado(posible_duplicado_alumno($nombre, $apepa, $apema, $fechanaci, $dni));
+
     $ruta='controller/alumnos/fotos/'.$nombrefoto;
     $consulta = $MALU->Registrar_Alumnos($dni,$nombre,$apepa,$apema,$sexo,$fechanaci,$telf,$direc,$ruta,$dnipa,$nompa,$celpa,$dnima,$nomma,$celma);
     if ($consulta) {

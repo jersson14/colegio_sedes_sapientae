@@ -37,6 +37,18 @@ function texto_post($campo, $max = 255, $requerido = false, $etiqueta = null) {
     return $t;
 }
 
+/** Correo electrónico válido (se guarda en minúsculas). Vacío solo si no es requerido. */
+function email_post($campo, $requerido = true, $etiqueta = 'correo') {
+    $t = strtolower(trim((string) ($_POST[$campo] ?? '')));
+    if ($t === '' && !$requerido) {
+        return '';
+    }
+    if (strlen($t) > 150 || !filter_var($t, FILTER_VALIDATE_EMAIL)) {
+        denegar(400, 'Escriba un ' . $etiqueta . ' válido, por ejemplo nombre@gmail.com');
+    }
+    return $t;
+}
+
 /** Fecha AAAA-MM-DD válida. */
 function fecha_post($campo, $etiqueta = null) {
     $t = trim((string) ($_POST[$campo] ?? ''));

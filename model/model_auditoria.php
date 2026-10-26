@@ -11,6 +11,8 @@
             'metodos_pago' => 'Formas de pago', 'planillas' => 'Planillas', 'planilla_detalle' => 'Detalle de planilla',
             'pagos_docentes' => 'Pagos y adelantos de planilla', 'contratos_docente' => 'Contratos', 'conceptos_planilla' => 'Conceptos de planilla',
             'indicadores' => 'Categorías', 'empresa' => 'Datos del colegio y configuración', 'usuario' => 'Usuarios',
+            'notas' => 'Notas', 'notas_padre' => 'Notas de padres', 'asistencia' => 'Asistencia', 'detalle_tarea' => 'Envíos y calificaciones de tareas',
+            'alumnos' => 'Estudiantes', 'docentes' => 'Docentes', 'periodos' => 'Periodos (bimestres)', 'año_escolar' => 'Año escolar',
         ];
 
         public function Listar($tabla, $desde, $hasta, $usuario, $registro){

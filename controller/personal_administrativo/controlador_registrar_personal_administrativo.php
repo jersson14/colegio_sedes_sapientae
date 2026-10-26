@@ -19,7 +19,7 @@ require_once __DIR__ . '/../../utilitario/archivos.php';
     //DATOS DEL USUARIO //
     $usu = htmlspecialchars($_POST['usu'],ENT_QUOTES,'UTF-8');
     $contra = password_hash(htmlspecialchars($_POST['contra'],ENT_QUOTES,'UTF-8'),PASSWORD_DEFAULT,['cost'=>12]);
-    $email = htmlspecialchars($_POST['email'],ENT_QUOTES,'UTF-8');
+    $email = email_post('email', true, 'correo del usuario');
     $rol = htmlspecialchars($_POST['rol'],ENT_QUOTES,'UTF-8');
 
 

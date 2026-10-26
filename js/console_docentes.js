@@ -323,6 +323,7 @@ function Registrar_Docente(){
       contentType:false,
       processData:false,
       success:function(resp){
+        if (Formulario.duplicado(resp, this, 'docente')) { return; }   // misma persona con otro documento
         if(resp.length>0){
         if(resp==1){
           Swal.fire("Mensaje de Confirmación","Se registro correctamente al Docente con el "+REGIONAL.doc_nombre+" N° <b>"+dni+"</b>","success").then((value)=>{

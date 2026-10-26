@@ -331,6 +331,7 @@ function Registrar_alumno(){
       contentType:false,
       processData:false,
       success:function(resp){
+        if (Formulario.duplicado(resp, this, 'estudiante')) { return; }   // misma persona con otro documento
         if(resp.length>0){
           if(resp==1){
 

@@ -1956,7 +1956,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   ///////VALIDAR EMAIL
   function validar_email(email) {
-    var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    var regex = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
     return regex.test(email) ? true : false;
   }
 </script>
@@ -2006,6 +2006,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../utilitario/DataTables/datatables.min.js"></script>
 <!-- Escapa los datos al mostrarlos (DataTables por defecto y textoSeguro() para el HTML armado a mano) -->
 <script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/formulario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/tablas_mejoras.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

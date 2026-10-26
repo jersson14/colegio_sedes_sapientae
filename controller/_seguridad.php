@@ -15,6 +15,28 @@ require_once __DIR__ . '/../utilitario/sesion.php';
 
 iniciar_sesion_segura();
 
+// Errores no previstos en los controladores (Fase 13): en vez de un error de PHP, una respuesta clara.
+// - Datos relacionados (clave foránea, 23000), p. ej. eliminar un aula con matrículas: 409 con el motivo.
+// - Cualquier otro: 500 genérico; el detalle queda solo en el registro de errores del servidor.
+set_exception_handler(function ($e) {
+    error_log('Controlador ' . ($_SERVER['SCRIPT_NAME'] ?? '') . ': ' . $e->getMessage());
+    if (headers_sent()) {
+        return;
+    }
+    if ($e instanceof PDOException && (string) $e->getCode() === '23000') {
+        $msg = $e->getMessage();
+        if (stripos($msg, 'Duplicate entry') !== false) {
+            denegar(409, 'Ese registro ya existe. Revise los datos e intente de nuevo.');
+        }
+        if (stripos($msg, 'foreign key') !== false && stripos($msg, 'delete') !== false) {
+            denegar(409, 'No se puede eliminar porque tiene información relacionada (matrículas, notas, pagos u otros registros). '
+                . 'Si ya no se usa, desactívelo en lugar de eliminarlo.');
+        }
+        denegar(409, 'No se puede guardar porque falta o no coincide un dato relacionado. Revise las opciones elegidas.');
+    }
+    denegar(500, 'Ocurrió un error inesperado. Intente de nuevo; si continúa, avise al administrador.');
+});
+
 (function () {
     $permisos = require __DIR__ . '/_permisos.php';
     $raiz = str_replace('\\', '/', realpath(__DIR__ . '/..')) . '/';

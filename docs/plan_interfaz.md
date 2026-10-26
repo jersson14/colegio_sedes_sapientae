@@ -131,7 +131,7 @@ Situación actual:
 Se encontró en la base de datos:
 
 - **Registro de estudiantes y de cursos del docente:** `SP_REGISTRAR_ALUMNOS` y `SP_REGISTRAR_ASIGNATURA_DOCENTE` toman el último código con `SELECT MAX(id)` después de insertar, y sin transacción. Si dos personas registran al mismo tiempo, los padres o los cursos pueden quedar unidos al registro equivocado. Corregir con `LAST_INSERT_ID()` y una transacción. Solo 6 procedimientos usan transacción hoy.
-- **Correos:** la validación acepta dominios de solo 2 a 4 letras (`{2,4}` en `js/console_empresa.js`) y rechaza correos válidos como `@colegio.online` o `.education`.
+- **Correos:** el servidor no validaba el correo y el navegador rechazaba correos válidos con `+` (como `ana+padres@gmail.com`).
 - **Datos duplicados:** avisar si ya existe un estudiante o docente con el mismo nombre y fecha de nacimiento, aunque el documento sea distinto (suele ser un error de tipeo).
 - **Consistencia por año escolar:** periodos sin solaparse y dentro del año, y tareas y exámenes con fechas dentro del bimestre.
 - **Integridad al eliminar:** revisar cada "Eliminar" que queda (aulas, asignaturas, periodos, comunicados) para que avise cuando hay datos relacionados, como ya hacen estudiantes y docentes, y ofrecer Desactivar.
@@ -166,11 +166,20 @@ Se encontró en la base de datos:
 
 ## Hoja de ruta sugerida
 
+**Avance:** paso 1 hecho el 2026-10-26 (migración 018, `tests/pruebas_fase13.sh`):
+
+- Estudiante y padres se guardan en una transacción con `LAST_INSERT_ID()`; la asignación de cursos usa el mismo método.
+- Auditoría de notas, asistencia, tareas, estudiantes, docentes, periodos y año escolar (24 triggers).
+- Correos validados en el servidor.
+- Aviso "¿Es otra persona?" ante posibles duplicados.
+- Periodos dentro del año y sin cruces.
+- Un manejador común de errores: eliminar algo con datos relacionados explica el motivo en lugar de dar un error de PHP. Cubre las 24 funciones de eliminar que no estaban protegidas.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
 |---|---|---|---|---|
-| 1 | Correcciones de lógica: registro sin `MAX(id)`, transacciones, correos, duplicados | 4c | Bajo | Evita datos cruzados entre registros |
+| 1 ✅ | Correcciones de lógica: registro sin `MAX(id)`, transacciones, correos, duplicados, periodos, auditoría, errores claros | 4c | Bajo | Evita datos cruzados entre registros |
 | 2 | Componente de formulario y límites de fechas | 4 | Medio | Menos errores al cargar datos en todo el sistema |
 | 3 | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
 | 4 | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |

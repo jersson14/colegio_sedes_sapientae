@@ -3,7 +3,13 @@ require_once __DIR__ . '/../_seguridad.php';
 require '../../model/model_periodos.php'; // Incluye el modelo de periodos
 $MPER = new Modelo_Periodos(); // Instancia del modelo
 
-$periodos = json_decode($_POST['periodos'], true); // Decodificar JSON a un array PHP
+$periodos = json_decode($_POST['periodos'] ?? '', true); // Decodificar JSON a un array PHP
+if (!is_array($periodos) || !$periodos) {
+    denegar(400, 'No hay periodos para registrar');
+}
+// Dentro del año escolar, inicio antes que fin y sin cruzarse con los periodos que ya tiene el año
+require_once __DIR__ . '/../../utilitario/periodos.php';
+validar_periodos((int) ($periodos[0]['año_escolar'] ?? 0), $periodos, true);
 $exito = true; // Bandera de éxito global
 $ya_existen = false; // Bandera para detectar si algunos registros ya existen
 
