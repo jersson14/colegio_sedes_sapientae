@@ -5,5 +5,7 @@ return [
         'usuario'    => 'colegio_app',
         'contrasena' => 'CAMBIAR_POR_UNA_CLAVE_SEGURA',
     ],
+    // Opcional: usuario de solo lectura para respaldos completos desde el sistema (scripts/usuario_respaldo.sql)
+    // 'db_respaldo' => ['usuario' => 'colegio_respaldo', 'contrasena' => 'CAMBIAR'],
     'produccion' => true,
 ];

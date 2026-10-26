@@ -622,9 +622,14 @@ Referencia: hoja de asistencia mensual en papel (estudiantes × días, semanas d
 - [x] 28 campos en 5 grupos (estudiante, padres, matrícula, seguimiento, pensiones) en el orden elegido; filtros por año, nivel, aula, sexo, nuevo/antiguo, búsqueda y "solo con deuda vencida" (coincide con Morosidad). Listas rápidas y "mi reporte" guardado. Campos solo del catálogo del servidor.
 - [x] Administrador, auxiliar y contadora.
 
+**Respaldos desde el sistema** (*Configuración → Respaldos*, solo administrador)
+- [x] Generar respaldo (`.sql.gz` con tablas, datos, vistas, funciones, procedimientos y triggers, sin depender de `mysqldump`), lista con tipo y tamaño, descargar y eliminar. Lectura consistente, un respaldo a la vez, triggers al final para que restaurar no duplique la auditoría.
+- [x] Probado restaurando en una base aparte: 60 tablas idénticas (checksum), mismas vistas, rutinas y triggers.
+- [x] Con el usuario restringido avisa que el respaldo es incompleto; `scripts/usuario_respaldo.sql` + `'db_respaldo'` para respaldos completos.
+
 **Documentación y pruebas**
-- [x] `docs/guia_rapida.md` para docentes, auxiliares y dirección.
-- [x] `tests/pruebas_fase11.sh` (36). Total **258 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador (incluye detectar tablas que se quedan en "Procesando").
+- [x] `docs/guia_rapida.md` para docentes, auxiliares y dirección (incluye respaldos).
+- [x] `tests/pruebas_fase11.sh` (36) y `tests/pruebas_fase11_respaldos.sh` (17). Total **275 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador (incluye detectar tablas que se quedan en "Procesando").
 
 ---
 

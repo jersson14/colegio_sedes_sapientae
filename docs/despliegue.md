@@ -35,6 +35,9 @@ Para quien instala, actualiza o mantiene el servidor del sistema.
 
 ## Respaldos
 
+- **Desde el sistema**: *Configuración → Respaldos* (solo administrador). *Generar respaldo ahora* crea `respaldos/colegio2_AAAAMMDD_HHMMSS_manual.sql.gz` con tablas, datos, vistas, procedimientos y triggers; se descarga desde la misma pantalla. No necesita `mysqldump`.
+  - Con el usuario restringido de la aplicación, la base no deja leer vistas, procedimientos ni triggers: el respaldo trae todas las tablas y datos y avisa que está incompleto. Para respaldos completos ejecute `scripts/usuario_respaldo.sql` (usuario de solo lectura) y agregue en `config.local.php`: `'db_respaldo' => ['usuario' => 'colegio_respaldo', 'contrasena' => '...']`.
+  - Restaurar un `.sql.gz`: `gunzip < archivo.sql.gz | mysql --default-character-set=utf8mb4 -u root -p colegio2` (en Windows: descomprimir con 7-Zip y usar `mysql ... < archivo.sql`).
 - **Windows / XAMPP**: `scripts/respaldo_diario.bat`. Programarlo en el *Programador de tareas* (diario, por ejemplo 23:00). Deja `respaldos/colegio2_AAAAMMDD_HHMM.sql`, anota en `respaldos/respaldos.log` y borra los automáticos de más de 30 días (los `…_antes_0NN.sql` de las migraciones se conservan).
 - **Linux / hosting**: `scripts/respaldo_diario.sh` con cron (`0 23 * * * /ruta/scripts/respaldo_diario.sh`). Las credenciales van en `~/.my.cnf`.
 - Copiar periódicamente los respaldos **fuera del servidor** (otra máquina o la nube).

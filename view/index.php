@@ -605,6 +605,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Auditoría</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_respaldos.php')" class="nav-link">
+                  <i class="nav-icon fas fa-database"></i>
+                  <p>Respaldos</p>
+                </a>
+              </li>
                 <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
                   <i class="nav-icon fas fa-envelope"></i>
@@ -2172,6 +2178,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     } else if (xhr.status === 400 && typeof Swal !== 'undefined') {
       var r400 = xhr.responseJSON || {};
       Swal.fire('Dato inválido', r400.mensaje || 'Revise los datos ingresados', 'warning');
+    } else if (xhr.responseJSON && xhr.responseJSON.mensaje && typeof Swal !== 'undefined') {
+      // otros errores con mensaje del servidor (404, 409, 500): mostrarlos en vez de no hacer nada
+      Swal.fire('Aviso', xhr.responseJSON.mensaje, 'error');
     }
   });
   // País, moneda y documento configurados (Configuración > Datos regionales)

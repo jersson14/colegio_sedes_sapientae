@@ -52,3 +52,13 @@ Menú: **Reporte de estudiantes**. Lo usan la dirección, el auxiliar y la conta
 3. **Generar reporte**, y luego Excel, PDF o Imprimir.
 
 Con **Guardar como mi reporte** el sistema recuerda los campos elegidos en esa computadora; **Usar mi reporte** los vuelve a marcar.
+
+## Respaldos (solo administrador)
+
+Menú: **Configuración → Respaldos**.
+
+1. **Generar respaldo ahora** crea una copia completa de la información del colegio en pocos segundos.
+2. **Descargar** guarda esa copia en su computadora. Guárdela también **fuera del servidor**: en un USB, otra computadora o la nube.
+3. La lista muestra todos los respaldos: los generados desde el sistema, los automáticos diarios y los hechos antes de cada actualización.
+
+Genere un respaldo antes de cerrar el año, antes de una actualización y una vez al mes como mínimo. Para restaurar un respaldo llame al encargado técnico; los pasos están en `docs/despliegue.md`.

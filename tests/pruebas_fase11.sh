@@ -10,10 +10,10 @@ login JERSSON123; login JOSE; login jorge; login DANIEL20; login CONTA1
 ANIO=$(sqlf "select \`Id_año_escolar\` from \`año_escolar\` where estado='ACTIVO' limit 1")
 AULA=18                 # secundaria quinto grado (7 estudiantes); JOSE no enseña ahí
 AULA_JOSE=5             # inicial 3 años
-DIA=$(php -r 'echo date("Y-m-d", strtotime("monday this week") > time() ? strtotime("monday last week") : strtotime("monday this week"));')
+DIA=$(php -r 'date_default_timezone_set("America/Lima"); echo date("Y-m-d", strtotime("monday this week") > time() ? strtotime("monday last week") : strtotime("monday this week"));')
 MES=${DIA:0:7}
-FUTURO=$(php -r 'echo date("Y-m-d", strtotime("monday next week"));')
-SABADO=$(php -r 'echo date("Y-m-d", strtotime("saturday last week"));')
+FUTURO=$(php -r 'date_default_timezone_set("America/Lima"); echo date("Y-m-d", strtotime("monday next week"));')
+SABADO=$(php -r 'date_default_timezone_set("America/Lima"); echo date("Y-m-d", strtotime("saturday last week"));')
 
 echo "== Base de datos (migración 013)"
 check "un registro por estudiante y día (índice único)" "1" "$(q "select count(*) from information_schema.statistics where table_schema='colegio2_test' and table_name='asistencia' and index_name='uq_asistencia_dia' and seq_in_index=1")"
