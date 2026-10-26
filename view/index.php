@@ -323,13 +323,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
                   <i class="nav-icon fas fa-table"></i>
-                  <p>Registro mensual</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
-                  <i class="nav-icon fas fa-check-square"></i>
-                  <p>Asistencia del día</p>
+                  <p>Registro de asistencia</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -674,13 +668,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
                       <i class="nav-icon fas fa-table text-warning"></i>
-                      <p>Registro mensual</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Asistencia del día</p>
+                      <p>Registro de asistencia</p>
                     </a>
                   </li>
                   <li class="nav-item">

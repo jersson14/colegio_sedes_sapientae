@@ -47,7 +47,7 @@ window.PanelRol = (function () {
         return +a.registrada
           ? item('pi-bien', 'fa-check', textoSeguro(C.titulo(a.aula)), 'Asistencia registrada')
           : item('pi-aviso', 'fa-clipboard-list', textoSeguro(C.titulo(a.aula)), d.dia ? 'Falta registrar la asistencia de hoy' : 'Sin clases hoy',
-                 d.dia ? C.ir('asistencia/view_registro_asistencia.php', 'Registrar') : '');
+                 d.dia ? '<a href="#" onclick="Asistencia_Abrir(' + (+a.id) + ');return false;">Registrar</a>' : '');
       }).join(''));
     }
     if (!d.por_calificar.length) { vacio('#pr_tareas', '<i class="fas fa-check-circle text-success"></i> No tiene entregas por calificar.'); } else {
@@ -102,7 +102,7 @@ window.PanelRol = (function () {
     $('#pr_aulas_aux').html('<p class="mb-2">' + (d.dia ? (faltan ? '<b>' + C.plural(faltan, 'aula', 'aulas') + '</b> sin asistencia registrada hoy.' : '<span class="pi-ok"><i class="fas fa-check-circle"></i> Todas las aulas registraron asistencia.</span>') : 'Hoy no hay clases.') + '</p>'
       + '<div class="pr-grilla">' + d.aulas.map(function (a) {
         var pct = +a.estudiantes ? Math.round(+a.registrados * 100 / +a.estudiantes) : 0;
-        return '<button type="button" class="pr-aula ' + (pct >= 100 ? 'ok' : (pct ? 'parcial' : 'falta')) + '" onclick="cargar_contenido(\'contenido_principal\',\'asistencia/view_registro_asistencia.php\')">'
+        return '<button type="button" class="pr-aula ' + (pct >= 100 ? 'ok' : (pct ? 'parcial' : 'falta')) + '" onclick="Asistencia_Abrir(' + (+a.id) + ')">'
           + '<b>' + textoSeguro(C.titulo(a.aula)) + '</b><span>' + a.registrados + ' de ' + a.estudiantes + ' registrados</span></button>';
       }).join('') + '</div>');
   }

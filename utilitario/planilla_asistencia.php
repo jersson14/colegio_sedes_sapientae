@@ -80,9 +80,13 @@ function planilla_datos($anio, $aula, $mes) {
     $dias = planilla_dias($mes, $anio_escolar);
     $estudiantes = [];
     if ($aula_sel) {
-        $marcas = $M->Marcas($anio, $aula_sel['id'], $mes . '-01', date('Y-m-t', strtotime($mes . '-01')));
+        $desde = $mes . '-01';
+        $hasta = date('Y-m-t', strtotime($desde));
+        $marcas = $M->Marcas($anio, $aula_sel['id'], $desde, $hasta);
+        $obs = $M->Observaciones($anio, $aula_sel['id'], $desde, $hasta);
         foreach ($M->Estudiantes($anio, $aula_sel['id']) as $e) {
             $e['marcas'] = (object) ($marcas[$e['matricula']] ?? []);
+            $e['obs'] = (object) ($obs[$e['matricula']] ?? []);
             $estudiantes[] = $e;
         }
     }

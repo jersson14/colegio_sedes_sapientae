@@ -40,7 +40,7 @@ window.PanelAdmin = (function () {
     if (s.aulas_pendientes.length) {
       h += '<p class="mb-1" style="font-size:.88rem;font-weight:600">Aulas sin registro:</p><ul class="pi-aulas">'
         + s.aulas_pendientes.map(function (a) {
-          return '<li><button type="button" title="Abrir el registro mensual" onclick="cargar_contenido(\'contenido_principal\',\'asistencia/view_registro_asistencia.php\')">' + textoSeguro(a.aula) + '</button></li>';
+          return '<li><button type="button" title="Registrar la asistencia de hoy de esta aula" onclick="Asistencia_Abrir(' + (+a.id) + ')">' + textoSeguro(a.aula) + '</button></li>';
         }).join('') + '</ul>';
     } else if (s.registrados) {
       h += '<p class="pi-ok mb-0"><i class="fas fa-check-circle"></i> Todas las aulas registraron asistencia.</p>';

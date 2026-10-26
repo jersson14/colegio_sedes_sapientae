@@ -52,7 +52,7 @@ Se reutilizan los componentes del panel nuevo (`css/inicio.css`): encabezado del
 
 - **Menú organizado por tareas**: Inicio · Estudiantes y matrícula · Académico (notas, tareas, exámenes, horarios) · Asistencia · Pensiones y caja · Comunicación · Configuración.
 - Corregir los nombres poco claros: "Academico" (sin tilde), "Asignaturas y examen", "Sección y grado".
-- **Buscador en el menú**, porque el administrador tiene 44 pantallas.
+- **Buscador en el menú**, porque el administrador tiene 43 pantallas.
 - **Encabezados uniformes:** 36 pantallas se titulan "MANTENIMIENTO DE …". Deben decir lo que la persona hace ("Estudiantes", "Matrículas", "Pagos de pensión"), en tipo oración y no todo en mayúsculas, con el botón principal ("Nueva matrícula") siempre en el mismo lugar.
 
 ### Etapa 3: legibilidad de los datos (alto impacto, esfuerzo medio)
@@ -217,6 +217,13 @@ Paso 6 hecho el 2026-10-26 (`js/ficha.js`, `model/model_ficha.php`, `tests/prueb
 - **Imprimir ficha** saca solo la ficha, con el escudo y el nombre del colegio.
 - En la lista de Estudiantes, el botón "Mostrar" (una ventana de solo lectura) pasa a ser **Ficha**.
 
+Paso 7 hecho el 2026-10-26 (`js/registro_asistencia.js`, `tests/pruebas_fase13_asistencia.sh`):
+
+- El **Registro de asistencia** es la única pantalla para registrar. Tiene dos modos: **Por día** (botones grandes P, T, F, J por estudiante, pensado para el celular, donde se abre así) y **Mes completo** (la hoja de siempre). Recuerda el último modo en cada equipo.
+- **Observación** por estudiante y día ("cita médica", "llegó con su mamá"), que antes solo tenía la pantalla antigua. En la hoja del mes se ve como una esquina de color en la casilla.
+- Desde los paneles de inicio, tocar un aula abre su asistencia del día directamente.
+- Se retiró la antigua "Asistencia del día" con sus 7 controladores de registrar, editar y eliminar: el auxiliar ya no tiene permiso para ellos y no quedan dos formas de hacer lo mismo. El **Reporte de asistencias** sigue igual, con su propio script (`js/asistencia_reportes.js`) y sin las ventanas que había copiado de la pantalla antigua.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -227,7 +234,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 4 ✅ | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
 | 5 ✅ | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
 | 6 ✅ | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
-| 7 | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
+| 7 ✅ | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
 | 8 | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
 | 9 | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
 | 10 | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |

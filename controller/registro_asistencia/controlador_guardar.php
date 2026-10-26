@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../_seguridad.php';
 require_once __DIR__ . '/../../utilitario/validacion.php';
 require_once __DIR__ . '/../../utilitario/planilla_asistencia.php';
-// Guarda los cambios de la planilla mensual: [{matricula, fecha, codigo}] con código P, T, F, J o vacío (borra)
+// Guarda los cambios de la planilla: [{matricula, fecha, codigo, obs?}] con código P, T, F, J o vacío (borra)
 $anio = entero_post('anio', 1, 'año escolar');
 $aula = entero_post('aula', 1, 'aula');
 $M = new Modelo_Registro_Asistencia();
@@ -33,7 +33,16 @@ foreach ($cambios as $x) {
     if ($codigo !== '' && !isset(Modelo_Registro_Asistencia::CODIGOS[$codigo])) {
         denegar(400, 'Código de asistencia inválido (use P, T, F o J)');
     }
-    $limpios[] = ['matricula' => (int) ($x['matricula'] ?? 0), 'fecha' => $fecha, 'codigo' => $codigo];
+    $limpio = ['matricula' => (int) ($x['matricula'] ?? 0), 'fecha' => $fecha, 'codigo' => $codigo];
+    // Observación opcional del día (p. ej. "llegó con su mamá", "cita médica"); sin marca no se guarda
+    if (array_key_exists('obs', $x) && $codigo !== '') {
+        $obs = trim((string) $x['obs']);
+        if (mb_strlen($obs, 'UTF-8') > 255) {
+            denegar(400, 'La observación admite hasta 255 caracteres');
+        }
+        $limpio['obs'] = $obs;
+    }
+    $limpios[] = $limpio;
 }
 try {
     responder_json(['ok' => true, 'guardados' => $M->Guardar($anio, $aula, $limpios)]);

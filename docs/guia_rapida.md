@@ -16,13 +16,25 @@ La ficha reúne en una sola pantalla sus datos, padres, matrículas, asistencia,
 
 La dirección ve todo. El auxiliar no ve pagos ni salud; la contadora ve datos, padres, pensiones y pagos.
 
-## Tomar asistencia: Registro mensual
+## Tomar asistencia: Registro de asistencia
 
-Menú: **Asistencia → Registro mensual** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**.
+Es la única pantalla para registrar asistencia. Menú: **Asistencia → Registro de asistencia** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**. Desde el inicio, tocar un aula pendiente abre directamente su asistencia del día.
+
+Arriba se elige la forma de trabajar: **Por día** o **Mes completo**. En el celular se abre **Por día**; el sistema recuerda la última elección en cada equipo.
+
+### Por día (ideal en el celular)
+
+1. Elija el **aula**. Las flechas ‹ › pasan al día de clase anterior o siguiente.
+2. Toque **P**, **T**, **F** o **J** en cada estudiante. Tocar de nuevo la misma letra quita la marca.
+3. Si hace falta, escriba una **observación** (por ejemplo "cita médica" o "llegó con su mamá"). Se habilita después de marcar.
+4. **Todos presentes** marca a los que aún no tienen marca; luego cambie solo a los que faltaron o llegaron tarde.
+5. Pulse **Guardar**.
+
+### Mes completo (como la hoja en papel)
 
 1. Elija el **aula** y el **mes**. Las flechas ‹ › cambian de mes.
 2. Cada fila es un estudiante y cada columna un día de clase (lunes a viernes), agrupados por semana.
-3. Haga **clic en la casilla** para marcar. Cada clic cambia la marca: **P** presente → **T** tardanza → **F** falta → **J** falta justificada → vacío.
+3. Haga **clic en la casilla** para marcar. Cada clic cambia la marca: **P** presente → **T** tardanza → **F** falta → **J** falta justificada → vacío. Las casillas con observación muestran una esquina de color; al pasar el mouse se lee la observación.
 4. **Más rápido:**
    - **Hoy: todos presentes** marca a todos en el día de hoy. Después cambie solo a los que faltaron o llegaron tarde.
    - Un clic en el **número del día** marca como presentes a todos los que no tienen marca ese día, o limpia el día.

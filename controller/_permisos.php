@@ -35,17 +35,10 @@ return [
         'controller/asistencia_docente/controlador_resumen.php' => ['AUXILIAR'],
         // asistencias
         'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
-        'controller/asistencias/controlador_editar_asistencia.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_eliminar_asistencia.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_listar_alumnos_asistencia.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_listar_alumnos_por_grado.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales_dia.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales_dia_estudiante.php' => ['ESTUDIANTE'],
         'controller/asistencias/controlador_listar_alumnos_totales_estu.php' => ['ESTUDIANTE'],
-        'controller/asistencias/controlador_listar_asistencias.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_listar_asistencias_fechas.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_registro_asistencias.php' => ['AUXILIAR'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
         'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // cada usuario cambia su propia contraseña (Fase 13)

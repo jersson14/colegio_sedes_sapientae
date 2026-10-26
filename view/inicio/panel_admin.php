@@ -60,7 +60,7 @@ $e = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); 
         <section class="pi-tarjeta">
           <header>
             <h2 id="pi_asis_titulo">Asistencia de hoy</h2>
-            <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php');return false;">Registro mensual <i class="fas fa-arrow-right"></i></a>
+            <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php');return false;">Registro de asistencia <i class="fas fa-arrow-right"></i></a>
           </header>
           <div id="pi_asistencia"><p class="pi-tenue mb-0">Cargando…</p></div>
         </section>

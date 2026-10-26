@@ -85,3 +85,9 @@ window.PanelComun = (function () {
   return { MESES: MESES, fecha: fecha, dias: dias, corta: corta, plural: plural, hora: hora, nombrePeriodo: nombrePeriodo,
            titulo: titulo, ir: ir, cabecera: cabecera, lineaAnio: lineaAnio, comunicados: comunicados };
 })();
+
+// Abre el registro de asistencia de un aula en modo Día (desde los paneles de inicio; lo lee js/registro_asistencia.js)
+function Asistencia_Abrir(aula) {
+  window.__asistenciaInicial = { aula: aula, modo: 'dia' };
+  cargar_contenido('contenido_principal', 'asistencia/view_registro_asistencia.php');
+}

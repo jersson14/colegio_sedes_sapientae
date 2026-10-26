@@ -83,9 +83,24 @@ class Modelo_Registro_Asistencia extends conexionBD {
         return $marcas;
     }
 
+    /** Observaciones del mes: [id_matricula][dia] = texto (solo las que tienen texto). */
+    public function Observaciones($anio, $aula, $desde, $hasta) {
+        $c = conexionBD::conexionPDO();
+        $q = $c->prepare("SELECT a.id_matricula, DAY(a.fecha) AS dia, a.observacion
+                          FROM asistencia a JOIN matricula m ON m.id_matricula = a.id_matricula
+                          WHERE m.id_aula = ? AND m.`id_año` = ? AND a.fecha BETWEEN ? AND ? AND TRIM(IFNULL(a.observacion, '')) <> ''");
+        $q->execute([$aula, $anio, $desde, $hasta]);
+        $obs = [];
+        foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $r) {
+            $obs[$r['id_matricula']][(int) $r['dia']] = $r['observacion'];
+        }
+        return $obs;
+    }
+
     /**
      * Guarda los cambios de la planilla en una transacción. $cambios: [['matricula'=>, 'fecha'=>'Y-m-d', 'codigo'=>'P|T|F|J|']].
      * Código vacío borra la marca del día. Solo se aceptan matrículas del aula y año indicados.
+     * 'obs' (opcional) reemplaza la observación del día; si no viene, la observación guardada no cambia.
      */
     public function Guardar($anio, $aula, array $cambios) {
         $c = conexionBD::conexionPDO();
@@ -95,6 +110,9 @@ class Modelo_Registro_Asistencia extends conexionBD {
         $guardar = $c->prepare("INSERT INTO asistencia(id_matricula, mes, fecha, estado, observacion, created_at, updated_at)
                                 VALUES (?, MONTH(?), ?, ?, '', NOW(), NULL)
                                 ON DUPLICATE KEY UPDATE estado = VALUES(estado), updated_at = NOW()");
+        $guardar_obs = $c->prepare("INSERT INTO asistencia(id_matricula, mes, fecha, estado, observacion, created_at, updated_at)
+                                    VALUES (?, MONTH(?), ?, ?, ?, NOW(), NULL)
+                                    ON DUPLICATE KEY UPDATE estado = VALUES(estado), observacion = VALUES(observacion), updated_at = NOW()");
         $borrar = $c->prepare("DELETE FROM asistencia WHERE id_matricula = ? AND fecha = ?");
         $c->beginTransaction();
         try {
@@ -105,6 +123,8 @@ class Modelo_Registro_Asistencia extends conexionBD {
                 }
                 if ($x['codigo'] === '') {
                     $borrar->execute([$x['matricula'], $x['fecha']]);
+                } elseif (isset($x['obs'])) {
+                    $guardar_obs->execute([$x['matricula'], $x['fecha'], $x['fecha'], self::CODIGOS[$x['codigo']], $x['obs']]);
                 } else {
                     $guardar->execute([$x['matricula'], $x['fecha'], $x['fecha'], self::CODIGOS[$x['codigo']]]);
                 }
