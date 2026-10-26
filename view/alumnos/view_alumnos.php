@@ -175,15 +175,15 @@
                                 <input type="text" class="form-control" id="txt_cel_pa"  style="background-color:white;" placeholder="Ingrese el celular o movil de Papá" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">DNI Mamá:</label>
+                                <label for="">DNI Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni_ma" placeholder="Ingrese el DNI de Mamá" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Nombre y Apellidos Mamá:</label>
+                                <label for="">Nombre y Apellidos Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_nom_ma"  style="background-color:white;" placeholder="Ingrese los Nombres y apellidos de Mamá" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Teléfono o Celular Mamá:</label>
+                                <label for="">Teléfono o Celular Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_cel_ma"  style="background-color:white;" placeholder="Ingrese el celular o movil de Mamá" onkeypress="return soloNumeros(event)"> 
                             </div>
                             
@@ -296,15 +296,15 @@
                                 <input type="text" class="form-control" id="txt_cel_pa_mas"  style="background-color:white;" placeholder="Ingrese el celular o movil de Papá" readonly>
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">DNI Mamá:</label>
+                                <label for="">DNI Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni_ma_mas" placeholder="Ingrese el DNI de Mamá" readonly>
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Nombre y Apellidos Mamá:</label>
+                                <label for="">Nombre y Apellidos Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_nom_ma_mas"  style="background-color:white;" placeholder="Ingrese los Nombres y apellidos de Mamá" readonly>
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Teléfono o Celular Mamá:</label>
+                                <label for="">Teléfono o Celular Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_cel_ma_mas"  style="background-color:white;" placeholder="Ingrese el celular o movil de Mamá" readonly>
                             </div>
                         </div>
@@ -424,15 +424,15 @@
                                 <input type="text" class="form-control" id="txt_cel_pa_editar"  style="background-color:white;" placeholder="Ingrese el celular o movil de Papá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">DNI Mamá:</label>
+                                <label for="">DNI Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni_ma_editar" placeholder="Ingrese el DNI de Mamá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Nombre y Apellidos Mamá:</label>
+                                <label for="">Nombre y Apellidos Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_nom_ma_editar"  style="background-color:white;" placeholder="Ingrese los Nombres y apellidos de Mamá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Teléfono o Celular Mamá:</label>
+                                <label for="">Teléfono o Celular Mamá<b style="color:red">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_cel_ma_editar"  style="background-color:white;" placeholder="Ingrese el celular o movil de Mamá">
                             </div>
                         </div>

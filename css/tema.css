@@ -109,3 +109,14 @@ table.dataTable thead th { border-bottom-color: var(--tema-acento) !important; }
 
 /* Barras de desplazamiento con el color del colegio */
 * { scrollbar-color: var(--tema-primario-borde) transparent; }
+
+/* Formularios (js/formulario.js): campo obligatorio vacío y botón enviando */
+.fm-invalido.select2 .select2-selection { border-color: #dc3545 !important; }
+.fm-error { font-size: .82rem; }
+.fm-enviando { position: relative; pointer-events: none; opacity: .75; }
+.fm-enviando::after {
+  content: ""; display: inline-block; width: .9em; height: .9em; margin-left: .5em; vertical-align: -0.1em;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: fm-gira .7s linear infinite;
+}
+@keyframes fm-gira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .fm-enviando::after { animation: none; } }

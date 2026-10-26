@@ -175,12 +175,21 @@ Se encontró en la base de datos:
 - Periodos dentro del año y sin cruces.
 - Un manejador común de errores: eliminar algo con datos relacionados explica el motivo en lugar de dar un error de PHP. Cubre las 24 funciones de eliminar que no estaban protegidas.
 
+Paso 2 hecho el 2026-10-26 (`js/formulario.js`, `tests/navegador/prueba_formularios.sh`). Funciona en **todas las ventanas** sin tocar cada pantalla:
+
+- Cada obligatorio (*) vacío se marca junto a su campo, también en pestañas ocultas, que se abren solas.
+- Fechas con límites: nacimiento entre 2 y 100 años; tareas y exámenes nuevos desde hoy; pagos, adelantos, depósitos y cierres no a futuro. Escribirla a mano fuera de rango también se marca.
+- Un solo envío aunque se pulse varias veces; el botón muestra que está enviando.
+- Al cerrar una ventana con cambios sin guardar, se pregunta.
+- Enter guarda y el cursor empieza en el primer campo.
+- Las ventanas que arman listas con "Agregar" mantienen su propia validación.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
 |---|---|---|---|---|
 | 1 ✅ | Correcciones de lógica: registro sin `MAX(id)`, transacciones, correos, duplicados, periodos, auditoría, errores claros | 4c | Bajo | Evita datos cruzados entre registros |
-| 2 | Componente de formulario y límites de fechas | 4 | Medio | Menos errores al cargar datos en todo el sistema |
+| 2 ✅ | Componente de formulario y límites de fechas | 4 | Medio | Menos errores al cargar datos en todo el sistema |
 | 3 | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
 | 4 | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
 | 5 | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
