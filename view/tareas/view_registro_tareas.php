@@ -20,11 +20,14 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-8"><h1 class="m-0"><b>REGISTRO DE TAREAS</b></h1></div>
+      <div class="col-sm-8">
+        <h1 class="m-0 pagina-titulo">Registro de tareas</h1>
+        <p class="pagina-ayuda">Entregas y notas de las tareas de un aula.</p>
+      </div>
       <div class="col-sm-4">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">REGISTRO DE TAREAS</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Registro de tareas</li>
         </ol>
       </div>
     </div>

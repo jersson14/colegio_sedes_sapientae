@@ -5,12 +5,13 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"><b>MANTENIMIENTO DE ROLES</b></h1>
+        <h1 class="m-0 pagina-titulo">Roles</h1>
+        <p class="pagina-ayuda">Tipos de usuario del sistema.</p>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">ROLES</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Roles</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->

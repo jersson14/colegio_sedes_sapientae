@@ -6,12 +6,13 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"><b>MANTENIMIENTO DE AULA - HORAS</b></h1>
+        <h1 class="m-0 pagina-titulo">Horas de clase por aula</h1>
+        <p class="pagina-ayuda">Bloques horarios disponibles en cada aula.</p>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">AULA - HORAS</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Horas de clase por aula</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->

@@ -9,11 +9,14 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-8"><h1 class="m-0"><b>REPORTE DE ESTUDIANTES A MEDIDA</b></h1></div>
+      <div class="col-sm-8">
+        <h1 class="m-0 pagina-titulo">Reporte de estudiantes</h1>
+        <p class="pagina-ayuda">Elige los datos y filtros, y exporta la lista.</p>
+      </div>
       <div class="col-sm-4">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">REPORTE DE ESTUDIANTES</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Reporte de estudiantes</li>
         </ol>
       </div>
     </div>

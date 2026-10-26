@@ -5,12 +5,13 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"><b>MANTENIMIENTO DE ATENCIÓN ENFERMERIA</b></h1>
+        <h1 class="m-0 pagina-titulo">Enfermería</h1>
+        <p class="pagina-ayuda">Atenciones de salud de los estudiantes.</p>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">ENFERMERIA</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Enfermería</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->

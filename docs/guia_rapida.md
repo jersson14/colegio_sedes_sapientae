@@ -2,9 +2,15 @@
 
 Para docentes, auxiliares y la dirección.
 
+## Encontrar una pantalla
+
+Arriba del menú está **Buscar en el menú**: escriba parte del nombre (por ejemplo *matri* o *caja*) y quedan solo las opciones que coinciden. No importan las tildes. **Enter** abre la primera y **Esc** limpia la búsqueda.
+
+El menú de la dirección está ordenado por tareas: Estudiantes y matrícula · Académico · Asistencia · Pensiones y caja · Personal · Comunicación y salud · Organización del colegio · Configuración. Cada pantalla muestra arriba su nombre y una línea que dice para qué sirve.
+
 ## Tomar asistencia: Registro mensual
 
-Menú: **Horario y asistencia → Registro mensual**. Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**.
+Menú: **Asistencia → Registro mensual** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**.
 
 1. Elija el **aula** y el **mes**. Las flechas ‹ › cambian de mes.
 2. Cada fila es un estudiante y cada columna un día de clase (lunes a viernes), agrupados por semana.
@@ -22,7 +28,7 @@ Los docentes solo ven las aulas donde enseñan. No se puede marcar días futuros
 
 ## Revisar tareas: Registro de tareas
 
-Menú: **Notas y tareas → Registro de tareas**.
+Menú: **Académico → Tareas → Registro de tareas** (docentes: **Notas y tareas**; auxiliar: **Revisar tareas**).
 
 - Elija el **curso** y el **periodo** (bimestre o todo el año). Cada columna es una tarea y cada fila un estudiante.
 - Qué significa cada casilla:
@@ -45,7 +51,7 @@ Todas las tablas del sistema (estudiantes, matrículas, pagos, tareas, etc.) tie
 
 ## Reporte de estudiantes a medida
 
-Menú: **Reporte de estudiantes**. Lo usan la dirección, el auxiliar y la contadora.
+Menú: **Estudiantes y matrícula → Reporte de estudiantes**. Lo usan la dirección, el auxiliar y la contadora.
 
 1. **Campos**: marque los datos que quiere, en el orden en que deben aparecer: datos del estudiante, padres, matrícula, asistencia, tareas, pensiones y deuda. Las listas rápidas (*Lista básica*, *Contacto de padres*, *Seguimiento*, *Cobranza*) marcan varios de una vez.
 2. **Filtros**: año, nivel, aula, sexo, nuevo o antiguo, búsqueda por nombre, o **solo con deuda vencida**.

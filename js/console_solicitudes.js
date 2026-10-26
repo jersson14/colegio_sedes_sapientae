@@ -155,7 +155,7 @@ function Cargar_Estadisticas() {
         url: '../controller/controlador_estadisticas_solicitudes.php',
         type: 'POST'
     }).done(function(resp) {
-        if(resp) {
+        if(resp && document.getElementById('stat_total')) {
             var data = (typeof resp === 'string') ? JSON.parse(resp) : resp;
             document.getElementById('stat_total').innerHTML = data.total || 0;
             document.getElementById('stat_pendientes').innerHTML = data.pendientes || 0;

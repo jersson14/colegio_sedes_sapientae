@@ -10,11 +10,14 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-6"><h1 class="m-0"><b>REPORTES FINANCIEROS</b></h1></div>
+      <div class="col-sm-6">
+        <h1 class="m-0 pagina-titulo">Reportes financieros</h1>
+        <p class="pagina-ayuda">Ingresos, gastos y pensiones por periodo.</p>
+      </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">REPORTES FINANCIEROS</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Reportes financieros</li>
         </ol>
       </div>
     </div>

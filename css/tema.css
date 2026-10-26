@@ -48,18 +48,34 @@ a:hover { color: var(--tema-primario-oscuro); }
 .main-sidebar .nav-pills .nav-link.active .nav-icon { color: var(--tema-menu-activo-texto) !important; }
 .main-sidebar .nav-item.menu-open > .nav-link { background-color: rgba(255, 255, 255, .06) !important; }
 
-/* Títulos de sección del menú (antes gris fijo) */
-.nav-sidebar > .header[style*="background-color:Gray"],
-.nav-sidebar .header[style*="background-color:Gray"] {
-  background-color: transparent !important;
+/* Títulos de sección del menú */
+.nav-sidebar .nav-header.menu-seccion {
+  background-color: transparent;
   color: var(--tema-acento) !important;
-  text-align: left !important;
-  font-size: 11px !important;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: .12em;
-  padding: 14px 16px 6px !important;
+  padding: 14px 16px 6px;
   border-top: 1px solid rgba(255, 255, 255, .10);
 }
-.tema-menu-claro .nav-sidebar .header[style*="background-color:Gray"] { color: var(--tema-tinta) !important; border-top-color: #E6E3DE; }
+.tema-menu-claro .nav-sidebar .nav-header.menu-seccion { color: var(--tema-tinta) !important; border-top-color: #E6E3DE; }
+.sidebar-collapse .main-sidebar:not(:hover) .menu-seccion,
+.sidebar-collapse .main-sidebar:not(:hover) .menu-buscar { display: none; }
+
+/* Buscador del menú */
+.nav-sidebar .menu-buscar { padding: 4px 8px 8px; }
+.menu-buscar .form-control,
+.menu-buscar .input-group-text {
+  background-color: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .15);
+  color: var(--tema-menu-texto);
+}
+.menu-buscar .form-control::placeholder { color: var(--tema-menu-texto-suave); }
+.menu-buscar .form-control:focus { background-color: rgba(255, 255, 255, .14); box-shadow: none; border-color: var(--tema-acento); }
+.tema-menu-claro .menu-buscar .form-control,
+.tema-menu-claro .menu-buscar .input-group-text { background-color: #fff; border-color: #E6E3DE; color: var(--tema-tinta); }
+.menu-sin-resultados { display: block; padding: 6px 4px 0; color: var(--tema-menu-texto-suave); font-size: 12px; }
+.nav-sidebar .menu-oculto { display: none !important; }
 
 /* ---------- Barra superior ---------- */
 .main-header.navbar { border-bottom: 3px solid var(--tema-acento); }
@@ -86,6 +102,15 @@ a:hover { color: var(--tema-primario-oscuro); }
 }
 :focus-visible { outline: 2px solid var(--tema-acento); outline-offset: 2px; }
 .breadcrumb-item a { color: var(--tema-tinta); }
+
+/* Cabecera de cada pantalla: título claro y una línea que dice para qué sirve */
+.content-header .pagina-titulo { font-size: 1.6rem; font-weight: 700; color: var(--tema-tinta); letter-spacing: -.01em; }
+.content-header .pagina-ayuda { margin: 2px 0 0; color: #6B6760; font-size: .92rem; }
+.content-header .breadcrumb { background: transparent; font-size: .85rem; }
+@media (max-width: 575.98px) {
+  .content-header .pagina-titulo { font-size: 1.3rem; }
+  .content-header .breadcrumb { display: none; }
+}
 
 /* ---------- Colores fijos heredados de las pantallas ---------- */
 /* Encabezados de tabla */

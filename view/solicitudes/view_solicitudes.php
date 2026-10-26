@@ -4,12 +4,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-envelope"></i> Solicitudes de Información</h1>
+                    <h1 class="m-0 pagina-titulo">Solicitudes de información</h1>
+                    <p class="pagina-ayuda">Consultas recibidas desde la página de ingreso.</p>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="../view/index.php">Inicio</a></li>
-                        <li class="breadcrumb-item active">Solicitudes</li>
+                      <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+                      <li class="breadcrumb-item active">Solicitudes de información</li>
                     </ol>
                 </div>
             </div>
@@ -231,8 +232,13 @@ $(document).ready(function() {
     listar_solicitudes();
     Cargar_Estadisticas();
     
-    // Recargar estadísticas cada 30 segundos
-    setInterval(function() {
+    // Recargar estadísticas cada 30 segundos, solo mientras esta pantalla siga abierta
+    clearInterval(window.__intervaloSolicitudes);
+    window.__intervaloSolicitudes = setInterval(function() {
+        if (!document.getElementById('stat_total')) {
+            clearInterval(window.__intervaloSolicitudes);
+            return;
+        }
         Cargar_Estadisticas();
     }, 30000);
 });

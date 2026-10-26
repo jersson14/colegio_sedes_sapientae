@@ -14,12 +14,13 @@ foreach ($meses as $i => $m) {
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"><b>MANTENIMIENTO DE PENSIONES</b></h1>
+        <h1 class="m-0 pagina-titulo">Pensiones</h1>
+        <p class="pagina-ayuda">Montos y vencimientos de las pensiones de cada nivel.</p>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="../index.php">MENU</a></li>
-          <li class="breadcrumb-item active">PENSIONES</li>
+          <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+          <li class="breadcrumb-item active">Pensiones</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->

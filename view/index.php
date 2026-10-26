@@ -184,380 +184,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar Menu -->
         <nav class="mt-1">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>GESTIÓN ACADÉMICA</b></li>
+            <li class="nav-item menu-buscar">
+              <div class="input-group input-group-sm">
+                <input type="search" id="menu_buscar" class="form-control" placeholder="Buscar en el menú..." aria-label="Buscar en el menú" autocomplete="off">
+                <div class="input-group-append"><span class="input-group-text"><i class="fas fa-search"></i></span></div>
+              </div>
+              <small id="menu_sin_resultados" class="menu-sin-resultados" hidden>No hay opciones con ese nombre.</small>
+            </li>
 
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
               <li class="nav-item">
                 <a href="index.php" class="nav-link">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>
-                    Menú principal
-                  </p>
+                  <i class="nav-icon fas fa-home"></i>
+                  <p>Inicio</p>
                 </a>
               </li>
-              <br>
+              <li class="nav-header menu-seccion">ESTUDIANTES Y MATRÍCULA</li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-calendar-check"></i>
-                  <p>
-                    Gestión escolar
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','periodo/view_periodo.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Periodos por año
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','año/view_año_escolar.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Años escolares
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-list-ol"></i>
-                  <p>
-                    Sección y grado
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','aulas/view_aulas.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Grado
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','seccion/view_seccion.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Sección
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','nivel_academico/view_nivel_academico.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Nivel académico
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-users"></i>
-                  <p>
-                    Gestión de usuarios
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','alumnos/view_alumnos.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Estudiantes
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','docentes/view_docentes.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Docentes
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','personal_admin/view_personal_admin.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Personal administrativo
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','alumnos/view_alumnos.php')" class="nav-link">
                   <i class="nav-icon fas fa-user-graduate"></i>
-                  <p>
-                    Academico
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','matricula/view_matricula.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Matricula
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Pago de pensiones
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Pensiones
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-file"></i>
-                  <p>
-                    Asignaturas y examen
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','examen/view_examen.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Examen
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','docente_asignatura/view_docenteasignatura.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Docente - Asignatura
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asignaturas/view_asignatura.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Asignaturas
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-clock "></i>
-                  <p>
-                    Horario y asistencia
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
-                      <i class="nav-icon fas fa-table text-warning"></i>
-                      <p>Registro mensual</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Asistencia
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Reporte de asistencias
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Horario
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','aula_hora/view_aula_hora.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Aula - Hora
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-clipboard"></i>
-                  <p>
-                    Notas y tareas
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Notas
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Tareas
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_registro_tareas.php')" class="nav-link">
-                      <i class="nav-icon fas fa-th text-info"></i>
-                      <p>Registro de tareas</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    Comunicados y boletas
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','comunicado/view_comunicado.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Comunicados
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','boletas/view_boletas.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Boletas
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','componentes/view_componentes.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Criterios
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-folder-plus"></i>
-                  <p>
-                    Atenciones de salud
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Psicología
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Enfermería
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-coins"></i>
-                  <p>
-                    Ingresos y egresos
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Ingresos
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Egresos o gastos
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_indicadores.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Categorías
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
-                      <i class="nav-icon far fa-circle"></i>
-                      <p>Cajas y bancos</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
-                  <i class="nav-icon fas fa-file-invoice-dollar"></i>
-                  <p>Planilla de personal</p>
+                  <p>Estudiantes</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia_docente/view_asistencia_docente.php')" class="nav-link">
-                  <i class="nav-icon fas fa-user-check"></i>
-                  <p>Asistencia docente</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php')" class="nav-link">
-                  <i class="nav-icon fas fa-chart-line"></i>
-                  <p>Reportes financieros</p>
+                <a href="#" onclick="cargar_contenido('contenido_principal','matricula/view_matricula.php')" class="nav-link">
+                  <i class="nav-icon fas fa-id-card"></i>
+                  <p>Matrícula</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -566,55 +220,271 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Reporte de estudiantes</p>
                 </a>
               </li>
-              <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONFIGURACIÓN</b></li>
-              <li class="nav-item" hidden="">
-                <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
-                  <i class="nav-icon fas fa-users"></i>
-                  <p>
-                    Usuarios
-                  </p>
-                </a>
-              </li>
+              <li class="nav-header menu-seccion">ACADÉMICO</li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-sitemap"></i>
-                  <p>
-                    Roles y especialidades
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
+                  <i class="nav-icon fas fa-clipboard-check"></i>
+                  <p>Notas y evaluación<i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','especialidades/view_especialidades.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Especialidades
-                      </p>
+                      <p>Notas</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','roles/view_roles.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','componentes/view_componentes.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Roles
-                      </p>
+                      <p>Criterios de evaluación</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','boletas/view_boletas.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Boletas de notas</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','examen/view_examen.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Exámenes</p>
                     </a>
                   </li>
                 </ul>
               </li>
               <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-book-open"></i>
+                  <p>Tareas<i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Tareas</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_registro_tareas.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Registro de tareas</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                  <p>Cursos y horarios<i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','asignaturas/view_asignatura.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Asignaturas</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','docente_asignatura/view_docenteasignatura.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Cursos de cada docente</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Horarios</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','aula_hora/view_aula_hora.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Horas de clase por aula</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-header menu-seccion">ASISTENCIA</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')" class="nav-link">
+                  <i class="nav-icon fas fa-table"></i>
+                  <p>Registro mensual</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
+                  <i class="nav-icon fas fa-check-square"></i>
+                  <p>Asistencia del día</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reportes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-chart-bar"></i>
+                  <p>Reporte de asistencias</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','asistencia_docente/view_asistencia_docente.php')" class="nav-link">
+                  <i class="nav-icon fas fa-user-check"></i>
+                  <p>Asistencia docente</p>
+                </a>
+              </li>
+              <li class="nav-header menu-seccion">PENSIONES Y CAJA</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                  <i class="nav-icon fas fa-hand-holding-usd"></i>
+                  <p>Cobrar pensión</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice"></i>
+                  <p>Pensiones</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-coins"></i>
+                  <p>Ingresos y gastos<i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Ingresos</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Gastos</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_indicadores.php')" class="nav-link">
+                      <i class="nav-icon far fa-circle"></i>
+                      <p>Categorías</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
+                  <i class="nav-icon fas fa-cash-register"></i>
+                  <p>Cajas y bancos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reportes_financieros.php')" class="nav-link">
+                  <i class="nav-icon fas fa-chart-line"></i>
+                  <p>Reportes financieros</p>
+                </a>
+              </li>
+              <li class="nav-header menu-seccion">PERSONAL</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','docentes/view_docentes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                  <p>Docentes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','personal_admin/view_personal_admin.php')" class="nav-link">
+                  <i class="nav-icon fas fa-user-tie"></i>
+                  <p>Personal administrativo</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','planilla/view_planilla.php')" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                  <p>Planilla de personal</p>
+                </a>
+              </li>
+              <li class="nav-header menu-seccion">COMUNICACIÓN Y SALUD</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','comunicado/view_comunicado.php')" class="nav-link">
+                  <i class="nav-icon fas fa-bullhorn"></i>
+                  <p>Comunicados</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
+                  <i class="nav-icon fas fa-envelope"></i>
+                  <p>Solicitudes de información</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
+                  <i class="nav-icon fas fa-briefcase-medical"></i>
+                  <p>Enfermería</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="nav-link">
+                  <i class="nav-icon fas fa-brain"></i>
+                  <p>Psicología</p>
+                </a>
+              </li>
+              <li class="nav-header menu-seccion">ORGANIZACIÓN DEL COLEGIO</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','año/view_año_escolar.php')" class="nav-link">
+                  <i class="nav-icon fas fa-calendar-alt"></i>
+                  <p>Años escolares</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','periodo/view_periodo.php')" class="nav-link">
+                  <i class="nav-icon fas fa-calendar-week"></i>
+                  <p>Periodos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','nivel_academico/view_nivel_academico.php')" class="nav-link">
+                  <i class="nav-icon fas fa-layer-group"></i>
+                  <p>Niveles</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','aulas/view_aulas.php')" class="nav-link">
+                  <i class="nav-icon fas fa-school"></i>
+                  <p>Grados</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','seccion/view_seccion.php')" class="nav-link">
+                  <i class="nav-icon fas fa-th-large"></i>
+                  <p>Secciones</p>
+                </a>
+              </li>
+              <li class="nav-header menu-seccion">CONFIGURACIÓN</li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                  <p>Usuarios</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','roles/view_roles.php')" class="nav-link">
+                  <i class="nav-icon fas fa-sitemap"></i>
+                  <p>Roles</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','especialidades/view_especialidades.php')" class="nav-link">
+                  <i class="nav-icon fas fa-graduation-cap"></i>
+                  <p>Especialidades</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-university"></i>
-                  <p>
-                    Formas de pago y cuentas
-                  </p>
+                  <p>Formas de pago y cuentas</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_regional.php')" class="nav-link">
                   <i class="nav-icon fas fa-globe-americas"></i>
-                  <p>
-                    Datos regionales
-                  </p>
+                  <p>Datos regionales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -635,27 +505,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Respaldos</p>
                 </a>
               </li>
-                <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
-                  <i class="nav-icon fas fa-envelope"></i>
-                  <p>
-                    Solicitudes de información
-                  </p>
-                </a>
-              </li>
               <li class="nav-item">
-                <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" class="nav-link">
+                <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" rel="noopener" class="nav-link">
                   <i class="nav-icon fas fa-film"></i>
-                  <p>
-                    Video tutorial
-                  </p>
+                  <p>Video tutorial</p>
                 </a>
               </li>
             <?php
             }
             ?>
             <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
-              <li class="header text-center" style="color:#FFFFFF;background-color:Gray;"><b>CONTABILIDAD</b></li>
+              <li class="nav-header menu-seccion">CONTABILIDAD</li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-hand-holding-usd"></i>
@@ -668,13 +528,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Pago de pensiones</p>
+                      <p>Cobrar pensión</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Pensiones (precios y vencimientos)</p>
+                      <p>Pensiones</p>
                     </a>
                   </li>
                 </ul>
@@ -683,7 +543,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-coins"></i>
                   <p>
-                    Ingresos y egresos
+                    Ingresos y gastos
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -697,7 +557,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Egresos o gastos</p>
+                      <p>Gastos</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -753,9 +613,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Enfermeria
-                      </p>
+                      <p>Enfermería</p>
                     </a>
                   </li>
                 </ul>
@@ -808,8 +666,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Asistencia
-                      </p>
+                      <p>Asistencia del día</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -828,17 +685,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Horario
-                      </p>
+                      <p>Horarios</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','aula_hora/view_aula_hora.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Aula - Hora
-                      </p>
+                      <p>Horas de clase por aula</p>
                     </a>
                   </li>
                 </ul>
@@ -905,16 +758,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Notas
-                      </p>
+                      <p>Notas de mis cursos</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Tareas
-                      </p>
+                      <p>Tareas de mis cursos</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -943,9 +793,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Programar examen
-                      </p>
+                      <p>Exámenes de mis cursos</p>
                     </a>
                   </li>
                 </ul>
@@ -966,16 +814,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Notas
-                      </p>
+                      <p>Mis notas</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Tareas
-                      </p>
+                      <p>Mis tareas</p>
                     </a>
                   </li>
                 </ul>
@@ -993,16 +838,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reporte_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Reporte de asistencia
-                      </p>
+                      <p>Mi asistencia</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','horario/view_horario_edtudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Horario
-                      </p>
+                      <p>Mi horario</p>
                     </a>
                   </li>
                 </ul>
@@ -1020,9 +862,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>
-                        Ver pago de pensiones
-                      </p>
+                      <p>Mis pagos</p>
                     </a>
                   </li>
 
@@ -1683,6 +1523,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/formulario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/cuenta.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/menu.js?rev=<?php echo time(); ?>"></script>
 <!-- Cambiar mi contraseña (todos los roles) -->
 <div class="modal fade" id="modal_mi_clave" tabindex="-1" role="dialog" aria-labelledby="titulo_mi_clave" aria-hidden="true">
   <div class="modal-dialog" role="document">
