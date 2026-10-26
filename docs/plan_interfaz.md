@@ -209,6 +209,14 @@ Paso 5 hecho el 2026-10-26 (`js/menu.js`, `tests/pruebas_fase13_menu.sh`):
 - Para el estudiante y el docente las opciones dicen de quién son: "Mis notas", "Mi horario", "Mis pagos", "Notas de mis cursos".
 - Corregido de paso: en Solicitudes, el refresco de cada 30 segundos seguía activo al salir de la pantalla y se sumaba uno nuevo en cada visita. Además, Asignaturas llamaba a una función de otra pantalla.
 
+Paso 6 hecho el 2026-10-26 (`js/ficha.js`, `model/model_ficha.php`, `tests/pruebas_fase13_ficha.sh`):
+
+- **Buscador general** en la barra superior para la dirección, el auxiliar y la contadora. Busca por nombre, apellidos (en cualquier orden y sin importar tildes) o el inicio del documento. Se abre con la tecla **/**; las flechas eligen y Enter abre la ficha.
+- **Ficha del estudiante** en una sola pantalla: identidad, datos personales, padres, todas sus matrículas, asistencia del año, notas por curso y periodo (promedio de los criterios, lo desaprobado en rojo), tareas, pensiones mes a mes con la deuda vencida, pagos y atenciones de salud. Si estudió varios años, un selector cambia de año.
+- Cada rol ve solo lo de su trabajo, y lo decide el servidor: la contadora ve datos, padres, pensiones y pagos; el auxiliar ve datos, padres, asistencia, notas y tareas; las atenciones de salud solo las ve la dirección.
+- **Imprimir ficha** saca solo la ficha, con el escudo y el nombre del colegio.
+- En la lista de Estudiantes, el botón "Mostrar" (una ventana de solo lectura) pasa a ser **Ficha**.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -218,7 +226,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 3 ✅ | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
 | 4 ✅ | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
 | 5 ✅ | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
-| 6 | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
+| 6 ✅ | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
 | 7 | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
 | 8 | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
 | 9 | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |

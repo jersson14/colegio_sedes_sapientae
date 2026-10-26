@@ -202,3 +202,87 @@
 .pr-aula.falta { border-color: #F0CFC9; background: #FDF3F1; }
 .pr-aula.parcial { border-color: #F2E0A8; background: #FFFAEA; }
 .pr-aula:hover { filter: brightness(.97); }
+
+/* ---------- Buscador general (barra superior) ---------- */
+.bg-buscador { position: relative; display: flex; align-items: center; margin-left: 8px; }
+.bg-buscador .form-control { width: 320px; max-width: 46vw; height: 36px; padding-left: 34px; padding-right: 34px; border-radius: 999px; background: #F5F4F1; border-color: #E6E3DE; }
+.bg-buscador .form-control:focus { background: #fff; }
+.bg-buscador > i { position: absolute; left: 13px; color: #8A8D93; pointer-events: none; }
+.bg-buscador kbd { position: absolute; right: 10px; background: #fff; color: #6B6F76; border: 1px solid #DDD9D2; box-shadow: none; font-size: .72rem; padding: 0 6px; }
+.bg-buscador .form-control:focus ~ kbd { display: none; }
+.bg-resultados { position: absolute; top: 42px; left: 0; width: 380px; max-width: 92vw; background: #fff; border-radius: 12px; box-shadow: 0 8px 28px rgba(20, 20, 30, .16); padding: 6px; z-index: 1060; }
+.bg-item { display: flex; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: #1C1E22 !important; }
+.bg-item img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: none; }
+.bg-item b { display: block; font-weight: 600; font-size: .9rem; }
+.bg-item small { display: block; color: #6B6F76; font-size: .78rem; }
+.bg-item.activo, .bg-item:hover { background: var(--tema-primario-claro); text-decoration: none; }
+.bg-vacio { padding: 10px; color: #6B6F76; font-size: .88rem; }
+@media (max-width: 575.98px) {
+  .bg-buscador .form-control { width: 150px; }
+  .bg-buscador kbd { display: none; }
+}
+
+/* ---------- Ficha del estudiante ---------- */
+.fc-membrete { display: none; }
+.fc-cargando { color: #6B6F76; }
+.fc-cabecera { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; }
+.fc-foto { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid var(--tema-primario-claro); }
+.fc-identidad h2 { font-size: 1.45rem; font-weight: 700; margin: 0; color: #1C1E22; }
+.fc-aula { margin: 2px 0 8px; color: var(--tema-tinta); font-weight: 600; }
+.fc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fc-chip { background: #F2F1EE; color: #3D4046; border-radius: 999px; padding: 2px 10px; font-size: .8rem; }
+.fc-chip.fc-ok { background: #E6F4EC; color: #1F6B42; }
+.fc-chip.fc-mal { background: #FBE9E6; color: #A1301F; }
+.fc-acciones { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.fc-anio { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; font-size: .85rem; }
+.fc-anio select { width: auto; }
+.fc-grilla { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.fc-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin: 0; }
+.fc-datos dt { font-size: .76rem; font-weight: 600; color: #6B6F76; text-transform: uppercase; letter-spacing: .04em; }
+.fc-datos dd { margin: 0; }
+.fc-datos dd small { display: block; color: #6B6F76; }
+.fc-padres { grid-template-columns: 1fr; }
+.fc-tabla { margin: 0; font-size: .9rem; }
+.fc-tabla th { border-top: 0; font-size: .78rem; color: #6B6F76; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.fc-tabla tr.fc-actual td { background: var(--tema-primario-claro); }
+.fc-tabla tr.fc-anulado td { color: #9A9DA3; text-decoration: line-through; }
+.fc-notas td:not(:first-child), .fc-notas th:not(:first-child) { text-align: center; font-variant-numeric: tabular-nums; }
+.fc-notas td.fc-desaprobado { color: #B23A2A; font-weight: 700; }
+.fc-nota-pie { font-size: .8rem; margin: 8px 0 0; }
+.fc-cifra { font-size: 1rem; margin: 0 0 6px; }
+.fc-sub { font-weight: 700; font-size: .85rem; margin: 10px 0 4px; }
+.fc-lista { list-style: none; margin: 0; padding: 0; }
+.fc-lista li { display: grid; grid-template-columns: 96px 130px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid #F0EEEA; font-size: .9rem; }
+.fc-lista li:last-child { border-bottom: 0; }
+.fc-lista small { color: #6B6F76; }
+.fc-estado { font-weight: 600; }
+.fc-e-AUSENTE { color: #B23A2A; } .fc-e-TARDE { color: #9A6B00; } .fc-e-JUSTIFICADO { color: #2D6CDF; }
+.fc-meses { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; list-style: none; margin: 0 0 6px; padding: 0; }
+.fc-meses li { border: 1px solid #ECEAE5; border-radius: 10px; padding: 6px 10px; font-size: .85rem; }
+.fc-meses li b { display: block; }
+.fc-meses li span { color: #6B6F76; }
+.fc-meses li.fc-ok { border-color: #BFE3CC; background: #F2FAF5; }
+.fc-meses li.fc-mal { border-color: #F0CFC9; background: #FDF3F1; }
+.fc-meses li.fc-mal span { color: #A1301F; }
+@media (max-width: 767.98px) {
+  .fc-cabecera { grid-template-columns: auto 1fr; }
+  .fc-acciones { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
+  .fc-foto { width: 72px; height: 72px; }
+  .fc-grilla, .fc-datos { grid-template-columns: 1fr; }
+  .fc-lista li { grid-template-columns: 90px 1fr; }
+  .fc-lista li small { grid-column: 1 / -1; }
+}
+
+/* Imprimir ficha: solo la ficha, con el membrete del colegio */
+@media print {
+  .main-sidebar, .main-header, .main-footer, .content-header, .fc-acciones, #modal_mi_clave { display: none !important; }
+  .content-wrapper { margin-left: 0 !important; background: #fff !important; }
+  .fc-membrete { display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--tema-primario); padding-bottom: 8px; margin-bottom: 12px; }
+  .fc-membrete img { width: 48px; height: 48px; object-fit: contain; }
+  .fc-membrete b { display: block; font-size: 1.1rem; }
+  .fc-membrete span { color: #555; font-size: .85rem; }
+  .fc .pi-tarjeta { box-shadow: none; border: 1px solid #DDD; break-inside: avoid; }
+  .fc-cabecera { grid-template-columns: auto 1fr; }
+  .fc-grilla { grid-template-columns: 1fr 1fr; }
+  .pi-barra span, .fc-meses li { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

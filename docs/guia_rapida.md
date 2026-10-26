@@ -8,6 +8,14 @@ Arriba del menú está **Buscar en el menú**: escriba parte del nombre (por eje
 
 El menú de la dirección está ordenado por tareas: Estudiantes y matrícula · Académico · Asistencia · Pensiones y caja · Personal · Comunicación y salud · Organización del colegio · Configuración. Cada pantalla muestra arriba su nombre y una línea que dice para qué sirve.
 
+## Ficha del estudiante
+
+Arriba, en la barra superior, escriba el **nombre, los apellidos o el documento** del estudiante (o pulse **/** para ir directo al buscador). Elija con el mouse o con las flechas y Enter. También se abre con el botón **Ficha** en la lista de Estudiantes.
+
+La ficha reúne en una sola pantalla sus datos, padres, matrículas, asistencia, notas, tareas, pensiones, pagos y atenciones de salud. Si estudió varios años, elija el **Año** arriba a la derecha. **Imprimir ficha** saca una hoja con el escudo del colegio.
+
+La dirección ve todo. El auxiliar no ve pagos ni salud; la contadora ve datos, padres, pensiones y pagos.
+
 ## Tomar asistencia: Registro mensual
 
 Menú: **Asistencia → Registro mensual** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**.

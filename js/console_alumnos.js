@@ -143,7 +143,7 @@ function listar_alumnos(){
                 var acceso = data === 'SIN USUARIO' ? '' : (data === 'ACTIVO'
                     ? "&nbsp;&nbsp;<button class='acceso btn btn-warning btn-sm' data-estado='INACTIVO' title='El estudiante ya no podrá ingresar al sistema (su historial se conserva)'><i class='fa fa-user-slash'></i> Desactivar</button>"
                     : "&nbsp;&nbsp;<button class='acceso btn btn-info btn-sm' data-estado='ACTIVO' title='Permitir de nuevo el ingreso al sistema'><i class='fa fa-user-check'></i> Activar</button>");
-                return "<div class='text-nowrap'><button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"
+                return "<div class='text-nowrap'><button class='ficha btn btn-success  btn-sm' title='Ver la ficha completa: matrículas, asistencia, notas, pagos'><i class='fa fa-id-card'></i> Ficha</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"
                     + acceso + "&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button></div>";
             }
         },
@@ -166,47 +166,10 @@ tb_alumnos.on('draw.td',function(){
 
 
 
-$('#tabla_alumnos').on('click','.mostrar',function(){
+// Ficha única del estudiante (js/ficha.js)
+$('#tabla_alumnos').on('click','.ficha',function(){
   var data = tb_alumnos.row($(this).parents('tr')).data();
-
-  if(tb_alumnos.row(this).child.isShown()){
-      var data = tb_alumnos.row(this).data();
-  }
-  $("#modal_mas").modal('show');
-
-  document.getElementById('txt_dni_mas').value=data.alum_dni;
-  document.getElementById('txt_nomb_mas').value=data.alum_nombre;
-  document.getElementById('txt_ape_pa_mas').value=data.alum_apepat;
-  document.getElementById('txt_apema_mas').value=data.alum_apemat;
-  document.getElementById('txt_sexo_mas').value=data.alum_sexo;
-  document.getElementById('txt_fecha_na_mas').value=data.alum_fechanacimiento;
-  document.getElementById('txt_tele_mas').value=data.alum_movil;
-  document.getElementById('txt_direc_mas').value=data.alum_direccion;
-  var imgElement = document.getElementById('preview2');
-  console.log('Data:', data);  // Verifica que los datos sean correctos
-  console.log('Image URL:', data.alum_fotoperfil);  // Verifica la URL de la imagen
-
-  if (imgElement) {
-    if (data.alum_fotoperfil && data.alum_fotoperfil.trim() !== '') {
-      imgElement.src = "../" + data.alum_fotoperfil;
-    } else {
-      imgElement.src = '../controller/alumnos/fotos/VACIO.png';
-    }
-  
-    // Manejar errores de carga de la imagen
-    imgElement.onerror = function() {
-      console.error("Error al cargar la imagen.");
-      imgElement.src = '../controller/alumnos/fotos/VACIO.png';  // Cargar imagen predeterminada en caso de error
-    };
-  } else {
-    console.error('Elemento img con id preview2 no encontrado');
-  }
-  document.getElementById('txt_dni_pa_mas').value=data.Dni_papa;
-  document.getElementById('txt_nom_pa_mas').value=data.Datos_papa;
-  document.getElementById('txt_cel_pa_mas').value=data.Celular_papa;
-  document.getElementById('txt_dni_ma_mas').value=data.Dni_mama;
-  document.getElementById('txt_nom_ma_mas').value=data.Datos_mama;
-  document.getElementById('txt_cel_ma_mas').value=data.Celular_mama;
+  Ficha_Abrir(data.Id_alumno);
 })
 
 

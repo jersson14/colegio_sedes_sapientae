@@ -22,6 +22,9 @@ return [
     'roles' => [
         // alumnos
         'controller/alumnos/controlador_modificar_foto_estudiante.php' => ['ESTUDIANTE'],
+        // buscador general y ficha del estudiante (Fase 13): las secciones de cada rol las decide el controlador
+        'controller/alumnos/controlador_buscar_global.php' => ['AUXILIAR', 'CONTADOR'],
+        'controller/alumnos/controlador_ficha.php' => ['AUXILIAR', 'CONTADOR'],
         // asignatura_docente
         'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR', 'DOCENTE'],
         // asignaturas

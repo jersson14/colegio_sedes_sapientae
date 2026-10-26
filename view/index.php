@@ -65,6 +65,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
+          <li class="nav-item bg-buscador" role="search">
+            <i class="fas fa-search"></i>
+            <input type="search" id="buscador_global" class="form-control" placeholder="Buscar estudiante…" title="Nombre o documento del estudiante" aria-label="Buscar estudiante" autocomplete="off" oninput="Buscador_Global(this)" onkeydown="Buscador_Global_Tecla(event)">
+            <kbd title="Pulse / para buscar">/</kbd>
+            <div id="buscador_global_resultados" class="bg-resultados" role="listbox" hidden></div>
+          </li>
         </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
@@ -111,6 +117,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
+          <?php if ($_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "CONTADOR") { ?>
+            <li class="nav-item bg-buscador" role="search">
+              <i class="fas fa-search"></i>
+              <input type="search" id="buscador_global" class="form-control" placeholder="Buscar estudiante…" title="Nombre o documento del estudiante" aria-label="Buscar estudiante" autocomplete="off" oninput="Buscador_Global(this)" onkeydown="Buscador_Global_Tecla(event)">
+              <kbd title="Pulse / para buscar">/</kbd>
+              <div id="buscador_global_resultados" class="bg-resultados" role="listbox" hidden></div>
+            </li>
+          <?php } ?>
         </ul>
 
         <!-- Right navbar links -->
@@ -1524,6 +1538,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/formulario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/cuenta.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/menu.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/ficha.js?rev=<?php echo time(); ?>"></script>
 <!-- Cambiar mi contraseña (todos los roles) -->
 <div class="modal fade" id="modal_mi_clave" tabindex="-1" role="dialog" aria-labelledby="titulo_mi_clave" aria-hidden="true">
   <div class="modal-dialog" role="document">
