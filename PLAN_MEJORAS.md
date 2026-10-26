@@ -651,7 +651,7 @@ Pedido: "más profesional, como para un colegio"; los colores, el logo y lo dem�
 - [x] `PRODUCT.md` y `DESIGN.md` (sistema visual); plan de las siguientes mejoras de interfaz en `docs/plan_interfaz.md`.
 - [x] Pruebas: `tests/pruebas_fase12_interfaz.sh` (17); `tests/navegador/captura.js` para capturas de escritorio y celular.
 
-**Siguiente:** `docs/plan_interfaz.md` (paneles por rol, menú por tareas, legibilidad de datos, formularios, celular, documentos PDF con la identidad del colegio).
+**Siguiente:** `docs/plan_interfaz.md`: plan de interfaz, formularios, funcionalidad y lógica, con una hoja de ruta de 16 pasos (primero las correcciones de lógica y los formularios).
 
 ---
 
