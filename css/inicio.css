@@ -179,3 +179,26 @@
   .pi-accesos button, .pi-dato { transition: none; }
   .pi-accesos button:hover { transform: none; }
 }
+
+/* ---------- Paneles por rol (Fase 13) ---------- */
+.pi-foto { border-radius: 50%; padding: 0; object-fit: cover; }
+.pr-clases { list-style: none; margin: 0; padding: 0; }
+.pr-clase { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid #F0EEEA; }
+.pr-clase:last-child { border-bottom: 0; }
+.pr-clase.pasada { opacity: .55; }
+.pr-clase.ahora { background: var(--tema-primario-claro); border-radius: 10px; padding-left: 8px; padding-right: 8px; border-bottom-color: transparent; }
+.pr-hora { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--tema-tinta); line-height: 1.1; }
+.pr-hora small { display: block; font-weight: 400; color: #6B6F76; }
+.pr-curso { font-weight: 600; font-size: .95rem; }
+.pr-curso small { display: block; font-weight: 400; color: #6B6F76; font-size: .82rem; }
+.pr-ahora { background: var(--tema-acento); color: var(--tema-acento-texto); font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.pr-nota { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.pr-nota.ok { color: #2E7D4F; } .pr-nota.mal { color: #B23A2A; }
+.pr-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.pr-aula { text-align: left; border: 1px solid #ECEAE5; background: #fff; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+.pr-aula b { display: block; font-size: .9rem; }
+.pr-aula span { font-size: .8rem; color: #6B6F76; }
+.pr-aula.ok { border-color: #BFE3CC; background: #F2FAF5; }
+.pr-aula.falta { border-color: #F0CFC9; background: #FDF3F1; }
+.pr-aula.parcial { border-color: #F2E0A8; background: #FFFAEA; }
+.pr-aula:hover { filter: brightness(.97); }

@@ -1048,7 +1048,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Content Wrapper. Contains page content -->
 
       <!-- Content Header (Page header) -->
-      <?php if ($_SESSION['S_ROL'] != "ADMINISTRADOR") { ?>
+      <?php if (false) { // cada rol tiene su panel de inicio con su propio encabezado ?>
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2">
@@ -1182,6 +1182,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       }
   ?>
   <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
+    <?php $SOLO_CABECERA = true; include __DIR__ . '/inicio/panel_rol.php'; ?>
     <!-- Panel del contador (Fase 5) -->
     <div class="content">
       <div class="container-fluid"><br>
@@ -1216,47 +1217,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
       </div>
     </div>
+  </div><!-- cierra el área de contenido, como en los demás roles (el pie de página quedaba dentro) -->
   <?php } ?>
   <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR") { ?>
 
     <!-- Main content -->
 
-    <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- /.col-md-6 -->
-          <div class="col-lg-12">
-            <div class="card-primary"><br>
-              <div class="card-header">
-                <h5 class="m-0" style="font-family:cooper;text-align:center">
-                  <i class="fas fa-bullhorn"></i><b> COMUNICADOS</b>
-                </h5>
-              </div>
-              <div class="table-responsive" style="text-align:center">
-                <div class="card-body">
-                  <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
-                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                      <tr>
-                        <th style="text-align:center">Nro.</th>
-                        <th style="text-align:center">Tipo</th>
-                        <th style="text-align:center">Grado</th>
-                        <th style="text-align:center">Título</th>
-                        <th style="text-align:center">Descripción</th>
-                        <th style="text-align:center">Vista</th>
-                        <th style="text-align:center">Estado</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <!-- Imagen centrada -->
-            <img src="../img/logo.jpeg" style="display:block; margin: 20px auto;" width="auto"><br>
-          </div>
-          <!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-    </div>
+    
+    <!-- Panel de inicio del rol (Fase 13) -->
+    <?php include __DIR__ . '/inicio/panel_rol.php'; ?>
+
 
 
     <!-- /.content -->
@@ -1297,134 +1267,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Main content -->
 
-  <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- /.col-md-6 -->
+  
+    <!-- Panel de inicio del rol (Fase 13) -->
+    <?php include __DIR__ . '/inicio/panel_rol.php'; ?>
 
-        <div class="col-md-12">
-          <div class="card card-danger">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-user"></i><b> DATOS DEL DOCENTE</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div style="background-image: url('../img//fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
-                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
-                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
-                  <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
-                  </div>
-                  <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_docente()">
-                      <i class="fas fa-upload"></i>
-                      Cambiar foto
-                    </button>
-                  </div>
-
-                </div>
-                <div style="flex: 1; min-width: 300px; position: relative; z-index: 1;padding: 15px;">
-                  <h2 style="margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-size: 36px; color: white;"><b><?php echo $_SESSION['S_COMPLETO']; ?></b></h2>
-                  <p style="margin: 0 0 15px 0; font-size:25px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); color: white;"><u><b>Docente</b></u></p>
-                  <hr style="color:#fff">
-                  <ul style="list-style-type: none; padding: 0; margin: 0; color: white;">
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-id-card" style="margin-right: 10px; color: #ffd700;"></i> DNI: <?php echo $_SESSION['S_DNI']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-calendar" style="margin-right: 10px; color: #ffd700;"></i> Fecha de nacimiento: <?php echo $_SESSION['S_FECHANACIMIENTO']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-phone" style="margin-right: 10px; color: #ffd700;"></i> Teléfono Celular: <?php echo $_SESSION['S_MOVIL']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-envelope" style="margin-right: 10px; color: #ffd700;"></i> Correo: <?php echo $_SESSION['S_EMAIL']; ?></li>
-                    <li style="margin-bottom: 12px; font-size: 25px;"><i class="fas fa-home" style="margin-right: 10px; color: #ffd700;"></i> Dirección: <?php echo $_SESSION['S_DIRECCION']; ?></li>
-                  </ul>
-                  <hr>
-                </div>
-                <div style="flex: 0 0 280px; text-align: right; position: relative; z-index: 1;">
-                  <img src="../img/icono.jpeg" alt="Logo Instituto Prueba" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-12">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div class="table-responsive" style="text-align:center">
-                <div class="card-body">
-                  <table id="tabla_tarea_menu" class="table table-striped table-bordered" style="width:100%">
-                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
-
-                      <tr>
-                        <th style="text-align:center">Nro.</th>
-                        <th style="text-align:center">Grado</th>
-                        <th style="text-align:center">Curso - Docente</th>
-                        <th style="text-align:center">Tema o Tarea</th>
-                        <th style="text-align:center">Descripción</th>
-                        <th style="text-align:center">Fecha de publicación</th>
-                        <th style="text-align:center">Fecha de entrega</th>
-                        <th style="text-align:center">Archivo de Tarea</th>
-                        <th style="text-align:center">Estado</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-12">
-          <div class="card card-success">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> EXÁMENES PENDIENTES</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div class="table-responsive" style="text-align:center">
-                <div class="card-body">
-                  <table id="tabla_examenes_menu" class="table table-striped table-bordered" style="width:100%">
-                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
-
-                      <tr>
-                        <th style="text-align:center">Nro.</th>
-                        <th style="text-align:center">Nivel Academico</th>
-                        <th style="text-align:center">Grado</th>
-                        <th style="text-align:center">Curso - Docente</th>
-                        <th style="text-align:center">Tema de Examen</th>
-                        <th style="text-align:center">Descripción / Observación</th>
-                        <th style="text-align:center">Fecha de publicación</th>
-                        <th style="text-align:center">Fecha de examen</th>
-                        <th style="text-align:center">Estado</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-
-
-
-
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-  </div>
 
   <div class="content" hidden>
     <div class="container-fluid">
@@ -1536,195 +1382,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 
-  <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- /.col-md-6 -->
+  
+    <!-- Panel de inicio del rol (Fase 13) -->
+    <?php include __DIR__ . '/inicio/panel_rol.php'; ?>
 
-
-        <div class="col-md-12">
-          <div class="card card-danger">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-user"></i><b> DATOS DEL ESTUDIANTE</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div style="background-image: url('../img/fondo.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 5px; display: flex; flex-wrap: wrap; align-items: flex-start; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(137, 0, 0, 0.3);">
-                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(137, 0, 0, 0.6); z-index: 0;"></div>
-
-                <!-- Contenedor de la imagen y el botón -->
-                <div style="width: 320px; height: auto; border-radius: 7px; box-shadow: 0 0 15px rgba(0,0,0,0.4); position: relative; padding: 10px; ">
-                  <div style="border: 10px solid gold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); padding: 5px;">
-                    <img src="<?php echo $rutaFoto; ?>" alt="Foto del estudiante" style="width: 100%; height: auto; object-fit: cover;">
-                  </div>
-                  <div style="text-align: center; margin-top: 10px;">
-                    <button style="width: 100%; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" onclick="editar_foto_Estudiante()">
-                      <i class="fas fa-upload"></i>
-                      Cambiar foto
-                    </button>
-                  </div>
-
-                </div>
-
-                <!-- Contenido principal -->
-                <div style="flex: 1; min-width: 300px; position: relative; z-index: 1; padding: 15px;">
-                  <h2 style="margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-size: 36px; color: white;"><b><?php echo $_SESSION['S_COMPLETO']; ?></b></h2>
-                  <p style="margin: 0 0 15px 0; font-size:25px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); color: white;"><u><b>Estudiante</b></u></p>
-                  <hr style="color:#fff">
-                  <ul style="list-style-type: none; padding: 0; margin: 0; color: white;">
-                    <li style="margin-bottom: 12px; font-size: 25px;">
-                      <i class="fas fa-id-card" style="margin-right: 10px; color: #ffd700;"></i>
-                      <strong>DNI:</strong> <?php echo $_SESSION['S_DNI']; ?>
-                    </li>
-                    <li style="margin-bottom: 12px; font-size: 25px;">
-                      <i class="fas fa-calendar" style="margin-right: 10px; color: #ffd700;"></i>
-                      <strong>Fecha de nacimiento:</strong> <?php echo $_SESSION['S_FECHANACIMIENTO']; ?>
-                    </li>
-                    <li style="margin-bottom: 12px; font-size: 25px;">
-                      <i class="fas fa-phone" style="margin-right: 10px; color: #ffd700;"></i>
-                      <strong>Teléfono Celular:</strong> <?php echo $_SESSION['S_MOVIL']; ?>
-                    </li>
-                    <li style="margin-bottom: 12px; font-size: 25px;">
-                      <i class="fas fa-envelope" style="margin-right: 10px; color: #ffd700;"></i>
-                      <strong>Correo:</strong> <?php echo $_SESSION['S_EMAIL']; ?>
-                    </li>
-                    <li style="margin-bottom: 12px; font-size: 25px;">
-                      <i class="fas fa-home" style="margin-right: 10px; color: #ffd700;"></i>
-                      <strong>Dirección:</strong> <?php echo $_SESSION['S_DIRECCION']; ?>
-                    </li>
-                  </ul>
-
-                  <hr>
-                </div>
-
-                <!-- Logo -->
-                <div style="flex: 0 0 280px; text-align: right; position: relative; z-index: 1;">
-                  <img src="../img/icono.jpeg" alt="Logo Instituto Prueba" style="width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;">
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-        <div class="col-md-12">
-          <div class="card card-success">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-id-card"></i><b> DATOS DE MATRICULA</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div class="table-responsive" style="overflow-x: hidden;"> <!-- Evita desbordamiento horizontal -->
-                <div class="row">
-                  <div class="col-md-3 form-group">
-                    <label for="">Año académico (matriculado):</label>
-                    <input type="text" class="form-control" id="txt_añoaca" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Nivel académico:</label>
-                    <input type="text" class="form-control" id="txt_nivelaca" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Grado:</label>
-                    <input type="text" class="form-control" id="txt_grado" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Sección:</label>
-                    <input type="text" class="form-control" id="txt_seccion" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Tipo de alumno:</label>
-                    <input type="text" class="form-control" id="txttipo_alum" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Procedencia:</label>
-                    <input type="text" class="form-control" id="txt_proceden" style="font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Último Pago de Pensión:</label>
-                    <input type="text" class="form-control" id="txt_ultimo_pago" style="color: green; font-weight: bold;" disabled>
-                  </div>
-                  <div class="col-md-3 form-group">
-                    <label for="">Mes siguiente de pago:</label>
-                    <input type="text" class="form-control" id="txt_mes_siguiente" style="color: red; font-weight: bold;" disabled>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col-md-6">
-          <div class="card card-warning">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> TAREAS PENDIENTES</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div class="table-responsive" style="text-align:center">
-                <div class="card-body">
-                  <table id="tabla_tarea_menu_estudiante" class="table table-striped table-bordered" style="width:100%">
-                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                      <tr>
-                        <th style="text-align:center">Curso - Docente</th>
-                        <th style="text-align:center">Tema o Tarea</th>
-                        <th style="text-align:center">Descripción</th>
-                        <th style="text-align:center">Fecha de entrega</th>
-                        <th style="text-align:center">Estado</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size:25px"><i class="fa fa-book"></i><b> EXÁMENES PENDIENTES</b></h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="display: block;">
-              <div class="table-responsive" style="text-align:center">
-                <div class="card-body">
-                  <table id="tabla_examenes_menu_estudiante" class="table table-striped table-bordered" style="width:100%">
-                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
-                      <tr>
-                        <th style="text-align:center">Curso - Docente</th>
-                        <th style="text-align:center">Tema</th>
-                        <th style="text-align:center">Descripción</th>
-                        <th style="text-align:center">Fecha</th>
-                        <th style="text-align:center">Estado</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-  </div>
 
   <div class="content" hidden>
     <div class="container-fluid">
@@ -2011,7 +1672,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/console_matriculas.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/panel_comun.js?rev=<?php echo time(); ?>"></script>
 <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?><script src="../js/panel_admin.js?rev=<?php echo time(); ?>"></script><?php } ?>
+<?php if ($_SESSION['S_ROL'] != "ADMINISTRADOR") { ?><script src="../js/panel_rol.js?rev=<?php echo time(); ?>"></script><?php } ?>
 <script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_examen_profesor.js?rev=<?php echo time(); ?>"></script>
@@ -2058,19 +1721,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     listar_empresa();
     listar_comunicado_dash();
     <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
-    Traer_Datos();
-    listar_tareas_menu_estudiante();
-    listar_examenes_menu_estudiante();
+    PanelRol.cargar();
     <?php } ?>
     <?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
-    listar_tareas_menu();
-    listar_examenes_menu();
+    PanelRol.cargar();
     <?php } ?>
     <?php if ($_SESSION['S_ROL'] == "CONTADOR") { ?>
     Panel_Contable();
+    PanelRol.cargar();
     <?php } ?>
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
     PanelAdmin.cargar();
+    <?php } ?>
+    <?php if ($_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA") { ?>
+    PanelRol.cargar();
     <?php } ?>
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {

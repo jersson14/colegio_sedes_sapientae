@@ -43,6 +43,8 @@ return [
         'controller/asistencias/controlador_listar_asistencias.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_asistencias_fechas.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_registro_asistencias.php' => ['AUXILIAR'],
+        // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // cada usuario cambia su propia contraseña (Fase 13)
         'controller/usuario/controlador_cambiar_mi_clave.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // registro de tareas (Fase 11): el docente solo con sus cursos (se controla en el controlador)
@@ -229,7 +231,6 @@ return [
         'controller/tareas/controlador_registro_tareas.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_registro_tareas_estudiante.php' => ['ESTUDIANTE'],
         // usuario
-        'controller/usuario/controlador_traer_datos.php' => ['ESTUDIANTE'],
         // reportes
         'view/MPDF/REPORTE/asistencia_mensual.php' => ['AUXILIAR', 'DOCENTE'],
         'view/MPDF/REPORTE/boleta_docente.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],

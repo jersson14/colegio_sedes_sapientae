@@ -192,6 +192,15 @@ Paso 3 hecho el 2026-10-26 (migración 019, `tests/pruebas_fase13_cuentas.sh`):
 - En Usuarios, botón **Generar**: crea una contraseña temporal fácil de dictar y la muestra al guardar para entregarla.
 - Corregido de paso: la contadora no tenía barra superior, así que no tenía en el menú de usuario la opción "Cerrar Sesión" (y ahora tampoco tendría "Cambiar mi contraseña").
 
+Paso 4 hecho el 2026-10-26 (`view/inicio/panel_rol.php`, `js/panel_rol.js`, `tests/pruebas_fase13_paneles.sh`). Cada rol entra a "lo de hoy", con el encabezado del colegio, la línea del año escolar y sus accesos rápidos:
+
+- **Docente:** clases de hoy según el horario (la que está en curso, resaltada); sus aulas y si ya registró la asistencia; tareas con entregas por calificar; próximos exámenes; comunicados.
+- **Estudiante:** clases de hoy; asistencia del mes; tareas pendientes (las vencidas en rojo); próximos exámenes; últimas notas de tareas; pensiones por pagar; comunicados de su aula y generales.
+- **Auxiliar:** asistencia de hoy por aula, con cuántos estudiantes se registraron en cada una.
+- **Enfermería y psicología:** atenciones de hoy y del mes, y las más recientes.
+- **Contadora:** el mismo encabezado y línea del año escolar sobre su panel contable.
+- Corregido de paso: el panel de la contadora no cerraba el área de contenido y el pie de página quedaba corrido.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -199,7 +208,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 1 ✅ | Correcciones de lógica: registro sin `MAX(id)`, transacciones, correos, duplicados, periodos, auditoría, errores claros | 4c | Bajo | Evita datos cruzados entre registros |
 | 2 ✅ | Componente de formulario y límites de fechas | 4 | Medio | Menos errores al cargar datos en todo el sistema |
 | 3 ✅ | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
-| 4 | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
+| 4 ✅ | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
 | 5 | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
 | 6 | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
 | 7 | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |

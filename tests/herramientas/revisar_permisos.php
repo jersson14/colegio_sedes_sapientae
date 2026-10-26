@@ -21,7 +21,7 @@ $index = $leer('view/index.php');
 // Scripts que el index carga solo para el administrador (en la misma línea de su if): no son de todos los roles
 $solo_admin = [];
 foreach (preg_split('/\R/', $index) as $linea) {
-    if (strpos($linea, '"ADMINISTRADOR"') !== false && preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $linea, $sa)) {
+    if (preg_match('/==\s*"ADMINISTRADOR"/', $linea) && preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $linea, $sa)) {
         $solo_admin = array_merge($solo_admin, $sa[1]);
     }
 }

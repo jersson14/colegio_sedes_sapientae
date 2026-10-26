@@ -18,7 +18,8 @@ echo "== Migración y menús"
 check "las planillas existentes quedan como DOCENTE" "0" "$(q "select count(*) from planillas where tipo_personal<>'DOCENTE'")"
 check "no se puede guardar un contrato sin persona (restricción)" "1" "$($M -e "insert into contratos_docente(tipo_contrato_id,fecha_inicio,metodo_pago_id,created_at) values($TC,'2026-01-01',$EF,now())" 2>&1 | grep -c 'CONSTRAINT')"
 check "el administrador ve Planilla de personal y Asistencia docente" "1 1" "$(grep -c 'Planilla de personal' $T/JERSSON123.html) $(grep -c 'asistencia_docente/view_asistencia_docente.php' $T/JERSSON123.html)"
-check "el auxiliar ve Asistencia docente y Mis boletas" "1 1" "$(grep -c 'asistencia_docente/view_asistencia_docente.php' $T/MANUEL123.html) $(grep -c 'view_mis_boletas.php' $T/MANUEL123.html)"
+# (menú y, desde la Fase 13, también en los accesos rápidos de su panel)
+check "el auxiliar ve Asistencia docente y Mis boletas" "1 1" "$(grep -c 'asistencia_docente/view_asistencia_docente.php' $T/MANUEL123.html | awk '{print ($1>0)?1:0}') $(grep -c 'view_mis_boletas.php' $T/MANUEL123.html | awk '{print ($1>0)?1:0}')"
 
 echo "== Contratos del personal administrativo"
 check "lista del personal administrativo (3 + la contadora)" "4" "$(post CONTA1 -d "tipo_personal=ADMINISTRATIVO" $P/controlador_contratos_listar.php | jq_ data)"
