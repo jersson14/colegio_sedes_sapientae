@@ -72,7 +72,7 @@ return [
         'controller/aulas/controlador_cargar_select_nivel.php' => ['AUXILIAR', 'CONTADOR', 'ENFERMERA', 'PSICOLOGA'],
         // componentes
         // comunicados
-        'controller/comunicados/controlador_listar_comunicados2.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
+        'controller/comunicados/controlador_listar_comunicados2.php' => ['AUXILIAR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // configuracion
         'controller/configuracion/controlador_cuenta_guardar.php' => ['CONTADOR'],
         'controller/configuracion/controlador_formas_pago_listar.php' => ['CONTADOR'],
@@ -100,7 +100,6 @@ return [
         'controller/egresos/controlador_registrar_egreso.php' => ['CONTADOR'],
         'controller/egresos/controlador_ver_comprobante.php' => ['CONTADOR'],
         // empresa
-        'controller/empresa/controlador_listar_empresa.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // examenes
         'controller/examenes/controlador_eliminar_examenes.php' => ['DOCENTE'],
         'controller/examenes/controlador_listar_alumnos_examen.php' => ['AUXILIAR', 'DOCENTE'],

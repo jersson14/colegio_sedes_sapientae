@@ -18,8 +18,15 @@ $controles = function ($texto) use ($re_ctrl) { preg_match_all($re_ctrl, $texto,
 
 // ---------- JS globales (los carga el index para todos los roles) ----------
 $index = $leer('view/index.php');
+// Scripts que el index carga solo para el administrador (en la misma línea de su if): no son de todos los roles
+$solo_admin = [];
+foreach (preg_split('/\R/', $index) as $linea) {
+    if (strpos($linea, '"ADMINISTRADOR"') !== false && preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $linea, $sa)) {
+        $solo_admin = array_merge($solo_admin, $sa[1]);
+    }
+}
 preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $index, $m);
-$globales = array_unique($m[1]);
+$globales = array_diff(array_unique($m[1]), $solo_admin);
 $funciones_globales = [];   // nombre => cuerpo
 $re_func = '/function\s+([A-Za-z_][\wñÑ]*)\s*\(/u';
 foreach ($globales as $js) {

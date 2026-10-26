@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../utilitario/sesion.php';
 require_once __DIR__ . '/../utilitario/regional.php';
+require_once __DIR__ . '/../utilitario/tema.php';
 iniciar_sesion_segura();
 if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
@@ -24,27 +25,32 @@ if (isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO'])) {
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8">
   <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SEDES SAPIENTIAE</title>
+  <?php $TEMA = tema_actual(); ?>
+  <title><?php echo htmlspecialchars($TEMA['nombre'] ?: 'Sistema escolar', ENT_QUOTES, 'UTF-8'); ?></title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../plantilla/plugins//fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="icon" href="../img/icono.jpeg" type="image/jpeg">
+  <link rel="icon" href="../<?php echo htmlspecialchars($TEMA['logo'] ?: 'img/icono.jpeg', ENT_QUOTES, 'UTF-8'); ?>">
 
   <link rel="stylesheet" href="../plantilla/dist//css/adminlte.min.css">
   <link href="../utilitario/DataTables/datatables.min.css" type="text/css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- Apariencia del colegio (Configuración > Apariencia) -->
+  <?php echo tema_css_variables($TEMA); ?>
+  <link rel="stylesheet" href="../css/tema.css?rev=<?php echo filemtime(__DIR__ . '/../css/tema.css'); ?>">
+  <link rel="stylesheet" href="../css/inicio.css?rev=<?php echo filemtime(__DIR__ . '/../css/inicio.css'); ?>">
 </head>
 
-<body class="">
+<body class="tema-menu-<?php echo strtolower($TEMA['estilo_menu']); ?>">
   <div class="wrapper">
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
       <!-- Navbar -->
@@ -143,10 +149,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <input type="text" id="txtprincipaldni" value="<?php echo $_SESSION['S_DNI']; ?>" hidden>
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar <?php echo $TEMA['estilo_menu'] === 'CLARO' ? 'sidebar-light-primary' : 'sidebar-dark-primary'; ?> elevation-4">
       <!-- Brand Logo -->
-      <a href="index.php" class="brand-link">
-        <img src="../img/logo.jpeg" alt="AdminLTE Logo" width="100%" height="80">
+      <a href="index.php" class="brand-link" title="Inicio">
+        <img src="../<?php echo htmlspecialchars($TEMA['logo'] ?: 'img/logo.jpeg', ENT_QUOTES, 'UTF-8'); ?>" alt="Escudo del colegio" class="tema-escudo">
+        <span class="tema-marca"><b><?php echo htmlspecialchars($TEMA['nombre'], ENT_QUOTES, 'UTF-8'); ?></b><?php if ($TEMA['lema']) { ?><small><?php echo htmlspecialchars($TEMA['lema'], ENT_QUOTES, 'UTF-8'); ?></small><?php } ?></span>
       </a>
 
       <!-- Sidebar -->
@@ -600,6 +607,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_apariencia.php')" class="nav-link">
+                  <i class="nav-icon fas fa-palette"></i>
+                  <p>Apariencia</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_auditoria.php')" class="nav-link">
                   <i class="nav-icon fas fa-history"></i>
                   <p>Auditoría</p>
@@ -1024,6 +1037,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Content Wrapper. Contains page content -->
 
       <!-- Content Header (Page header) -->
+      <?php if ($_SESSION['S_ROL'] != "ADMINISTRADOR") { ?>
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2">
@@ -1041,227 +1055,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div><!-- /.row -->
         </div><!-- /.container-fluid -->
       </div>
+      <?php } ?>
       <!-- /.content-header -->
       <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
-
-        <!-- Main content -->
-        <div class="content">
-          <div class="container-fluid">
-            <div class="row">
-              <!-- /.col-md-6 -->
-              <div class="col-lg-12">
-                <div class="card-primary">
-                  <div class="card-header">
-                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-list-ol"></i><b> DATOS IMPORTANTES</b></h5>
-
-                  </div>
-                  <div class="card-body" style="background-color:white">
-                    <div class="row">
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Estudiantes</b>
-                            <h3 id="total_estudiantes" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-users"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','alumnos/view_alumnos.php')" class="small-box-footer"><b>Ver estudiantes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <!-- ./col -->
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Docentes</b>
-                            <h3 id="total_docentes" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-users"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','docentes/view_docentes.php')" class="small-box-footer"><b>Ver docentes</b>&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <!-- ./col -->
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-warning">
-                          <div class="inner" style="text-align: center;">
-
-                            <b>Total de Administrativos</b>
-                            <h3 id="total_administrativos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-users"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','personal_admin/view_personal_admin.php')" class="small-box-footer"><b>Ver administrativos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <!-- ./col -->
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Usuarios</b>
-                            <h3 id="total_usuarios" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-users"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="small-box-footer"><b>Ver usuarios</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Ingresos Hoy día</b>
-                            <h3 id="total_ingresos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-dollar-sign"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="small-box-footer"><b>Ver ingresos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Gastos Hoy día</b>
-                            <h3 id="total_gastos" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-dollar-sign"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="small-box-footer"><b>Ver egresos</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-primary">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Atenciones Psicológicas</b>
-                            <h3 id="total_psicologia" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-notes-medical"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="small-box-footer"><b>Ver atenciones psicología</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-dark">
-                          <div class="inner" style="text-align: center;">
-                            <b>Total de Atenciones Enfermería</b>
-                            <h3 id="total_enfermeria" style="text-align: center; display: flex; justify-content: center; align-items: center; height: 100%; font-size: 45px;">
-                              <sup style="font-size: 45px"></sup>
-                            </h3>
-                          </div>
-                          <div class="icon">
-                            <i class="fas fa-notes-medical"></i>
-                          </div>
-                          <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="small-box-footer"><b>Ver atenciones enfermería</b>&nbsp; <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <!-- /.col-md-6 -->
-            </div>
-            <!-- /.row -->
-          </div><!-- /.container-fluid -->
-        </div>
-
-        <div class="content">
-          <div class="container-fluid">
-            <div class="row">
-              <!-- /.col-md-6 -->
-              <div class="col-lg-12">
-                <div class="card-primary">
-                  <div class="card-header">
-                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-bullhorn"></i><b> COMUNICADOS</b></h5>
-                  </div>
-                  <div class="table-responsive" style="text-align:center">
-                    <div class="card-body" style="overflow: hidden; border-radius: 20px;">
-                      <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%; border-radius: 20px; overflow: hidden;">
-                        <thead style="background-color:#023D77;color:white;">
-                          <tr>
-                            <th style="text-align:center">Nro.</th>
-                            <th style="text-align:center">Tipo</th>
-                            <th style="text-align:center">Grado</th>
-                            <th style="text-align:center">Título</th>
-                            <th style="text-align:center">Descripción</th>
-                            <th style="text-align:center">Vista</th>
-                            <th style="text-align:center">Estado</th>
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.col-md-6 -->
-              </div>
-              <!-- /.row -->
-            </div><!-- /.container-fluid -->
-          </div>
-        </div>
-        <div class="content">
-          <div class="container-fluid">
-            <div class="row">
-              <!-- /.col-md-6 -->
-              <div class="col-lg-12">
-                <div class="card-primary">
-                  <div class="card-header">
-                    <h5 class="m-0" style="font-family:cooper;text-align:center"><i class="fas fa-school"></i><b> DATOS DE LA INSTITUCIÓN EDUCATIVA</b< /h5>
-                  </div>
-                  <div class="table-responsive" style="text-align:center">
-                    <div class="card-body" style="overflow: hidden; border-radius: 20px;">
-                      <table id="tabla_empresa" class="table table-striped table-bordered" style="width:100%; border-radius: 20px; overflow: hidden;">
-                        <thead style="background-color:#023D77;color:white;">
-                          <tr>
-                            <th style="text-align:center">Nro.</th>
-                            <th style="text-align:center">Logo</th>
-                            <th style="text-align:center">Nombre</th>
-                            <th style="text-align:center">Email</th>
-                            <th style="text-align:center">Código Modular</th>
-                            <th style="text-align:center">Teléfono</th>
-                            <th style="text-align:center">Dirección</th>
-                            <th style="text-align:center">Acciones</th>
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
-                  </div>
-
-                </div>
-                <!-- /.col-md-6 -->
-              </div>
-              <!-- /.row -->
-            </div><!-- /.container-fluid -->
-          </div>
-        </div>
+        <!-- Panel de inicio del administrador (Fase 12) -->
+        <?php include __DIR__ . '/inicio/panel_admin.php'; ?>
         <!-- /.content -->
     </div>
 
@@ -2037,7 +1835,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <em>Versión 1.0.0</em>
   </div>
   <!-- Default to the left -->
-  <strong>Copyright &copy; 2025 - <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
+  <strong>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($TEMA['nombre'], ENT_QUOTES, 'UTF-8'); ?> · <a href="https://www.facebook.com/jerzhitho.cm/" target="_blank"><em>DESARROLLADO POR JCM (Click)</em></a></strong>
 </footer>
 </div>
 <!-- ./wrapper -->
@@ -2201,6 +1999,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/console_matriculas.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
+<?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?><script src="../js/panel_admin.js?rev=<?php echo time(); ?>"></script><?php } ?>
 <script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_examen_profesor.js?rev=<?php echo time(); ?>"></script>
@@ -2236,14 +2035,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     Panel_Contable();
     <?php } ?>
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
-    Total_estudiantes();
-    Total_docentes();
-    Total_administrativos();
-    Total_usuarios();
-    Total_ingresos();
-    Total_egresos();
-    Total_atención_psicologica();
-    Total_atención_enefermeria();
+    PanelAdmin.cargar();
     <?php } ?>
     // Maneja los eventos para los botones "Siguiente" y "Anterior"
     $('#btn_modal_siguiente').click(function() {

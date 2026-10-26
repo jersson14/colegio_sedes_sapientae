@@ -1,5 +1,6 @@
 var tbl_empresa;
 function listar_empresa(){
+  if (!$("#tabla_empresa").length) { return; }   // el panel de inicio muestra la institución sin tabla
   tbl_empresa = $("#tabla_empresa").DataTable({
     "ordering":false,   
     "processing": true,
@@ -52,6 +53,10 @@ $('#tabla_empresa').on('click','.editar',function(){
     if(tbl_empresa.row(this).child.isShown()){
         var data = tbl_empresa.row(this).data();
     }
+    abrirEditarEmpresa(data);
+  })
+  // Ventana "Editar datos de la institución" (desde la tabla o desde el panel de inicio)
+  function abrirEditarEmpresa(data){
     $("#modal_editar").modal('show');
     document.getElementById('txt_id_empresa').value=data.empresa_id;
     document.getElementById('txt_nombre').value=data.emp_razon;
@@ -59,7 +64,7 @@ $('#tabla_empresa').on('click','.editar',function(){
     document.getElementById('txt_codigo').value=data.emp_cod;
     document.getElementById('txt_telefono').value=data.emp_telefono;
     document.getElementById('txt_direccion').value=data.emp_direccion;
-  })
+  }
   function Modificar_Empleado(){
     let id = document.getElementById('txt_id_empresa').value;
     let nom = document.getElementById('txt_nombre').value;
@@ -92,7 +97,7 @@ $('#tabla_empresa').on('click','.editar',function(){
     }).done(function(resp){
       if(resp>0){
           Swal.fire("Mensaje de Confirmación","Datos de la institución Actualizado","success").then((value)=>{
-            tbl_empresa.ajax.reload();
+            location.reload(); // nombre y escudo aparecen en el menú y el panel
           $("#modal_editar").modal('hide');
 
           });
@@ -113,12 +118,15 @@ $('#tabla_empresa').on('click','.editar',function(){
     if(tbl_empresa.row(this).child.isShown()){
         var data = tbl_empresa.row(this).data();
     }
+    abrirFotoEmpresa(data);
+  })
+  // Ventana "Cambiar escudo" (desde la tabla o desde el panel de inicio)
+  function abrirFotoEmpresa(data){
     $("#modal_editar_foto").modal('show');
     document.getElementById('txt_idempresa_foto').value=data.empresa_id;
-    document.getElementById('lb_empresa').innerHTML=data.emp_razon;
+    document.getElementById('lb_empresa').textContent=textoPlano(data.emp_razon);
     document.getElementById('fotoactual').value=data.emp_logo;
-  
-  })
+  }
   function Modificar_Foto_Empresa(){
     let id = document.getElementById("txt_idempresa_foto").value
     let foto = document.getElementById("txt_foto").value
@@ -151,7 +159,7 @@ $('#tabla_empresa').on('click','.editar',function(){
           if(resp.length>0){
             Swal.fire("Mensaje de Confirmación","Foto actualizada","success").then((value)=>{
               $("#modal_editar_foto").modal('hide');
-              tbl_empresa.ajax.reload();
+              location.reload(); // nombre y escudo aparecen en el menú y el panel
               document.getElementById('txt_foto').value="";
   
             });

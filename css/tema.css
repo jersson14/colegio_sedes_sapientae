@@ -1,0 +1,111 @@
+/*
+ * Tema del colegio (Configuración > Apariencia). Los valores salen de utilitario/tema.php como variables CSS:
+ * --tema-primario, --tema-acento y sus derivados. Aquí se aplican sobre AdminLTE y sobre los colores fijos
+ * que traían las pantallas (encabezados de tabla #0A5D86, encabezados de ventana #1FA0E0, etc.).
+ */
+
+body { background-color: var(--tema-fondo); }
+.content-wrapper { background-color: var(--tema-fondo); }
+::selection { background: var(--tema-acento-claro); color: #1A1A1A; }
+a { color: var(--tema-tinta); }
+a:hover { color: var(--tema-primario-oscuro); }
+
+/* ---------- Barra lateral ---------- */
+.main-sidebar, .main-sidebar::before { background-color: var(--tema-menu) !important; }
+.main-sidebar .brand-link {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  background: var(--tema-menu);
+  color: var(--tema-menu-texto) !important;
+  white-space: normal;
+}
+.tema-menu-claro .main-sidebar .brand-link { border-bottom-color: #E6E3DE; }
+.brand-link .tema-escudo { width: 46px; height: 46px; object-fit: contain; flex: none; background: #fff; border-radius: 8px; padding: 3px; }
+.brand-link .tema-marca { line-height: 1.15; overflow: hidden; }
+.brand-link .tema-marca b { display: block; font-size: 15px; letter-spacing: .02em; text-transform: uppercase; }
+.brand-link .tema-marca small { display: block; font-size: 11px; color: var(--tema-menu-texto-suave); white-space: normal; }
+.sidebar-collapse .brand-link .tema-marca { display: none; }
+
+.main-sidebar .user-panel { border-bottom-color: rgba(255, 255, 255, .12); }
+.main-sidebar .user-panel .info a, .main-sidebar .user-panel .info b,
+.main-sidebar .user-panel .info a[style] { color: var(--tema-menu-texto) !important; }
+.main-sidebar .user-panel .info em { color: var(--tema-menu-texto-suave); font-style: normal; font-size: 12px; letter-spacing: .04em; }
+
+.main-sidebar .nav-sidebar .nav-link,
+.main-sidebar .nav-sidebar .nav-link p,
+.main-sidebar .nav-sidebar .nav-icon { color: var(--tema-menu-texto) !important; }
+.main-sidebar .nav-sidebar .nav-treeview .nav-link { color: var(--tema-menu-texto-suave) !important; }
+.main-sidebar .nav-sidebar .nav-link:hover { background-color: rgba(255, 255, 255, .08) !important; }
+.tema-menu-claro .main-sidebar .nav-sidebar .nav-link:hover { background-color: var(--tema-primario-claro) !important; }
+.main-sidebar .nav-sidebar > .nav-item > .nav-link.active,
+.main-sidebar .nav-sidebar .nav-treeview .nav-link.active,
+.main-sidebar .nav-pills .nav-link.active {
+  background-color: var(--tema-menu-activo) !important;
+  color: var(--tema-menu-activo-texto) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .18);
+}
+.main-sidebar .nav-pills .nav-link.active p,
+.main-sidebar .nav-pills .nav-link.active .nav-icon { color: var(--tema-menu-activo-texto) !important; }
+.main-sidebar .nav-item.menu-open > .nav-link { background-color: rgba(255, 255, 255, .06) !important; }
+
+/* Títulos de sección del menú (antes gris fijo) */
+.nav-sidebar > .header[style*="background-color:Gray"],
+.nav-sidebar .header[style*="background-color:Gray"] {
+  background-color: transparent !important;
+  color: var(--tema-acento) !important;
+  text-align: left !important;
+  font-size: 11px !important;
+  letter-spacing: .12em;
+  padding: 14px 16px 6px !important;
+  border-top: 1px solid rgba(255, 255, 255, .10);
+}
+.tema-menu-claro .nav-sidebar .header[style*="background-color:Gray"] { color: var(--tema-tinta) !important; border-top-color: #E6E3DE; }
+
+/* ---------- Barra superior ---------- */
+.main-header.navbar { border-bottom: 3px solid var(--tema-acento); }
+
+/* ---------- Colores principales de AdminLTE / Bootstrap ---------- */
+.btn-primary { background-color: var(--tema-primario); border-color: var(--tema-primario); color: var(--tema-primario-texto); }
+.btn-primary:hover, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--tema-primario-oscuro); border-color: var(--tema-primario-oscuro); color: var(--tema-primario-texto);
+}
+.btn-outline-primary { color: var(--tema-tinta); border-color: var(--tema-primario); }
+.btn-outline-primary:hover { background-color: var(--tema-primario); color: var(--tema-primario-texto); }
+.bg-primary, .badge-primary { background-color: var(--tema-primario) !important; color: var(--tema-primario-texto) !important; }
+.text-primary { color: var(--tema-tinta) !important; }
+.card-primary.card-outline { border-top-color: var(--tema-primario); }
+.card-primary:not(.card-outline) > .card-header,
+.card-primary > .card-header { background-color: var(--tema-primario); color: var(--tema-primario-texto); }
+.card-primary:not(.card-outline) > .card-header a { color: var(--tema-primario-texto); }
+.page-item.active .page-link { background-color: var(--tema-primario); border-color: var(--tema-primario); color: var(--tema-primario-texto); }
+.page-link { color: var(--tema-tinta); }
+.custom-control-input:checked ~ .custom-control-label::before { background-color: var(--tema-primario); border-color: var(--tema-primario); }
+.form-control:focus, .custom-select:focus {
+  border-color: var(--tema-primario-borde);
+  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--tema-primario) 22%, transparent);
+}
+:focus-visible { outline: 2px solid var(--tema-acento); outline-offset: 2px; }
+.breadcrumb-item a { color: var(--tema-tinta); }
+
+/* ---------- Colores fijos heredados de las pantallas ---------- */
+/* Encabezados de tabla */
+[style*="background-color:#0A5D86"], [style*="background-color:#0a5d86"],
+[style*="background-color:#023D77"], [style*="background-color: #007bff"] {
+  background-color: var(--tema-primario) !important;
+  color: var(--tema-primario-texto) !important;
+}
+/* Encabezados de ventanas (modales) */
+[style*="background-color:#1FA0E0"], [style*="background-color:#1fa0e0"] {
+  background-color: var(--tema-primario) !important;
+  border-bottom: 3px solid var(--tema-acento);
+}
+[style*="background-color:#1FA0E0"] .modal-title, [style*="background-color:#1FA0E0"] h5,
+[style*="background-color:#1FA0E0"] .close, [style*="background-color:#1FA0E0"] b { color: var(--tema-primario-texto) !important; }
+[style^="color: #0A5D86"], [style*="; color: #0A5D86"] { color: var(--tema-tinta) !important; }
+
+/* DataTables */
+table.dataTable thead th { border-bottom-color: var(--tema-acento) !important; }
+.dataTables_wrapper .dt-buttons .btn { border-radius: 6px; }
+
+/* Barras de desplazamiento con el color del colegio */
+* { scrollbar-color: var(--tema-primario-borde) transparent; }

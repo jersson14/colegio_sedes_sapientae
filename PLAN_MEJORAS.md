@@ -638,6 +638,23 @@ Referencia: hoja de asistencia mensual en papel (estudiantes × días, semanas d
 
 ---
 
+## Fase 12 – Interfaz del colegio: apariencia configurable y panel de inicio ✅ (2026-10-25)
+
+Pedido: "más profesional, como para un colegio"; los colores, el logo y lo demás deben ser configurables. Migración `017_apariencia.sql`.
+
+- [x] **Configuración → Apariencia**: color principal, acento, estilo del menú, lema y escudo; 5 combinaciones sugeridas; vista previa en vivo; texto legible calculado automáticamente (contraste WCAG). Por defecto, los colores del escudo (granate `#7A1F2B` y dorado `#C9A227`).
+- [x] Tema aplicado a todo el sistema desde `css/tema.css` (incluye los 109 encabezados de tabla y 103 de ventana con colores fijos), sin tocar cada pantalla.
+- [x] Escudo y nombre del colegio en el menú (antes una imagen fija), título de la pestaña, ícono del navegador y pie de página con el año actual.
+- [x] **Panel de inicio del administrador** rediseñado: encabezado del colegio con accesos rápidos, línea del año escolar con bimestres y "Hoy", comunidad educativa, asistencia del día con aulas sin registro, caja, pendientes (deuda, tareas por calificar, salud, último respaldo), comunicados recientes y ficha de la institución. Adaptado al celular.
+- [x] **Pantalla de ingreso** con la identidad del colegio. **Se quitó el cuadro que publicaba usuarios y contraseñas de todos los roles** (cambiar esas contraseñas en el servidor real).
+- [x] Permisos: se quitaron 7 que ya no se usan (listado de la institución y comunicados para la contadora). La herramienta de permisos distingue los scripts que solo carga el administrador.
+- [x] `PRODUCT.md` y `DESIGN.md` (sistema visual); plan de las siguientes mejoras de interfaz en `docs/plan_interfaz.md`.
+- [x] Pruebas: `tests/pruebas_fase12_interfaz.sh` (17); `tests/navegador/captura.js` para capturas de escritorio y celular.
+
+**Siguiente:** `docs/plan_interfaz.md` (paneles por rol, menú por tareas, legibilidad de datos, formularios, celular, documentos PDF con la identidad del colegio).
+
+---
+
 ## Anexo A – Monedas y países
 
 | País | Código | Moneda | Símbolo | Decimales | Formato ejemplo | Zona horaria | Documento |
