@@ -480,3 +480,58 @@ $('#tabla_alumnos').on('click','.delete',function(){
       }
     })
   })
+// ---------- Reutilizar los datos de los padres (Fase 13) ----------
+// Al escribir el documento del padre o la madre, si ya está registrado por un hermano se ofrecen sus datos
+// (y los del otro padre de esa familia) para no volver a escribirlos.
+var PADRES_CAMPOS = {
+  txt_dni_pa: { nom: 'txt_nom_pa', cel: 'txt_cel_pa', otro: { dni: 'txt_dni_ma', nom: 'txt_nom_ma', cel: 'txt_cel_ma' } },
+  txt_dni_ma: { nom: 'txt_nom_ma', cel: 'txt_cel_ma', otro: { dni: 'txt_dni_pa', nom: 'txt_nom_pa', cel: 'txt_cel_pa' } },
+  txt_dni_pa_editar: { nom: 'txt_nom_pa_editar', cel: 'txt_cel_pa_editar', alumno: 'txt_id_alu', otro: { dni: 'txt_dni_ma_editar', nom: 'txt_nom_ma_editar', cel: 'txt_cel_ma_editar' } },
+  txt_dni_ma_editar: { nom: 'txt_nom_ma_editar', cel: 'txt_cel_ma_editar', alumno: 'txt_id_alu', otro: { dni: 'txt_dni_pa_editar', nom: 'txt_nom_pa_editar', cel: 'txt_cel_pa_editar' } }
+};
+var __padreEspera = null;
+
+function Buscar_Padre_Registrado(input) {
+  var cfg = PADRES_CAMPOS[input.id];
+  var $grupo = $(input).closest('.form-group');
+  $grupo.find('.padre-sugerido').remove();
+  var dni = $.trim(input.value);
+  if (!cfg || dni.length < 6) { return; }
+  $.ajax({
+    url: '../controller/alumnos/controlador_buscar_padre.php', type: 'POST', dataType: 'json',
+    data: { dni: dni, alumno: cfg.alumno ? $('#' + cfg.alumno).val() : 0 }
+  }).done(function (r) {
+    if (!r.encontrado || $.trim(input.value) !== dni) { return; }
+    var nombre = textoPlano(r.nombre), hijos = r.hijos.map(textoPlano).join(', ');
+    var yaIgual = $.trim($('#' + cfg.nom).val()).toUpperCase() === nombre.toUpperCase();
+    var otroVacio = r.otro && !$.trim($('#' + cfg.otro.dni).val()) && !$.trim($('#' + cfg.otro.nom).val());
+    if (yaIgual && !otroVacio) { return; }
+    var h = '<div class="padre-sugerido alert alert-info py-2 px-2 small mt-2 mb-0" role="status"><i class="fas fa-users mr-1"></i>'
+      + '<b>' + textoSeguro(PanelComun.titulo(nombre)) + '</b> ya está registrado como ' + (r.rol === 'PADRE' ? 'padre' : 'madre') + ' de ' + textoSeguro(PanelComun.titulo(hijos)) + '.'
+      + '<div class="mt-1">';
+    if (!yaIgual) { h += '<button type="button" class="btn btn-sm btn-info mr-1 mb-1" data-usar="este">Usar sus datos</button>'; }
+    if (otroVacio) {
+      h += '<button type="button" class="btn btn-sm btn-outline-info mb-1" data-usar="otro">Usar también ' + (r.otro.rol === 'MADRE' ? 'a la madre' : 'al padre')
+        + ': ' + textoSeguro(PanelComun.titulo(r.otro.nombre)) + '</button>';
+    }
+    h += '</div></div>';
+    var $s = $(h).appendTo($grupo);
+    $s.on('click', '[data-usar]', function () {
+      if ($(this).data('usar') === 'este' || !yaIgual) {
+        $('#' + cfg.nom).val(nombre).trigger('change');
+        if (r.celular) { $('#' + cfg.cel).val(textoPlano(r.celular)).trigger('change'); }
+      }
+      if ($(this).data('usar') === 'otro' && r.otro) {
+        $('#' + cfg.otro.dni).val(textoPlano(r.otro.dni || '')).trigger('change');
+        $('#' + cfg.otro.nom).val(textoPlano(r.otro.nombre)).trigger('change');
+        if (r.otro.celular) { $('#' + cfg.otro.cel).val(textoPlano(r.otro.celular)).trigger('change'); }
+      }
+      $s.remove();
+    });
+  });
+}
+$(document).off('.padres').on('input.padres', Object.keys(PADRES_CAMPOS).map(function (k) { return '#' + k; }).join(','), function () {
+  var el = this;
+  clearTimeout(__padreEspera);
+  __padreEspera = setTimeout(function () { Buscar_Padre_Registrado(el); }, 450);
+});

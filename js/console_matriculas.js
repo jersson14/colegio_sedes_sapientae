@@ -442,80 +442,11 @@ $('#tabla_matricula').on('click','.mostrar',function(){
 
 
 //ABRIENDO MODAL REGISTRO
+// Nueva matrícula: asistente paso a paso (js/matricula_pasos.js)
 function AbrirRegistro(){
-  $("#modal_registro").modal({backdrop:'static',keyboard:false})
-  $("#modal_registro").modal('show');
+  Matricula_Abrir();
 }
 
-//REGISTRANDO ROLES
-function Registrar_matriculado(){
-  let estu = document.getElementById('select_estudiante').value;
-  let año = document.getElementById('select_año').value;
-  let aula = document.getElementById('select_aula').value;
-  let admi = document.getElementById('txt_admision').value;
-  let nuevo = document.getElementById('txt_alum_nuevo').value;
-  let matri = document.getElementById('txt_matricula').value;
-  let proce = document.getElementById('txt_procedencia').value;
-  let pro = document.getElementById('txt_provincia').value;
-  let depa = document.getElementById('txt_departamento').value;
-  let usu = document.getElementById('txt_usu').value;
-  let contra = document.getElementById('txt_contra').value;
-  let correo = document.getElementById('txt_correo').value;
-  let metodo = document.getElementById('select_metodo_matricula').value;
-  let cuenta = document.getElementById('select_cuenta_matricula').value;
-  let referencia = document.getElementById('txt_ref_matricula').value;
-  if(estu.length==0||año.length==0||aula.length==0|| matri.length==0){
-      return Swal.fire("Mensaje de Advertencia","Complete el estudiante, año, aula y pago de matrícula","warning");
-  }
-
-  $.ajax({
-    "url":"../controller/matricula/controlador_registro_matriculas.php",
-    type:'POST',
-    data:{
-        estu:estu,
-        año:año,
-        aula:aula,
-        admi:admi,
-        nuevo:nuevo,
-        matri:matri,
-        proce:proce,
-        pro:pro,
-        depa:depa,
-        usu:usu,
-        contra:contra,
-        correo:correo,
-        metodo:metodo,
-        cuenta:cuenta,
-        referencia:referencia
-    }
-  }).done(function(resp){
-    if(resp>0){
-      if(resp==1){
-        Swal.fire("Mensaje de Confirmación","Se registro la matricula satisfactoriamente!!!","success").then((value)=>{
-          tbl_matricula.ajax.reload();
-          document.getElementById('txt_usu').value="";
-          document.getElementById('txt_contra').value="";
-          document.getElementById('txt_correo').value="";
-          Cargar_Select_estudiante();
-        $("#modal_registro").modal('hide');
-        });
-      }else if(resp==3){
-        Swal.fire("Mensaje de Advertencia","El nombre de usuario ya existe, ingrese otro","warning");
-      }else if(resp==4){
-        Swal.fire("Mensaje de Advertencia","Ingrese el usuario y contraseña del estudiante (es su primera matrícula)","warning");
-      }else if(resp==5){
-        Swal.fire("Mensaje de Advertencia","Revise la forma de pago: seleccione la caja o cuenta e indique el n.° de operación si corresponde","warning");
-      }else if(resp==6){
-        Swal.fire("Mensaje de Advertencia","El aula elegida ya no tiene vacantes en ese año escolar (revise su capacidad en Aulas)","warning");
-      }else{
-        Swal.fire("Mensaje de Advertencia","El estudiante ya está matriculado en ese año académico, revise por favor","warning");
-      }
-    }else{
-      return Swal.fire("Mensaje de Error","No se completo el registro","error");
-
-    }
-  })
-}
 //EDITANDO ROL
 function Modificar_Matricula(){
   let id = document.getElementById('txt_id_matricula').value;

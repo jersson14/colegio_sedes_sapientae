@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_matriculas.js?rev=<?php echo time();?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_matriculas.js?rev=<?php echo time();?>"></script><script src="../js/matricula_pasos.js?rev=<?php echo time();?>"></script>
 <link rel="stylesheet" href="../plantilla/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
 <!-- Content Header (Page header) -->
@@ -91,110 +91,158 @@
 <!-- /.content -->
 
     <!-- Modal -->
-<div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="titulo_matricula" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE MATRICULA</b></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="titulo_matricula" style="color:white"><b>Nueva matrícula</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="row">
-        <div class="col-12 form-group" style="color:red">
-            <h6><b>Campos Obligatorios (*)</b></h6>
-            </div>
-            <div class="col-5 form-group">
-                <label for="">DNI - Estudiante<b style="color:red">(*)</b>:</label>
-                <select class="js-example-basic-single" id="select_estudiante" style="width:100%">
-                </select>            
-            </div>
-            <div class="col-2 form-group">
-                <label for="">Tipo<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="txt_tipo" disabled>
-          
-            </div>
-            <div class="col-2 form-group">
-                <label for="">Año Acad.<b style="color:red">(*)</b>:</label>
-                <select class="form-control" id="select_año" style="width:100%">
-                </select>             
-            </div>
-            <div class="col-3 form-group">
-                <label for="">Aula o Grado:</label>
-                <select class="form-control" id="select_aula" style="width:100%">
-                </select>                
-            </div>
-            <div class="col-12">
-                <div class="form-group clearfix">
-                    <div class="icheck-success d-inline">
-                        <input type="checkbox"  id="checkboxSuccess1" onclick="Validar_Informacion()">
-                        <label for="checkboxSuccess1" style="align:justify">
-                            Si el alumno es nuevo marque el casillero.
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 form-group">
-                <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="txt_nivel" disabled >
-            </div>
-          
-            <div class="col-3 form-group">
-                <label for="txt_foto">Pago por Admisión <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_admision" value="0" placeholder="Ingrese el monto" disabled   onkeypress="return soloNumeros(event)">
-            </div>
-            <div class="col-3 form-group">
-                <label for="txt_foto">Pago Alumno Nuevo <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_alum_nuevo" value="0" placeholder="Ingrese el monto"  disabled onkeypress="return soloNumeros(event)">
-            </div>
-            <div class="col-3 form-group">
-            <label for="txt_foto">Pago de Matrícula <b style="color:red">(*)</b>:</label>
-                <input type="number" class="form-control" id="txt_matricula" value="0" placeholder="Ingrese el monto" onkeypress="return soloNumeros(event)">
-            </div>
-            <div class="col-4 form-group hidden" id="campo_procedencia">
-                <label for="txt_foto">Colegio de Procedencia:</label>
-                <input type="text" class="form-control" id="txt_procedencia" placeholder="Ingrese el coledio de procedencia">
-            </div>
-            <div class="col-4 form-group hidden" id="campo_provincia">
-            <label for="txt_foto">Provincia:</label>
-                <input type="text" class="form-control" id="txt_provincia" placeholder="Ingrese la provincia" onkeypress="return sololetras(event)">
-            </div>
-            <div class="col-4 form-group hidden" id="campo_departamento">
-            <label for="txt_foto">Departamento:</label>
-                <input type="text" class="form-control" id="txt_departamento" placeholder="Ingrese el Departamento" onkeypress="return sololetras(event)">
-            </div>
+        <!-- Matrícula paso a paso (Fase 13): js/matricula_pasos.js -->
+        <ol class="mp-pasos" aria-label="Pasos de la matrícula">
+          <li data-paso="1"><span>1</span>Estudiante</li>
+          <li data-paso="2"><span>2</span>Padres</li>
+          <li data-paso="3"><span>3</span>Aula</li>
+          <li data-paso="4"><span>4</span>Pagos</li>
+          <li data-paso="5"><span>5</span>Resumen</li>
+        </ol>
 
-            <div class="col-4 form-group hidden" id="campo_usu">
-            <label for="">Usuario<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="txt_usu"  placeholder="Ingrese el usuario">
+        <section class="mp-paso" data-paso="1">
+          <div class="row">
+            <div class="col-md-8 form-group">
+              <label for="select_estudiante">Estudiante<b style="color:red">(*)</b>:</label>
+              <select class="js-example-basic-single" id="select_estudiante" style="width:100%"></select>
+              <small class="text-muted">¿No está en la lista? <a href="#" onclick="$('#modal_registro').data('fm-salir', true).modal('hide'); cargar_contenido('contenido_principal','alumnos/view_alumnos.php'); return false;">Regístrelo primero en Estudiantes</a>.</small>
             </div>
-            <div class="col-4 form-group hidden" id="campo_contra">
-            <label for="">Contraseña<b style="color:red">(*)</b>:</label>
-                <input type="text" class="form-control" id="txt_contra" placeholder="Ingrese la contraseña">
+            <div class="col-md-4 form-group">
+              <label for="select_año">Año escolar<b style="color:red">(*)</b>:</label>
+              <select class="form-control" id="select_año" style="width:100%"></select>
             </div>
-            <div class="col-4 form-group hidden" id="campo_correo">
-            <label for="">Correo electronico<b style="color:red">(*)</b>:</label>
-                <input type="email" class="form-control" id="txt_correo" placeholder="Ingrese el correo electronico">
+          </div>
+          <div id="mp_estudiante" aria-live="polite"></div>
+        </section>
+
+        <section class="mp-paso" data-paso="2" hidden>
+          <p class="text-muted mb-2">Revise que los datos de los padres o apoderado estén completos: son el contacto del colegio con la familia.</p>
+          <div id="mp_padres"></div>
+        </section>
+
+        <section class="mp-paso" data-paso="3" hidden>
+          <input type="hidden" id="select_aula">
+          <p class="text-muted mb-2" id="mp_aula_ayuda">Elija el aula. Las que ya no tienen vacantes no se pueden elegir.</p>
+          <div id="mp_aulas"></div>
+        </section>
+
+        <section class="mp-paso" data-paso="4" hidden>
+          <div class="row">
+            <div class="col-12 form-group mb-2">
+              <div class="icheck-success d-inline">
+                <input type="checkbox" id="checkboxSuccess1">
+                <label for="checkboxSuccess1">Es estudiante nuevo en el colegio (cobra admisión y alumno nuevo)</label>
+              </div>
             </div>
-            <!-- Forma de pago del recibo de matrícula (Fase 4) -->
-            <div class="col-4 form-group">
-              <label for="select_metodo_matricula">Forma de pago<b style="color:red">(*)</b>:</label>
-              <select class="form-control" id="select_metodo_matricula"></select>
+            <div class="col-md-4 form-group mp-nuevo">
+              <label for="txt_admision">Pago por admisión:</label>
+              <input type="text" inputmode="decimal" class="form-control" id="txt_admision" value="0">
             </div>
-            <div class="col-4 form-group">
-              <label for="select_cuenta_matricula">Caja / cuenta<b style="color:red">(*)</b>:</label>
-              <select class="form-control" id="select_cuenta_matricula"></select>
+            <div class="col-md-4 form-group mp-nuevo">
+              <label for="txt_alum_nuevo">Pago alumno nuevo:</label>
+              <input type="text" inputmode="decimal" class="form-control" id="txt_alum_nuevo" value="0">
             </div>
-            <div class="col-4 form-group">
-              <label for="txt_ref_matricula">N.° operación / referencia:</label>
-              <input type="text" class="form-control" id="txt_ref_matricula" maxlength="60">
+            <div class="col-md-4 form-group">
+              <label for="txt_matricula">Pago de matrícula<b style="color:red">(*)</b>:</label>
+              <input type="text" inputmode="decimal" class="form-control" id="txt_matricula" value="0">
             </div>
-        </div>
+            <div class="col-12"><small class="text-muted" id="mp_montos_ayuda"></small></div>
+            <div class="col-md-4 form-group mp-nuevo">
+              <label for="txt_procedencia">Colegio de procedencia:</label>
+              <input type="text" class="form-control" id="txt_procedencia" maxlength="150">
+            </div>
+            <div class="col-md-4 form-group mp-nuevo">
+              <label for="txt_provincia">Provincia:</label>
+              <input type="text" class="form-control" id="txt_provincia" maxlength="100">
+            </div>
+            <div class="col-md-4 form-group mp-nuevo">
+              <label for="txt_departamento">Departamento:</label>
+              <input type="text" class="form-control" id="txt_departamento" maxlength="100">
+            </div>
+          </div>
+
+          <fieldset class="mp-bloque mp-cuenta">
+            <legend>Acceso del estudiante al sistema</legend>
+            <div class="row">
+              <div class="col-md-4 form-group">
+                <label for="txt_usu">Usuario<b style="color:red">(*)</b>:</label>
+                <input type="text" class="form-control" id="txt_usu" maxlength="50" autocomplete="off">
+              </div>
+              <div class="col-md-4 form-group">
+                <label for="txt_contra">Contraseña inicial<b style="color:red">(*)</b>:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="txt_contra" maxlength="50" autocomplete="off">
+                  <div class="input-group-append"><button type="button" class="btn btn-outline-secondary" id="mp_generar" title="Crear una contraseña fácil de dictar">Generar</button></div>
+                </div>
+                <small class="text-muted">Al menos 8 caracteres. La cambiará en su primer ingreso.</small>
+              </div>
+              <div class="col-md-4 form-group">
+                <label for="txt_correo">Correo electrónico (opcional):</label>
+                <input type="email" class="form-control" id="txt_correo" maxlength="100">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mp-bloque mp-cobro">
+            <legend>Forma de pago de lo que se cobra hoy</legend>
+            <div class="row">
+              <div class="col-md-4 form-group">
+                <label for="select_metodo_matricula">Forma de pago<b style="color:red">(*)</b>:</label>
+                <select class="form-control" id="select_metodo_matricula"></select>
+              </div>
+              <div class="col-md-4 form-group">
+                <label for="select_cuenta_matricula">Caja / cuenta<b style="color:red">(*)</b>:</label>
+                <select class="form-control" id="select_cuenta_matricula"></select>
+              </div>
+              <div class="col-md-4 form-group">
+                <label for="txt_ref_matricula">N.° operación / referencia:</label>
+                <input type="text" class="form-control" id="txt_ref_matricula" maxlength="60">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mp-bloque">
+            <legend>Beca o descuento en las pensiones (opcional)</legend>
+            <div class="row">
+              <div class="col-md-4 form-group">
+                <label for="mp_beca_tipo">Tipo:</label>
+                <select class="form-control" id="mp_beca_tipo">
+                  <option value="NINGUNA">Sin beca</option>
+                  <option value="PORCENTAJE">Porcentaje</option>
+                  <option value="MONTO">Monto fijo por pensión</option>
+                </select>
+              </div>
+              <div class="col-md-3 form-group mp-beca">
+                <label for="mp_beca_valor" id="mp_beca_valor_lb">Porcentaje (%):</label>
+                <input type="text" inputmode="decimal" class="form-control" id="mp_beca_valor">
+              </div>
+              <div class="col-md-5 form-group mp-beca">
+                <label for="mp_beca_motivo">Motivo:</label>
+                <input type="text" class="form-control" id="mp_beca_motivo" maxlength="255" placeholder="Hermanos, convenio, rendimiento…">
+              </div>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="mp-paso" data-paso="5" hidden>
+          <div id="mp_resumen"></div>
+        </section>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
-        <button type="button" class="btn btn-success" onclick="Registrar_matriculado()"><i class="fas fa-save"></i> Registrar</button>
+        <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+        <button type="button" class="btn btn-outline-secondary" id="mp_atras"><i class="fas fa-arrow-left mr-1"></i>Atrás</button>
+        <button type="button" class="btn btn-primary" id="mp_siguiente">Siguiente<i class="fas fa-arrow-right ml-1"></i></button>
+        <button type="button" class="btn btn-success" id="mp_registrar" onclick="Matricula_Registrar()" hidden><i class="fas fa-check mr-1"></i>Matricular</button>
       </div>
     </div>
   </div>
@@ -438,73 +486,17 @@ $(document).ready(function () {
   Cargar_Select_Nivelaca();
 });
 
-$("#select_aula").change(function(){
-var id=$("#select_aula").val();
-Traernivel(id);
-Validar_Informacion();
-});
 $("#select_aula_editar").change(function(){
 var id=$("#select_aula_editar").val();
 Traernivel(id);
-Validar_Informacion();
 });
 
-$("#select_estudiante").change(function(){
-var id=$("#select_estudiante").val();
-Traertipo(id);
-});
 
 $("#select_nivel_buscar").change(function() {
       var id = $("#select_nivel_buscar").val();
       Cargar_Select_Aula(id);
     });
-$('#modal_registro').on('shown.bs.modal', function () {
-  $('#txt_matricula').trigger('focus');
-  Cargar_Formas_Pago_Matricula();
-})
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var camposAdicionales = [
-            'txt_procedencia',
-            'txt_provincia',
-            'txt_departamento',
-            'txt_usu',
-            'txt_contra',
-            'txt_correo'
-        ];
-
-        camposAdicionales.forEach(function(id) {
-            var element = document.getElementById(id);
-            if (element) {
-                element.parentElement.style.display = 'none';
-            }
-        });
-    });
-
-    function Validar_Informacion() {
-        var isChecked = document.getElementById('checkboxSuccess1').checked;
-        
-        // Habilitar o deshabilitar campos de pago
-        document.getElementById('txt_admision').disabled = !isChecked;
-        document.getElementById('txt_alum_nuevo').disabled = !isChecked;
-
-        // Mostrar u ocultar campos adicionales
-        var camposAdicionales = [
-            'txt_procedencia',
-            'txt_provincia',
-            'txt_departamento',
-            'txt_usu',
-            'txt_contra',
-            'txt_correo'
-        ];
-
-        camposAdicionales.forEach(function(id) {
-            var element = document.getElementById(id);
-            if (element) {
-                element.parentElement.style.display = isChecked ? 'block' : 'none';
-            }
-        });
-    }
 </script>
 <style>
     .hidden {

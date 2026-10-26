@@ -119,6 +119,42 @@
             }
             conexionBD::cerrar_conexion();
         }
+
+        /**
+         * Padre o madre ya registrado con ese documento (por un hermano). Devuelve su nombre y celular, el otro
+         * padre de esa familia y los hijos registrados, para ofrecer sus datos al registrar a otro estudiante.
+         */
+        public function Buscar_Padre($dni, $excluir_alumno = 0){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("SELECT p.*, CONCAT_WS(' ', al.alum_nombre, al.alum_apepat, al.alum_apemat) AS hijo
+                              FROM padres p JOIN alumnos al ON al.Id_alumno = p.id_alu
+                              WHERE (p.Dni_papa = ? OR p.Dni_mama = ?) AND p.id_alu <> ?
+                              ORDER BY p.id_papas DESC");
+            $q->execute([$dni, $dni, $excluir_alumno]);
+            $filas = $q->fetchAll(PDO::FETCH_ASSOC);
+            conexionBD::cerrar_conexion();
+            if (!$filas) { return null; }
+            $es_padre = $filas[0]['Dni_papa'] === $dni;
+            [$yo, $el] = $es_padre ? ['papa', 'mama'] : ['mama', 'papa'];
+            // Primer dato no vacío, del registro más reciente al más antiguo (un hermano pudo quedar sin celular)
+            $dato = function ($campo, $filtro = null) use ($filas) {
+                foreach ($filas as $f) {
+                    if ($filtro && !$filtro($f)) { continue; }
+                    if (trim((string) $f[$campo]) !== '') { return $f[$campo]; }
+                }
+                return '';
+            };
+            $dni_otro = $dato('Dni_' . $el);
+            $mismo_otro = function ($f) use ($el, $dni_otro) { return $dni_otro === '' || $f['Dni_' . $el] === $dni_otro; };
+            $otro = ['rol' => $es_padre ? 'MADRE' : 'PADRE', 'dni' => $dni_otro, 'nombre' => $dato('Datos_' . $el, $mismo_otro), 'celular' => $dato('Celular_' . $el, $mismo_otro)];
+            return [
+                'rol' => $es_padre ? 'PADRE' : 'MADRE',
+                'nombre' => $dato('Datos_' . $yo),
+                'celular' => $dato('Celular_' . $yo),
+                'otro' => trim((string) $otro['nombre']) !== '' ? $otro : null,
+                'hijos' => array_values(array_unique(array_column($filas, 'hijo'))),
+            ];
+        }
     }
 
 

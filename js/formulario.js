@@ -201,7 +201,7 @@ window.Formulario = (function ($) {
     // Enter en un campo de una línea = pulsar Guardar de esa ventana
     $(document).on('keydown', '.modal input:not([type=file]):not([type=checkbox]):not([type=radio])', function (ev) {
       if (ev.key !== 'Enter' || ev.isComposing || this.type === 'search' || $(this).closest('.dataTables_wrapper, .tm-panel, .select2-container').length) { return; }
-      var b = $(this).closest('.modal').find('.modal-footer').find('button, a').filter(function () { return esBotonGuardar(this); }).first();
+      var b = $(this).closest('.modal').find('.modal-footer').find('button, a').filter(':visible').filter(function () { return esBotonGuardar(this); }).first();
       if (b.length) { ev.preventDefault(); b[0].click(); }
     });
 

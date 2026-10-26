@@ -17,7 +17,9 @@ window.PanelComun = (function () {
   function titulo(t) {
     var s = textoPlano(t).toLowerCase().replace(/(^|[\s\-'·(])([a-záéíóúñü])/g, function (m, a, b) { return a + b.toUpperCase(); });
     // "Ciencia y Ambiente", "Juan de la Cruz": artículos y conectores en minúscula (salvo al inicio)
-    return s.replace(/(\s)(\S+)/g, function (m, esp, w) { return MENORES.indexOf(w.toLowerCase()) !== -1 ? esp + w.toLowerCase() : m; });
+    s = s.replace(/(\s)(\S+)/g, function (m, esp, w) { return MENORES.indexOf(w.toLowerCase()) !== -1 ? esp + w.toLowerCase() : m; });
+    // una letra sola al final es la sección del aula ("Primer Grado A"), no un conector
+    return s.replace(/(\s)([a-zñ])$/, function (m, esp, l) { return esp + l.toUpperCase(); });
   }
   function ir(vista, texto) {
     return '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'' + vista + '\');return false;">' + texto + '</a>';

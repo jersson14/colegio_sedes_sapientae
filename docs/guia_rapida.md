@@ -16,6 +16,20 @@ La ficha reúne en una sola pantalla sus datos, padres, matrículas, asistencia,
 
 La dirección ve todo. El auxiliar no ve pagos ni salud; la contadora ve datos, padres, pensiones y pagos.
 
+## Matricular a un estudiante
+
+Primero el estudiante debe estar registrado en **Estudiantes**, con sus padres. Al escribir el documento del padre o la madre, si ya está registrado por un hermano, el sistema lo avisa: **Usar sus datos** completa nombre y celular, y **Usar también a la madre / al padre** completa al otro de la familia.
+
+Luego, en **Estudiantes y matrícula → Matrícula → Nuevo Registro**, un asistente de 5 pasos:
+
+1. **Estudiante y año escolar.** La lista muestra solo a quienes aún no están matriculados ese año, incluidos los que vuelven de un año anterior. Se ve si es nuevo, su último año y si ya tiene usuario.
+2. **Padres.** Revise que estén completos; si falta un celular, se marca en amarillo. Se puede seguir y completarlo después con **Editar** en Estudiantes.
+3. **Aula.** Cada aula muestra sus vacantes; las que están llenas no se pueden elegir. Se indica en qué aula estuvo el año anterior.
+4. **Pagos y beca.** Los montos se proponen con los de la última matrícula del mismo nivel y se pueden cambiar. Si es su primera matrícula se crea su usuario: **Generar** propone una contraseña fácil de dictar. La beca es opcional.
+5. **Resumen.** Lo que se cobra hoy, las pensiones del año (con la beca aplicada) y el usuario. Pulse **Matricular**.
+
+Al terminar se muestran el usuario y la contraseña temporal para entregarlos a la familia. Con **Atrás** o tocando un paso ya hecho se puede corregir; **Enter** pasa al paso siguiente.
+
 ## Tomar asistencia: Registro de asistencia
 
 Es la única pantalla para registrar asistencia. Menú: **Asistencia → Registro de asistencia** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**. Desde el inicio, tocar un aula pendiente abre directamente su asistencia del día.

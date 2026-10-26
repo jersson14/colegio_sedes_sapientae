@@ -224,6 +224,14 @@ Paso 7 hecho el 2026-10-26 (`js/registro_asistencia.js`, `tests/pruebas_fase13_a
 - Desde los paneles de inicio, tocar un aula abre su asistencia del día directamente.
 - Se retiró la antigua "Asistencia del día" con sus 7 controladores de registrar, editar y eliminar: el auxiliar ya no tiene permiso para ellos y no quedan dos formas de hacer lo mismo. El **Reporte de asistencias** sigue igual, con su propio script (`js/asistencia_reportes.js`) y sin las ventanas que había copiado de la pantalla antigua.
 
+Paso 8 hecho el 2026-10-26 (`js/matricula_pasos.js`, `controller/matricula/controlador_contexto.php`, `tests/pruebas_fase13_matricula.sh`):
+
+- **Matrícula en 5 pasos:** Estudiante → Padres → Aula y vacantes → Pagos y beca → Resumen. Cada paso se valida antes de seguir y el resumen muestra lo que se cobra hoy, las pensiones del año con la beca aplicada y el usuario que se entregará.
+- Valores sugeridos: el año escolar activo y los montos de la última matrícula del mismo nivel. La beca se registra en el mismo flujo.
+- **Corregido:** la lista de estudiantes solo mostraba a los que nunca se habían matriculado (`alum_estatus = 'NO'`), así que un estudiante antiguo no podía volver a matricularse el año siguiente. Ahora la lista depende del año: todos los que aún no tienen matrícula en ese año.
+- **Padres ya registrados:** al escribir el documento del padre o la madre en Estudiantes, si ya existe por un hermano se ofrecen sus datos y los del otro padre de la familia, tomando el dato no vacío más reciente.
+- De paso: Enter en una ventana solo pulsa un botón de guardar **visible**.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -235,7 +243,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 5 ✅ | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
 | 6 ✅ | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
 | 7 ✅ | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
-| 8 | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
+| 8 ✅ | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
 | 9 | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
 | 10 | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
 | 11 | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
