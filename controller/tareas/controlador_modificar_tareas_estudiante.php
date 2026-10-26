@@ -17,6 +17,15 @@ if (rol_actual() === 'ESTUDIANTE') {
     $archivoactual = htmlspecialchars($propio, ENT_QUOTES, 'UTF-8');
 }
 
+// Se puede enviar y reenviar hasta que el docente califique la tarea o la cierre (finalizada)
+$estado_envio = $MTA->Estado_Envio($iddetalle);
+if ($estado_envio && $estado_envio['envio'] === 'CALIFICADO') {
+    denegar(400, 'Esta tarea ya fue calificada: ya no se puede reenviar.');
+}
+if ($estado_envio && $estado_envio['tarea'] === 'FINALIZADO') {
+    denegar(400, 'El docente cerró esta tarea: ya no recibe envíos.');
+}
+
 // Crear una carpeta única para este conjunto de archivos en "tarea_alumnos"
 $carpeta = crear_carpeta_tarea();
 

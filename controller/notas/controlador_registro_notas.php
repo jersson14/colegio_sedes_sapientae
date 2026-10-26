@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
 require_once __DIR__ . '/../../utilitario/regional.php';
+require_once __DIR__ . '/../../utilitario/propiedad_docente.php';
 require '../../model/model_notas.php';
 $MNOTAS = new Modelo_Notas();
 
@@ -8,6 +9,8 @@ if (isset($_POST['registros'])) {
     $registros = json_decode($_POST['registros'], true); // Decodificar JSON a un array PHP
     // Cada nota debe cumplir la escala del colegio (Configuración > Datos regionales)
     if (is_array($registros)) {
+        // el docente solo registra notas de sus cursos y de los estudiantes de esas aulas
+        exigir_notas_propias(array_filter($registros, 'is_array'), 'controller/notas/controlador_registro_notas.php');
         foreach ($registros as &$r) {
             $r['nota'] = is_array($r) ? nota_normalizada($r['nota'] ?? '') : null;
             if ($r['nota'] === null) {

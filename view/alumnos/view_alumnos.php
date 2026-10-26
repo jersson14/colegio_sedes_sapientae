@@ -57,6 +57,7 @@
                       <th style="text-align:center">DNI mamá</th>
                       <th style="text-align:center">Celular mamá</th>
 
+                      <th style="text-align:center">Acceso al sistema</th>
                       <th style="text-align:center">Acción</th>
                   </tr>
               </thead>

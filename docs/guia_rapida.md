@@ -62,3 +62,14 @@ Menú: **Configuración → Respaldos**.
 3. La lista muestra todos los respaldos: los generados desde el sistema, los automáticos diarios y los hechos antes de cada actualización.
 
 Genere un respaldo antes de cerrar el año, antes de una actualización y una vez al mes como mínimo. Para restaurar un respaldo llame al encargado técnico; los pasos están en `docs/despliegue.md`.
+
+## Estudiantes y docentes: activar o desactivar
+
+En **Estudiantes** y **Docentes**, el botón **Desactivar** impide que la persona ingrese al sistema (por ejemplo, un estudiante retirado o un docente que dejó el colegio). Sus notas, asistencia, pagos, cursos y contratos se conservan, y **Activar** le devuelve el acceso. Use **Eliminar** solo para registros creados por error: el sistema no deja eliminar a quien ya tiene historial.
+
+## Envío de tareas: cuándo se puede reenviar
+
+- El estudiante puede **enviar y volver a enviar** su tarea mientras el docente no la haya calificado.
+- Una vez **calificada**, o si el docente **cerró** (finalizó) la tarea, ya no se aceptan envíos.
+- Lo entregado después de la fecha de entrega se acepta, pero el docente lo ve marcado **Fuera de plazo**, tanto en la lista de envíos como en el registro de tareas.
+- Cada docente solo puede ver y calificar las tareas, notas y exámenes de **sus** cursos.

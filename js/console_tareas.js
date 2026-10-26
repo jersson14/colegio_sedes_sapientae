@@ -667,7 +667,12 @@ $('#tabla_tarea').on('click','.delete',function(){
                     }
                 }
             },
-            { "data": "fecha_formateada2" },
+            { "data": "fecha_formateada2",
+              render: function (data, type, row) {
+                if (type !== 'display') { return data; }
+                return textoSeguro(data || '') + (+row.fuera_plazo ? ' <span class="badge badge-warning" title="Enviada después de la fecha de entrega">Fuera de plazo</span>' : '');
+              }
+            },
             {
                 "data": "estado",
                 render: function (data, type, row) {

@@ -66,6 +66,15 @@
             }
             conexionBD::cerrar_conexion();
         }
+        /** Activa o desactiva al docente y su usuario (inactivo no puede ingresar al sistema). */
+        public function Cambiar_Estado($usu_id, $estado){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("UPDATE docentes d JOIN usuario u ON u.usu_id = d.id_asusuario
+                              SET d.docente_estatus = ?, d.updated_at = NOW(), u.usu_estatus = ?, u.updated_at = NOW()
+                              WHERE d.id_asusuario = ?");
+            $q->execute([$estado, $estado, $usu_id]);
+            return $q->rowCount() > 0 ? 1 : 0;
+        }
         public function Eliminar_Docente($id){
             $c = conexionBD::conexionPDO();
             $sql = "CALL SP_ELIMINAR_DOCENTE(?)";

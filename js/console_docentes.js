@@ -118,7 +118,15 @@ function listar_alumnos(){
         {"data":"tipo_rol","visible": false},        
       
         
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"data":"docente_estatus", "orderable": false,
+            render: function(data,type,row){
+                var estado = data === 'ACTIVO'
+                    ? "&nbsp;&nbsp;<button class='estado btn btn-warning btn-sm' data-estado='INACTIVO' title='El docente ya no podrá ingresar al sistema (su historial se conserva)'><i class='fa fa-user-slash'></i> Desactivar</button>"
+                    : "&nbsp;&nbsp;<button class='estado btn btn-info btn-sm' data-estado='ACTIVO' title='Permitir de nuevo el ingreso al sistema'><i class='fa fa-user-check'></i> Activar</button>";
+                return "<div class='text-nowrap'><button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del docente'><i class='fa fa-edit'></i> Editar</button>"
+                    + estado + "&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button></div>";
+            }
+        },
         
     ],
 
@@ -428,6 +436,24 @@ function Modificar_docente(){
     });
 }
 //ELIMINANDO ROL
+// Activar / desactivar al docente (y su usuario)
+$('#tabla_docentes').on('click','.estado',function(){
+  var data = tb_docentes.row($(this).parents('tr')).data();
+  if(tb_docentes.row(this).child.isShown()){ data = tb_docentes.row(this).data(); }
+  var estado = $(this).data('estado');
+  Swal.fire({
+    title: (estado === 'INACTIVO' ? '¿Desactivar a ' : '¿Activar a ') + textoPlano(data.Docente) + '?',
+    text: estado === 'INACTIVO' ? 'No podrá ingresar al sistema. Sus cursos, notas, contratos y pagos se conservan.' : 'Podrá volver a ingresar al sistema con su usuario.',
+    icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, continuar', cancelButtonText: 'Cancelar'
+  }).then(function(res){
+    if(!res.isConfirmed){ return; }
+    $.post('../controller/docentes/controlador_cambiar_estado.php', { id: data.usu_id, estado: estado }, null, 'json').done(function(){
+      Swal.fire({ toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, icon: 'success', title: estado === 'INACTIVO' ? 'Docente desactivado' : 'Docente activado' });
+      tb_docentes.ajax.reload(null, false);
+    });
+  });
+});
+
 function Eliminar_Docente(id){
     $.ajax({
       "url":"../controller/docentes/controlador_eliminar_docente.php",
@@ -442,7 +468,7 @@ function Eliminar_Docente(id){
 
           });
       }else{
-        return Swal.fire("Mensaje de Advetencia","No se puede eliminar: el docente tiene cursos, contratos, pagos o comunicados registrados. Para que ya no ingrese al sistema, desactive su usuario en Usuarios.","warning");
+        return Swal.fire("Mensaje de Advetencia","No se puede eliminar: el docente tiene cursos, contratos, pagos o comunicados registrados. Use el botón Desactivar: ya no podrá ingresar y su historial se conserva.","warning");
   
       }
     })

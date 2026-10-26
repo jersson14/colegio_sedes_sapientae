@@ -11,7 +11,12 @@
             $query  = $c->prepare($sql);
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            $query->closeCursor();
+            // Acceso al sistema del estudiante (usuario creado en su matrícula): ACTIVO, INACTIVO o SIN USUARIO
+            $acceso = $c->query("SELECT m.id_alumno, IF(SUM(u.usu_estatus = 'ACTIVO') > 0, 'ACTIVO', 'INACTIVO')
+                                 FROM matricula m JOIN usuario u ON u.usu_id = m.usu_id GROUP BY m.id_alumno")->fetchAll(PDO::FETCH_KEY_PAIR);
             foreach($resultado as $resp){
+                $resp['acceso'] = $acceso[$resp['Id_alumno']] ?? 'SIN USUARIO';
                 $arreglo["data"][]=$resp;
             }
             return $arreglo;
@@ -69,6 +74,14 @@
                 return $row;
             }
             conexionBD::cerrar_conexion();
+        }
+        /** Activa o desactiva el acceso al sistema del estudiante (sus usuarios de matrícula). Devuelve las filas cambiadas. */
+        public function Cambiar_Acceso($id_alumno, $estado){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("UPDATE usuario u JOIN matricula m ON m.usu_id = u.usu_id
+                              SET u.usu_estatus = ?, u.updated_at = NOW() WHERE m.id_alumno = ?");
+            $q->execute([$estado, $id_alumno]);
+            return $q->rowCount();
         }
         public function Eliminar_Alumno($id){
             $c = conexionBD::conexionPDO();

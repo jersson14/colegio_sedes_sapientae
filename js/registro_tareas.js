@@ -36,6 +36,15 @@ window.RegistroTareas = (function () {
   // Estado de una casilla: calificada, entregada, pendiente o no entregó (pendiente con plazo vencido)
   function estado(env, tarea) {
     if (!env) { return { tipo: 'sin', html: '<span class="text-muted">–</span>', texto: '' }; }
+    var tarde = env.fecha_envio && tarea.fecha_entrega && env.fecha_envio > tarea.fecha_entrega;
+    var r = estadoBase(env, tarea);
+    if (tarde && (r.tipo === 'nota' || r.tipo === 'enviado')) {
+      r.html += ' <i class="fas fa-clock text-warning" title="Entregada fuera de plazo"></i>';
+      r.texto += ' (fuera de plazo)';
+    }
+    return r;
+  }
+  function estadoBase(env, tarea) {
     if (env.estado === 'CALIFICADO') {
       var ok = notaAprobada(env.calificacion);
       return { tipo: 'nota', nota: env.calificacion, texto: env.calificacion,

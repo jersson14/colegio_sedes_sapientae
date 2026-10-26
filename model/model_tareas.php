@@ -331,11 +331,25 @@
             $query ->bindParam(1,$id);
             $query->execute();
             $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+            $query->closeCursor();
+            // Entregada fuera de plazo: enviada después de la fecha de entrega de la tarea
+            $q = $c->prepare("SELECT fecha_entrega FROM tareas WHERE id_tarea = ?");
+            $q->execute([$id]);
+            $limite = $q->fetchColumn();
             foreach($resultado as $resp){
+                $resp['fuera_plazo'] = ($limite && !empty($resp['fecha_envio']) && $resp['fecha_envio'] > $limite) ? 1 : 0;
                 $arreglo["data"][]=$resp;
             }
             return $arreglo;
             conexionBD::cerrar_conexion();
+        }
+        /** Estado del envío y de su tarea, para decidir si el estudiante aún puede enviar o reenviar. */
+        public function Estado_Envio($iddetalle){
+            $c = conexionBD::conexionPDO();
+            $q = $c->prepare("SELECT d.estado AS envio, t.estado AS tarea FROM detalle_tarea d JOIN tareas t ON t.id_tarea = d.id_tarea
+                              WHERE d.id_detalle_tarea = ?");
+            $q->execute([$iddetalle]);
+            return $q->fetch(PDO::FETCH_ASSOC) ?: null;
         }
         public function Registrar_calificación($id,$nota,$obser){
             $c = conexionBD::conexionPDO();

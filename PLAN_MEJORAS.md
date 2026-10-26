@@ -592,11 +592,7 @@ Migración `database/migraciones/011_matricula_horarios_salud_auditoria.sql`, ge
 - [x] Eliminar un estudiante con matrícula o un docente con cursos/contratos/pagos mostraba un error de PHP (y en producción nada): ahora avisa por qué no se puede y que el historial se conserva.
 - [x] Pruebas: `tests/pruebas_fase10_videos.sh` (33). Total con las fases anteriores: **222 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador.
 
-**Recomendado a continuación (no hecho, por confirmar)**
-- [ ] Notas y exámenes: aplicar la misma regla "cada docente solo en sus cursos" (hoy un docente podría registrar notas o exámenes de un curso ajeno con una petición armada).
-- [ ] Envío de tareas del estudiante: hoy puede reenviar una tarea ya **calificada** o **finalizada** (vuelve a "ENVIADO") y después de la fecha de entrega sin marca de atraso. Decidir: bloquear, permitir con marca "fuera de plazo", o permitir hasta que el docente califique.
-- [ ] Estudiantes y docentes no tienen botón Activar/Desactivar (solo Eliminar); para un docente que se va, hoy se desactiva su usuario en Usuarios. Agregar el botón en cada módulo.
-- [ ] La edad del estudiante se guarda al registrarlo y no se actualiza; calcularla siempre desde la fecha de nacimiento.
+**Recomendado a continuación** → hecho en el cierre de la Fase 11 (ver abajo).
 
 ---
 
@@ -627,9 +623,18 @@ Referencia: hoja de asistencia mensual en papel (estudiantes × días, semanas d
 - [x] Probado restaurando en una base aparte: 60 tablas idénticas (checksum), mismas vistas, rutinas y triggers.
 - [x] Con el usuario restringido avisa que el respaldo es incompleto; `scripts/usuario_respaldo.sql` + `'db_respaldo'` para respaldos completos.
 
+**Cierre (2026-10-25)** — migraciones `015_anio_escolar_actual.sql` y `016_corregir_anio_escolar.sql`
+- [x] **Año escolar actual = el año escolar ACTIVO** (`FN_ANIO_ESCOLAR_ACTUAL`): 15 procedimientos usaban el año del calendario (horarios, alumnos por grado de la asistencia diaria, tareas y exámenes pendientes del estudiante, sus pagos, periodos…) y salían vacíos porque el año en curso se llamaba "2025". Generada por `database/generadores/generar_015.php`.
+- [x] Datos corregidos (autorizado): el año escolar en curso se llama 2026 y su IV bimestre va del 19/10 al 11/12/2026. Revisar su nombre oficial en *Año escolar*.
+- [x] Edad del estudiante calculada siempre desde la fecha de nacimiento (listados de estudiantes y atenciones).
+- [x] **Notas y exámenes**: cada docente solo en sus cursos y con los estudiantes de esas aulas (registrar notas; crear, modificar, eliminar, cerrar exámenes y ver sus alumnos).
+- [x] **Activar / Desactivar** estudiantes (acceso al sistema) y docentes (docente + usuario), conservando el historial.
+- [x] **Reenvío de tareas**: se puede enviar y reenviar hasta que el docente califique o cierre la tarea; lo enviado después de la fecha de entrega se marca **Fuera de plazo** (lista de envíos y registro de tareas).
+
 **Documentación y pruebas**
-- [x] `docs/guia_rapida.md` para docentes, auxiliares y dirección (incluye respaldos).
-- [x] `tests/pruebas_fase11.sh` (36) y `tests/pruebas_fase11_respaldos.sh` (17). Total **275 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador (incluye detectar tablas que se quedan en "Procesando").
+- [x] `docs/guia_rapida.md` para docentes, auxiliares y dirección (incluye respaldos, activar/desactivar y reenvío de tareas).
+- [x] `tests/pruebas_fase11_cierre.sh` (28).
+- [x] `tests/pruebas_fase11.sh` (36) y `tests/pruebas_fase11_respaldos.sh` (17). Total **303 comprobaciones, 0 fallas**; 7 roles sin errores en el navegador (incluye detectar tablas que se quedan en "Procesando").
 
 ---
 

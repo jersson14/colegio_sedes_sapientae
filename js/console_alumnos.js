@@ -130,7 +130,23 @@ function listar_alumnos(){
         {"data":"Dni_mama","visible": false},        
         {"data":"Celular_mama","visible": false},        
         
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"data":"acceso",
+            render: function(data,type,row){
+                if (type !== 'display') { return data; }
+                if (data === 'ACTIVO') { return '<span class="badge bg-success">ACTIVO</span>'; }
+                if (data === 'INACTIVO') { return '<span class="badge bg-secondary">INACTIVO</span>'; }
+                return '<span class="badge bg-light text-muted">SIN USUARIO</span>';
+            }
+        },
+        {"data":"acceso", "orderable": false,
+            render: function(data,type,row){
+                var acceso = data === 'SIN USUARIO' ? '' : (data === 'ACTIVO'
+                    ? "&nbsp;&nbsp;<button class='acceso btn btn-warning btn-sm' data-estado='INACTIVO' title='El estudiante ya no podrá ingresar al sistema (su historial se conserva)'><i class='fa fa-user-slash'></i> Desactivar</button>"
+                    : "&nbsp;&nbsp;<button class='acceso btn btn-info btn-sm' data-estado='ACTIVO' title='Permitir de nuevo el ingreso al sistema'><i class='fa fa-user-check'></i> Activar</button>");
+                return "<div class='text-nowrap'><button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"
+                    + acceso + "&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button></div>";
+            }
+        },
         
     ],
 
@@ -441,6 +457,24 @@ function Modificar_alumno(){
     });
 }
 //ELIMINANDO ROL
+// Activar / desactivar el acceso al sistema del estudiante
+$('#tabla_alumnos').on('click','.acceso',function(){
+  var data = tb_alumnos.row($(this).parents('tr')).data();
+  if(tb_alumnos.row(this).child.isShown()){ data = tb_alumnos.row(this).data(); }
+  var estado = $(this).data('estado');
+  Swal.fire({
+    title: (estado === 'INACTIVO' ? '¿Desactivar el acceso de ' : '¿Activar el acceso de ') + textoPlano(data.Estudiante) + '?',
+    text: estado === 'INACTIVO' ? 'No podrá ingresar al sistema. Sus notas, asistencia y pagos se conservan.' : 'Podrá volver a ingresar al sistema con su usuario.',
+    icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, continuar', cancelButtonText: 'Cancelar'
+  }).then(function(res){
+    if(!res.isConfirmed){ return; }
+    $.post('../controller/alumnos/controlador_cambiar_acceso.php', { id: data.Id_alumno, estado: estado }, null, 'json').done(function(){
+      Swal.fire({ toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, icon: 'success', title: estado === 'INACTIVO' ? 'Acceso desactivado' : 'Acceso activado' });
+      tb_alumnos.ajax.reload(null, false);
+    });
+  });
+});
+
 function Eliminar_Alumno(id){
     $.ajax({
       "url":"../controller/alumnos/controlador_eliminar_alumnos.php",

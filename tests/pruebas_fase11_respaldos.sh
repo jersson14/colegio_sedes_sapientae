@@ -12,7 +12,7 @@ login JERSSON123; login CONTA1; login JOSE; login DANIEL20
 echo "== Generar"
 J=$(post JERSSON123 -d accion=generar $RC)
 ARCH=$(echo "$J" | jq_ archivo)
-check "respaldo completo: tablas, vistas, rutinas y triggers" "true 60 2 321 57 0" "$(echo "$J" | jq_ ok) $(echo "$J" | jq_ tablas) $(echo "$J" | jq_ vistas) $(echo "$J" | jq_ rutinas) $(echo "$J" | jq_ triggers) $(echo "$J" | jq_ avisos)"
+check "respaldo completo: tablas, vistas, rutinas y triggers" "true $(q "select count(*) from information_schema.tables where table_schema='colegio2_test' and table_type='BASE TABLE'") $(q "select count(*) from information_schema.tables where table_schema='colegio2_test' and table_type='VIEW'") $(q "select count(*) from information_schema.routines where routine_schema='colegio2_test'") $(q "select count(*) from information_schema.triggers where trigger_schema='colegio2_test'") 0" "$(echo "$J" | jq_ ok) $(echo "$J" | jq_ tablas) $(echo "$J" | jq_ vistas) $(echo "$J" | jq_ rutinas) $(echo "$J" | jq_ triggers) $(echo "$J" | jq_ avisos)"
 check "aparece en la lista como generado desde el sistema" "Generado desde el sistema" "$(post JERSSON123 -d accion=listar $RC | php -r '$d=json_decode(stream_get_contents(STDIN),true); foreach($d["respaldos"] as $r){ if($r["archivo"]==="'$ARCH'"){ echo $r["tipo"]; } }')"
 
 echo "== Restaurar en una base aparte y comparar"

@@ -62,6 +62,7 @@
             <span><i class="fas fa-inbox text-primary"></i> Entregada, por calificar</span>
             <span><i class="fas fa-hourglass-half text-secondary"></i> Pendiente (aún en plazo)</span>
             <span><i class="fas fa-times text-danger"></i> No entregó</span>
+            <span><i class="fas fa-clock text-warning"></i> Fuera de plazo</span>
           </div>
           <small class="text-muted"><i class="fas fa-mouse-pointer"></i> Clic en una casilla para ver lo entregado y calificar · Clic en la tarea para ver su material</small>
         </div>
