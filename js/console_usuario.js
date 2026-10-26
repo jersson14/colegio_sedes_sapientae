@@ -475,12 +475,24 @@ function Modificar_Usuario(){
 }
 
 
+// Contraseña temporal fácil de dictar (sin 0/O, 1/l/I que se confunden)
+function Generar_Contra_Temporal(){
+  var letras = 'abcdefghjkmnpqrstuvwxyz', numeros = '23456789', c = '';
+  var al = function (t) { var a = new Uint32Array(1); crypto.getRandomValues(a); return t[a[0] % t.length]; };
+  for (var i = 0; i < 6; i++) { c += al(letras); }
+  for (var j = 0; j < 3; j++) { c += al(numeros); }
+  document.getElementById('txt_contra_nueva').value = c.charAt(0).toUpperCase() + c.substr(1);
+}
+
 function Modificar_Contra(){
   let id = document.getElementById('txt_idusuario_contra').value;
   let con = document.getElementById('txt_contra_nueva').value;
 
   if(id.length==0 || con.length==0){
       return Swal.fire("Mensaje de Advertencia","Tiene campos vacios","warning");
+  }
+  if(con.length < 8){
+      return Swal.fire("Contraseña muy corta","Debe tener al menos 8 caracteres. Puede usar el botón Generar.","warning");
   }
   $.ajax({
     "url":"../controller/usuario/controlador_modificar_usuario_contra.php",
@@ -491,7 +503,7 @@ function Modificar_Contra(){
     }
   }).done(function(resp){
     if(resp>0){
-        Swal.fire("Mensaje de Confirmación","Contraseña del Usuario Actualizada","success").then((value)=>{
+ Swal.fire({icon:'success', title:'Contraseña temporal guardada', html:'Entregue esta contraseña a la persona:<br><b style="font-size:1.4rem;letter-spacing:.05em">' + textoSeguro(con) + '</b><br><small class="text-muted">Al ingresar, el sistema le pedirá crear la suya.</small>'}).then((value)=>{
           tbl_usuario.ajax.reload();
         $("#modal_contra").modal('hide');
         });

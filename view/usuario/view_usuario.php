@@ -125,8 +125,14 @@
           </div>
           <div class="col-12">
             <input type="text" id="txt_idusuario_contra" hidden>
-            <label for="">Contraseña Nueva(*):</label>
-            <input type="password" class="form-control" id="txt_contra_nueva">
+            <label for="txt_contra_nueva">Contraseña temporal(*):</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="txt_contra_nueva" autocomplete="off">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-primary" onclick="Generar_Contra_Temporal()" title="Generar una contraseña temporal fácil de dictar"><i class="fas fa-magic"></i> Generar</button>
+              </div>
+            </div>
+            <small class="text-muted">Mínimo 8 caracteres. Es temporal: la persona deberá crear la suya al ingresar.</small>
           </div>
         </div>
       </div>

@@ -7,6 +7,11 @@ if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
   exit;
 }
+// Contraseña temporal: antes de entrar al sistema, la persona crea la suya
+if (!empty($_SESSION['S_DEBE_CAMBIAR'])) {
+  include __DIR__ . '/inicio/cambiar_clave.php';
+  exit;
+}
 ?>
 <?php
 if (isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO'])) {
@@ -82,6 +87,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
+                <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
+              </a>
               <div class="dropdown-divider"></div>
               <a href="../controller/usuario/controlador_cerrar_sesion.php" class="dropdown-item">
                 <i class="fas fa-power-off mr-2"></i><u><b>Cerrar Sesión</b></u>
@@ -95,7 +103,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <?php
     }
     ?>
-    <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "DOCENTE" || $_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
+    <?php if ($_SESSION['S_ROL'] == "ENFERMERA" || $_SESSION['S_ROL'] == "PSICOLOGA" || $_SESSION['S_ROL'] == "AUXILIAR" || $_SESSION['S_ROL'] == "DOCENTE" || $_SESSION['S_ROL'] == "ESTUDIANTE" || $_SESSION['S_ROL'] == "CONTADOR") { ?>
       <!-- Navbar -->
       <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->
@@ -129,6 +137,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
+                <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
+              </a>
               <div class="dropdown-divider"></div>
               <a href="../controller/usuario/controlador_cerrar_sesion.php" class="dropdown-item">
                 <i class="fas fa-power-off mr-2"></i><u><b>Cerrar Sesión</b></u>
@@ -1967,6 +1978,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   $.ajaxSetup({
     headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content }
   });
+  window.__avisoGlobal = true;   // js/cuenta.js: los 400/403 los muestra este aviso
   $(document).ajaxError(function(event, xhr) {
     if (xhr.status === 401) {
       window.location.href = '../index.php';
@@ -2007,6 +2019,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- Escapa los datos al mostrarlos (DataTables por defecto y textoSeguro() para el HTML armado a mano) -->
 <script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/formulario.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/cuenta.js?rev=<?php echo time(); ?>"></script>
+<!-- Cambiar mi contraseña (todos los roles) -->
+<div class="modal fade" id="modal_mi_clave" tabindex="-1" role="dialog" aria-labelledby="titulo_mi_clave" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#1FA0E0;">
+        <h5 class="modal-title" id="titulo_mi_clave" style="color:white"><b>Cambiar mi contraseña</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label for="mc_actual">Contraseña actual</label><input type="password" id="mc_actual" class="form-control" autocomplete="current-password"></div>
+        <div class="form-group"><label for="mc_nueva">Nueva contraseña</label><input type="password" id="mc_nueva" class="form-control" autocomplete="new-password">
+          <small class="text-muted">Al menos 8 caracteres, distinta de su usuario.</small></div>
+        <div class="form-group mb-0"><label for="mc_confirmar">Repita la nueva contraseña</label><input type="password" id="mc_confirmar" class="form-control" autocomplete="new-password"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="mc_guardar"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="../js/tablas_mejoras.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

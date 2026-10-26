@@ -37,6 +37,12 @@ set_exception_handler(function ($e) {
     denegar(500, 'Ocurrió un error inesperado. Intente de nuevo; si continúa, avise al administrador.');
 });
 
+// Contraseña temporal pendiente de cambio: solo se permite cambiarla o cerrar la sesión
+if (!empty($_SESSION['S_DEBE_CAMBIAR'])
+    && !in_array(basename($_SERVER['SCRIPT_FILENAME']), ['controlador_cambiar_mi_clave.php', 'controlador_cerrar_sesion.php'], true)) {
+    denegar(403, 'Debe cambiar su contraseña temporal antes de continuar');
+}
+
 (function () {
     $permisos = require __DIR__ . '/_permisos.php';
     $raiz = str_replace('\\', '/', realpath(__DIR__ . '/..')) . '/';

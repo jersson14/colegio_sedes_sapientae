@@ -50,6 +50,12 @@ require_once __DIR__ . '/../_seguridad.php';
     $_SESSION['S_FECHANACIMIENTO'] = $e($u[18]);
     $_SESSION['S_EMAIL'] = $e($u['usu_email']);
     $_SESSION['S_DNI'] = $e($u[19]);
+    // Contraseña temporal (puesta por el administrador): hasta cambiarla solo se muestra la pantalla de cambio
+    $q = (new conexionBD())->conexionPDO()->prepare("SELECT debe_cambiar_clave FROM usuario WHERE usu_id = ?");
+    $q->execute([$u['usu_id']]);
+    if ((int) $q->fetchColumn() === 1) {
+        $_SESSION['S_DEBE_CAMBIAR'] = 1;
+    }
 
     echo json_encode(['ok' => true]);
 ?>

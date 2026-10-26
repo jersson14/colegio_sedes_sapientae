@@ -43,6 +43,8 @@ return [
         'controller/asistencias/controlador_listar_asistencias.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_asistencias_fechas.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_registro_asistencias.php' => ['AUXILIAR'],
+        // cada usuario cambia su propia contraseña (Fase 13)
+        'controller/usuario/controlador_cambiar_mi_clave.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // registro de tareas (Fase 11): el docente solo con sus cursos (se controla en el controlador)
         'controller/registro_tareas/controlador_registro.php' => ['AUXILIAR', 'DOCENTE'],
         // registro mensual de asistencia (Fase 11): el docente solo con sus aulas (se controla en el controlador)
@@ -72,7 +74,7 @@ return [
         'controller/aulas/controlador_cargar_select_nivel.php' => ['AUXILIAR', 'CONTADOR', 'ENFERMERA', 'PSICOLOGA'],
         // componentes
         // comunicados
-        'controller/comunicados/controlador_listar_comunicados2.php' => ['AUXILIAR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
+        'controller/comunicados/controlador_listar_comunicados2.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // configuracion
         'controller/configuracion/controlador_cuenta_guardar.php' => ['CONTADOR'],
         'controller/configuracion/controlador_formas_pago_listar.php' => ['CONTADOR'],

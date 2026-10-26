@@ -184,13 +184,21 @@ Paso 2 hecho el 2026-10-26 (`js/formulario.js`, `tests/navegador/prueba_formular
 - Enter guarda y el cursor empieza en el primer campo.
 - Las ventanas que arman listas con "Agregar" mantienen su propia validación.
 
+Paso 3 hecho el 2026-10-26 (migración 019, `tests/pruebas_fase13_cuentas.sh`):
+
+- Contraseñas de al menos 8 caracteres y distintas del usuario, en todos los lugares donde se crean: docentes, personal, usuarios, matrícula de un estudiante nuevo y restablecer.
+- La contraseña que pone el administrador es **temporal**. En el primer ingreso solo se muestra la pantalla "Cree su contraseña", y el servidor bloquea todo lo demás hasta cambiarla. Los usuarios existentes no quedan obligados.
+- **"Cambiar mi contraseña"** en el menú del usuario, para todos los roles.
+- En Usuarios, botón **Generar**: crea una contraseña temporal fácil de dictar y la muestra al guardar para entregarla.
+- Corregido de paso: la contadora no tenía barra superior, así que no tenía en el menú de usuario la opción "Cerrar Sesión" (y ahora tampoco tendría "Cambiar mi contraseña").
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
 |---|---|---|---|---|
 | 1 ✅ | Correcciones de lógica: registro sin `MAX(id)`, transacciones, correos, duplicados, periodos, auditoría, errores claros | 4c | Bajo | Evita datos cruzados entre registros |
 | 2 ✅ | Componente de formulario y límites de fechas | 4 | Medio | Menos errores al cargar datos en todo el sistema |
-| 3 | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
+| 3 ✅ | Cuentas: contraseña inicial, mínimo de 8 caracteres, restablecer | 4b | Bajo | Seguridad antes de abrir el sistema a las familias |
 | 4 | Paneles de inicio por rol | 1 | Medio | Cada persona ve lo suyo al entrar |
 | 5 | Menú por tareas y encabezados claros | 2 | Bajo | Encontrar todo más rápido |
 | 6 | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |

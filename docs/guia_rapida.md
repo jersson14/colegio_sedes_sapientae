@@ -73,3 +73,9 @@ En **Estudiantes** y **Docentes**, el botón **Desactivar** impide que la person
 - Una vez **calificada**, o si el docente **cerró** (finalizó) la tarea, ya no se aceptan envíos.
 - Lo entregado después de la fecha de entrega se acepta, pero el docente lo ve marcado **Fuera de plazo**, tanto en la lista de envíos como en el registro de tareas.
 - Cada docente solo puede ver y calificar las tareas, notas y exámenes de **sus** cursos.
+
+## Contraseñas
+
+- **Cambiar la propia:** en el menú del usuario (arriba a la derecha), **Cambiar mi contraseña**. Debe tener al menos 8 caracteres y ser distinta del usuario.
+- **Olvidó su contraseña:** la dirección entra a **Usuarios**, abre *Cambiar contraseña* del usuario y pulsa **Generar**. El sistema muestra una contraseña temporal para entregarla. Al ingresar con ella, la persona debe crear la suya antes de usar el sistema.
+- Las contraseñas de usuarios nuevos (docentes, personal, estudiantes matriculados por primera vez) también son temporales.
