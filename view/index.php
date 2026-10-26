@@ -55,7 +55,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="../css/inicio.css?rev=<?php echo filemtime(__DIR__ . '/../css/inicio.css'); ?>">
 </head>
 
-<body class="tema-menu-<?php echo strtolower($TEMA['estilo_menu']); ?>">
+<body class="layout-fixed tema-menu-<?php echo strtolower($TEMA['estilo_menu']); ?>">
   <div class="wrapper">
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
       <!-- Navbar -->

@@ -145,3 +145,19 @@ table.dataTable thead th { border-bottom-color: var(--tema-acento) !important; }
 }
 @keyframes fm-gira { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .fm-enviando::after { animation: none; } }
+
+/* ---------- Menú lateral con desplazamiento propio (layout-fixed) ----------
+   El escudo y el nombre ocupan más alto que la cabecera estándar de AdminLTE: la zona del menú toma el resto. */
+body.layout-fixed .main-sidebar { display: flex; flex-direction: column; }
+body.layout-fixed .main-sidebar .brand-link { flex: none; }
+body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height: auto !important; overflow-y: auto; overflow-x: hidden; padding-bottom: 24px;
+  scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .45) rgba(0, 0, 0, .12); }
+.main-sidebar .sidebar::-webkit-scrollbar { width: 8px; }
+.main-sidebar .sidebar::-webkit-scrollbar-track { background: rgba(0, 0, 0, .12); }
+.main-sidebar .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .45); border-radius: 8px; }
+.main-sidebar .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, .7); }
+.tema-menu-claro .main-sidebar .sidebar { scrollbar-color: rgba(0, 0, 0, .3) rgba(0, 0, 0, .05); }
+.tema-menu-claro .main-sidebar .sidebar::-webkit-scrollbar-track { background: rgba(0, 0, 0, .05); }
+.tema-menu-claro .main-sidebar .sidebar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, .3); }
+/* El buscador del menú queda a la vista mientras se baja */
+.nav-sidebar .menu-buscar { position: sticky; top: 0; z-index: 3; background: var(--tema-menu); }
