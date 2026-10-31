@@ -3,6 +3,8 @@
 # ninguna pantalla lo ejecute (con la protección) y que la prueba sí lo detecta sin ella.
 # Requiere la BD de prueba recién reiniciada. Modifica datos: reiniciarla después.
 R=$(cd "$(dirname "$0")/../.." && pwd)
+# Seguro: solo contra la base de prueba (ver tests/lib.sh)
+grep -q "colegio2_test" "$R/config/config.local.php" 2>/dev/null || { echo "ALTO: config/config.local.php no apunta a colegio2_test." >&2; exit 1; }
 B=http://localhost/_public_html
 mkdir -p "$R/tests/tmp"; O=$(cygpath -m "$R/tests/tmp")
 M="/c/xampp/mysql/bin/mysql.exe --default-character-set=utf8mb4 -uroot -P3307 -h127.0.0.1 colegio2_test"

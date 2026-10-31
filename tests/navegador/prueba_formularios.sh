@@ -3,6 +3,8 @@
 # Obligatorios marcados junto al campo (también en la pestaña de padres), fechas fuera de rango, aviso de cambios sin
 # guardar, un solo envío con varios clics y cierre sin preguntar tras guardar. Requiere la BD de prueba recién reiniciada.
 R=$(cd "$(dirname "$0")/../.." && pwd)
+# Seguro: solo contra la base de prueba (ver tests/lib.sh)
+grep -q "colegio2_test" "$R/config/config.local.php" 2>/dev/null || { echo "ALTO: config/config.local.php no apunta a colegio2_test." >&2; exit 1; }
 B=http://localhost/_public_html
 mkdir -p "$R/tests/tmp"; O=$(cygpath -m "$R/tests/tmp")
 M="/c/xampp/mysql/bin/mysql.exe --default-character-set=utf8mb4 -uroot -P3307 -h127.0.0.1 colegio2_test -N"

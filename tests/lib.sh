@@ -3,6 +3,12 @@
 # Requisitos: XAMPP (Apache + MariaDB en el puerto 3307), config/config.local.php apuntando a colegio2_test
 # y la base de prueba recién reiniciada con tests/reset_test_db.sh.
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+# Seguro: sin config.local.php apuntando a colegio2_test, las pruebas irían contra la base REAL del colegio
+# (intentos de ingreso que bloquean usuarios, solicitudes de prueba…). En ese caso no se ejecuta nada.
+if ! grep -q "colegio2_test" "$R/config/config.local.php" 2>/dev/null; then
+  echo "ALTO: config/config.local.php no apunta a colegio2_test; las pruebas no se ejecutan contra la base real." >&2
+  exit 1
+fi
 B=http://localhost/_public_html
 mkdir -p "$R/tests/tmp"
 T=$(cygpath -m "$(mktemp -d -p "$R/tests/tmp")")
