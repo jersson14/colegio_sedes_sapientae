@@ -47,6 +47,6 @@ $html = pdf_encabezado($mysqli, 'ESTADO DE RESULTADOS', 'Del ' . pdf_fecha($desd
 <table style="border:none"><tr><td style="border:none; text-align:center">______________________<br>Contador(a)</td>
 <td style="border:none; text-align:center">______________________<br>Dirección</td></tr></table>';
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4']);
+$mpdf = pdf_nuevo('A4');
 $mpdf->WriteHTML($html);
 $mpdf->Output('estado_resultados_' . $desde . '_' . $hasta . '.pdf', 'I');

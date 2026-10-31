@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../../utilitario/seguridad_reporte.php';
 // Boleta de pago del docente (Fase 6) o del personal administrativo (Fase 8B): sueldo/horas, ingresos, descuentos, adelantos, neto y pagos.
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
+require_once __DIR__ . '/../../../utilitario/reporte_pdf.php';
 $id = (int) ($_GET['id'] ?? 0);
 
 $st = $mysqli->prepare("SELECT d.*, p.anio, p.mes, p.estado AS estado_planilla,
@@ -38,7 +39,7 @@ $st = $mysqli->prepare("SELECT k.nombre, k.tipo, k.forma, x.valor, x.monto FROM 
 $st->bind_param('i', $id);
 $st->execute();
 $conceptos = $st->get_result()->fetch_all(MYSQLI_ASSOC);
-$st = $mysqli->prepare("SELECT p.tipo, DATE_FORMAT(p.fecha, '%d-%m-%Y') AS fecha, p.monto, mp.nombre AS metodo, p.referencia
+$st = $mysqli->prepare("SELECT p.tipo, DATE_FORMAT(p.fecha, '%d/%m/%Y') AS fecha, p.monto, mp.nombre AS metodo, p.referencia
     FROM pagos_docentes p INNER JOIN metodos_pago mp ON mp.id_metodo = p.metodo_pago_id
     WHERE p.estado = 'VALIDO' AND (p.id_detalle = ? OR p.id_detalle_descuento = ?) ORDER BY p.fecha");
 $st->bind_param('ii', $id, $id);
@@ -59,24 +60,16 @@ foreach ($pagos as $p) {
     $filas_pagos .= '<tr><td>' . $e($p['fecha']) . '</td><td>' . ($p['tipo'] === 'ADELANTO' ? 'Adelanto' : 'Pago') . '</td><td>' . $e($p['metodo'])
                   . '</td><td>' . $e($p['referencia']) . '</td><td class="der">' . formato_moneda($p['monto']) . '</td></tr>';
 }
-$tributario = $r['identificacion_tributaria'] ? ' · ' . $e($r['id_tributario']) . ': ' . $e($r['identificacion_tributaria']) : '';
-
-$html = '
+$html = pdf_estilos(10) . '
 <style>
-  body { font-family: Arial, sans-serif; font-size: 11px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  table { margin-top: 6px; }
   th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
-  th { background-color: #f2f2f2; }
-  .der { text-align: right; }
-  .titulo { font-size: 15px; font-weight: bold; color: #0A5D86; text-align: center; }
+  th { background-color: ' . pdf_identidad()['claro'] . '; color: ' . pdf_identidad()['color'] . '; }
+  .cab td, .firmas td { border: none; }
 </style>
-<table style="border:none"><tr>
-  <td style="border:none; width:25%"><img src="../../../' . $e($r['emp_logo']) . '" style="max-width:110px"></td>
-  <td style="border:none"><b>' . $e($r['emp_razon']) . '</b>' . $tributario . '<br>' . $e($r['emp_direccion']) . '</td>
-</tr></table>
-<p class="titulo">BOLETA DE PAGO – ' . $e($r['mes_nombre']) . ' ' . $e($r['anio']) . '</p>
+' . pdf_cabecera('BOLETA DE PAGO', pdf_titulo($r['mes_nombre']) . ' ' . $r['anio']) . '
 <table>
-  <tr><th>' . ($r['tipo_personal'] === 'DOCENTE' ? 'Docente' : 'Trabajador') . '</th><td>' . $e($r['docente']) . ($r['tipo_personal'] === 'DOCENTE' ? '' : ' (' . $e($r['cargo']) . ')') . '</td><th>' . nombre_documento() . '</th><td>' . $e($r['docente_dni']) . '</td></tr>
+  <tr><th>' . ($r['tipo_personal'] === 'DOCENTE' ? 'Docente' : 'Trabajador') . '</th><td>' . pdf_esc(pdf_titulo($r['docente'])) . ($r['tipo_personal'] === 'DOCENTE' ? '' : ' (' . pdf_esc(pdf_titulo($r['cargo'])) . ')') . '</td><th>' . nombre_documento() . '</th><td>' . $e($r['docente_dni']) . '</td></tr>
   <tr><th>Contrato</th><td>' . $e($r['tipo_contrato']) . '</td><th>Forma de pago</th><td>' . $e($r['metodo'])
      . ($r['cuenta_docente'] ? ' · ' . $e($r['banco_docente']) . ' ' . $e($r['cuenta_docente']) : '') . '</td></tr>
 </table>
@@ -96,13 +89,12 @@ $html = '
   ' . ($filas_pagos ?: '<tr><td colspan="5">Aún sin pagos</td></tr>') . '
   <tr><td colspan="4" class="der"><b>Pendiente</b></td><td class="der"><b>' . formato_moneda($r['neto'] - $r['pagado']) . '</b></td></tr>
 </table>
-<br><br><br>
-<table style="border:none"><tr>
-  <td style="border:none; text-align:center">______________________<br>Empleador</td>
-  <td style="border:none; text-align:center">______________________<br>' . $e($r['docente']) . '</td>
+<table class="firmas"><tr>
+  <td>______________________________<br>Empleador</td>
+  <td>______________________________<br>' . pdf_esc(pdf_titulo($r['docente'])) . '</td>
 </tr></table>';
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4']);
+$mpdf = pdf_nuevo('A4');
 if ($r['estado_planilla'] === 'BORRADOR') {
     $mpdf->SetWatermarkText('BORRADOR');
     $mpdf->showWatermarkText = true;

@@ -6,6 +6,7 @@ setlocale(LC_TIME, 'es_ES.UTF-8');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
+require_once __DIR__ . '/../../../utilitario/reporte_pdf.php';
 $codigo = $mysqli->real_escape_string($_GET['codigo']);
 reporte_exigir_aula_propia($mysqli, $codigo);
 
@@ -120,28 +121,16 @@ $resultado_horario = $stmt_horario->get_result();
 $html = '';
 
 if ($row1 = $resultado_pagos->fetch_assoc()) {
-    $html .= '
+    $grado_txt = pdf_titulo($row1['Nivel_academico']) . ' · ' . pdf_titulo($row1['Grado']) . ($row1['seccion_nombre'] && $row1['seccion_nombre'] !== 'UNICO' ? ' "' . $row1['seccion_nombre'] . '"' : '');
+    $html .= pdf_estilos(10) . '
     <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 150px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 5px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        th, td { border: 1px solid #ccc; padding: 5px; }
+        th { background-color: ' . pdf_identidad()['color'] . '; color: ' . pdf_identidad()['texto_color'] . '; }
+        .cab td { border: none; }
+        h3 { color: ' . pdf_identidad()['color'] . '; font-size: 12px; margin: 10px 0 4px; }
     </style>
-    <div class="header">
-        <img src="../../../' . $row1['emp_logo'] . '" alt="Logo">
-        <h2><u>HORARIOS POR AULA</u></h2>
-    </div>
-    <h3>Datos de Horaio</h3>
-    <table>
-        <tr><th>Aula o Grado:</th><td>' . $row1['Grado'] . '</td></tr>
-        <tr><th>Sección:</th><td>' . $row1['seccion_nombre'] . '</td></tr>
-        <tr><th>Nivel Académico:</th><td>' . $row1['Nivel_academico'] . '</td></tr>
-        <tr><th>Año académico:</th><td>' . $row1['año_escolar'] . '</td></tr>
-
-
-    </table>';
+    ' . pdf_cabecera('HORARIO DE CLASES', $grado_txt . ' · ' . $row1['año_escolar']) . '
+    ';
 
  
 }
@@ -149,19 +138,18 @@ if ($row1 = $resultado_pagos->fetch_assoc()) {
 // Agregar el horario del alumno
 // Definir la función para determinar el estilo de la celda
 function estiloAsignatura($asignatura) {
-    return ($asignatura == 'RECREO') ? 'background-color: yellow;' : '';
+    return ($asignatura == 'RECREO') ? 'font-style: italic; background-color: ' . pdf_identidad()['claro'] . ';' : '';
 }
 
 // Agregar el horario del alumno
-$html .= '<h3>Horario</h3>
-<table style="margin: 0 auto; text-align: center;">
-    <tr style="color:black;margin: 0 auto; text-align: center;">
-        <th style="color:black;margin: 0 auto; text-align: center;">Hora</th>
-        <th style="color:black;margin: 0 auto; text-align: center;">Lunes</th>
-        <th style="color:black;margin: 0 auto; text-align: center;">Martes</th>
-        <th style="color:black;margin: 0 auto; text-align: center;">Miércoles</th>
-        <th style="color:black;margin: 0 auto; text-align: center;">Jueves</th>
-        <th style="color:black;margin: 0 auto; text-align: center;">Viernes</th>
+$html .= '<table style="text-align: center;">
+    <tr>
+        <th class="c">Hora</th>
+        <th class="c">Lunes</th>
+        <th class="c">Martes</th>
+        <th class="c">Miércoles</th>
+        <th class="c">Jueves</th>
+        <th class="c">Viernes</th>
     </tr>';
 
 while ($row_horario = $resultado_horario->fetch_assoc()) {
@@ -182,18 +170,8 @@ $html .= '</table>';
 ob_end_clean();
 
 try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9,
-    ]);
-
-    $mpdf->SetTitle('HORARIO');
+    $mpdf = pdf_nuevo('A4');
+    $mpdf->SetTitle('Horario de clases');
     $mpdf->WriteHTML($html);
     $mpdf->Output('Horario_aula.pdf', 'I'); // Salida en el navegador
 } catch (\Mpdf\MpdfException $e) {

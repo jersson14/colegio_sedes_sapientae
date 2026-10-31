@@ -10,7 +10,6 @@ require_once '../conexion.php';
 require_once __DIR__ . '/../../../utilitario/validacion.php';
 require_once __DIR__ . '/../../../utilitario/reporte_pdf.php';
 require_once __DIR__ . '/../../../utilitario/libreta.php';
-require_once __DIR__ . '/../../../utilitario/tema.php';
 
 pdf_parametros(['matricula', 'anio', 'aula', 'periodo']);
 $periodo = $_POST['periodo'] === '' ? null : entero_post('periodo', 1, 'periodo');
@@ -34,53 +33,28 @@ if ($_POST['matricula'] !== '') {
 $L = libreta_aula($anio, $aula, $periodo);
 if (!$L) { http_response_code(404); exit('No se encontró la libreta'); }
 
-$TEMA = tema_actual();
-$color = $TEMA['primario'] ?? '#7A1F2B';
-$emp = $mysqli->query("SELECT emp_cod, emp_direccion, emp_telefono FROM empresa ORDER BY empresa_id LIMIT 1")->fetch_assoc() ?: [];
-$titulo = function ($t) {
-    $t = mb_convert_case(mb_strtolower(html_entity_decode((string) $t, ENT_QUOTES, 'UTF-8'), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
-    $t = preg_replace_callback('/ (De|Del|La|Las|Los|El|Y|E|En|Con|Por|Para)\b/u', function ($m) { return ' ' . mb_strtolower($m[1], 'UTF-8'); }, $t);
-    // números romanos de los periodos: "Ii Bimestre" -> "II Bimestre"
-    return preg_replace_callback('/\b(i{1,3}|iv|vi{0,3}|ix|x)\b/iu', function ($m) { return mb_strtoupper($m[1], 'UTF-8'); }, $t);
-};
+$id = pdf_identidad();
+$titulo = 'pdf_titulo';
 $a = $L['aula'];
 $grado = $titulo($a['nivel']) . ' · ' . $titulo($a['grado']) . ($a['seccion'] && $a['seccion'] !== 'UNICO' ? ' "' . $a['seccion'] . '"' : '');
 $nombre_periodo = $L['todo_el_anio'] ? 'Año escolar ' . $a['anio'] : $titulo($L['periodos'][0]['nombre']) . ' · ' . $a['anio'];
 $con_puesto = count(array_filter($L['estudiantes'], function ($e) { return $e['puesto'] !== null; }));
-$logo = $TEMA['logo'] ? '<img src="../../../' . pdf_esc($TEMA['logo']) . '" style="max-height:52px; max-width:120px">' : '';
 
-$estilos = '<style>
-  body { font-family: Arial, sans-serif; font-size: 10px; color: #222; }
-  table { width: 100%; border-collapse: collapse; }
-  .cab td { border: none; vertical-align: middle; }
-  .colegio { font-size: 15px; font-weight: bold; color: ' . $color . '; }
-  .lema { color: #666; font-style: italic; font-size: 9px; }
-  .doc { font-size: 13px; font-weight: bold; text-align: right; color: ' . $color . '; }
-  .linea { border-bottom: 2px solid ' . $color . '; margin: 6px 0 10px; }
+// Identidad común a todos los PDF (utilitario/reporte_pdf.php) y lo propio de la libreta
+$estilos = pdf_estilos(10) . '<style>
   .datos td { border: 1px solid #ddd; padding: 5px 6px; }
-  .datos .e { background: #f4f2ee; font-weight: bold; width: 18%; }
-  .notas th { background: ' . $color . '; color: #fff; padding: 5px; border: 1px solid ' . $color . '; font-size: 9px; }
+  .datos .e, .res .e { background: ' . $id['claro'] . '; font-weight: bold; width: 18%; }
+  .notas th { background: ' . $id['color'] . '; color: ' . $id['texto_color'] . '; padding: 5px; border: 1px solid ' . $id['color'] . '; font-size: 9px; }
   .notas td { border: 1px solid #ccc; padding: 5px; }
-  .c { text-align: center; }
-  .mal { color: #B23A2A; font-weight: bold; }
   .crit td { color: #555; font-size: 9px; background: #fafafa; }
   .crit td.n { padding-left: 16px; }
   .res td { border: 1px solid #ccc; padding: 6px; }
-  .res .e { background: #f4f2ee; font-weight: bold; }
-  .nota { color: #666; font-size: 8.5px; margin-top: 6px; }
-  .firmas td { border: none; text-align: center; padding: 50px 6px 0; font-size: 9px; width: 33%; color: #333; }
+  .firmas td { width: 33%; }
 </style>';
-
-$cabecera = function ($doc) use ($logo, $TEMA, $emp) {
-    return '<table class="cab"><tr><td style="width:130px">' . $logo . '</td><td><div class="colegio">' . pdf_esc($TEMA['nombre']) . '</div>'
-        . ($TEMA['lema'] ? '<div class="lema">' . pdf_esc($TEMA['lema']) . '</div>' : '')
-        . '<div style="color:#555; font-size:8.5px">' . pdf_esc(trim(($emp['emp_direccion'] ?? '') . (!empty($emp['emp_telefono']) ? ' · Tel. ' . $emp['emp_telefono'] : '')))
-        . (!empty($emp['emp_cod']) ? ' · Código ' . pdf_esc($emp['emp_cod']) : '') . '</div></td>'
-        . '<td class="doc">' . $doc . '</td></tr></table><div class="linea"></div>';
-};
+$cabecera = function ($doc, $detalle) { return pdf_cabecera($doc, $detalle); };
 
 $libreta = function ($e) use ($L, $grado, $nombre_periodo, $con_puesto, $titulo, $cabecera) {
-    $h = $cabecera('LIBRETA DE NOTAS<br><span style="font-size:10px; color:#444">' . pdf_esc($nombre_periodo) . '</span>');
+    $h = $cabecera('LIBRETA DE NOTAS', $nombre_periodo);
     $puesto = $e['puesto'] !== null ? $e['puesto'] . '.º de ' . $con_puesto : '—';
     $h .= '<table class="datos"><tr><td class="e">Estudiante</td><td colspan="3"><b>' . pdf_esc($titulo($e['nombres'] . ' ' . $e['apellidos'])) . '</b></td></tr>'
         . '<tr><td class="e">' . pdf_esc(nombre_documento()) . '</td><td>' . pdf_esc($e['documento']) . '</td><td class="e">Grado y sección</td><td>' . pdf_esc($grado) . '</td></tr></table><br>';
@@ -129,7 +103,7 @@ $libreta = function ($e) use ($L, $grado, $nombre_periodo, $con_puesto, $titulo,
 $html = $estilos;
 if (!empty($_GET['merito']) && !$solo) {
     // Orden de mérito del aula
-    $html .= $cabecera('ORDEN DE MÉRITO<br><span style="font-size:10px; color:#444">' . pdf_esc($grado) . ' · ' . pdf_esc($nombre_periodo) . '</span>');
+    $html .= $cabecera('ORDEN DE MÉRITO', $grado . ' · ' . $nombre_periodo);
     $html .= '<table class="notas"><tr><th style="width:8%">Puesto</th><th style="text-align:left">Estudiante</th><th style="width:16%">' . pdf_esc(nombre_documento()) . '</th>'
         . '<th style="width:12%">Promedio</th><th style="width:14%">Desaprobados</th></tr>';
     foreach ($L['estudiantes'] as $e) {
@@ -149,7 +123,7 @@ if (!empty($_GET['merito']) && !$solo) {
     $archivo = $solo ? 'libreta_' . $lista[0]['documento'] . '.pdf' : 'libretas_aula.pdf';
 }
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4', 'margin_left' => 12, 'margin_right' => 12, 'margin_top' => 10, 'margin_bottom' => 10]);
+$mpdf = pdf_nuevo('A4');
 $mpdf->SetTitle('Libreta de notas');
 $mpdf->WriteHTML($html);
 $mpdf->Output($archivo, 'I');

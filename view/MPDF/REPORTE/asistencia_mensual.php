@@ -42,7 +42,7 @@ foreach ($datos['estudiantes'] as $e) {
         $celdas .= '<td class="c"' . ($c ? ' style="background-color:' . $fondo[$c] . '"' : '') . '>' . $c . '</td>';
     }
     $t = $vacia ? ['P' => '', 'T' => '', 'F' => '', 'J' => '', 'porcentaje' => ''] : planilla_totales($e['marcas']);
-    $filas .= '<tr><td class="c">' . $n . '</td><td class="nombre">' . pdf_esc($e['apellidos'] . ', ' . $e['nombres']) . '</td>' . $celdas
+    $filas .= '<tr><td class="c">' . $n . '</td><td class="nombre">' . pdf_esc(pdf_titulo($e['apellidos'] . ', ' . $e['nombres'])) . '</td>' . $celdas
         . '<td class="c">' . $t['P'] . '</td><td class="c">' . $t['T'] . '</td><td class="c">' . $t['F'] . '</td><td class="c">' . $t['J'] . '</td><td class="c">'
         . ($t['porcentaje'] === null || $t['porcentaje'] === '' ? '' : $t['porcentaje'] . '%') . '</td></tr>';
 }
@@ -52,17 +52,14 @@ for ($i = 1; $i <= $libres; $i++) {
     $filas .= '<tr><td class="c">' . ($n + $i) . '</td><td class="nombre">&nbsp;</td>' . str_repeat('<td class="c"></td>', count($datos['dias']) + 5) . '</tr>';
 }
 
-$e = $mysqli->query("SELECT emp_razon, emp_logo FROM empresa ORDER BY empresa_id LIMIT 1")->fetch_assoc() ?: [];
-$logo = !empty($e['emp_logo']) ? '<img src="../../../' . pdf_esc($e['emp_logo']) . '" style="height:55px">' : '';
+$id = pdf_identidad();
 $docentes = $datos['docentes'] ? implode(', ', $datos['docentes']) : '';
 
-$html = '
+$html = pdf_estilos(8.5) . '
 <style>
-  body { font-family: Arial, sans-serif; font-size: 8.5px; }
-  table { border-collapse: collapse; }
   .datos td { padding: 2px 4px; font-size: 9px; }
-  .etq { background-color: #fff3a8; font-weight: bold; border: 1px solid #999; }
-  .val { border: 1px solid #999; color: #b0005a; font-weight: bold; }
+  .etq { background-color: ' . $id['claro'] . '; color: ' . $id['color'] . '; font-weight: bold; border: 1px solid #bbb; }
+  .val { border: 1px solid #bbb; font-weight: bold; }
   .planilla { width: 100%; margin-top: 6px; }
   .planilla th, .planilla td { border: 1px solid #777; padding: 2px 1px; }
   .planilla .h { font-size: 8px; font-weight: bold; text-align: center; background-color: #f1f1f1; }
@@ -70,23 +67,14 @@ $html = '
   .planilla td.c { height: 15px; }
   .c { text-align: center; }
   .nombre { padding-left: 4px; white-space: nowrap; }
-  .planilla .mes { color: #7b1fa2; font-size: 13px; background-color: #fff; }
+  .planilla .mes { color: ' . $id['color'] . '; font-size: 12px; background-color: #fff; }
   .leyenda span { padding: 1px 5px; border: 1px solid #999; font-weight: bold; }
 </style>
-<table style="width:100%"><tr>
-  <td style="width:15%; text-align:center; border:1px solid #999">' . ($logo ?: 'LOGO I.E.') . '</td>
-  <td style="text-align:center">
-    <div style="font-size:18px; font-weight:bold">LISTA DE ASISTENCIA</div>
-    <div style="font-size:12px; font-weight:bold">CICLO ESCOLAR ' . pdf_esc($datos['anio']['anio']) . '</div>
-  </td>
-  <td style="width:15%"></td>
-</tr></table>
-<table class="datos" style="width:100%; margin-top:4px"><tr>
-  <td class="etq" style="width:13%">NOMBRE DE LA ESCUELA:</td><td class="val" colspan="3">' . pdf_esc($e['emp_razon'] ?? '') . '</td>
-  <td class="etq" style="width:7%">FECHA:</td><td class="val" style="width:12%">' . date('d/m/Y') . '</td>
-</tr><tr>
-  <td class="etq">GRADO Y SECCIÓN:</td><td class="val" style="width:30%">' . pdf_esc($grado) . '</td>
-  <td class="etq" style="width:12%">DOCENTE(S):</td><td class="val" colspan="3">' . pdf_esc($docentes) . '</td>
+' . pdf_cabecera('LISTA DE ASISTENCIA', pdf_titulo($datos['nombre_mes']) . ' · Año escolar ' . $datos['anio']['anio']) . '
+<table class="datos" style="width:100%"><tr>
+  <td class="etq" style="width:13%">Grado y sección</td><td class="val" style="width:30%">' . pdf_esc(pdf_titulo($grado)) . '</td>
+  <td class="etq" style="width:12%">Docente(s)</td><td class="val">' . pdf_esc(pdf_titulo($docentes)) . '</td>
+  <td class="etq" style="width:7%">Fecha</td><td class="val" style="width:10%">' . date('d/m/Y') . '</td>
 </tr></table>
 <table class="planilla">
   <tr><td colspan="2" class="h mes">' . pdf_esc($datos['nombre_mes']) . '</td>' . $fila_sem . '<td class="h" colspan="5">RESUMEN</td></tr>
@@ -103,7 +91,7 @@ $html = '
   <td style="width:35%; text-align:center; border-top:1px solid #333">Dirección</td>
 </tr></table>';
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4-L', 'margin_left' => 8, 'margin_right' => 8, 'margin_top' => 8, 'margin_bottom' => 8]);
+$mpdf = pdf_nuevo('A4-L', ['margin_left' => 8, 'margin_right' => 8, 'margin_top' => 8, 'margin_bottom' => 8]);
 $mpdf->shrink_tables_to_fit = 1;
 $mpdf->WriteHTML($html);
 $mpdf->Output('asistencia_' . $datos['mes'] . '.pdf', 'I');

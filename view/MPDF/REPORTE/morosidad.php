@@ -39,6 +39,6 @@ $html = pdf_encabezado($mysqli, 'REPORTE DE MOROSIDAD', 'Año escolar ' . $MR->N
 </table>
 <p class="nota">Pensiones no pagadas completas hasta su vencimiento con saldo pendiente a la fecha de emisión.</p>';
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4']);
+$mpdf = pdf_nuevo('A4');
 $mpdf->WriteHTML($html);
 $mpdf->Output('morosidad_' . date('Ymd') . '.pdf', 'I');

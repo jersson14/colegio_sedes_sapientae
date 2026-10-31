@@ -16,6 +16,10 @@ El menú de la dirección está ordenado por tareas: Estudiantes y matrícula ·
 - Una tabla vacía lo dice y, si la pantalla permite crear registros, muestra el botón para crear el primero.
 - Excel, PDF e Imprimir exportan los datos tal como están guardados.
 
+## Documentos PDF
+
+Todos los PDF (recibos, constancias, cédula de matrícula, kardex de pagos, horarios, lista de asistencia, libretas, boletas de pago del personal y reportes financieros) llevan el **escudo, el nombre, el lema y el color** del colegio, más su dirección, teléfono y código. Se cambian en **Configuración → Apariencia** y en los datos del colegio; no hace falta tocar cada documento.
+
 ## Ficha del estudiante
 
 Arriba, en la barra superior, escriba el **nombre, los apellidos o el documento** del estudiante (o pulse **/** para ir directo al buscador). Elija con el mouse o con las flechas y Enter. También se abre con el botón **Ficha** en la lista de Estudiantes.

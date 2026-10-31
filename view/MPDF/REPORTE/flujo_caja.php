@@ -38,6 +38,6 @@ $html = pdf_encabezado($mysqli, 'FLUJO DE CAJA', 'Del ' . pdf_fecha($desde) . ' 
 </table>
 <p class="nota">Cobros = recibos de pensiones/matrícula e ingresos; Pagos = egresos (incluida la planilla docente). Las transferencias mueven dinero entre cuentas y no cambian el total.</p>' . $nota_sin_cuenta;
 
-$mpdf = new \Mpdf\Mpdf(['mode' => 'UTF-8', 'format' => 'A4-L']);
+$mpdf = pdf_nuevo('A4-L');
 $mpdf->WriteHTML($html);
 $mpdf->Output('flujo_caja_' . $desde . '_' . $hasta . '.pdf', 'I');

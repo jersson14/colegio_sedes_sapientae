@@ -6,7 +6,8 @@ setlocale(LC_TIME, 'es_ES.UTF-8');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
+require_once __DIR__ . '/../../../utilitario/reporte_pdf.php';
+$codigo = (int) ($_GET['codigo'] ?? 0);
 
 // Consulta principal para obtener datos de matrícula (sin filtro de concepto)
 $query_matricula = "SELECT
@@ -46,14 +47,9 @@ FROM
 	alumnos
 	ON 
 		matricula.id_alumno = alumnos.Id_alumno
-	INNER JOIN
-	usuario
-	ON 
-		matricula.usu_id = usuario.usu_id
-	INNER JOIN
-	empresa
-	ON 
-		usuario.empresa_id = empresa.empresa_id
+	-- los datos del colegio no dependen de que el estudiante tenga usuario (antes, sin usuario no salía la cédula)
+	CROSS JOIN
+	(SELECT * FROM empresa ORDER BY empresa_id LIMIT 1) empresa
 	INNER JOIN
 	aulas
 	ON 
@@ -163,43 +159,40 @@ $resultado_horario = $stmt_horario->get_result();
 $html = '';
 
 if ($row_matricula = $resultado_matricula->fetch_assoc()) {
-    $html .= '
+    $html .= pdf_estilos(10) . '
     <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 150px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid black; padding: 5px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        table { margin-bottom: 14px; }
+        th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+        th { background-color: ' . pdf_identidad()['claro'] . '; color: ' . pdf_identidad()['color'] . '; width: 32%; }
+        .cab td { border: none; }
+        h3 { color: ' . pdf_identidad()['color'] . '; font-size: 12px; margin: 10px 0 4px; }
         .no-data { text-align: center; font-style: italic; color: #666; }
+        .recreo { background-color: ' . pdf_identidad()['claro'] . '; font-style: italic; }
     </style>
-    <div class="header">
-        <img src="../../../'. $row_matricula['emp_logo'].'" alt="Logo">
-        <h2><u>CÉDULA DE MATRICULA</u></h2>
-    </div>
-    <h3>Datos de Matricula</h3>
+    ' . pdf_cabecera('CÉDULA DE MATRÍCULA', 'Año escolar ' . $row_matricula['año_escolar']) . '
+    <h3>Datos de la matrícula</h3>
     <table>
         <tr><th>' . nombre_documento() . ':</th><td>' . $row_matricula['alum_dni'] . '</td></tr>
-        <tr><th>Estudiante:</th><td>' . $row_matricula['Estudiante'] . '</td></tr>
-        <tr><th>Nivel Académico:</th><td>' . $row_matricula['Nivel_academico'] . '</td></tr>
-        <tr><th>Grado - Sección:</th><td>' . $row_matricula['grado'] . '</td></tr>
-        <tr><th>Año Escolar (Matriculado):</th><td>' . $row_matricula['año_escolar'] . '</td></tr>
-        <tr><th>Procedencia de colegio:</th><td>' . $row_matricula['procedencia_colegio'] . '</td></tr>
+        <tr><th>Estudiante:</th><td>' . pdf_esc(pdf_titulo($row_matricula['Estudiante'])) . '</td></tr>
+        <tr><th>Nivel académico:</th><td>' . pdf_esc(pdf_titulo($row_matricula['Nivel_academico'])) . '</td></tr>
+        <tr><th>Grado y sección:</th><td>' . pdf_esc(pdf_titulo(str_replace(' - UNICO', '', $row_matricula['grado']))) . '</td></tr>
+        <tr><th>Año escolar:</th><td>' . $row_matricula['año_escolar'] . '</td></tr>
+        <tr><th>Colegio de procedencia:</th><td>' . pdf_esc(pdf_titulo($row_matricula['procedencia_colegio'])) . '</td></tr>
         <tr><th>Provincia:</th><td>' . $row_matricula['provincia'] . '</td></tr>
         <tr><th>Departamento:</th><td>' . $row_matricula['departamento'] . '</td></tr>
     </table>
-    <h3>Datos de los Padres</h3>
+    <h3>Datos de los padres</h3>
     <table>
         <tr><th>' . nombre_documento() . ' Papá:</th><td>' . $row_matricula['Dni_papa'] . '</td></tr>
-        <tr><th>Datos Papá:</th><td>' . $row_matricula['Datos_papa'] . '</td></tr>
+        <tr><th>Padre:</th><td>' . pdf_esc(pdf_titulo($row_matricula['Datos_papa'])) . '</td></tr>
         <tr><th>Celular Papá:</th><td>' . $row_matricula['Celular_papa'] . '</td></tr>
         <tr><th>' . nombre_documento() . ' Mamá:</th><td>' . $row_matricula['Dni_mama'] . '</td></tr>
-        <tr><th>Datos Mamá:</th><td>' . $row_matricula['Datos_mama'] . '</td></tr>
+        <tr><th>Madre:</th><td>' . pdf_esc(pdf_titulo($row_matricula['Datos_mama'])) . '</td></tr>
         <tr><th>Celular Mamá:</th><td>' . $row_matricula['Celular_mama'] . '</td></tr>
     </table>';
 
     // Sección de pagos
-    $html .= '<h3>Detalle de Pagos</h3>
+    $html .= '<h3>Pagos de la matrícula</h3>
     <table>
         <tr>
             <th>Concepto</th>
@@ -218,7 +211,7 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
 
         $html .= '
         <tr>
-            <td>' . $row_pago['concepto'] . '</td>
+            <td>' . pdf_esc(pdf_titulo($row_pago['concepto'])) . '</td>
             <td>' . $fecha_formateada . '</td>
             <td>' . formato_moneda($row_pago['sub_total']) . '</td>
         </tr>';
@@ -246,7 +239,7 @@ if ($row_matricula = $resultado_matricula->fetch_assoc()) {
 
 // Función para estilo de asignatura
 function estiloAsignatura($asignatura) {
-    return ($asignatura == 'RECREO') ? 'background-color: yellow;' : '';
+    return ($asignatura == 'RECREO') ? 'font-style: italic; background-color: ' . pdf_identidad()['claro'] . ';' : '';
 }
 
 // Agregar el horario del alumno
@@ -288,16 +281,7 @@ $html .= '</table>';
 ob_end_clean();
 
 try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9,
-    ]);
+    $mpdf = pdf_nuevo('A4');
 
     $mpdf->SetTitle('Cédula de matricula');
     $mpdf->WriteHTML($html);

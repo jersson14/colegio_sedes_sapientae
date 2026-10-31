@@ -6,7 +6,8 @@ setlocale(LC_TIME, 'es_ES.UTF-8');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../conexion.php';
-$codigo = $mysqli->real_escape_string($_GET['codigo']);
+require_once __DIR__ . '/../../../utilitario/reporte_pdf.php';
+$codigo = (int) ($_GET['codigo'] ?? 0);
 reporte_exigir_matricula_propia($mysqli, $codigo);
 
 $query = "SELECT
@@ -41,8 +42,8 @@ FROM
     LEFT JOIN pensiones ON pensiones.id_pensiones = pago_pensiones.id_pension
     INNER JOIN matricula ON pago_pensiones.id_matri = matricula.id_matricula
     INNER JOIN alumnos ON matricula.id_alumno = alumnos.Id_alumno
-    INNER JOIN usuario ON matricula.usu_id = usuario.usu_id
-    INNER JOIN empresa ON usuario.empresa_id = empresa.empresa_id
+    -- los datos del colegio no dependen de que el estudiante tenga usuario (antes, sin usuario el kardex salía vacío)
+    CROSS JOIN (SELECT * FROM empresa ORDER BY empresa_id LIMIT 1) empresa
     INNER JOIN aulas ON matricula.id_aula = aulas.Id_aula
     INNER JOIN nivel_academico ON aulas.id_nivel_academico = nivel_academico.Id_nivel
     INNER JOIN seccion ON aulas.id_seccion = seccion.seccion_id
@@ -57,27 +58,22 @@ $resultado = $stmt->get_result();
 $html = '';
 
 if ($row1 = $resultado->fetch_assoc()) {
-    $html .= '
+    $html .= pdf_estilos(10) . '
     <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 150px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 5px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        table { margin-bottom: 10px; }
+        th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+        th { background-color: ' . pdf_identidad()['claro'] . '; color: ' . pdf_identidad()['color'] . '; }
+        .cab td { border: none; }
+        h3 { color: ' . pdf_identidad()['color'] . '; font-size: 12px; margin: 10px 0 4px; }
     </style>
-    <div class="header">
-        <img src="../../../'.$row1['emp_logo'].'" alt="Logo">
-        <h2><u>KARDEX DE PAGOS</u></h2>
-    </div>
+    ' . pdf_cabecera('KARDEX DE PAGOS', 'Año escolar ' . $row1['año_escolar']) . '
     <table>
         <tr><th>' . nombre_documento() . ':</th><td>'.$row1['alum_dni'].'</td></tr>
-        <tr><th>Estudiante:</th><td>'.$row1['Estudiante'].'</td></tr>
-        <tr><th>Nivel Académico:</th><td>'.$row1['Nivel_academico'].'</td></tr>
-        <tr><th>Grado - Sección:</th><td>'.$row1['grado'].'</td></tr>
-        <tr><th>Año Escolar:</th><td>'.$row1['año_escolar'].'</td></tr>
+        <tr><th>Estudiante:</th><td>' . pdf_esc(pdf_titulo($row1['Estudiante'])) . '</td></tr>
+        <tr><th>Nivel académico:</th><td>' . pdf_esc(pdf_titulo($row1['Nivel_academico'])) . '</td></tr>
+        <tr><th>Grado y sección:</th><td>' . pdf_esc(pdf_titulo(str_replace(' - UNICO', '', $row1['grado']))) . '</td></tr>
     </table>
-    <h3>Detalle de Pagos</h3>
+    <h3>Pagos</h3>
     <table>
         <tr>
             <th>Concepto</th>
@@ -108,8 +104,8 @@ if ($row1 = $resultado->fetch_assoc()) {
     
         $html .= '
         <tr>
-            <td>'.$row2['concepto'].'</td>
-            <td>'.$row2['mes'].'</td>
+            <td>' . pdf_esc(pdf_titulo($row2['concepto'])) . '</td>
+            <td>' . pdf_esc(pdf_titulo($row2['mes'])) . '</td>
             <td>'.$fecha_formateada.'</td>
             <td>' . formato_moneda($row2['sub_total']) . '</td>
         </tr>';
@@ -133,19 +129,10 @@ if ($row1 = $resultado->fetch_assoc()) {
 ob_end_clean();
 
 try {
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 15,
-        'margin_right' => 15,
-        'margin_top' => 16,
-        'margin_bottom' => 16,
-        'margin_header' => 9,
-        'margin_footer' => 9
-    ]);
+    $mpdf = pdf_nuevo('A4');
     
     // Definir el pie de página
-    $mpdf->SetHTMLFooter('<p style="text-align: center; font-size: 10px;">(Esta boleta de pago puede ser reemplazada por una original en el colegio)</p>');
+    $mpdf->SetHTMLFooter('<p style="text-align: center; font-size: 8.5px; color: #666;">Pagos registrados en el sistema. Los comprobantes originales se entregan en el colegio.</p>');
 
     $mpdf->WriteHTML($html);
     $mpdf->Output('Kardex_de_Pagos.pdf', 'I');

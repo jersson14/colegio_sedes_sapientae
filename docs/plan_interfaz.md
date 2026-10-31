@@ -247,6 +247,14 @@ Paso 10 hecho el 2026-10-31 (`js/legibilidad.js`, `tests/pruebas_fase13_legibili
 - Tablas vacías: "Aún no hay registros aquí" y el botón de crear de la pantalla.
 - El orden, los filtros y las exportaciones siguen usando los datos originales.
 
+Paso 11 hecho el 2026-10-31 (`utilitario/reporte_pdf.php`, `tests/pruebas_fase13_pdf.sh`):
+
+- **Los 11 reportes PDF** usan la misma identidad: escudo, nombre, lema y color del colegio en un encabezado común, una sola fuente (DejaVu Sans, con tildes y ñ) y tablas con el color configurado. Los tickets angostos (recibo, constancia) usan la versión compacta.
+- Fuera los colores fijos (`#0A5D86`, gris, amarillo, magenta) y las regiones escritas a mano ("Abancay-Apurímac-Perú"). Se retiró `pago.php`, que nadie usaba y tenía la región fija.
+- La constancia de pago (`boleta_pago.php`) se reescribió con consultas parametrizadas y sin `utf8_encode`, que estropeaba las tildes.
+- Nombres, cursos y grados en formato título, y fechas en dd/mm/aaaa, también en los documentos.
+- **Corregido:** la cédula de matrícula y el kardex de pagos salían vacíos para los estudiantes sin usuario del sistema, porque los datos del colegio se buscaban a través de ese usuario.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -261,7 +269,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 8 ✅ | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
 | 9 ✅ | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
 | 10 ✅ | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
-| 11 | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
+| 11 ✅ | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
 | 12 | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
 | 13 | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
 | 14 | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
