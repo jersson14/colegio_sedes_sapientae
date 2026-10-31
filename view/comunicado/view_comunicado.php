@@ -380,6 +380,20 @@ document.getElementById('txtfechafin').value = y + "-" + m + "-" + d;
         label.innerHTML = "Subir Foto (" + fileName + ")";
     }
 </script>
+
+<!-- Lectura del comunicado (Fase 13) -->
+<div class="modal fade" id="modal_lectura" tabindex="-1" role="dialog" aria-labelledby="titulo_lectura" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#1FA0E0;">
+        <h5 class="modal-title" id="titulo_lectura" style="color:white"><b>¿Quién leyó el comunicado?</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" id="lec_cuerpo"></div>
+      <div class="modal-footer"><button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button></div>
+    </div>
+  </div>
+</div>
 <script>
     function previewImage4(event) {
         var input = event.target;

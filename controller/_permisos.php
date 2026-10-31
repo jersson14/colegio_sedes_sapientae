@@ -41,6 +41,8 @@ return [
         'controller/asistencias/controlador_listar_alumnos_totales_estu.php' => ['ESTUDIANTE'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
         'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
+        // abrir un comunicado registra su lectura (Fase 13): el estudiante solo los generales y los de su aula
+        'controller/comunicados/controlador_ver_comunicado.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // cada usuario cambia su propia contraseña (Fase 13)
         'controller/usuario/controlador_cambiar_mi_clave.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // registro de tareas (Fase 11): el docente solo con sus cursos (se controla en el controlador)

@@ -70,7 +70,7 @@ function listar_comunicado(){
 
         {"data":"titulo"},
         {"data":"descripcion"},
-        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button>"},
+        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fa fa-check-double'></i> Lectura</button></div>"},
 
         {"data":"estado",
             render: function(data,type,row){
@@ -183,7 +183,7 @@ function listar_comunicado_filtro(){
 
         {"data":"titulo"},
         {"data":"descripcion"},
-        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button>"},
+        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fa fa-check-double'></i> Lectura</button></div>"},
 
         {"data":"estado",
             render: function(data,type,row){
@@ -651,3 +651,33 @@ function mostrarAnteriorModal() {
   }
 }
 
+// ---------- Comunicados con lectura (Fase 13): quién lo leyó y volver a avisar por WhatsApp ----------
+$('#tabla_comunicados').on('click', '.lectura', function () {
+  var data = tbl_comunicados.row($(this).parents('tr')).data();
+  Comunicado_Lectura(data.id_comunicado);
+});
+function Comunicado_Lectura(id) {
+  $.post('../controller/comunicados/controlador_lectura_comunicado.php', { id: id }, null, 'json').done(function (r) {
+    var T = PanelComun.titulo, c = r.comunicado;
+    var texto = 'Buenos días. El colegio publicó el comunicado "' + textoPlano(c.titulo) + '". Puede leerlo ingresando al sistema con la cuenta del estudiante. Gracias.';
+    var pct = r.total ? Math.round(r.leidos * 100 / r.total) : 0;
+    var h = '<p class="mb-1"><b>' + textoSeguro(c.titulo) + '</b></p>'
+      + '<p class="lec-cifra"><b>' + r.leidos + ' de ' + r.total + '</b> familias lo leyeron (' + pct + '%)</p>'
+      + '<div class="pi-barra"><span class="pi-c-P" style="width:' + pct + '%"></span></div>';
+    if (!r.total) { h += '<p class="text-muted">No hay estudiantes matriculados a quienes va dirigido.</p>'; }
+    else {
+      h += '<div class="table-responsive lec-tabla"><table class="table table-sm"><thead><tr><th>Estudiante</th><th>Aula</th><th>Lectura</th><th>Volver a avisar</th></tr></thead><tbody>';
+      r.familias.forEach(function (f) {
+        var cel = f.cel_madre || f.cel_padre, url = cel ? Aviso_WhatsApp_Url(cel, texto) : '';
+        var leido = f.leido_at ? '<span class="badge lg-estado est-ok">Leído</span> <small class="text-muted">' + textoSeguro(String(f.leido_at).substr(0, 16).replace(/^(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')) + '</small>'
+          : (+f.con_usuario ? '<span class="badge lg-estado est-pend">No lo leyó</span>' : '<span class="badge lg-estado est-neutro">Sin cuenta</span>');
+        h += '<tr><td>' + textoSeguro(T(f.estudiante)) + '</td><td>' + textoSeguro(T(f.aula)) + '</td><td>' + leido + '</td><td>'
+          + (f.leido_at ? '' : (url ? '<a class="btn btn-sm btn-success" target="_blank" rel="noopener" href="' + textoSeguro(url) + '"><i class="fab fa-whatsapp"></i> WhatsApp</a>'
+            : '<small class="text-muted">Sin celular</small>')) + '</td></tr>';
+      });
+      h += '</tbody></table></div><p class="text-muted small mb-0">WhatsApp abre el mensaje ya escrito al celular de la madre (o del padre); usted lo envía. "Sin cuenta": el estudiante aún no tiene usuario para leerlo en el sistema.</p>';
+    }
+    $('#lec_cuerpo').html(h);
+    $('#modal_lectura').modal('show');
+  });
+}

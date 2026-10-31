@@ -6,6 +6,7 @@ require '../../model/model_panel_rol.php';
 $M = new Modelo_Panel_Rol();
 $comun = $M->Comun();
 $usu = (int) usuario_actual_id();
+$M->usuario = $usu;
 switch (rol_actual()) {
     case 'DOCENTE':    $datos = $M->Docente($usu, $comun); break;
     case 'ESTUDIANTE': $datos = $M->Estudiante($usu, $comun); break;

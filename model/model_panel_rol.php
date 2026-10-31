@@ -28,12 +28,17 @@ class Modelo_Panel_Rol extends conexionBD {
     }
 
     /** Comunicados activos recientes; el estudiante solo ve los generales y los de su aula. */
+    /** Usuario de la sesión: para marcar los comunicados que ya leyó (lo fija el controlador). */
+    public $usuario = 0;
+
     private function comunicados($aula = null) {
         $filtro = $aula ? "AND (c.tipo = 'GENERAL' OR c.id_aula = ?)" : '';
+        $p = $aula ? [$this->usuario, $aula] : [$this->usuario];
         return $this->todos("SELECT c.id_comunicado AS id, c.tipo, c.titulo, c.created_at AS fecha,
+                                    EXISTS (SELECT 1 FROM comunicado_lecturas l WHERE l.id_comunicado = c.id_comunicado AND l.usu_id = ?) AS leido,
                                     CONCAT(IFNULL(a.Grado, ''), IF(s.seccion_nombre IS NOT NULL AND s.seccion_nombre <> 'UNICO', CONCAT(' ', s.seccion_nombre), '')) AS grado
                              FROM comunicados c LEFT JOIN aulas a ON a.Id_aula = c.id_aula LEFT JOIN seccion s ON s.seccion_id = a.id_seccion
-                             WHERE c.estado = 'ACTIVO' $filtro ORDER BY c.created_at DESC, c.id_comunicado DESC LIMIT 4", $aula ? [$aula] : []);
+                             WHERE c.estado = 'ACTIVO' $filtro ORDER BY c.created_at DESC, c.id_comunicado DESC LIMIT 4", $p);
     }
 
     private function nombreAula() {

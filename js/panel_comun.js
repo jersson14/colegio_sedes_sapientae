@@ -76,12 +76,16 @@ window.PanelComun = (function () {
       $(selector).html('<li class="pi-vacio">' + (vacio || 'No hay comunicados recientes.') + '</li>');
       return;
     }
+    // Cada comunicado se abre con un clic (Comunicado_Abrir registra la lectura); "Nuevo" si el usuario aún no lo leyó
     $(selector).html(lista.map(function (c) {
       var f = fecha(c.fecha);
       var dirigido = c.tipo === 'GENERAL' ? 'Para todo el colegio' : 'Para ' + (titulo(c.grado) || 'un grado');
-      return '<li><span class="pi-dia"><b>' + f.getDate() + '</b><span>' + MESES[f.getMonth()] + '</span></span>'
+      var nuevo = c.leido !== undefined && !+c.leido;
+      return '<li class="pi-com" role="button" tabindex="0" onclick="Comunicado_Abrir(' + (+c.id) + ', this)" onkeydown="if(event.key===\'Enter\'){Comunicado_Abrir(' + (+c.id) + ', this)}">'
+        + '<span class="pi-dia"><b>' + f.getDate() + '</b><span>' + MESES[f.getMonth()] + '</span></span>'
         + '<span class="pi-tit" title="' + textoSeguro(c.titulo) + '">' + textoSeguro(c.titulo) + '<small>' + textoSeguro(dirigido) + '</small></span>'
-        + (c.estado ? '<span class="pi-estado ' + (c.estado === 'ACTIVO' ? 'on">Publicado' : 'off">Oculto') + '</span>' : '<span></span>') + '</li>';
+        + (c.estado ? '<span class="pi-estado ' + (c.estado === 'ACTIVO' ? 'on">Publicado' : 'off">Oculto') + '</span>'
+          : (nuevo ? '<span class="pi-estado pi-nuevo">Nuevo</span>' : '<span></span>')) + '</li>';
     }).join(''));
   }
 
@@ -93,4 +97,31 @@ window.PanelComun = (function () {
 function Asistencia_Abrir(aula) {
   window.__asistenciaInicial = { aula: aula, modo: 'dia' };
   cargar_contenido('contenido_principal', 'asistencia/view_registro_asistencia.php');
+}
+
+// Abre un comunicado completo y registra que el usuario lo leyó (Fase 13, paso 14)
+function Comunicado_Abrir(id, el) {
+  $.post('../controller/comunicados/controlador_ver_comunicado.php', { id: id }, null, 'json').done(function (r) {
+    var c = r.comunicado;
+    var f = String(c.fecha).substr(0, 10).split('-').reverse().join('/');
+    var dirigido = c.tipo === 'GENERAL' ? 'Para todo el colegio' : 'Para ' + PanelComun.titulo($.trim(c.grado) || 'un grado');
+    var img = c.imagen && !/\/$/.test(c.imagen) ? '../' + c.imagen : '';
+    $('#com_ver_titulo').text(c.titulo);
+    $('#com_ver_meta').text(f + ' · ' + dirigido);
+    $('#com_ver_texto').html(textoSeguro(c.descripcion || '').replace(/\n/g, '<br>'));
+    $('#com_ver_imagen').html(img ? (/\.pdf$/i.test(img) ? '<a class="btn btn-outline-primary" target="_blank" rel="noopener" href="' + textoSeguro(img) + '"><i class="fas fa-file-pdf mr-1"></i>Ver documento adjunto</a>'
+      : '<img src="' + textoSeguro(img) + '" alt="Imagen del comunicado" onerror="this.remove()">') : '');
+    $(el).find('.pi-nuevo').remove();
+    $('#modal_comunicado_ver').modal('show');
+  });
+}
+
+// Enlace de WhatsApp con el mensaje ya escrito (se abre en el teléfono o en WhatsApp Web; lo envía la persona).
+// Agrega el prefijo del país configurado si el número no lo trae. Devuelve '' si el número no sirve.
+function Aviso_WhatsApp_Url(celular, texto) {
+  var d = String(celular || '').replace(/\D/g, '');
+  if (d.length < 6) { return ''; }
+  var pref = String((window.REGIONAL && REGIONAL.prefijo_tel) || '').replace(/\D/g, '');
+  if (pref && !(d.indexOf(pref) === 0 && d.length > 9)) { d = pref + d; }
+  return 'https://wa.me/' + d + '?text=' + encodeURIComponent(texto);
 }

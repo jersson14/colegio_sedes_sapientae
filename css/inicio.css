@@ -356,3 +356,12 @@
 .im-tabla tr.im-error td { background: #FDF3F1; }
 .im-tabla tr.im-aviso td { background: #FFFAEA; }
 .im-errores { margin: 0; padding-left: 16px; color: #A1301F; font-size: .85rem; }
+
+/* ---------- Comunicados con lectura ---------- */
+.pi-comunicados li.pi-com { cursor: pointer; border-radius: 8px; }
+.pi-comunicados li.pi-com:hover, .pi-comunicados li.pi-com:focus-visible { background: var(--tema-primario-claro); }
+.pi-estado.pi-nuevo { background: var(--tema-acento); color: var(--tema-acento-texto); }
+.com-ver-texto { font-size: 1rem; line-height: 1.6; white-space: normal; }
+.com-ver-imagen img { max-width: 100%; border-radius: 10px; margin-top: 8px; }
+.lec-cifra { margin: 4px 0; font-size: 1.02rem; }
+.lec-tabla { max-height: 50vh; overflow: auto; }

@@ -1552,6 +1552,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/cuenta.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/menu.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/ficha.js?rev=<?php echo time(); ?>"></script>
+<!-- Comunicado completo (todos los roles): lo abre Comunicado_Abrir de js/panel_comun.js y registra la lectura -->
+<div class="modal fade" id="modal_comunicado_ver" tabindex="-1" role="dialog" aria-labelledby="com_ver_titulo" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div><h5 class="modal-title" id="com_ver_titulo"></h5><small class="text-muted" id="com_ver_meta"></small></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p id="com_ver_texto" class="com-ver-texto"></p>
+        <div id="com_ver_imagen" class="com-ver-imagen"></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal">Entendido</button></div>
+    </div>
+  </div>
+</div>
 <!-- Cambiar mi contraseña (todos los roles) -->
 <div class="modal fade" id="modal_mi_clave" tabindex="-1" role="dialog" aria-labelledby="titulo_mi_clave" aria-hidden="true">
   <div class="modal-dialog" role="document">
