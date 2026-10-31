@@ -416,6 +416,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','avisos/view_avisos.php')" class="nav-link">
+                  <i class="nav-icon fab fa-whatsapp"></i>
+                  <p>Avisos a las familias</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','solicitudes/view_solicitudes.php')" class="nav-link">
                   <i class="nav-icon fas fa-envelope"></i>
                   <p>Solicitudes de información</p>
@@ -607,6 +613,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','avisos/view_avisos.php')" class="nav-link">
+                  <i class="nav-icon fab fa-whatsapp"></i>
+                  <p>Avisos a las familias</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-credit-card"></i>
                   <p>Formas de pago y cuentas</p>
@@ -733,6 +745,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <a href="#" onclick="cargar_contenido('contenido_principal','reportes/view_reporte_estudiantes.php')" class="nav-link">
                   <i class="nav-icon fas fa-list-alt"></i>
                   <p>Reporte de estudiantes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','avisos/view_avisos.php')" class="nav-link">
+                  <i class="nav-icon fab fa-whatsapp"></i>
+                  <p>Avisos a las familias</p>
                 </a>
               </li>
             <?php

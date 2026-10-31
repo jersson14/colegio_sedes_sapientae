@@ -27,6 +27,29 @@ El menú de la dirección está ordenado por tareas: Estudiantes y matrícula ·
 
 Todos los PDF (recibos, constancias, cédula de matrícula, kardex de pagos, horarios, lista de asistencia, libretas, boletas de pago del personal y reportes financieros) llevan el **escudo, el nombre, el lema y el color** del colegio, más su dirección, teléfono y código. Se cambian en **Configuración → Apariencia** y en los datos del colegio; no hace falta tocar cada documento.
 
+## Importar estudiantes desde Excel
+
+En **Estudiantes → Importar desde Excel**:
+
+1. Descargue la **plantilla de Excel** y llénela: un estudiante por fila, con sus padres. La hoja "Instrucciones" explica cada columna.
+2. Elija el archivo (.xlsx o .csv) y pulse **Revisar**. Se ve cada fila con sus errores (documento no válido o repetido, fecha, sexo, celulares, datos de la madre), **sin grabar nada**.
+3. Pulse **Importar**: se graban solo las filas correctas. Corrija las demás y vuelva a importar el mismo archivo; las ya importadas no se duplican.
+
+Después, matricúlelos desde **Matrícula**.
+
+## Comunicados: quién los leyó
+
+- Estudiantes y personal abren cada comunicado desde su inicio (texto e imagen). Los que aún no leyeron llevan la marca **Nuevo**.
+- En **Comunicados**, el botón **Lectura** muestra cuántas familias lo leyeron, quiénes no, y un botón **WhatsApp** para volver a avisarles con el mensaje ya escrito.
+
+## Avisos a las familias
+
+Menú: **Comunicación y salud → Avisos a las familias** (la contadora y el auxiliar también lo tienen, cada uno con lo suyo).
+
+- **Faltas** del día (elija la fecha), **tareas vencidas** sin entregar (últimas dos semanas), **pensiones** vencidas o por vencer (un aviso por familia con los meses y el total) y **comunicados** que la familia no leyó.
+- **WhatsApp** abre el mensaje ya escrito al celular de la madre (o del padre); usted lo envía. El aviso queda registrado con la hora y quién lo envió, y deja de aparecer como pendiente. Con "Mostrar también los ya avisados" se ven todos.
+- La dirección elige qué avisos se preparan y con cuántos días de anticipación se avisan las pensiones, en **Configurar avisos**.
+
 ## Ficha del estudiante
 
 Arriba, en la barra superior, escriba el **nombre, los apellidos o el documento** del estudiante (o pulse **/** para ir directo al buscador). Elija con el mouse o con las flechas y Enter. También se abre con el botón **Ficha** en la lista de Estudiantes.

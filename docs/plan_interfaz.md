@@ -270,6 +270,13 @@ Paso 13 hecho el 2026-10-31 (`model/model_cambio_anio.php`, `js/cambio_anio.js`,
 - **Copias** al año nuevo, solo si aún no las tiene: periodos (fechas corridas al año nuevo), pensiones, cursos de cada docente con sus criterios, y horas y horarios.
 - Todo en **una transacción**. Las matrículas se crean sin cobro, como el registro normal con montos en cero. Repetir el proceso no duplica nada. Opcional: activar el año nuevo y cerrar los periodos del anterior.
 
+Paso 14 hecho el 2026-10-31 (migraciones 020 y 021; `tests/pruebas_fase13_importar.sh`, `pruebas_fase13_comunicados.sh`, `pruebas_fase13_avisos.sh`):
+
+- **Importar estudiantes desde Excel:** plantilla .xlsx con instrucciones; lectura de .xlsx y .csv sin librerías nuevas. Primero se revisa cada fila con las mismas reglas del registro manual y luego se graban solo las correctas, sin duplicar.
+- **Comunicados con lectura:** se abren completos desde el inicio y la lectura queda registrada. Los no leídos se marcan "Nuevo". La dirección ve quién lo leyó y vuelve a avisar por WhatsApp a quien no.
+- **Avisos a las familias:** faltas del día, tareas vencidas, pensiones (un aviso por familia y por mes) y comunicados sin leer. Cada rol ve lo suyo, con un interruptor por tipo en "Configurar avisos" y registro de lo avisado para no repetir.
+- **Canal:** WhatsApp con el mensaje ya escrito, que envía la persona. No tiene costo ni necesita contratar nada. El envío automático (API de WhatsApp o correo) queda para cuando el colegio defina ese servicio; el registro de avisos ya está listo para conectarlo. La base no guarda el correo de los padres.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -287,7 +294,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 11 ✅ | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
 | 12 ✅ | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
 | 13 ✅ | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
-| 14 | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
+| 14 ✅ | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
 | 15 | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |
 | 16 | Consistencia fina | 7 | Bajo | Pulido final |
 

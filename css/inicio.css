@@ -365,3 +365,8 @@
 .com-ver-imagen img { max-width: 100%; border-radius: 10px; margin-top: 8px; }
 .lec-cifra { margin: 4px 0; font-size: 1.02rem; }
 .lec-tabla { max-height: 50vh; overflow: auto; }
+
+/* ---------- Avisos a las familias ---------- */
+.av-filtros { display: flex; flex-wrap: wrap; gap: 6px; }
+.av-tabla td { vertical-align: middle; }
+.av-tabla tr.av-enviado td { background: #F6FBF8; }
