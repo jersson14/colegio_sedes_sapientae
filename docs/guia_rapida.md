@@ -124,6 +124,18 @@ Menú: **Estudiantes y matrícula → Reporte de estudiantes**. Lo usan la direc
 
 Con **Guardar como mi reporte** el sistema recuerda los campos elegidos en esa computadora; **Usar mi reporte** los vuelve a marcar.
 
+## Cambio de año escolar (solo administrador)
+
+Menú: **Organización del colegio → Cambio de año escolar**. Antes, cree el año nuevo en **Años escolares**. Conviene sacar un respaldo primero.
+
+1. **Años:** el que termina y el nuevo. Se ve lo que el año nuevo ya tiene.
+2. **Promoción**, aula por aula. **Solo se propone promover a quien aprobó todos sus cursos** (nota final del año en la libreta). Con algún curso desaprobado o sin notas, la decisión es suya: **Repite el grado**, **Promover** (por ejemplo, si aprobó la recuperación), **No continúa** o **Decidir luego**. Los botones "Repiten" y "Decidir luego" lo aplican a todos los que no aprobaron todo en esa aula. Si promueve a alguien con cursos desaprobados, la fila se marca y el resumen lo avisa.
+   - El aula de destino se propone sola (3 años → 4 años, 5 años → primer grado de primaria, sexto de primaria → primero de secundaria) y se puede cambiar. Quienes terminan quinto de secundaria **egresan**.
+3. **Copias:** periodos (con las fechas del año nuevo), pensiones, cursos de cada docente con sus criterios, y horas y horarios. Solo se copia lo que el año nuevo aún no tiene.
+4. **Resumen** y **Hacer el cambio de año**. Si marca **Activar el año nuevo**, el año que termina se cierra.
+
+Las matrículas se crean sin cobro: la matrícula se cobra después en **Cobrar pensión**. Quien quedó en "decidir luego" se matricula cuando corresponda desde **Matrícula**. Repetir el proceso no duplica nada.
+
 ## Respaldos (solo administrador)
 
 Menú: **Configuración → Respaldos**.

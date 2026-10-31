@@ -464,6 +464,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Secciones</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_cambio_anio.php')" class="nav-link">
+                  <i class="nav-icon fas fa-forward"></i>
+                  <p>Cambio de año escolar</p>
+                </a>
+              </li>
               <li class="nav-header menu-seccion">CONFIGURACIÓN</li>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">

@@ -263,6 +263,13 @@ Paso 12 hecho el 2026-10-31 (`js/legibilidad.js`, `css/tema.css`, `tests/navegad
 - Las columnas fijas angostas de filtros y formularios se apilan en el celular, y la barra superior muestra solo la foto del usuario, con una imagen de respaldo si el archivo no existe.
 - **Corregido:** en el celular la capa de legibilidad no se aplicaba, porque el selector de columnas visibles de DataTables excluye las que esconde la extensión *responsive*.
 
+Paso 13 hecho el 2026-10-31 (`model/model_cambio_anio.php`, `js/cambio_anio.js`, `tests/pruebas_fase13_cambio_anio.sh`):
+
+- **Regla de promoción:** solo se propone promover a quien **aprobó todos sus cursos** (nota final del año según la libreta del paso 9). Con desaprobados o sin notas, decide la dirección estudiante por estudiante: repite, promover (por ejemplo, tras la recuperación), no continúa o decidir luego. Promover a alguien que no aprobó todo se marca y se advierte en el resumen.
+- **Aula siguiente** deducida del nombre del grado (con cambio de nivel: 5 años → primer grado de primaria; sexto → primero de secundaria), con la misma sección si existe y editable por aula. El último grado egresa; el nivel comodín "TODOS" no entra en la progresión.
+- **Copias** al año nuevo, solo si aún no las tiene: periodos (fechas corridas al año nuevo), pensiones, cursos de cada docente con sus criterios, y horas y horarios.
+- Todo en **una transacción**. Las matrículas se crean sin cobro, como el registro normal con montos en cero. Repetir el proceso no duplica nada. Opcional: activar el año nuevo y cerrar los periodos del anterior.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -279,7 +286,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 10 ✅ | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
 | 11 ✅ | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
 | 12 ✅ | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
-| 13 | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
+| 13 ✅ | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
 | 14 | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
 | 15 | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |
 | 16 | Consistencia fina | 7 | Bajo | Pulido final |

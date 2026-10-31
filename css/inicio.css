@@ -339,3 +339,13 @@
 .lb-chip.lb-ok { background: #E6F4EC; color: #1F6B42; }
 .lb-chip.lb-mal { background: #FBE9E6; color: #A1301F; }
 .lb-desap { color: #B23A2A; font-weight: 700; }
+
+/* ---------- Cambio de año escolar ---------- */
+.ca-aula-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.ca-destino { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; font-size: .88rem; }
+.ca-destino select { width: auto; min-width: 220px; }
+.ca-masivo { margin-left: auto; font-size: .85rem; color: #6B6F76; }
+.ca-tabla { margin: 0; }
+.ca-tabla th { border-top: 0; font-size: .78rem; color: #6B6F76; text-transform: uppercase; letter-spacing: .03em; }
+.ca-det { display: inline-block; margin-left: 6px; color: #6B6F76; }
+.ca-tabla tr.ca-excepcion td { background: #FFF8E6; }
