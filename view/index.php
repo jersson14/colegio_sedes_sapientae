@@ -55,7 +55,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="../css/inicio.css?rev=<?php echo filemtime(__DIR__ . '/../css/inicio.css'); ?>">
 </head>
 
-<body class="layout-fixed tema-menu-<?php echo strtolower($TEMA['estilo_menu']); ?>">
+<body class="layout-fixed tema-menu-<?php echo strtolower($TEMA['estilo_menu']); ?><?php echo in_array($_SESSION['S_ROL'], ['ESTUDIANTE', 'DOCENTE'], true) ? ' con-barra' : ''; ?>">
   <div class="wrapper">
     <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?>
       <!-- Navbar -->
@@ -88,7 +88,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
             </a>
@@ -145,7 +145,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18">
+              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
 
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
@@ -1343,6 +1343,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- /.control-sidebar -->
 
 <!-- Main Footer -->
+<!-- Barra inferior de accesos en el celular (Fase 13, paso 12): estudiante y docente -->
+<?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
+  <nav class="barra-inferior" aria-label="Accesos principales">
+    <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-tasks"></i>Tareas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-receipt"></i>Pagos</a>
+    <a href="index.php?ir=avisos#avisos"><i class="fas fa-bullhorn"></i>Avisos</a>
+  </nav>
+<?php } ?>
+<?php if ($_SESSION['S_ROL'] == "DOCENTE") { ?>
+  <nav class="barra-inferior" aria-label="Accesos principales">
+    <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php');Barra_Activa(this);return false;"><i class="fas fa-clipboard-check"></i>Asistencia</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-tasks"></i>Tareas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-file-signature"></i>Exámenes</a>
+  </nav>
+<?php } ?>
 <footer class="main-footer">
   <!-- To the right -->
   <div class="float-right d-none d-sm-inline">

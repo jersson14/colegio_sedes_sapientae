@@ -81,3 +81,10 @@ var Menu = (function () {
   $(iniciar);
   return { normalizar: normalizar, filtrar: filtrar };
 })();
+
+// Barra inferior del celular (Fase 13, paso 12): marca el acceso elegido
+function Barra_Activa(a) {
+  $('.barra-inferior a').removeClass('activo');
+  $(a).addClass('activo');
+  window.scrollTo(0, 0);
+}

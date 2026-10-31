@@ -255,6 +255,14 @@ Paso 11 hecho el 2026-10-31 (`utilitario/reporte_pdf.php`, `tests/pruebas_fase13
 - Nombres, cursos y grados en formato título, y fechas en dd/mm/aaaa, también en los documentos.
 - **Corregido:** la cédula de matrícula y el kardex de pagos salían vacíos para los estudiantes sin usuario del sistema, porque los datos del colegio se buscaban a través de ese usuario.
 
+Paso 12 hecho el 2026-10-31 (`js/legibilidad.js`, `css/tema.css`, `tests/navegador/prueba_celular.sh`):
+
+- **Tablas como tarjetas** en pantallas angostas, en todas las tablas: el título es la columna más descriptiva (nombre, tema, curso o grado), cada dato lleva su etiqueta y las acciones van al pie. La fila desplegable de la extensión *responsive* se reemplaza por la tarjeta completa. Una tabla puede excluirse con `sin-tarjetas`.
+- **Barra inferior** para el estudiante (Inicio · Tareas · Notas · Pagos · Avisos) y para el docente (Inicio · Asistencia · Tareas · Notas · Exámenes). Solo en el celular.
+- Botones de **44 px** (40 px los pequeños) y **etiqueta automática** para los botones que solo tienen ícono (Eliminar, Editar, Agregar, Quitar, Anular…), también en ventanas y pantallas que se cargan después.
+- Las columnas fijas angostas de filtros y formularios se apilan en el celular, y la barra superior muestra solo la foto del usuario, con una imagen de respaldo si el archivo no existe.
+- **Corregido:** en el celular la capa de legibilidad no se aplicaba, porque el selector de columnas visibles de DataTables excluye las que esconde la extensión *responsive*.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -270,7 +278,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 9 ✅ | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
 | 10 ✅ | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
 | 11 ✅ | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
-| 12 | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
+| 12 ✅ | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
 | 13 | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
 | 14 | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
 | 15 | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |

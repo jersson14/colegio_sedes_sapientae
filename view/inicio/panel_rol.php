@@ -139,7 +139,7 @@ $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_E
     </div>
     <?php } ?>
 
-    <section class="pi-tarjeta">
+    <section class="pi-tarjeta" id="avisos">
       <header><h2>Comunicados</h2></header>
       <ul class="pi-comunicados" id="pi_comunicados"><li class="pi-tenue">Cargando…</li></ul>
     </section>

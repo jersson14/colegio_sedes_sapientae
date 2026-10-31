@@ -23,6 +23,7 @@ echo "== Fechas"
 check "aaaa-mm-dd y con hora" "31/12/2025 31/12/2025 10:40" "$(nodo "console.log(L.fecha('2025-12-31'), L.fecha('2025-12-31 10:40:50'))")"
 check "medianoche sin hora; fecha vacía de MySQL como guion" "31/12/2025 —" "$(nodo "console.log(L.fecha('2025-12-31 00:00:00'), L.fecha('0000-00-00'))")"
 check "dd-mm-aaaa con guiones pasa a barras" "28/12/2025 13:22 12/01/1996" "$(nodo "console.log(L.fecha('28-12-2025 13:22:05'), L.fecha('12-01-1996'))")"
+check "dd-mm-aaaa - hh:mm:ss (con guion antes de la hora)" "31/12/2025 10:40" "$(nodo "console.log(L.fecha('31-12-2025 - 10:40:50'))")"
 check "lo que no es fecha no se toca" "null null" "$(nodo "console.log(L.fecha('2025/12/31'), L.fecha('DNI 12-01'))")"
 
 echo "== Formato título"

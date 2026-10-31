@@ -16,6 +16,13 @@ El menú de la dirección está ordenado por tareas: Estudiantes y matrícula ·
 - Una tabla vacía lo dice y, si la pantalla permite crear registros, muestra el botón para crear el primero.
 - Excel, PDF e Imprimir exportan los datos tal como están guardados.
 
+## En el celular
+
+- Las listas se ven como **tarjetas**: el nombre arriba, cada dato con su etiqueta y los botones al pie.
+- Estudiantes y docentes tienen una **barra abajo** con sus accesos: Inicio · Tareas · Notas · Pagos · Avisos (estudiante) e Inicio · Asistencia · Tareas · Notas · Exámenes (docente).
+- Los filtros se acomodan uno debajo de otro y los botones son más grandes, para tocarlos con el dedo.
+- La asistencia se toma más rápido en el modo **Por día** (ver "Tomar asistencia").
+
 ## Documentos PDF
 
 Todos los PDF (recibos, constancias, cédula de matrícula, kardex de pagos, horarios, lista de asistencia, libretas, boletas de pago del personal y reportes financieros) llevan el **escudo, el nombre, el lema y el color** del colegio, más su dirección, teléfono y código. Se cambian en **Configuración → Apariencia** y en los datos del colegio; no hace falta tocar cada documento.
