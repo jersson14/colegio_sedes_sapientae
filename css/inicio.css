@@ -349,3 +349,10 @@
 .ca-tabla th { border-top: 0; font-size: .78rem; color: #6B6F76; text-transform: uppercase; letter-spacing: .03em; }
 .ca-det { display: inline-block; margin-left: 6px; color: #6B6F76; }
 .ca-tabla tr.ca-excepcion td { background: #FFF8E6; }
+
+/* ---------- Importar estudiantes ---------- */
+.im-pasos { padding-left: 18px; margin-bottom: 12px; }
+.im-tabla { max-height: 55vh; overflow: auto; }
+.im-tabla tr.im-error td { background: #FDF3F1; }
+.im-tabla tr.im-aviso td { background: #FFFAEA; }
+.im-errores { margin: 0; padding-left: 16px; color: #A1301F; font-size: .85rem; }

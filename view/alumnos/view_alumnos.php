@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_alumnos.js?rev=<?php echo time();?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_alumnos.js?rev=<?php echo time();?>"></script><script src="../js/importar_alumnos.js?rev=<?php echo time();?>"></script>
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -29,6 +29,7 @@
           <div class="card-header">
             <h3 class="card-title"><i class="nav-icon fas fa-th"></i>&nbsp;&nbsp;<b>Listado de Alumnos</b></h3>
             <button class="btn btn-success float-right" onclick="AbrirRegistro()"><i class="fas fa-plus"></i> Nuevo Registro</button>
+            <button class="btn btn-outline-success float-right mr-2" onclick="Importar_Abrir()"><i class="fas fa-file-excel"></i> Importar desde Excel</button>
           </div>
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
@@ -503,6 +504,34 @@ input.addEventListener('input',function(){
         label.innerHTML = "Subir Foto (" + fileName + ")";
     }
 </script>
+
+<!-- Importar estudiantes desde Excel (Fase 13): js/importar_alumnos.js -->
+<div class="modal fade" id="modal_importar" tabindex="-1" role="dialog" aria-labelledby="titulo_importar" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#1FA0E0;">
+        <h5 class="modal-title" id="titulo_importar" style="color:white"><b>Importar estudiantes desde Excel</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <ol class="im-pasos">
+          <li>Descargue la <a href="../controller/alumnos/controlador_importar.php?plantilla=1"><b>plantilla de Excel</b></a> y llénela (un estudiante por fila, con sus padres).</li>
+          <li>Elija el archivo y pulse <b>Revisar</b>: verá cada fila con sus errores, sin grabar nada todavía.</li>
+          <li>Corrija lo que haga falta o pulse <b>Importar</b>: se graban solo las filas correctas.</li>
+        </ol>
+        <div class="d-flex flex-wrap align-items-center" style="gap:8px">
+          <input type="file" id="im_archivo" class="form-control-file" accept=".xlsx,.csv" style="max-width:420px">
+          <button type="button" class="btn btn-primary" id="im_revisar"><i class="fas fa-search mr-1"></i>Revisar</button>
+        </div>
+        <div id="im_resultado" class="mt-3"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"><i class="fas fa-times ml-1"></i> Cerrar</button>
+        <button type="button" class="btn btn-success" id="im_grabar" onclick="Importar_Grabar()" disabled><i class="fas fa-file-import mr-1"></i>Importar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
     function previewImage3(event) {
         var input = event.target;
