@@ -30,6 +30,18 @@ Luego, en **Estudiantes y matrícula → Matrícula → Nuevo Registro**, un asi
 
 Al terminar se muestran el usuario y la contraseña temporal para entregarlos a la familia. Con **Atrás** o tocando un paso ya hecho se puede corregir; **Enter** pasa al paso siguiente.
 
+## Libretas de notas
+
+Menú: **Académico → Notas y evaluación → Libretas de notas**.
+
+1. Elija el **año**, el **aula** y el **periodo** (se propone el bimestre en curso) o **Todo el año**.
+2. La tabla muestra a los estudiantes en **orden de mérito**: la nota de cada curso, el promedio y cuántos cursos tiene desaprobados (en rojo). Si dos tienen el mismo promedio, comparten el puesto.
+3. **PDF** en cada fila descarga la libreta de ese estudiante. **Libretas del aula** descarga todas juntas, una por hoja y en orden alfabético, para repartirlas. **Orden de mérito** descarga la lista ordenada. **Excel** exporta la tabla.
+
+Cómo se calcula, con la escala de **Configuración → Datos regionales**: la nota de un curso en el periodo es el promedio de sus criterios, redondeado a los decimales configurados. Con letras (AD, A, B, C) se promedia la posición de cada letra y se redondea a la más cercana. La nota final del año es el promedio de los periodos que tienen notas.
+
+La libreta de un periodo trae también el detalle de cada criterio con su conclusión. Lleva el escudo y el nombre del colegio, la asistencia del periodo y espacio para las firmas. Los estudiantes descargan la suya desde **Mis notas** (botón **Libreta**, o **Libreta del periodo** dentro de la ventana de notas).
+
 ## Tomar asistencia: Registro de asistencia
 
 Es la única pantalla para registrar asistencia. Menú: **Asistencia → Registro de asistencia** (el auxiliar lo tiene en **Horario y asistencia**). Los docentes lo encuentran en **Notas y tareas → Asistencia de mis aulas**. Desde el inicio, tocar un aula pendiente abre directamente su asistencia del día.

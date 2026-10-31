@@ -85,7 +85,7 @@ function listar_notas_todos(){
 
 
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar notas'><i class='fa fa-eye'></i> Visualizar notas por bimestre</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar notas'><i class='fa fa-eye'></i> Visualizar notas por bimestre</button> <button class='libreta btn btn-primary btn-sm' title='Libreta del año en PDF'><i class='fa fa-file-pdf'></i> Libreta</button>"},
         
     ],
 
@@ -377,3 +377,11 @@ tablaCargadaPadres = true;
 
 // Evento para cuando se abre el modal
 
+// Libreta de notas en PDF (Fase 13): del año, o del periodo elegido en la ventana de notas
+function Libreta_Estudiante(matricula, periodo) {
+  window.open('../view/MPDF/REPORTE/libreta.php?matricula=' + encodeURIComponent(matricula) + '&periodo=' + encodeURIComponent(periodo || '') + '#zoom=100', '_blank');
+}
+$('#tabla_notas').on('click', '.libreta', function () {
+  var data = tbl_notas.row($(this).parents('tr')).data();
+  Libreta_Estudiante(data.id_matricula, '');
+});

@@ -232,6 +232,13 @@ Paso 8 hecho el 2026-10-26 (`js/matricula_pasos.js`, `controller/matricula/contr
 - **Padres ya registrados:** al escribir el documento del padre o la madre en Estudiantes, si ya existe por un hermano se ofrecen sus datos y los del otro padre de la familia, tomando el dato no vacío más reciente.
 - De paso: Enter en una ventana solo pulsa un botón de guardar **visible**.
 
+Paso 9 hecho el 2026-10-31 (`utilitario/libreta.php`, `js/libretas.js`, `view/MPDF/REPORTE/libreta.php`, `tests/pruebas_fase13_libreta.sh`):
+
+- **Libretas de notas** reemplaza a "Boletas de notas": por aula y periodo (o todo el año), con la nota de cada curso, el promedio, los cursos desaprobados y el **orden de mérito** (los empates comparten el puesto; quien aún no tiene notas va al final y sin puesto).
+- Los cálculos están en un solo lugar del servidor, así la pantalla y el PDF muestran siempre lo mismo. Siguen la escala configurada, sea numérica o con letras.
+- **PDF de la libreta** con el escudo, el nombre, el lema y el color del colegio: uno por estudiante, todos los del aula en un solo archivo y el orden de mérito. El estudiante descarga la suya desde Mis notas y no puede abrir la de otro.
+- Se retiraron los dos PDF antiguos de boletas, que tenían escritos a mano "DRE: APURÍMAC" y "UGEL Abancay".
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -244,7 +251,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 6 ✅ | Ficha única del estudiante y buscador general | 4b | Medio | La consulta más frecuente de la dirección |
 | 7 ✅ | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
 | 8 ✅ | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
-| 9 | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
+| 9 ✅ | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
 | 10 | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
 | 11 | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
 | 12 | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |

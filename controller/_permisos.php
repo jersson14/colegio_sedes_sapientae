@@ -235,6 +235,7 @@ return [
         'view/MPDF/REPORTE/flujo_caja.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/horario.php' => ['AUXILIAR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/kardex.php' => ['CONTADOR', 'ESTUDIANTE'],
+        'view/MPDF/REPORTE/libreta.php' => ['ESTUDIANTE'],   // la suya; el aula completa solo la dirección
         'view/MPDF/REPORTE/morosidad.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/recibo.php' => ['CONTADOR', 'ESTUDIANTE'],
     ],

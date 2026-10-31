@@ -332,3 +332,10 @@
   .mp-pasos li span { font-size: .8rem; }
   .mp-personas, .mp-resumen-cab { grid-template-columns: 1fr; }
 }
+
+/* ---------- Libretas de notas ---------- */
+.lb-resumen { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 10px; }
+.lb-chip { background: #F2F1EE; color: #3D4046; border-radius: 999px; padding: 2px 12px; font-size: .85rem; }
+.lb-chip.lb-ok { background: #E6F4EC; color: #1F6B42; }
+.lb-chip.lb-mal { background: #FBE9E6; color: #A1301F; }
+.lb-desap { color: #B23A2A; font-weight: 700; }

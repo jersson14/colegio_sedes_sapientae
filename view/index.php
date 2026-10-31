@@ -256,7 +256,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <li class="nav-item">
                     <a href="#" onclick="cargar_contenido('contenido_principal','boletas/view_boletas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
-                      <p>Boletas de notas</p>
+                      <p>Libretas de notas</p>
                     </a>
                   </li>
                   <li class="nav-item">

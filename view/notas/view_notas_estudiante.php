@@ -123,9 +123,14 @@
                                                 <!-- Opciones se pueden agregar dinámicamente -->
                                             </select>
                                         </div>
-                                        <div class="col-12 form-group">
+                                        <div class="col-md-8 form-group">
                                             <button type="button" class="btn btn-success btn-block" onclick="listar_notas_ver()">
                                                 <i class="fas fa-search"></i> <b>Listar notas</b>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <button type="button" class="btn btn-outline-primary btn-block" onclick="Libreta_Estudiante($('#id_matri_ver').val(), $('#select_bimestre_ver').val())">
+                                                <i class="fas fa-file-pdf"></i> <b>Libreta del periodo</b>
                                             </button>
                                         </div>
                                     </div>
