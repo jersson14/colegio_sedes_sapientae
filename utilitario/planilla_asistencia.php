@@ -4,9 +4,15 @@
  * Requiere la sesión iniciada (controller/_seguridad.php o utilitario/seguridad_reporte.php).
  */
 require_once __DIR__ . '/../model/model_registro_asistencia.php';
+require_once __DIR__ . '/parametros.php';
 
 const LETRAS_DIA = [1 => 'L', 2 => 'M', 3 => 'M', 4 => 'J', 5 => 'V', 6 => 'S', 7 => 'D'];
 const MESES = [1 => 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+/** Último día de clase de la semana: 5 (viernes) o 6 si el colegio tiene clases los sábados (Configuración → Parámetros). */
+function planilla_ultimo_dia() {
+    return parametro('clases_sabado') === '1' ? 6 : 5;
+}
 
 /** El docente solo trabaja con sus aulas; administrador y auxiliar con todas. */
 function planilla_usuario_docente() {
@@ -22,7 +28,7 @@ function planilla_dias($mes, $anio_escolar) {
     $semana = 0;
     for ($d = clone $inicio; $d <= $fin; $d->modify('+1 day')) {
         $dow = (int) $d->format('N');
-        if ($dow > 5) {
+        if ($dow > planilla_ultimo_dia()) {
             continue;
         }
         if ($dow === 1 || !$dias) {
@@ -101,6 +107,7 @@ function planilla_datos($anio, $aula, $mes) {
         'dias' => $dias,
         'estudiantes' => $estudiantes,
         'docentes' => $aula_sel ? $M->Docentes_Aula($anio, $aula_sel['id']) : [],
+        'nombres' => parametros_asistencia(),
     ];
 }
 

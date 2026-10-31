@@ -159,6 +159,26 @@ Menú: **Organización del colegio → Cambio de año escolar**. Antes, cree el 
 
 Las matrículas se crean sin cobro: la matrícula se cobra después en **Cobrar pensión**. Quien quedó en "decidir luego" se matricula cuando corresponda desde **Matrícula**. Repetir el proceso no duplica nada.
 
+## Permisos por rol (solo administrador)
+
+Menú: **Configuración → Permisos por rol**. Cada fila es una pantalla y cada columna un rol.
+
+- Marque la casilla para **dar** esa pantalla a todos los usuarios de ese rol, o desmárquela para **quitarla**. Se guarda al instante; el usuario la ve al volver a entrar o recargar la página.
+- Las pantallas dadas aparecen en su menú, al final, en **Más pantallas**.
+- Una casilla con borde es distinta a la de fábrica. El botón ↺ de cada rol, o **Volver todo a fábrica**, deshace los cambios.
+- Un guion (—) es una pantalla propia de otro rol. Permisos, Parámetros y Respaldos son siempre solo de la dirección.
+
+## Parámetros del sistema (solo administrador)
+
+Menú: **Configuración → Parámetros del sistema**.
+
+- **Intentos fallidos** antes de bloquear un usuario y **minutos de bloqueo**. Con **0** no se bloquea nunca (no se recomienda).
+- **Tamaño máximo de cada video** de las tareas. Si supera lo que acepta el servidor, se avisa y rige el límite del servidor.
+- **Clases los sábados:** el registro de asistencia y la planilla incluyen los sábados.
+- **Nombres de las marcas de asistencia:** cómo se llaman P, T, F y J en el registro y en la planilla impresa.
+
+**Valores de fábrica** vuelve a los originales (hay que pulsar Guardar).
+
 ## Respaldos (solo administrador)
 
 Menú: **Configuración → Respaldos**.

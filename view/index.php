@@ -37,6 +37,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <?php $TEMA = tema_actual(); ?>
+  <?php
+  // Permisos por rol (Fase 13): pantallas que la dirección dio o quitó a este rol
+  $PANT_DADAS = [];
+  $PANT_QUITADAS = [];
+  if ($_SESSION['S_ROL'] !== 'ADMINISTRADOR') {
+      require_once __DIR__ . '/../utilitario/permisos.php';
+      foreach (permisos_cambios($_SESSION['S_ROL']) as $v => $p) { if ($p === 0) { $PANT_QUITADAS[] = $v; } }
+      foreach (permisos_pantallas_rol($_SESSION['S_ROL']) as $v => $p) { if ($p['origen'] === 'DADA') { $PANT_DADAS[$v] = $p; } }
+  }
+  ?>
   <title><?php echo htmlspecialchars($TEMA['nombre'] ?: 'Sistema escolar', ENT_QUOTES, 'UTF-8'); ?></title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -514,6 +524,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_permisos.php')" class="nav-link">
+                  <i class="nav-icon fas fa-user-shield"></i>
+                  <p>Permisos por rol</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_parametros.php')" class="nav-link">
+                  <i class="nav-icon fas fa-sliders-h"></i>
+                  <p>Parámetros del sistema</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_auditoria.php')" class="nav-link">
                   <i class="nav-icon fas fa-history"></i>
                   <p>Auditoría</p>
@@ -897,6 +919,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <?php
             }
             ?>
+            <?php if ($PANT_DADAS) { ?>
+              <!-- Pantallas que la dirección dio a este rol (Configuración → Permisos por rol) -->
+              <li class="nav-header menu-seccion">MÁS PANTALLAS</li>
+              <?php foreach ($PANT_DADAS as $v => $p) { ?>
+                <li class="nav-item">
+                  <a href="#" class="nav-link" data-vista="<?php echo htmlspecialchars($v, ENT_QUOTES, 'UTF-8'); ?>" onclick="cargar_contenido('contenido_principal', this.dataset.vista); return false;">
+                    <i class="nav-icon fas fa-plus-square"></i>
+                    <p><?php echo htmlspecialchars($p['titulo'], ENT_QUOTES, 'UTF-8'); ?></p>
+                  </a>
+                </li>
+              <?php } ?>
+            <?php } ?>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -1568,6 +1602,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/texto_seguro.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/formulario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/cuenta.js?rev=<?php echo time(); ?>"></script>
+<script>window.PANTALLAS_QUITADAS = <?php echo json_encode($PANT_QUITADAS); ?>;</script>
 <script src="../js/menu.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/ficha.js?rev=<?php echo time(); ?>"></script>
 <!-- Comunicado completo (todos los roles): lo abre Comunicado_Abrir de js/panel_comun.js y registra la lectura -->

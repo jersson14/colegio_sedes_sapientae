@@ -56,8 +56,8 @@ function ini_en_mb($clave) {
 function limite_video_mb() {
     static $limite = null;
     if ($limite === null) {
-        $config = require __DIR__ . '/../config/config.php';
-        $limite = min((int) ($config['video_max_mb'] ?? VIDEO_MAX_MB_DEFECTO), ini_en_mb('upload_max_filesize'), ini_en_mb('post_max_size'));
+        require_once __DIR__ . '/parametros.php';   // Configuración → Parámetros
+        $limite = min((int) (parametro('video_max_mb') ?: VIDEO_MAX_MB_DEFECTO), ini_en_mb('upload_max_filesize'), ini_en_mb('post_max_size'));
     }
     return $limite;
 }

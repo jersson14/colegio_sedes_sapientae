@@ -83,9 +83,9 @@ $html = pdf_estilos(8.5) . '
     . '<td class="h dia" style="background-color:' . $fondo['F'] . '">F</td><td class="h dia" style="background-color:' . $fondo['J'] . '">J</td><td class="h" style="width:26px">%</td></tr>
   ' . $filas . '
 </table>
-<p class="leyenda" style="margin-top:6px">Leyenda: <span style="background-color:' . $fondo['P'] . '">P</span> Presente &nbsp;
-  <span style="background-color:' . $fondo['T'] . '">T</span> Tardanza &nbsp; <span style="background-color:' . $fondo['F'] . '">F</span> Falta &nbsp;
-  <span style="background-color:' . $fondo['J'] . '">J</span> Falta justificada &nbsp;·&nbsp; % = (P + T + J) / días registrados</p>
+<p class="leyenda" style="margin-top:6px">Leyenda: <span style="background-color:' . $fondo['P'] . '">P</span> ' . pdf_esc($datos['nombres']['P']) . ' &nbsp;
+  <span style="background-color:' . $fondo['T'] . '">T</span> ' . pdf_esc($datos['nombres']['T']) . ' &nbsp; <span style="background-color:' . $fondo['F'] . '">F</span> ' . pdf_esc($datos['nombres']['F']) . ' &nbsp;
+  <span style="background-color:' . $fondo['J'] . '">J</span> ' . pdf_esc($datos['nombres']['J']) . ' &nbsp;·&nbsp; % = (P + T + J) / días registrados</p>
 <table style="width:100%; margin-top:30px"><tr>
   <td style="width:35%; text-align:center; border-top:1px solid #333">Firma del docente / tutor</td><td></td>
   <td style="width:35%; text-align:center; border-top:1px solid #333">Dirección</td>

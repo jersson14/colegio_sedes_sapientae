@@ -59,8 +59,9 @@ if (!empty($_SESSION['S_DEBE_CAMBIAR'])
     }
 
     $rol = rol_actual();
-    $permitidos = $permisos['roles'][$ruta] ?? ['ADMINISTRADOR'];
-    if ($rol !== 'ADMINISTRADOR' && !in_array($rol, $permitidos, true)) {
+    // Permisos de fábrica más los cambios de Configuración → Permisos por rol (utilitario/permisos.php)
+    require_once __DIR__ . '/../utilitario/permisos.php';
+    if (!permiso_rol_ruta($rol, $ruta, $permisos)) {
         registrar_acceso_denegado($ruta, 'ROL_NO_PERMITIDO');
         denegar(403, 'No tiene permiso para esta acción');
     }

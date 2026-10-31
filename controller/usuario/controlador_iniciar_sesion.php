@@ -13,9 +13,11 @@ require_once __DIR__ . '/../_seguridad.php';
     }
 
     $MU = new Modelo_Usuario();
-    $max = $config['login_max_intentos'];
-    $minutos = $config['login_minutos_bloqueo'];
-    if ($MU->Login_Bloqueado($usu, $max, $minutos)) {
+    // Intentos y minutos de bloqueo: Configuración → Parámetros (0 intentos = sin bloqueo)
+    require_once __DIR__ . '/../../utilitario/parametros.php';
+    $max = (int) parametro('login_max_intentos');
+    $minutos = (int) parametro('login_minutos_bloqueo');
+    if ($max > 0 && $MU->Login_Bloqueado($usu, $max, $minutos)) {
         echo json_encode(['ok' => false, 'motivo' => 'BLOQUEADO', 'minutos' => $minutos]);
         exit;
     }

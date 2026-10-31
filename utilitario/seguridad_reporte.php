@@ -14,8 +14,9 @@ iniciar_sesion_segura();
         exit('Sesión no iniciada o expirada');
     }
     $permisos = require __DIR__ . '/../controller/_permisos.php';
-    $permitidos = $permisos['roles'][$ruta] ?? ['ADMINISTRADOR'];
-    if (rol_actual() !== 'ADMINISTRADOR' && !in_array(rol_actual(), $permitidos, true)) {
+    // Permisos de fábrica más los cambios de Configuración → Permisos por rol
+    require_once __DIR__ . '/permisos.php';
+    if (!permiso_rol_ruta(rol_actual(), $ruta, $permisos)) {
         registrar_acceso_denegado($ruta, 'ROL_NO_PERMITIDO');
         http_response_code(403);
         exit('No tiene permiso para ver este reporte');

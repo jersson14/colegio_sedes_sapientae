@@ -24,7 +24,7 @@ foreach ($cambios as $x) {
     $fecha = (string) ($x['fecha'] ?? '');
     $d = DateTime::createFromFormat('Y-m-d', $fecha);
     $codigo = strtoupper((string) ($x['codigo'] ?? ''));
-    if (!$d || $d->format('Y-m-d') !== $fecha || (int) $d->format('N') > 5) {
+    if (!$d || $d->format('Y-m-d') !== $fecha || (int) $d->format('N') > planilla_ultimo_dia()) {
         denegar(400, 'Fecha inválida: ' . htmlspecialchars($fecha, ENT_QUOTES, 'UTF-8'));
     }
     if ($fecha > $hoy) {

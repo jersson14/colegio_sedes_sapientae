@@ -115,6 +115,49 @@ foreach ($roles_vistas as $rol => $vistas) {
     }
 }
 
+$permisos_publicos = (require "controller/_permisos.php")["publico"] ?? [];
+// ---------- Mapa de pantallas (Fase 13, paso 15): --generar escribe controller/_pantallas.php ----------
+// Para dar o quitar pantallas completas a un rol desde Configuración → Permisos por rol: qué controladores usa cada
+// pantalla, su nombre y sección en el menú, las pantallas de fábrica de cada rol y los controladores de su inicio.
+if (in_array('--generar', $argv, true)) {
+    $pantallas = [];
+    $seccion = '';
+    $lineas = explode("\n", $index);
+    foreach ($lineas as $n => $linea) {
+        if (preg_match('/menu-seccion">([^<]+)</u', $linea, $s)) { $seccion = trim($s[1]); }
+        if (!preg_match_all("/cargar_contenido\('contenido_principal',\s*'([^']+)'\)/", $linea, $v)) { continue; }
+        foreach ($v[1] as $vista) {
+            if (isset($pantallas[$vista])) { continue; }
+            $titulo = '';
+            for ($k = $n; $k < min($n + 5, count($lineas)); $k++) {
+                if (preg_match('#<p>\s*([^<]+?)\s*(<i|</p>)#u', $lineas[$k], $p)) { $titulo = trim($p[1]); break; }
+            }
+            $tv = $leer("view/$vista");
+            $texto = $tv;
+            preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $tv, $mm);
+            foreach ($mm[1] as $js) { $texto .= "\n" . $leer("js/$js"); }
+            $ctrl = array_values(array_filter($alcance_global($texto), function ($c) use ($permisos_publicos) { return !in_array($c, $permisos_publicos, true); }));
+            sort($ctrl);
+            $pantallas[$vista] = ['titulo' => $titulo ?: basename($vista, '.php'), 'seccion' => $seccion ?: 'Otras', 'controladores' => $ctrl];
+        }
+    }
+    $roles_mapa = [];
+    foreach ($roles_vistas as $rol => $vistas) {
+        $indice = [];
+        foreach ($usa as $c => $por_rol) {
+            foreach (array_keys($por_rol[$rol] ?? []) as $motivo) { if (strpos($motivo, 'index') === 0) { $indice[] = $c; break; } }
+        }
+        sort($indice);
+        $roles_mapa[$rol] = ['vistas' => array_keys($vistas), 'indice' => array_values(array_unique($indice))];
+    }
+    $salida = "<?php\n// GENERADO por tests/herramientas/revisar_permisos.php --generar (no editar a mano).\n"
+        . "// Pantallas del menú con los controladores que usan, y las pantallas e inicio de fábrica de cada rol.\nreturn "
+        . var_export(['pantallas' => $pantallas, 'roles' => $roles_mapa], true) . ";\n";
+    file_put_contents('controller/_pantallas.php', $salida);
+    echo 'controller/_pantallas.php: ' . count($pantallas) . " pantallas\n";
+    exit;
+}
+
 // ---------- Comparar con _permisos.php ----------
 $permisos = require 'controller/_permisos.php';
 $publicos = $permisos['publico'] ?? [];

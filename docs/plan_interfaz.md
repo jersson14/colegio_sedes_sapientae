@@ -140,9 +140,9 @@ Se encontró en la base de datos:
 
 ### Etapa 4d: lo que aún no es configurable
 
-- Permisos por rol desde una pantalla, con casillas por rol, en vez del archivo `controller/_permisos.php`.
-- En una pantalla de Configuración: tamaño máximo de los videos, intentos de ingreso antes del bloqueo, días de clase (incluir sábado) y códigos o nombres de asistencia.
-- Orden y nombres del menú.
+- ✅ Permisos por rol desde una pantalla, con casillas por rol, en vez del archivo `controller/_permisos.php` (paso 15).
+- ✅ En una pantalla de Configuración: tamaño máximo de los videos, intentos de ingreso antes del bloqueo, días de clase (incluir sábado) y nombres de asistencia (paso 15).
+- Orden y nombres del menú (no se hará: ver notas del paso 15).
 - PDF con el escudo y los colores del colegio (ver Etapa 6).
 
 ### Etapa 5: celular (impacto alto para docentes y familias, esfuerzo medio)
@@ -277,6 +277,14 @@ Paso 14 hecho el 2026-10-31 (migraciones 020 y 021; `tests/pruebas_fase13_import
 - **Avisos a las familias:** faltas del día, tareas vencidas, pensiones (un aviso por familia y por mes) y comunicados sin leer. Cada rol ve lo suyo, con un interruptor por tipo en "Configurar avisos" y registro de lo avisado para no repetir.
 - **Canal:** WhatsApp con el mensaje ya escrito, que envía la persona. No tiene costo ni necesita contratar nada. El envío automático (API de WhatsApp o correo) queda para cuando el colegio defina ese servicio; el registro de avisos ya está listo para conectarlo. La base no guarda el correo de los padres.
 
+Paso 15 hecho el 2026-10-31 (migración 022; `utilitario/permisos.php`, `utilitario/parametros.php`, `tests/pruebas_fase13_permisos.sh`):
+
+- **Permisos por rol** (Configuración → Permisos por rol): casillas por pantalla y rol, que se guardan al instante. Se guardan solo las diferencias con los permisos de fábrica (`controller/_permisos.php`), y volver a lo de fábrica borra el cambio. Dar una pantalla habilita los controladores que usa; quitarla los bloquea, salvo los que el rol sigue usando en su inicio u otra pantalla suya.
+- El mapa pantalla → controladores (`controller/_pantallas.php`) lo genera `php tests/herramientas/revisar_permisos.php --generar` a partir del menú; la suite avisa si quedó desactualizado. Las pantallas dadas aparecen en el menú en **Más pantallas**; las quitadas se ocultan.
+- **Seguridad:** las pantallas de una función de otro rol (p. ej. las del estudiante) no se pueden dar, y Permisos, Parámetros y Respaldos son solo de la dirección aunque se fuerce la tabla. Dar una pantalla de la dirección pide confirmación.
+- **Parámetros** (Configuración → Parámetros del sistema): intentos de ingreso antes del bloqueo (**0 = sin bloqueo**) y minutos de bloqueo, tamaño máximo de videos (avisa si supera el límite del servidor), clases los sábados (registro de asistencia y planilla) y nombres de P, T, F y J (registro y planilla impresa). Sin valor guardado rige `config/config.php`.
+- **No se hizo:** orden y nombres del menú editables. El menú se reorganizó en el paso 5 y depende de él la revisión de permisos; cambiarlo desde una pantalla rompería esa revisión.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -295,7 +303,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 12 ✅ | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
 | 13 ✅ | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
 | 14 ✅ | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
-| 15 | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |
+| 15 ✅ | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |
 | 16 | Consistencia fina | 7 | Bajo | Pulido final |
 
 ---

@@ -370,3 +370,14 @@
 .av-filtros { display: flex; flex-wrap: wrap; gap: 6px; }
 .av-tabla td { vertical-align: middle; }
 .av-tabla tr.av-enviado td { background: #F6FBF8; }
+
+/* ---------- Parámetros y permisos ---------- */
+.ra-letra { display: inline-block; min-width: 26px; text-align: center; border-radius: 4px; font-weight: 700; padding: 1px 6px; }
+.ra-letra.ra-P { background: #c8f0cf; color: #146c2e; } .ra-letra.ra-T { background: #ffe6a6; color: #8a5a00; }
+.ra-letra.ra-F { background: #f8c9c9; color: #a01818; } .ra-letra.ra-J { background: #cfe2ff; color: #0b4aa2; }
+.pm-tabla th { position: sticky; top: 0; background: #fff; z-index: 2; font-size: .8rem; text-align: center; }
+.pm-tabla td { vertical-align: middle; }
+.pm-tabla td.pm-celda { text-align: center; }
+.pm-tabla tr.pm-seccion td { background: var(--tema-primario-claro); font-weight: 700; font-size: .78rem; letter-spacing: .06em; color: var(--tema-tinta); }
+.pm-tabla .pm-cambio { box-shadow: 0 0 0 2px var(--tema-acento); border-radius: 4px; }
+.pm-tabla-envoltura { max-height: 65vh; overflow: auto; }

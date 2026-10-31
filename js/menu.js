@@ -55,6 +55,17 @@ var Menu = (function () {
     var $menu = $('.main-sidebar .nav-sidebar');
     if (!$menu.length) return;
 
+    // Pantallas que la dirección quitó a este rol: fuera del menú, de los accesos del inicio y de la barra inferior
+    (window.PANTALLAS_QUITADAS || []).forEach(function (v) {
+      var sel = "'" + v + "'";
+      $('a, button').filter(function () { return (this.getAttribute('onclick') || '').indexOf(sel) !== -1; }).each(function () {
+        var li = $(this).closest('li.nav-item');
+        (li.length ? li : $(this)).remove();
+      });
+    });
+    // grupos del menú que quedaron vacíos
+    $menu.find('li.nav-item').has('> ul.nav-treeview').filter(function () { return !$(this).find('ul.nav-treeview li').length; }).remove();
+
     $('#menu_buscar').on('input', function () {
       filtrar($menu, this.value);
     }).on('keydown', function (e) {

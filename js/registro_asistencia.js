@@ -47,6 +47,7 @@ window.RegistroAsistencia = (function () {
       datos = r;
       cambios = {};
       notas = {};
+      if (r.nombres) { NOMBRES = r.nombres; pintarLeyenda(); }   // nombres de Configuración → Parámetros
       elegirDia();
       pintarFiltros();
       pintar();
@@ -66,6 +67,10 @@ window.RegistroAsistencia = (function () {
     irA = null;
   }
 
+  function pintarLeyenda() {
+    $('.ra-leyenda').html(['P', 'T', 'F', 'J'].map(function (c) { return '<span class="ra-' + c + '">' + c + '</span>' + textoSeguro(NOMBRES[c]); }).join(' &nbsp; '));
+  }
+
   function pintarFiltros() {
     if (!datos) { return; }
     $('#ra_anio').html(datos.anios.map(function (a) {
@@ -77,7 +82,7 @@ window.RegistroAsistencia = (function () {
     }).join('') : '<option value="">Sin aulas con estudiantes</option>').val(datos.aula ? datos.aula.id : '');
     $('#ra_mes').val(datos.mes);
     var hoy = datos.dias.some(function (d) { return d.hoy; });
-    $('#ra_btn_hoy').prop('disabled', modo === 'mes' && !hoy).attr('title', modo === 'mes' && !hoy ? 'Disponible en el mes actual (lunes a viernes)' : '')
+    $('#ra_btn_hoy').prop('disabled', modo === 'mes' && !hoy).attr('title', modo === 'mes' && !hoy ? 'Disponible en el mes actual (días de clase)' : '')
       .html('<i class="fas fa-check-double"></i> ' + (modo === 'dia' ? 'Todos presentes' : 'Hoy: todos presentes'));
   }
 
