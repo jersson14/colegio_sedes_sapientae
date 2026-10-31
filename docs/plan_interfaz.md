@@ -239,6 +239,14 @@ Paso 9 hecho el 2026-10-31 (`utilitario/libreta.php`, `js/libretas.js`, `view/MP
 - **PDF de la libreta** con el escudo, el nombre, el lema y el color del colegio: uno por estudiante, todos los del aula en un solo archivo y el orden de mérito. El estudiante descarga la suya desde Mis notas y no puede abrir la de otro.
 - Se retiraron los dos PDF antiguos de boletas, que tenían escritos a mano "DRE: APURÍMAC" y "UGEL Abancay".
 
+Paso 10 hecho el 2026-10-31 (`js/legibilidad.js`, `tests/pruebas_fase13_legibilidad.sh`). Se aplica a **todas las tablas** del sistema sin tocar cada pantalla, y solo cambia lo que se ve:
+
+- Nombres, direcciones, cursos y grados guardados en mayúsculas se muestran en formato título. Los conectores van en minúscula, los números romanos en mayúscula ("IV Bimestre") y también la sección del aula ("Primer Grado A").
+- Fechas `2025-12-31 10:40:50` o `28-12-2025` se muestran como `31/12/2025 10:40` y `28/12/2025`; la fecha vacía de MySQL (`0000-00-00`), como un guion.
+- Estados con el mismo color para el mismo significado: verde, ámbar, azul, rojo y gris. Las columnas "Estado" en texto plano pasan a ser etiquetas.
+- Tablas vacías: "Aún no hay registros aquí" y el botón de crear de la pantalla.
+- El orden, los filtros y las exportaciones siguen usando los datos originales.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -252,7 +260,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 7 ✅ | Una sola pantalla de asistencia | 4b | Bajo | Hoy hay dos formas de hacer lo mismo |
 | 8 ✅ | Matrícula paso a paso y reutilizar los datos de los padres | 4 | Medio | El formulario más largo y más usado en marzo |
 | 9 ✅ | Libreta de notas por bimestre | 4b | Medio | Documento clave para las familias |
-| 10 | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
+| 10 ✅ | Legibilidad: nombres en formato título, fechas y estados | 3 | Medio | Se lee mejor en todas las pantallas |
 | 11 | PDF con la identidad del colegio | 6 | Bajo | Recibos y libretas con el escudo |
 | 12 | Celular: tarjetas y barra inferior | 5 | Medio | Docentes y familias usan el teléfono |
 | 13 | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |

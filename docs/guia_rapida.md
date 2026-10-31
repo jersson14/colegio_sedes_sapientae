@@ -8,6 +8,14 @@ Arriba del menú está **Buscar en el menú**: escriba parte del nombre (por eje
 
 El menú de la dirección está ordenado por tareas: Estudiantes y matrícula · Académico · Asistencia · Pensiones y caja · Personal · Comunicación y salud · Organización del colegio · Configuración. Cada pantalla muestra arriba su nombre y una línea que dice para qué sirve.
 
+## Cómo se ven los datos en las tablas
+
+- Los nombres, direcciones, cursos y grados se muestran en formato título ("Ana Quispe Rojas"), aunque se guarden en mayúsculas. Lo guardado no cambia.
+- Las fechas se muestran como **dd/mm/aaaa** (y la hora, si la tiene).
+- Los estados tienen siempre el mismo color: **verde** (activo, pagado, calificado, presente), **ámbar** (pendiente, tardanza), **azul** (enviado, justificado, contactado), **rojo** (vencido, anulado, ausente, desaprobado) y **gris** (inactivo y datos como nivel o sexo).
+- Una tabla vacía lo dice y, si la pantalla permite crear registros, muestra el botón para crear el primero.
+- Excel, PDF e Imprimir exportan los datos tal como están guardados.
+
 ## Ficha del estudiante
 
 Arriba, en la barra superior, escriba el **nombre, los apellidos o el documento** del estudiante (o pulse **/** para ir directo al buscador). Elija con el mouse o con las flechas y Enter. También se abre con el botón **Ficha** en la lista de Estudiantes.

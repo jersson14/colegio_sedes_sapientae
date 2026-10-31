@@ -1549,6 +1549,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </div>
 </div>
 <script src="../js/tablas_mejoras.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/legibilidad.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

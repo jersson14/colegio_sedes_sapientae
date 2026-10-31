@@ -18,7 +18,8 @@ window.PanelComun = (function () {
     var s = textoPlano(t).toLowerCase().replace(/(^|[\s\-'·(])([a-záéíóúñü])/g, function (m, a, b) { return a + b.toUpperCase(); });
     // "Ciencia y Ambiente", "Juan de la Cruz": artículos y conectores en minúscula (salvo al inicio)
     s = s.replace(/(\s)(\S+)/g, function (m, esp, w) { return MENORES.indexOf(w.toLowerCase()) !== -1 ? esp + w.toLowerCase() : m; });
-    // una letra sola al final es la sección del aula ("Primer Grado A"), no un conector
+    // números romanos ("IV Bimestre") y una letra sola al final: la sección del aula ("Primer Grado A"), no un conector
+    s = s.replace(/(^|\s)(i{1,3}|iv|vi{0,3}|ix|x|xi{1,3}|xiv)(?=\s|$)/gi, function (m, esp, r) { return esp + r.toUpperCase(); });
     return s.replace(/(\s)([a-zñ])$/, function (m, esp, l) { return esp + l.toUpperCase(); });
   }
   function ir(vista, texto) {

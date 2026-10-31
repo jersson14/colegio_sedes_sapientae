@@ -161,3 +161,13 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
 .tema-menu-claro .main-sidebar .sidebar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, .3); }
 /* El buscador del menú queda a la vista mientras se baja */
 .nav-sidebar .menu-buscar { position: sticky; top: 0; z-index: 3; background: var(--tema-menu); }
+
+/* ---------- Estados con el mismo color para el mismo significado (js/legibilidad.js) ---------- */
+.badge.lg-estado { font-weight: 600; font-size: .78rem; padding: .3em .7em; border-radius: 999px; letter-spacing: 0; }
+.badge.est-ok     { background-color: #E3F3E9 !important; color: #1F6B42 !important; }
+.badge.est-pend   { background-color: #FFF3D6 !important; color: #8A5A00 !important; }
+.badge.est-info   { background-color: #E3EDFB !important; color: #1D4F9A !important; }
+.badge.est-mal    { background-color: #FBE5E1 !important; color: #A1301F !important; }
+.badge.est-neutro { background-color: #EEEDEA !important; color: #4A4D53 !important; }
+.lg-vacio { padding: 18px 8px; color: #6B6F76; }
+.lg-vacio i { margin-right: 6px; }
