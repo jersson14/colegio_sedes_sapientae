@@ -34,16 +34,16 @@
             <div class="card-body">
                 <div class="row">               
                     <div class="col-2 form-group">
-                        <label for="">Indicador<b style="color:red">(*)</b>:</label>
+                        <label for="">Indicador<b class="text-danger">(*)</b>:</label>
                         <select class="form-control" id="select_indicadores_buscar" style="width:100%">
                         </select>
                     </div>
                     <div class="col-2 form-group">
-                        <label for="">Fecha Inicio<b style="color:red">(*)</b>:</label>
+                        <label for="">Fecha Inicio<b class="text-danger">(*)</b>:</label>
                         <input class="form-control" type="date" id="txtfechainicio">
                     </div>
                     <div class="col-2 form-group">
-                        <label for="">Fecha Final<b style="color:red">(*)</b>:</label>
+                        <label for="">Fecha Final<b class="text-danger">(*)</b>:</label>
                         <input class="form-control" type="date" id="txtfechafin">
                     </div>
                     <div class="col-12 col-md-3" role="document">
@@ -60,7 +60,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_egresos_diversos" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Indicador</th>
@@ -100,11 +100,11 @@
             <div class="card-body">
                 <div class="row">               
                     <div class="col-3 form-group">
-                        <label for="">Fecha Inicio<b style="color:red">(*)</b>:</label>
+                        <label for="">Fecha Inicio<b class="text-danger">(*)</b>:</label>
                         <input class="form-control" type="date" id="txtfechainicio3">
                     </div>
                     <div class="col-3 form-group">
-                        <label for="">Fecha Final<b style="color:red">(*)</b>:</label>
+                        <label for="">Fecha Final<b class="text-danger">(*)</b>:</label>
                         <input class="form-control" type="date" id="txtfechafin3">
                     </div>
                     <div class="col-12 col-md-3" role="document">
@@ -121,7 +121,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_diferencia" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Fecha desde</th>
                       <th style="text-align:center">Fecha hasta</th>
@@ -145,40 +145,40 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE GASTO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE GASTO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo de indicador<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo de indicador<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_indicadores" style="width:100%">
             </select>
           </div>
           <div class="col-6 form-group">
-            <label for="">Cantidad<b style="color:red">(*)</b>:</label>
+            <label for="">Cantidad<b class="text-danger">(*)</b>:</label>
             <input type="number" class="form-control" id="txt_cantidad" placeholder="Ingrese la cantidad">
           </div>
           <div class="col-6 form-group">
-            <label for="">Monto<b style="color:red">(*)</b>:</label>
+            <label for="">Monto<b class="text-danger">(*)</b>:</label>
             <input type="number" step="0.01" min="0" class="form-control" id="txt_monto"  placeholder="Ingrese el monto a registrar">
           </div>
           <div class="col-6 form-group">
-            <label>Fecha<b style="color:red">(*)</b>:</label>
+            <label>Fecha<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fecha">
           </div>
           <div class="col-6 form-group">
-            <label>Forma de pago<b style="color:red">(*)</b>:</label>
+            <label>Forma de pago<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_metodo" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Sale de (caja / cuenta)<b style="color:red">(*)</b>:</label>
+            <label>Sale de (caja / cuenta)<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_cuenta" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
@@ -214,42 +214,42 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL GASTO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DEL GASTO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo de indicador<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo de indicador<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_indicadores_editar" style="width:100%">
             </select>
             <input type="text" name="" id="txt_id_egreso" hidden>
 
           </div>
           <div class="col-6 form-group">
-            <label for="">Cantidad<b style="color:red">(*)</b>:</label>
+            <label for="">Cantidad<b class="text-danger">(*)</b>:</label>
             <input type="number" class="form-control" id="txt_cantidad_editar" placeholder="Ingrese la cantidad">
           </div>
           <div class="col-6 form-group">
-            <label for="">Monto<b style="color:red">(*)</b>:</label>
+            <label for="">Monto<b class="text-danger">(*)</b>:</label>
             <input type="number" step="0.01" min="0" class="form-control" id="txt_monto_editar"  placeholder="Ingrese el monto a registrar">
           </div>
           <div class="col-6 form-group">
-            <label>Fecha<b style="color:red">(*)</b>:</label>
+            <label>Fecha<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fecha_editar">
           </div>
           <div class="col-6 form-group">
-            <label>Forma de pago<b style="color:red">(*)</b>:</label>
+            <label>Forma de pago<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_metodo_editar" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Sale de (caja / cuenta)<b style="color:red">(*)</b>:</label>
+            <label>Sale de (caja / cuenta)<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_cuenta_editar" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
@@ -281,15 +281,15 @@
 <div class="modal fade" id="modal_anular" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>ANULAR GASTO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>ANULAR GASTO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
@@ -308,7 +308,7 @@
             <input type="number" class="form-control" id="txt_monto_anular"  placeholder="Ingrese el monto a registrar" disabled>
           </div>
           <div class="col-12 form-group">
-            <label for="">Motivo de anulación<b style="color:red">(*)</b>:</label>
+            <label for="">Motivo de anulación<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_observación_anular" rows="3" class="form-control" style="resize:none;" placeholder="Ingrese el motivo de anulación del ingreso"></textarea>
           </div>
         </div>
@@ -324,8 +324,8 @@
 <div class="modal fade" id="modal_motivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>MOTIVO DE ANULACIÓN DE GASTO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>MOTIVO DE ANULACIÓN DE GASTO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -333,11 +333,11 @@
       <div class="modal-body">
       <div class="row">
           <div class="col-12 form-group">
-            <label for="">Fecha de anulación<b style="color:red">(*)</b>:</label>
+            <label for="">Fecha de anulación<b class="text-danger">(*)</b>:</label>
             <input class="form-control" type="date" id="fecha_anulacion" readonly>
           </div>
           <div class="col-12 form-group">
-            <label for="">Motivo de anulación<b style="color:red">(*)</b>:</label>
+            <label for="">Motivo de anulación<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_observación_motivo" rows="3" class="form-control" style="resize:none;" readonly></textarea>
           </div>
         </div>

@@ -49,7 +49,7 @@ function listar_solicitudes() {
                 }
             },
             {
-                "defaultContent": "<button class='ver btn btn-primary btn-sm' title='Ver detalles'><i class='fa fa-eye'></i></button>&nbsp;<button class='editar btn btn-success btn-sm' title='Cambiar estado'><i class='fa fa-edit'></i></button>"
+                "defaultContent": "<button class='ver btn btn-primary btn-sm' title='Ver detalles'><i class='fas fa-eye'></i></button>&nbsp;<button class='editar btn btn-success btn-sm' title='Cambiar estado'><i class='fas fa-edit'></i></button>"
             }
         ],
         "language": idioma_espanol,

@@ -36,7 +36,7 @@
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Docente</th><th>Contrato</th><th class="text-right" title="Horas de su horario ese día">Horario</th><th style="width:150px">Estado</th><th style="width:110px">Horas dictadas</th><th style="width:110px">Min. tardanza</th><th>Observación</th></tr>
                 </thead>
                 <tbody id="tbody_asistencia_docente"></tbody>
@@ -59,7 +59,7 @@
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" id="tabla_resumen_ad" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Docente</th><th class="text-right">Días registrados</th><th class="text-right">Presente</th><th class="text-right">Tardanzas</th><th class="text-right">Min. tardanza</th><th class="text-right">Faltas</th><th class="text-right">Justificadas</th><th class="text-right">Horas de horario</th><th class="text-right">Horas dictadas</th></tr>
                 </thead>
                 <tbody></tbody>

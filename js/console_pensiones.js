@@ -57,7 +57,7 @@ function listar_pensiones() {
     dom: 'Bfrtip',
     buttons: [
       { extend: 'excelHtml5', text: '<i class="fas fa-file-excel"></i> ', titleAttr: 'Exportar a Excel', title: 'LISTA DE PENSIONES' },
-      { extend: 'print', text: '<i class="fa fa-print"></i> ', titleAttr: 'Imprimir', title: 'LISTA DE PENSIONES' }
+      { extend: 'print', text: '<i class="fas fa-print"></i> ', titleAttr: 'Imprimir', title: 'LISTA DE PENSIONES' }
     ],
     "columns": [
       { "data": "id_pensiones" },
@@ -73,8 +73,8 @@ function listar_pensiones() {
       { "data": "pagos", render: function(data) { return data > 0 ? '<span class="badge bg-success">' + data + '</span>' : '<span class="text-muted">0</span>'; } },
       { "data": null, render: function(data, type, row) {
           // Con pagos no se elimina (el servidor tampoco lo permite)
-          return "<button class='editar btn btn-primary btn-sm' title='Editar pensión'><i class='fa fa-edit'></i> Editar</button>"
-               + (row.pagos > 0 ? "" : "&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar pensión'><i class='fa fa-trash'></i> Eliminar</button>");
+          return "<button class='editar btn btn-primary btn-sm' title='Editar pensión'><i class='fas fa-edit'></i> Editar</button>"
+               + (row.pagos > 0 ? "" : "&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar pensión'><i class='fas fa-trash'></i> Eliminar</button>");
         }
       }
     ],
@@ -282,7 +282,7 @@ $('#tabla_pensiones').on('click', '.delete', function() {
     data = tbl_pensiones.row(this).data();
   }
   Swal.fire({
-    title: 'Desea eliminar la pensión de <b style="color:blue">' + pensionEsc(data.mes) + '</b> - <b style="color:blue">' + pensionEsc(data.Nivel_academico) + '</b> (' + pensionEsc(data.anio_escolar) + ')?',
+    title: 'Desea eliminar la pensión de <b class="text-primary">' + pensionEsc(data.mes) + '</b> - <b class="text-primary">' + pensionEsc(data.Nivel_academico) + '</b> (' + pensionEsc(data.anio_escolar) + ')?',
     text: "Una vez aceptado la pensión sera eliminada!!!",
     icon: 'warning',
     showCancelButton: true,

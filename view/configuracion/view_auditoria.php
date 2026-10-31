@@ -30,7 +30,7 @@
         </div>
         <div class="table-responsive">
           <table class="table table-sm table-bordered table-striped" id="tabla_auditoria" style="width:100%">
-            <thead style="background-color:#0A5D86;color:#FFFFFF;">
+            <thead class="tabla-cabecera">
               <tr><th>Fecha</th><th>Usuario</th><th>Qué</th><th>N.°</th><th>Acción</th><th>Cambios</th><th>IP</th></tr>
             </thead>
             <tbody></tbody>

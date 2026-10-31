@@ -33,7 +33,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_periodo" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Año escolar</th>
@@ -59,24 +59,24 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE PERIODO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE PERIODO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-6 form-group">
-            <label for="">Año escolar<b style="color:red">(*)</b>:</label>
+            <label for="">Año escolar<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_año" style="width:100%">
                 </select>           
             </div>
             <div class="col-6 form-group">
-                <label for="">Tipo de Periodo<b style="color:red">(*)</b>:</label>
+                <label for="">Tipo de Periodo<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="tipo_periodo" style="width:100%">
                     <option value="BIMESTRE">BIMESTRE</option>
                     <option value="TRIMESTRE">TRIMESTRE</option>
@@ -85,17 +85,17 @@
                 </select>            
             </div>
             <div class="col-4 form-group">
-                <label for="">Periodo<b style="color:red">(*)</b>:</label>
+                <label for="">Periodo<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="periodo" style="width:100%">
                     <!-- Las opciones se generarán dinámicamente con JavaScript -->
                 </select>            
             </div>
             <div class="col-4 form-group">
-                <label for="">Fecha de inicio<b style="color:red">(*)</b>:</label>
+                <label for="">Fecha de inicio<b class="text-danger">(*)</b>:</label>
                 <input type="date" class="form-control" id="txt_fecha_inicio">
             </div>
             <div class="col-4 form-group">
-                <label for="">Fecha de finalización<b style="color:red">(*)</b>:</label>
+                <label for="">Fecha de finalización<b class="text-danger">(*)</b>:</label>
                 <input type="date" class="form-control" id="txt_fecha_fin">
             </div>
             <div class="col-12 form-group">
@@ -135,24 +135,24 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR PERIODO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR PERIODO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-6 form-group">
-            <label for="">Año escolar<b style="color:red">(*)</b>:</label>
+            <label for="">Año escolar<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_año_editar" style="width:100%" disabled>
                 </select>           
             </div>
             <div class="col-6 form-group">
-                <label for="">Tipo de Periodo<b style="color:red">(*)</b>:</label>
+                <label for="">Tipo de Periodo<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="tipo_periodo_editar" style="width:100%" disabled>
                     <option value="BIMESTRE">BIMESTRE</option>
                     <option value="TRIMESTRE">TRIMESTRE</option>
@@ -161,17 +161,17 @@
                 </select>            
             </div>
             <div class="col-4 form-group">
-                <label for="">Periodo<b style="color:red">(*)</b>:</label>
+                <label for="">Periodo<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="periodo_editar" style="width:100%" >
                     <!-- Las opciones se generarán dinámicamente con JavaScript -->
                 </select>            
             </div>
             <div class="col-4 form-group">
-                <label for="">Fecha de inicio<b style="color:red">(*)</b>:</label>
+                <label for="">Fecha de inicio<b class="text-danger">(*)</b>:</label>
                 <input type="date" class="form-control" id="txt_fecha_inicio_editar">
             </div>
             <div class="col-4 form-group">
-                <label for="">Fecha de finalización<b style="color:red">(*)</b>:</label>
+                <label for="">Fecha de finalización<b class="text-danger">(*)</b>:</label>
                 <input type="date" class="form-control" id="txt_fecha_fin_editar">
             </div>
             <div class="col-12 form-group">
@@ -209,10 +209,10 @@
 <div class="modal fade" id="modal_ver_perio" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-    <div class="modal-header" style="background-color:#1FA0E0">
-    <div class="col-12 form-group" style="color:white; margin-bottom: 0;">
-        <h5 class="modal-title" id="lb_titulo" style="color:white; margin-bottom: 0;"></h5>
-        <h5 class="modal-title" id="lb_titulo2" style="color:white; margin-bottom: 0;"></h5>
+    <div class="modal-header ventana-cabecera">
+    <div class="col-12 form-group text-white mb-0">
+        <h5 class="modal-title text-white mb-0" id="lb_titulo"></h5>
+        <h5 class="modal-title text-white mb-0" id="lb_titulo2"></h5>
         </div>        
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -224,7 +224,7 @@
           <div class="table-responsive" style="text-align:center">
             <div class="card-body">
             <table id="tabla_vistacomp" class="display compact" style="width:100%" style="text-align:center">
-                <thead style="background-color:#0A5D86;color:#FFFFFF; ">
+                <thead class="tabla-cabecera">
                   <tr style="text-align:center">
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Periodo</th>
@@ -241,7 +241,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-arrow-right-from-bracket"></i>Cerrar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
       </div>
     </div>
   </div>

@@ -35,15 +35,15 @@
             </div>
             <div class="row">
               <div class="col-md-6 form-group">
-                <label for="select_pais">País<b style="color:red">(*)</b>:</label>
+                <label for="select_pais">País<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_pais" style="width:100%"></select>
               </div>
               <div class="col-md-6 form-group">
-                <label for="select_moneda">Moneda<b style="color:red">(*)</b>:</label>
+                <label for="select_moneda">Moneda<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_moneda" style="width:100%"></select>
               </div>
               <div class="col-md-6 form-group">
-                <label for="select_zona">Zona horaria<b style="color:red">(*)</b>:</label>
+                <label for="select_zona">Zona horaria<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_zona" style="width:100%"></select>
               </div>
               <div class="col-md-6 form-group">
@@ -90,7 +90,7 @@
           </div>
           <div class="card-body table-responsive p-0">
             <table class="table table-sm table-striped">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                 <tr><th>Fecha</th><th>Campo</th><th>Antes</th><th>Ahora</th><th>Usuario</th></tr>
               </thead>
               <tbody id="tbody_historial"></tbody>

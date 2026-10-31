@@ -46,7 +46,7 @@ function listar_asignaturas(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -83,9 +83,9 @@ function listar_asignaturas(){
         {"data":"estado",
             render: function(data,type,row){
                     if(data=='CON DOCENTE'){
-                    return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                    return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>";
                     }else{
-                    return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                    return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>";
                     }
             }   
         },
@@ -153,7 +153,7 @@ function listar_asignaturas_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -190,9 +190,9 @@ function listar_asignaturas_filtro(){
       {"data":"estado",
           render: function(data,type,row){
                   if(data=='CON DOCENTE'){
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>";
                   }else{
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>";
                   }
           }   
       },

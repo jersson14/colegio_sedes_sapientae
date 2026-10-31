@@ -200,8 +200,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           </div>
           <div class="info">
-            <a style="text-align:center;" href="#" class="d-block"><i class="fa fa-circle text-success fa-0x"></i> ¡Hola!<br> <b style="color:white"><?php echo $_SESSION['S_NOMBRE']; ?></b></a>
-            <a style="text-align:center;margin:5px;color:white;font-size:15px" href="#" class="d-block">&nbsp;&nbsp;<b style="text-align:center"><i class="fa fa-user text-success fa-0x"></i><em> ROL: <?php echo $_SESSION['S_ROL']; ?></em></b></a>
+            <a style="text-align:center;" href="#" class="d-block"><i class="fas fa-circle text-success fa-0x"></i> ¡Hola!<br> <b class="text-white"><?php echo $_SESSION['S_NOMBRE']; ?></b></a>
+            <a style="margin:5px;font-size:15px" href="#" class="d-block text-center text-white">&nbsp;&nbsp;<b style="text-align:center"><i class="fas fa-user text-success fa-0x"></i><em> ROL: <?php echo $_SESSION['S_ROL']; ?></em></b></a>
 
           </div>
         </div>
@@ -977,8 +977,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-          <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
-            <h5 id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;"></h5>
+          <div class="modal-header bg-white text-center d-flex justify-content-center align-items-center">
+            <h5 id="lb_titulo_datos2" class="text-dark mb-0 w-100 text-center"></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -986,7 +986,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="modal-body">
             <div class="row">
               <div class="col-12 form-group">
-                <label for="">Descripción<b style="color:red">(*)</b>:</label>
+                <label for="">Descripción<b class="text-danger">(*)</b>:</label>
                 <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
               </div>
               <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
@@ -1004,15 +1004,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-          <div class="modal-header" style="background-color:#1FA0E0;">
-            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE LA INSTITUCIÒN</b></h5>
+          <div class="modal-header ventana-cabecera">
+            <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DE LA INSTITUCIÒN</b></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-12 form-group" style="color:red">
+              <div class="col-12 form-group text-danger">
                 <h6><b>Campos Obligatorios (*)</b></h6>
               </div><br>
               <div class="col-6 form-group">
@@ -1049,8 +1049,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="modal fade" id="modal_editar_foto" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header" style="background-color:#1FA0E0;">
-            <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DE LA INSTITUCIÓN: </b><label for="" id="lb_empresa"></label></h5>
+          <div class="modal-header ventana-cabecera">
+            <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR FOTO DE LA INSTITUCIÓN: </b><label for="" id="lb_empresa"></label></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -1060,7 +1060,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <div class="col-12">
                 <input type="text" id="fotoactual" hidden>
                 <input type="text" id="txt_idempresa_foto" hidden>
-                <label for="checkboxSuccess2" style="align:justify;color:red">
+                <label for="checkboxSuccess2" class="text-danger" style="align:justify">
                   OJO: Una vez cambiado el logo, tambien se cambiara el logo en los reportes y ticket.
                 </label>
                 <label for="">Subir Foto:</label>
@@ -1134,8 +1134,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
-          <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+        <div class="modal-header bg-white text-center d-flex justify-content-center align-items-center">
+          <h5 class="text-dark mb-0 w-100 text-center" id="lb_titulo_datos2">
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
             <span aria-hidden="true">&times;</span>
@@ -1144,7 +1144,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="modal-body">
           <div class="row">
             <div class="col-12 form-group">
-              <label for="">Descripción<b style="color:red">(*)</b>:</label>
+              <label for="">Descripción<b class="text-danger">(*)</b>:</label>
               <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
             </div>
             <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
@@ -1179,14 +1179,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-lg-12">
           <div class="card-primary"><br>
             <div class="card-header">
-              <h5 class="m-0" style="font-family:cooper;text-align:center">
+              <h5 class="m-0 text-center">
                 <i class="fas fa-bullhorn"></i><b> COMUNICADOS</b>
               </h5>
             </div>
             <div class="table-responsive" style="text-align:center">
               <div class="card-body">
                 <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                  <thead class="tabla-cabecera">
                     <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Tipo</th>
@@ -1214,8 +1214,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
-          <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+        <div class="modal-header bg-white text-center d-flex justify-content-center align-items-center">
+          <h5 class="text-dark mb-0 w-100 text-center" id="lb_titulo_datos2">
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
             <span aria-hidden="true">&times;</span>
@@ -1224,7 +1224,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="modal-body">
           <div class="row">
             <div class="col-12 form-group">
-              <label for="">Descripción<b style="color:red">(*)</b>:</label>
+              <label for="">Descripción<b class="text-danger">(*)</b>:</label>
               <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
             </div>
             <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
@@ -1244,8 +1244,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <div class="modal fade" id="modal_editar_foto_docente" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header" style="background-color:#1FA0E0;">
-          <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL DOCENTE: </b><label for="" id="lb_docente"></label></h5>
+        <div class="modal-header ventana-cabecera">
+          <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR FOTO DEL DOCENTE: </b><label for="" id="lb_docente"></label></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -1255,7 +1255,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-12">
               <input type="text" id="fotoactualdocente" hidden>
               <input type="text" id="txt_iddocente_foto" hidden>
-              <label for="checkboxSuccess2" style="align:justify;color:red">
+              <label for="checkboxSuccess2" class="text-danger" style="align:justify">
                 OJO: Usted puede cambiar su foto de perfil las veces que desee.
               </label>
               <label for="">Subir Foto:</label>
@@ -1294,14 +1294,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-lg-12">
           <div class="card-primary"><br>
             <div class="card-header">
-              <h5 class="m-0" style="font-family:cooper;text-align:center">
+              <h5 class="m-0 text-center">
                 <i class="fas fa-bullhorn"></i><b> COMUNICADOS</b>
               </h5>
             </div>
             <div class="table-responsive" style="text-align:center">
               <div class="card-body">
                 <table id="tabla_comunicados_listar" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                  <thead class="tabla-cabecera">
                     <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Tipo</th>
@@ -1329,8 +1329,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
-          <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+        <div class="modal-header bg-white text-center d-flex justify-content-center align-items-center">
+          <h5 class="text-dark mb-0 w-100 text-center" id="lb_titulo_datos2">
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
             <span aria-hidden="true">&times;</span>
@@ -1339,7 +1339,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="modal-body">
           <div class="row">
             <div class="col-12 form-group">
-              <label for="">Descripción<b style="color:red">(*)</b>:</label>
+              <label for="">Descripción<b class="text-danger">(*)</b>:</label>
               <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
             </div>
             <div class="col-12" align="center" style="border: 2px solid black; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box;">
@@ -1359,8 +1359,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <div class="modal fade" id="modal_editar_foto_estudiante" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header" style="background-color:#1FA0E0;">
-          <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR FOTO DEL ESTUDIANTE: </b><label for="" id="lb_estudiante"></label></h5>
+        <div class="modal-header ventana-cabecera">
+          <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR FOTO DEL ESTUDIANTE: </b><label for="" id="lb_estudiante"></label></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -1370,7 +1370,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-12">
               <input type="text" id="fotoactualestudiante" hidden>
               <input type="text" id="txt_idestudiante_foto" hidden>
-              <label for="checkboxSuccess2" style="align:justify;color:red">
+              <label for="checkboxSuccess2" class="text-danger" style="align:justify">
                 OJO: Usted puede cambiar su foto de perfil las veces que desee.
               </label>
               <label for="">Subir Foto:</label>
@@ -1478,6 +1478,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   function cargar_contenido(id, vista) {
     $("#" + id).load(vista, function() {
       aplicarRegional(this);
+      Ayuda_Colocar(this, vista);
     });
   }
   var idioma_espanol = {
@@ -1625,8 +1626,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <div class="modal fade" id="modal_mi_clave" tabindex="-1" role="dialog" aria-labelledby="titulo_mi_clave" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="titulo_mi_clave" style="color:white"><b>Cambiar mi contraseña</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white" id="titulo_mi_clave"><b>Cambiar mi contraseña</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
@@ -1644,6 +1645,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 <script src="../js/tablas_mejoras.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/legibilidad.js?rev=<?php echo time(); ?>"></script>
+<script src="../js/ayuda.js?rev=<?php echo time(); ?>"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

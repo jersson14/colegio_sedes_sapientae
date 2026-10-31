@@ -53,7 +53,7 @@ function listar_horarios(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -68,7 +68,7 @@ function listar_horarios(){
         {"data":"Nivel_academico"},
         
         {           
-             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fas fa-eye'></i> Horario por aula</button>"
         },
         {"data":"HORARIO",
             render: function(data,type,row){
@@ -80,7 +80,7 @@ function listar_horarios(){
             }   
         },
 
-        {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+        {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fas fa-print'></i> Imprimir horario</button>"},
 
     ],
 
@@ -151,7 +151,7 @@ function listar_horarios_año(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -166,7 +166,7 @@ function listar_horarios_año(){
       {"data":"Nivel_academico"},
       
       {           
-           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fas fa-eye'></i> Horario por aula</button>"
       },
       {"data":"HORARIO",
           render: function(data,type,row){
@@ -178,7 +178,7 @@ function listar_horarios_año(){
           }   
       },
 
-      {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+      {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fas fa-print'></i> Imprimir horario</button>"},
 
   ],
 
@@ -246,7 +246,7 @@ function listar_todo(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -261,7 +261,7 @@ function listar_todo(){
       {"data":"Nivel_academico"},
       
       {           
-           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fas fa-eye'></i> Horario por aula</button>"
       },
       {"data":"HORARIO",
           render: function(data,type,row){
@@ -273,7 +273,7 @@ function listar_todo(){
           }   
       },
 
-      {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+      {"defaultContent":"<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fas fa-print'></i> Imprimir horario</button>"},
 
   ],
 
@@ -349,7 +349,7 @@ function Cargar_Año(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -358,7 +358,7 @@ function Cargar_Año(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -367,7 +367,7 @@ function Cargar_Año(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -376,7 +376,7 @@ function Cargar_Año(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -385,7 +385,7 @@ function Cargar_Año(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     }

@@ -36,7 +36,7 @@ function listar_nivel_academico() {
     dom: 'Bfrtip',
     buttons: [
       { extend: 'excelHtml5', text: '<i class="fas fa-file-excel"></i> ', titleAttr: 'Exportar a Excel', title: 'PLAN DE CATEGORÍAS' },
-      { extend: 'print', text: '<i class="fa fa-print"></i> ', titleAttr: 'Imprimir', title: 'PLAN DE CATEGORÍAS' }
+      { extend: 'print', text: '<i class="fas fa-print"></i> ', titleAttr: 'Imprimir', title: 'PLAN DE CATEGORÍAS' }
     ],
     "columns": [
       { "data": "codigo", render: function(data, type, row) { return row.es_grupo == 1 ? '<b>' + indEsc(data) + '</b>' : indEsc(data); } },
@@ -55,9 +55,9 @@ function listar_nivel_academico() {
         }
       },
       { "data": null, render: function(data, type, row) {
-          let b = "<button class='editar btn btn-primary btn-sm' title='Editar'><i class='fa fa-edit'></i> Editar</button>";
+          let b = "<button class='editar btn btn-primary btn-sm' title='Editar'><i class='fas fa-edit'></i> Editar</button>";
           if (row.del_sistema == 0 && row.usos == 0 && row.hijos == 0) {
-            b += "&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar'><i class='fa fa-trash'></i> Eliminar</button>";
+            b += "&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar'><i class='fas fa-trash'></i> Eliminar</button>";
           }
           return b;
         }

@@ -46,7 +46,7 @@ function listar_atencion_enfermeria(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -82,7 +82,7 @@ function listar_atencion_enfermeria(){
         {"data":"motivo_consulta"},
         {"data":"fecha_formateada2"},
         
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fas fa-edit'></i> Editar</button>"},
         
     ],
 
@@ -151,7 +151,7 @@ function listar_atencion_enfermeria_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -187,7 +187,7 @@ function listar_atencion_enfermeria_filtro(){
       {"data":"motivo_consulta"},
       {"data":"fecha_formateada2"},
       
-      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>"},
+      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fas fa-edit'></i> Editar</button>"},
       
   ],
 

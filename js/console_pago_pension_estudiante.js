@@ -51,7 +51,7 @@ function listar_pago_pension(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -79,7 +79,7 @@ function listar_pago_pension(){
         {"data":"FECHA_pago"},
 
 
-        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fas fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fas fa-print'></i> Kardex de pago</button>"},
         
     ],
 
@@ -147,7 +147,7 @@ function listar_pago_pension_buscar(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -175,7 +175,7 @@ function listar_pago_pension_buscar(){
         {"data":"FECHA_pago"},
 
 
-        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fas fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fas fa-print'></i> Kardex de pago</button>"},
         
     ],
 
@@ -242,7 +242,7 @@ function listar_todo(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -270,7 +270,7 @@ function listar_todo(){
         {"data":"FECHA_pago"},
 
 
-        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fas fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='imprimir btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fas fa-print'></i> Kardex de pago</button>"},
         
     ],
 
@@ -359,7 +359,7 @@ function listar_pagos(id) {
             { "data": "metodos", render: function(data){ return data ? $('<div>').text(data).html() : "-"; } },
             { "data": "sub_total", render: function(data){ return formatoMoneda(data); } },
             {
-                "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fa fa-print'></i> Recibo</button>",
+                "defaultContent": "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fas fa-print'></i> Recibo</button>",
                 "orderable": false // Evita la ordenación en esta columna
             }
         ],

@@ -43,7 +43,7 @@
             <div class="row text-center mb-2" id="resumen_mov"></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Fecha</th><th>Origen</th><th>Descripción</th><th>Referencia</th><th class="text-right">Entrada</th><th class="text-right">Salida</th><th class="text-right">Saldo</th><th>Usuario</th><th title="Conciliado con el extracto bancario">Concil.</th></tr>
                 </thead>
                 <tbody id="tbody_movimientos"></tbody>
@@ -55,16 +55,16 @@
           <!-- Depósitos y transferencias -->
           <div class="tab-pane fade" id="tab_transferencias" role="tabpanel">
             <div class="row">
-              <div class="col-md-3 form-group"><label>Tipo<b style="color:red">(*)</b>:</label>
+              <div class="col-md-3 form-group"><label>Tipo<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_tipo_tr">
                   <option value="DEPOSITO">DEPÓSITO (caja → banco)</option>
                   <option value="TRANSFERENCIA">TRANSFERENCIA entre cuentas</option>
                   <option value="RETIRO">RETIRO (banco → caja)</option>
                 </select>
               </div>
-              <div class="col-md-3 form-group"><label>Desde<b style="color:red">(*)</b>:</label><select class="form-control" id="select_origen_tr"></select></div>
-              <div class="col-md-3 form-group"><label>Hacia<b style="color:red">(*)</b>:</label><select class="form-control" id="select_destino_tr"></select></div>
-              <div class="col-md-3 form-group"><label>Monto<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_tr"></div>
+              <div class="col-md-3 form-group"><label>Desde<b class="text-danger">(*)</b>:</label><select class="form-control" id="select_origen_tr"></select></div>
+              <div class="col-md-3 form-group"><label>Hacia<b class="text-danger">(*)</b>:</label><select class="form-control" id="select_destino_tr"></select></div>
+              <div class="col-md-3 form-group"><label>Monto<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_tr"></div>
               <div class="col-md-3 form-group"><label>Fecha:</label><input type="date" class="form-control" id="txt_fecha_tr"></div>
               <div class="col-md-3 form-group"><label>N.° operación / voucher:</label><input type="text" class="form-control" id="txt_ref_tr" maxlength="60"></div>
               <div class="col-md-4 form-group"><label>Observación:</label><input type="text" class="form-control" id="txt_obs_tr" maxlength="255"></div>
@@ -78,7 +78,7 @@
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Fecha</th><th>Tipo</th><th>Desde</th><th>Hacia</th><th class="text-right">Monto</th><th>Referencia</th><th>Observación</th><th>Usuario</th><th>Estado</th><th></th></tr>
                 </thead>
                 <tbody id="tbody_transferencias"></tbody>
@@ -103,7 +103,7 @@
                 </table>
               </div>
               <div class="col-md-6">
-                <div class="form-group"><label>Efectivo contado<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_contado"></div>
+                <div class="form-group"><label>Efectivo contado<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_contado"></div>
                 <p id="ci_diferencia"></p>
                 <div class="form-group"><label>Observación (obligatoria si hay diferencia):</label><input type="text" class="form-control" id="txt_obs_cierre" maxlength="255"></div>
                 <div class="custom-control custom-checkbox mb-2">
@@ -117,7 +117,7 @@
             <h6 class="mt-3"><b>Cierres anteriores</b></h6>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Fecha</th><th class="text-right">Inicio</th><th class="text-right">Entradas</th><th class="text-right">Salidas</th><th class="text-right">Esperado</th><th class="text-right">Contado</th><th class="text-right">Diferencia</th><th>Observación</th><th>Usuario</th></tr>
                 </thead>
                 <tbody id="tbody_cierres"></tbody>

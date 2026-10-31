@@ -57,7 +57,7 @@ function listar_tareas_id(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -76,14 +76,14 @@ function listar_tareas_id(){
         {"data":"archivo_tarea",
           render: function(data,type,row){
                   if(data==''){
-                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                   }else{
                     return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
               }   
           },    
         {
-            "defaultContent": "<button class='mostrar btn btn-primary btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Calificar tarea</button>"
+            "defaultContent": "<button class='mostrar btn btn-primary btn-sm' title='Ver tarea realizada'><i class='fas fa-check'></i> Calificar tarea</button>"
         },
 
         {"data":"ESTADO",
@@ -98,9 +98,9 @@ function listar_tareas_id(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
               }else if(data=='FINALIZADO'){
-                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
             }
             }
           },        
@@ -169,7 +169,7 @@ function listar_tareas(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -188,14 +188,14 @@ function listar_tareas(){
         {"data":"archivo_tarea",
           render: function(data,type,row){
                   if(data==''){
-                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                   }else{
                     return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
               }   
           },    
         {
-            "defaultContent": "<button class='mostrar btn btn-primary btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Calificar tarea</button>"
+            "defaultContent": "<button class='mostrar btn btn-primary btn-sm' title='Ver tarea realizada'><i class='fas fa-check'></i> Calificar tarea</button>"
         },
 
         {"data":"ESTADO",
@@ -210,9 +210,9 @@ function listar_tareas(){
         {"data":"ESTADO",
             render: function (data, type, row ) {
               if(data=='PENDIENTE'){
-                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'   title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'   title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
             }else if(data=='FINALIZADO'){
-              return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+              return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' disabled  title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button disabled class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
           }
             }
           },        
@@ -256,7 +256,7 @@ $('#tabla_tarea').on('click','.activar',function(){
       var data = tbl_tareas.row(this).data();
   }
     Swal.fire({
-      title: 'Desea dejar como finalizado la tarea con el tema: <b style="color:blue">'+textoSeguro(data.tema)+'</b>?',
+      title: 'Desea dejar como finalizado la tarea con el tema: <b class="text-primary">'+textoSeguro(data.tema)+'</b>?',
       text: "Una vez finalizado ningún estudiante podra subir su tarea.",
       icon: 'warning',
       showCancelButton: true,
@@ -324,7 +324,7 @@ function listar_tareas_menu(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -343,7 +343,7 @@ function listar_tareas_menu(){
       {"data":"archivo_tarea",
         render: function(data,type,row){
                 if(data==''){
-                    return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                    return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                 }else{
                   return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                 }
@@ -688,7 +688,7 @@ $('#tabla_tarea').on('click','.delete',function(){
                 "data": "archivo_evnio_tarea",
                 render: function (data, type, row) {
                     if (data == '') {
-                        return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                        return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                     } else {
                         return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                     }
@@ -742,11 +742,11 @@ $('#tabla_tarea').on('click','.delete',function(){
                 "data": "estado",
                 render: function (data, type, row) {
                     if (data === 'PENDIENTE') {
-                        return "<button hidden class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fa fa-save'></i> Guardar</button>";
+                        return "<button hidden class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fas fa-save'></i> Guardar</button>";
                     } else if (data === 'ENVIADO') {
-                        return "<button class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fa fa-save'></i> Guardar</button>";
+                        return "<button class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fas fa-save'></i> Guardar</button>";
                     } else {
-                        return "<button hidden class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fa fa-save'></i> Guardar</button>";
+                        return "<button hidden class='calificar btn btn-primary btn-sm' style='margin-right: 10px;' title='Guardar calificación de tarea'><i class='fas fa-save'></i> Guardar</button>";
                     }
                 }
             },

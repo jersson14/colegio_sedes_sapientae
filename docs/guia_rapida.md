@@ -101,7 +101,7 @@ Arriba se elige la forma de trabajar: **Por día** o **Mes completo**. En el cel
 ### Mes completo (como la hoja en papel)
 
 1. Elija el **aula** y el **mes**. Las flechas ‹ › cambian de mes.
-2. Cada fila es un estudiante y cada columna un día de clase (lunes a viernes), agrupados por semana.
+2. Cada fila es un estudiante y cada columna un día de clase (lunes a viernes, o hasta el sábado si así está en Parámetros del sistema), agrupados por semana.
 3. Haga **clic en la casilla** para marcar. Cada clic cambia la marca: **P** presente → **T** tardanza → **F** falta → **J** falta justificada → vacío. Las casillas con observación muestran una esquina de color; al pasar el mouse se lee la observación.
 4. **Más rápido:**
    - **Hoy: todos presentes** marca a todos en el día de hoy. Después cambie solo a los que faltaron o llegaron tarde.

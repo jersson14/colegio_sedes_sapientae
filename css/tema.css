@@ -112,21 +112,15 @@ a:hover { color: var(--tema-primario-oscuro); }
   .content-header .breadcrumb { display: none; }
 }
 
-/* ---------- Colores fijos heredados de las pantallas ---------- */
+/* ---------- Cabeceras con el color del colegio (paso 16: antes eran colores fijos en línea) ---------- */
 /* Encabezados de tabla */
-[style*="background-color:#0A5D86"], [style*="background-color:#0a5d86"],
-[style*="background-color:#023D77"], [style*="background-color: #007bff"] {
-  background-color: var(--tema-primario) !important;
-  color: var(--tema-primario-texto) !important;
-}
+.tabla-cabecera { background-color: var(--tema-primario) !important; color: var(--tema-primario-texto) !important; }
 /* Encabezados de ventanas (modales) */
-[style*="background-color:#1FA0E0"], [style*="background-color:#1fa0e0"] {
-  background-color: var(--tema-primario) !important;
-  border-bottom: 3px solid var(--tema-acento);
-}
-[style*="background-color:#1FA0E0"] .modal-title, [style*="background-color:#1FA0E0"] h5,
-[style*="background-color:#1FA0E0"] .close, [style*="background-color:#1FA0E0"] b { color: var(--tema-primario-texto) !important; }
-[style^="color: #0A5D86"], [style*="; color: #0A5D86"] { color: var(--tema-tinta) !important; }
+.ventana-cabecera { background-color: var(--tema-primario) !important; border-bottom: 3px solid var(--tema-acento); }
+.ventana-cabecera .modal-title, .ventana-cabecera h4, .ventana-cabecera h5, .ventana-cabecera .close, .ventana-cabecera b,
+.ventana-cabecera .text-white, .tabla-cabecera .text-white { color: var(--tema-primario-texto) !important; }
+/* Celda o texto resaltado (antes fondo amarillo fijo) */
+.resaltado { background-color: color-mix(in srgb, var(--tema-acento) 30%, #fff) !important; }
 
 /* DataTables */
 table.dataTable thead th { border-bottom-color: var(--tema-acento) !important; }
@@ -229,3 +223,12 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
     flex: 0 0 100%; max-width: 100%;
   }
 }
+
+/* ---------- Ayuda contextual (Fase 13, paso 16) ---------- */
+.pagina-titulo .ayuda-boton { padding: 0 0 0 .4rem; font-size: 1.1rem; vertical-align: middle; color: var(--tema-primario); min-height: 0; }
+.ayuda-texto { text-align: left; font-size: .95rem; }
+.ayuda-texto ul, .ayuda-texto ol { padding-left: 1.3rem; }
+.ayuda-texto li { margin-bottom: .25rem; }
+.ayuda-texto .ayuda-seccion { margin-top: 1rem; font-weight: 700; color: var(--tema-primario); }
+.ayuda-texto .ayuda-seccion:first-child { margin-top: 0; }
+.ayuda-texto h6 { font-weight: 700; }

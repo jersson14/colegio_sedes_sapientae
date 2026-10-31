@@ -34,22 +34,22 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-2 form-group">
-                                    <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_nivel" style="width:100%">
                                     </select>
                                 </div>
                                 <div class="col-2 form-group">
-                                    <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                                    <label for="">Grado o Aula<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_aula" style="width:100%">
                                     </select>
                                 </div>
                                 <div class="col-2 form-group">
-                                    <label for="">Fecha inicio</label><b style="color:red">(*)</b>:</label>
+                                    <label for="">Fecha inicio</label><b class="text-danger">(*)</b>:</label>
                                     <input type="date" class="form-control" id="txtfechainicio">
 
                                 </div>
                                 <div class="col-2 form-group">
-                                    <label for="">Fecha final<b style="color:red">(*)</b>:</label>
+                                    <label for="">Fecha final<b class="text-danger">(*)</b>:</label>
                                     <input type="date" class="form-control" id="txtfechafin">
 
                                 </div>
@@ -67,7 +67,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_enfermeria" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">DNI</th>
@@ -96,24 +96,24 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE ATENCIÓN ENFERMERIA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE ATENCIÓN ENFERMERIA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Estudiante<b style="color:red">(*)</b>:</label>
+            <label for="">Estudiante<b class="text-danger">(*)</b>:</label>
             <select class="js-example-basic-single" id="txt_estudiante" style="width:100%">
             </select>           
         </div>
           <div class="col-12 form-group">
-            <label for="">Motivo de consulta<b style="color:red">(*)</b>:</label>
+            <label for="">Motivo de consulta<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_motivo" rows="3" class="form-control" style="resize:none;"></textarea>
       
           </div>
@@ -139,25 +139,25 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>MODIFICAR LA ATENCIÓN DE ENFERMERIA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>MODIFICAR LA ATENCIÓN DE ENFERMERIA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Estudiante<b style="color:red">(*)</b>:</label>
+            <label for="">Estudiante<b class="text-danger">(*)</b>:</label>
             <input type="text" id="txt_id_atencion" hidden>
             <select class="js-example-basic-single" id="txt_estudiante_editar" style="width:100%">
             </select>         
          </div>
           <div class="col-12 form-group">
-            <label for="">Motivo de consulta<b style="color:red">(*)</b>:</label>
+            <label for="">Motivo de consulta<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_motivo_editar" rows="3" class="form-control" style="resize:none;" rows="2" style="resize:none" ></textarea>
           </div>
           <div class="col-12 form-group">
@@ -185,15 +185,15 @@
 <div class="modal fade" id="modal_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>DATOS DE ATENCIÓN ENFERMERIA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>DATOS DE ATENCIÓN ENFERMERIA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-6 form-group">

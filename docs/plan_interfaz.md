@@ -285,6 +285,12 @@ Paso 15 hecho el 2026-10-31 (migración 022; `utilitario/permisos.php`, `utilita
 - **Parámetros** (Configuración → Parámetros del sistema): intentos de ingreso antes del bloqueo (**0 = sin bloqueo**) y minutos de bloqueo, tamaño máximo de videos (avisa si supera el límite del servidor), clases los sábados (registro de asistencia y planilla) y nombres de P, T, F y J (registro y planilla impresa). Sin valor guardado rige `config/config.php`.
 - **No se hizo:** orden y nombres del menú editables. El menú se reorganizó en el paso 5 y depende de él la revisión de permisos; cambiarlo desde una pantalla rompería esa revisión.
 
+Paso 16 hecho el 2026-10-31 (`tests/pruebas_fase13_pulido.sh`):
+
+- **Íconos:** un solo juego (Font Awesome 5, prefijo `fas`). Corregido: 17 botones "Cerrar" usaban un nombre de Font Awesome 6 (`fa-arrow-right-from-bracket`) y se veían sin ícono. La prueba revisa que cada ícono usado exista en la versión instalada.
+- **Estilos en línea:** 907 colores fijos pasaron a clases: `tabla-cabecera` y `ventana-cabecera` (color del colegio), `resaltado` y las de Bootstrap (`text-danger` para los (*), `text-center`, `mb-0`…). Ya no se usan los selectores por atributo `[style*=...]` del tema. Sin `font-family: cooper`. Solo quedan en línea las muestras de color de Apariencia y del panel.
+- **Ayuda contextual:** botón **?** junto al título de 13 pantallas complejas, que muestra su sección de `docs/guia_rapida.md` (`js/ayuda.js`, `controller/ayuda/controlador_ayuda.php`). La guía se escapa al convertirla en HTML.
+
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 
 | # | Qué | Etapa | Esfuerzo | Por qué en este orden |
@@ -304,7 +310,7 @@ El orden busca primero lo que evita errores en los datos, luego lo que más tiem
 | 13 ✅ | Cambio de año escolar asistido | 4b | Alto | Se usa una vez al año, pero ahorra días de trabajo |
 | 14 ✅ | Importar desde Excel, avisos a las familias y comunicados con lectura | 4b | Alto | Necesitan definir el correo o WhatsApp del colegio |
 | 15 ✅ | Permisos y parámetros desde una pantalla | 4d | Medio | Configurable sin el técnico |
-| 16 | Consistencia fina | 7 | Bajo | Pulido final |
+| 16 ✅ | Consistencia fina | 7 | Bajo | Pulido final |
 
 ---
 

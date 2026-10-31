@@ -53,7 +53,7 @@ foreach ($meses as $i => $m) {
         <div id="aviso_vencimientos"></div>
         <div class="table-responsive">
           <table id="tabla_pensiones" class="table table-striped table-bordered" style="width:100%">
-            <thead style="background-color:#0A5D86;color:#FFFFFF;">
+            <thead class="tabla-cabecera">
               <tr>
                 <th style="text-align:center">Nro.</th>
                 <th style="text-align:center">Año escolar</th>
@@ -78,31 +78,31 @@ foreach ($meses as $i => $m) {
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" style="color:white; text-align:center"><b>REGISTRO DE PENSIÓN</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center"><b>REGISTRO DE PENSIÓN</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red"><h6><b>Campos Obligatorios (*)</b></h6></div>
+          <div class="col-12 form-group text-danger"><h6><b>Campos Obligatorios (*)</b></h6></div>
           <div class="col-12 form-group">
-            <label>Año escolar<b style="color:red">(*)</b>:</label>
+            <label>Año escolar<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-anio" id="select_anio"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Nivel Académico<b style="color:red">(*)</b>:</label>
+            <label>Nivel Académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-nivel" id="select_nivel" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Mes<b style="color:red">(*)</b>:</label>
+            <label>Mes<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_mes" style="width:100%"><?php echo $opciones_mes; ?></select>
           </div>
           <div class="col-4 form-group">
-            <label>Fecha de venc.<b style="color:red">(*)</b>:</label>
+            <label>Fecha de venc.<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fecha">
           </div>
           <div class="col-4 form-group">
-            <label>Precio<b style="color:red">(*)</b>:</label>
+            <label>Precio<b class="text-danger">(*)</b>:</label>
             <input type="text" inputmode="decimal" class="form-control" id="txt_precio">
           </div>
           <div class="col-4 form-group">
@@ -123,32 +123,32 @@ foreach ($meses as $i => $m) {
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" style="color:white; text-align:center"><b>EDITAR DATOS DE PENSIÓN</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center"><b>EDITAR DATOS DE PENSIÓN</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red"><h6><b>Campos Obligatorios (*)</b></h6></div>
+          <div class="col-12 form-group text-danger"><h6><b>Campos Obligatorios (*)</b></h6></div>
           <input type="text" id="txt_id_pension" hidden>
           <div class="col-12 form-group">
-            <label>Año escolar<b style="color:red">(*)</b>:</label>
+            <label>Año escolar<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-anio" id="select_anio_editar"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Nivel Académico<b style="color:red">(*)</b>:</label>
+            <label>Nivel Académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-nivel" id="select_nivel_editar" style="width:100%"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Mes<b style="color:red">(*)</b>:</label>
+            <label>Mes<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_mes_editar" style="width:100%"><?php echo $opciones_mes; ?></select>
           </div>
           <div class="col-4 form-group">
-            <label>Fecha de venc.<b style="color:red">(*)</b>:</label>
+            <label>Fecha de venc.<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fecha_editar">
           </div>
           <div class="col-4 form-group">
-            <label>Precio<b style="color:red">(*)</b>:</label>
+            <label>Precio<b class="text-danger">(*)</b>:</label>
             <input type="text" inputmode="decimal" class="form-control" id="txt_precio_editar">
           </div>
           <div class="col-4 form-group">
@@ -170,26 +170,26 @@ foreach ($meses as $i => $m) {
 <div class="modal fade" id="modal_generar" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#0A5D86;">
-        <h5 class="modal-title" style="color:white"><b>GENERAR CRONOGRAMA DE PENSIONES</b></h5>
+      <div class="modal-header tabla-cabecera">
+        <h5 class="modal-title text-white"><b>GENERAR CRONOGRAMA DE PENSIONES</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-12 form-group">
-            <label>Año escolar<b style="color:red">(*)</b>:</label>
+            <label>Año escolar<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-anio" id="select_anio_gen"></select>
           </div>
           <div class="col-12 form-group">
-            <label>Nivel Académico<b style="color:red">(*)</b>:</label>
+            <label>Nivel Académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control select-nivel" id="select_nivel_gen"></select>
           </div>
           <div class="col-6 form-group">
-            <label>Desde el mes<b style="color:red">(*)</b>:</label>
+            <label>Desde el mes<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_desde_gen"><?php echo $opciones_num; ?></select>
           </div>
           <div class="col-6 form-group">
-            <label>Hasta el mes<b style="color:red">(*)</b>:</label>
+            <label>Hasta el mes<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_hasta_gen"><?php echo $opciones_num; ?></select>
           </div>
           <div class="col-4 form-group">
@@ -200,7 +200,7 @@ foreach ($meses as $i => $m) {
             </select>
           </div>
           <div class="col-4 form-group">
-            <label>Precio<b style="color:red">(*)</b>:</label>
+            <label>Precio<b class="text-danger">(*)</b>:</label>
             <input type="text" inputmode="decimal" class="form-control" id="txt_precio_gen">
           </div>
           <div class="col-4 form-group">

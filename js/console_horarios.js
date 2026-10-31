@@ -47,7 +47,7 @@ function listar_horarios(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -71,7 +71,7 @@ function listar_horarios(){
         }
         },        
         {           
-             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fas fa-eye'></i> Horario por aula</button>"
         },
         {"data":"HORARIO",
             render: function(data,type,row){
@@ -83,7 +83,7 @@ function listar_horarios(){
             }   
         },
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fas fa-print'></i> Imprimir horario</button>"},
 
     ],
 
@@ -151,7 +151,7 @@ function listar_horarios_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -175,7 +175,7 @@ function listar_horarios_filtro(){
         }
         },      
       {           
-           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fa fa-eye'></i> Horario por aula</button>"
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horario'><i class='fas fa-eye'></i> Horario por aula</button>"
       },
       {"data":"HORARIO",
           render: function(data,type,row){
@@ -187,7 +187,7 @@ function listar_horarios_filtro(){
           }   
       },
 
-      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fa fa-print'></i> Imprimir horario</button>"},
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>&nbsp;&nbsp;<button class='print btn btn-warning  btn-sm' title='Imprimir horario'><i class='fas fa-print'></i> Imprimir horario</button>"},
 
   ],
 
@@ -435,7 +435,7 @@ function listar_horario_editar(id) {
       {"data": "Id_detalle_asig_docente"},
       {"data": "nombre_asig"},
       {"data": "dia"},
-      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"}
+      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>"}
     ],
     "language": idioma_espanol,
     "select": true
@@ -790,7 +790,7 @@ $('#tabla_horario').on('click','.delete',function(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -799,7 +799,7 @@ $('#tabla_horario').on('click','.delete',function(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -808,7 +808,7 @@ $('#tabla_horario').on('click','.delete',function(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -817,7 +817,7 @@ $('#tabla_horario').on('click','.delete',function(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     },
@@ -826,7 +826,7 @@ $('#tabla_horario').on('click','.delete',function(){
         "render": function(data, type, row) {
             // Aplica el estilo en línea si el valor es "RECREO"
             return data === 'RECREO' 
-                ? '<div style="background-color: yellow; text-align: center;">' + data + '</div>' 
+                ? '<div class="resaltado text-center">' + data + '</div>' 
                 : data;
         }
     }

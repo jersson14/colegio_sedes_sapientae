@@ -45,8 +45,8 @@
 <div class="modal fade" id="modal_avisos_config" tabindex="-1" role="dialog" aria-labelledby="titulo_av_config" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="titulo_av_config" style="color:white"><b>Configurar avisos</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white" id="titulo_av_config"><b>Configurar avisos</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">

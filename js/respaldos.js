@@ -33,7 +33,7 @@ window.Respaldos = (function () {
       var avisos = (r.avisos || []).map(function (a) { return '<div class="alert alert-warning small mt-2 mb-0">' + textoSeguro(a) + '</div>'; }).join('');
       $('#resultado_respaldo').html('<div class="alert alert-success mb-0"><b><i class="fas fa-check-circle"></i> Respaldo generado</b><br>'
         + '<small>' + r.tablas + ' tablas · ' + r.filas + ' registros · ' + r.rutinas + ' procedimientos · ' + r.triggers + ' triggers · ' + tamano(r.tamano) + '</small><br>'
-        + '<a class="btn btn-warning btn-sm mt-2" style="color:#000!important" href="' + URL + '?accion=descargar&archivo=' + encodeURIComponent(r.archivo) + '"><i class="fas fa-download"></i> Descargar ahora</a></div>' + avisos);
+        + '<a class="btn btn-warning btn-sm mt-2 text-dark" href="' + URL + '?accion=descargar&archivo=' + encodeURIComponent(r.archivo) + '"><i class="fas fa-download"></i> Descargar ahora</a></div>' + avisos);
       listar();
     }).always(function () {
       btn.prop('disabled', false).html('<i class="fas fa-database"></i> Generar respaldo ahora');

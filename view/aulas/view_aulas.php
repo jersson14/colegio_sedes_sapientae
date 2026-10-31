@@ -35,7 +35,7 @@
                 <div class="row">
                     
                     <div class="col-4 form-group">
-                        <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                        <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                         <select class="form-control" id="select_nivel_buscar" style="width:100%">
                         </select>
                     </div>
@@ -53,7 +53,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_aulas" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Grado</th>
@@ -82,33 +82,33 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE AULA O GRADO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE AULA O GRADO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Grado académico<b style="color:red">(*)</b>:</label>
+            <label for="">Grado académico<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_grado">
           </div>
           <div class="col-4 form-group">
-            <label for="">Sección<b style="color:red">(*)</b>:</label>
+            <label for="">Sección<b class="text-danger">(*)</b>:</label>
               <select class="js-example-basic-single" id="select_seccion" style="width:100%">
               </select>          
           </div>
           <div class="col-8 form-group">
-            <label for="">Nivel académico<b style="color:red">(*)</b>:</label>
+            <label for="">Nivel académico<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_nivel_aca" style="width:100%">
               </select>          
           </div>
           <div class="col-12 form-group">
-            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+            <label for="">Descripción<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
           <div class="col-6 form-group">
@@ -128,34 +128,34 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE AULA O GRADO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DE AULA O GRADO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Grado académico<b style="color:red">(*)</b>:</label>
+            <label for="">Grado académico<b class="text-danger">(*)</b>:</label>
             <input type="text" id="txt_id_grado" hidden>
             <input type="text" class="form-control" id="txt_grado_editar">
           </div>
           <div class="col-4 form-group">
-            <label for="">Sección<b style="color:red">(*)</b>:</label>
+            <label for="">Sección<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_seccion_editar" style="width:100%">
               </select>          
           </div>
           <div class="col-8 form-group">
-            <label for="">Nivel académico<b style="color:red">(*)</b>:</label>
+            <label for="">Nivel académico<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_nivel_aca_editar" style="width:100%">
               </select>          
           </div>
           <div class="col-12 form-group">
-            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+            <label for="">Descripción<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
           <div class="col-6 form-group">
@@ -163,7 +163,7 @@
             <input type="number" min="1" class="form-control" id="txt_capacidad_editar" placeholder="Sin límite">
           </div>
           <div class="col-12 form-group">
-            <label for="">Estado<b style="color:red">(*)</b>:</label>
+            <label for="">Estado<b class="text-danger">(*)</b>:</label>
               <select name="" id="txt_estatus" class="form-control">
                 <option value="ACTIVO">ACTIVO</option>
                 <option value="INACTIVO">INACTIVO</option>

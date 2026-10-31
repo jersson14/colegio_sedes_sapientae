@@ -53,7 +53,7 @@ function listar_notas_todos(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -95,7 +95,7 @@ function listar_notas_todos(){
       
 
 
-        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar notas por bimestre</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Mostrar notas por bimestre</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos'><i class='fas fa-edit'></i> Editar</button>"},
         
     ],
 
@@ -393,7 +393,7 @@ function inicializar_modal_notas() {
     
     // Reinicializar la estructura de la tabla con los estilos correctos
     $('#tabla_vistacomp_ver').html(`
-        <thead style="background-color:#0A5D86;color:#FFFFFF;">
+        <thead class="tabla-cabecera">
             <tr>
                 <th style="text-align:center; padding: 10px;">Área</th>
                 <th style="text-align:center; padding: 10px;">Competencias</th>
@@ -452,7 +452,7 @@ function listar_notas_ver() {
             api.column(0, { page: 'current' }).data().each(function(group, i) {
                 if (last !== group) {
                     $(rows).eq(i).before(
-                        '<tr class="group"><td colspan="4" style="background-color:#f0f0f0;"><strong>Área: ' + group + '</strong></td></tr>'
+                        '<tr class="group"><td colspan="4" class="bg-light"><strong>Área: ' + group + '</strong></td></tr>'
                     );
                     last = group;
                 }
@@ -781,7 +781,7 @@ function inicializar_modal_notas() {
   
   // Reinicializar la estructura de la tabla con los estilos correctos
   $('#tabla_vistacomp_ver').html(`
-      <thead style="background-color:#0A5D86;color:#FFFFFF;">
+      <thead class="tabla-cabecera">
           <tr>
               <th style="text-align:center; padding: 10px;">Área</th>
               <th style="text-align:center; padding: 10px;">Competencias</th>
@@ -841,7 +841,7 @@ listar_notas_ver_padres();
           api.column(0, { page: 'current' }).data().each(function(group, i) {
               if (last !== group) {
                   $(rows).eq(i).before(
-                      '<tr class="group"><td colspan="4" style="background-color:#f0f0f0;"><strong>Área: ' + group + '</strong></td></tr>'
+                      '<tr class="group"><td colspan="4" class="bg-light"><strong>Área: ' + group + '</strong></td></tr>'
                   );
                   last = group;
               }
@@ -1058,7 +1058,7 @@ function listar_notas_ver_editar() {
       api.column(0, { page: 'current' }).data().each(function(group, i) {
         if (last !== group) {
           $(rows).eq(i).before(
-            '<tr class="group"><td colspan="4" style="background-color:#f0f0f0;"><strong>Área: ' + group + '</strong></td></tr>'
+            '<tr class="group"><td colspan="4" class="bg-light"><strong>Área: ' + group + '</strong></td></tr>'
           );
           last = group;
         }

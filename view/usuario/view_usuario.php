@@ -33,7 +33,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4 form-group">
-                                    <label for="">Tipo de usuario o rol<b style="color:red">(*)</b>:</label>
+                                    <label for="">Tipo de usuario o rol<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_rol" style="width:100%">
                                     </select>
                                 </div>
@@ -51,7 +51,7 @@
                 <div class="table-responsive" style="text-align:center">
                   <div class="card-body">
                     <table id="tabla_usuario" class="table table-striped table-bordered" style="width:100%">
-                        <thead style="background-color:#0A5D86;color:#FFFFFF; ">
+                        <thead class="tabla-cabecera">
                             <tr>
                                 <th style="text-align:center">Nro.</th>
                                 <th style="text-align:center">Usuario</th>
@@ -76,15 +76,15 @@
 <div class="modal fade" id="modal_editar" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel"  style="color:white; text-align:center"><b>EDITAR DATOS DE USUARIO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel" ><b>EDITAR DATOS DE USUARIO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
               <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12">
@@ -113,15 +113,15 @@
 <div class="modal fade" id="modal_contra" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>CAMBIAR CONTRASEÑA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>CAMBIAR CONTRASEÑA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
               <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12">

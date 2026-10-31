@@ -34,7 +34,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_alumnos" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Foto</th>
@@ -104,27 +104,27 @@
                   <div class="row">
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-12 form-group" style="color:red">
+                            <div class="col-12 form-group text-danger">
                                 <h6><b>Campos Obligatorios (*)</b></h6>
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">DNI Alumno<b style="color:red">(*)</b>:</label>
+                                <label for="">DNI Alumno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni" placeholder="Ingrese el DNI del alumno" onkeypress="return soloNumeros(event)" maxlenght="8">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Nombres<b style="color:red">(*)</b>:</label>
+                                <label for="">Nombres<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_nomb" placeholder="Ingrese los nombres" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Apellido Paterno<b style="color:red">(*)</b>:</label>
+                                <label for="">Apellido Paterno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_ape_pa" placeholder="Ingrese el Apellido paterno" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Apellido Materno<b style="color:red">(*)</b>:</label>
+                                <label for="">Apellido Materno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_apema" placeholder="Ingrese el Apellido materno" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-4 form-group">
-                              <label for="">Sexo<b style="color:red">(*)</b>:</label>
+                              <label for="">Sexo<b class="text-danger">(*)</b>:</label>
                               <select name="" id="txt_sexo" class="form-control">
                                   <option value="">Seleccione</option>
                                   <option value="FEMENINO">FEMENINO</option>
@@ -133,7 +133,7 @@
                           </div>
 
                             <div class="col-4 form-group">
-                                <label for="">Fecha de nacimiento<b style="color:red">(*)</b>:</label>
+                                <label for="">Fecha de nacimiento<b class="text-danger">(*)</b>:</label>
                                 <input type="date" class="form-control" id="txt_fecha_na">
                             </div>
                             <div class="col-4 form-group">
@@ -141,12 +141,12 @@
                                 <input type="text" class="form-control" id="txt_tele" placeholder="Ingrese el teléfono o celular" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-8 form-group">
-                                <label for="">Dirección<b style="color:red">(*)</b>:</label>
+                                <label for="">Dirección<b class="text-danger">(*)</b>:</label>
                                 <textarea class="form-control" id="txt_direc" rows="2" style="resize:none" placeholder="Ingrese la dirección"></textarea>
                             </div>
 
                             <div class="col-6">
-                                <label for="txt_foto">Subir Foto <b style="color:red">*</b>:</label>
+                                <label for="txt_foto">Subir Foto <b class="text-danger">*</b>:</label>
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="txt_foto" accept="image/*" onchange="previewImage(event)">
                                     <label class="custom-file-label" for="txt_foto">Seleccione Foto...</label>
@@ -161,7 +161,7 @@
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
                 <div class="row">
-                             <div class="col-12 form-group" style="color:red">
+                             <div class="col-12 form-group text-danger">
                                 <h6><b>OJO: Este registro no puede ir vacio, bien llenar datos de la Mamá o del Papá</b></h6>
                             </div>
                             <div class="col-6 form-group">
@@ -170,23 +170,23 @@
                             </div>
                             <div class="col-6 form-group">
                                 <label for="">Nombre y Apellidos Papá:</label>
-                                <input type="text" class="form-control" id="txt_nom_pa"  style="background-color:white;" placeholder="Ingrese los nombres y apellidos de Papa" onkeypress="return sololetras(event)">
+                                <input type="text" class="form-control bg-white" id="txt_nom_pa"  placeholder="Ingrese los nombres y apellidos de Papa" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-6 form-group">
                                 <label for="">Teléfono o Celular Papá:</label>
-                                <input type="text" class="form-control" id="txt_cel_pa"  style="background-color:white;" placeholder="Ingrese el celular o movil de Papá" onkeypress="return soloNumeros(event)">
+                                <input type="text" class="form-control bg-white" id="txt_cel_pa"  placeholder="Ingrese el celular o movil de Papá" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">DNI Mamá<b style="color:red">(*)</b>:</label>
+                                <label for="">DNI Mamá<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni_ma" placeholder="Ingrese el DNI de Mamá" onkeypress="return soloNumeros(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Nombre y Apellidos Mamá<b style="color:red">(*)</b>:</label>
-                                <input type="text" class="form-control" id="txt_nom_ma"  style="background-color:white;" placeholder="Ingrese los Nombres y apellidos de Mamá" onkeypress="return sololetras(event)">
+                                <label for="">Nombre y Apellidos Mamá<b class="text-danger">(*)</b>:</label>
+                                <input type="text" class="form-control bg-white" id="txt_nom_ma"  placeholder="Ingrese los Nombres y apellidos de Mamá" onkeypress="return sololetras(event)">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Teléfono o Celular Mamá<b style="color:red">(*)</b>:</label>
-                                <input type="text" class="form-control" id="txt_cel_ma"  style="background-color:white;" placeholder="Ingrese el celular o movil de Mamá" onkeypress="return soloNumeros(event)"> 
+                                <label for="">Teléfono o Celular Mamá<b class="text-danger">(*)</b>:</label>
+                                <input type="text" class="form-control bg-white" id="txt_cel_ma"  placeholder="Ingrese el celular o movil de Mamá" onkeypress="return soloNumeros(event)"> 
                             </div>
                             
                             
@@ -199,7 +199,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-arrow-right-from-bracket"></i>Cerrar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
         <button type="button" class="btn btn-success" onclick="Registrar_alumno()"><i class="fas fa-save"></i> Registrar</button>
       </div>
     </div>
@@ -234,35 +234,35 @@
                   <div class="row">
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-12 form-group" style="color:red">
+                            <div class="col-12 form-group text-danger">
                                 <h6><b>Campos Obligatorios (*)</b></h6>
                             </div>
                             <div class="col-4 form-group">
                               <input type="text" id="txt_id_alu" hidden>
-                                <label for="">DNI Alumno<b style="color:red">(*)</b>:</label>
+                                <label for="">DNI Alumno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control"  id="txt_dni_editar" placeholder="Ingrese el DNI del alumno">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Nombres<b style="color:red">(*)</b>:</label>
+                                <label for="">Nombres<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_nomb_editar" placeholder="Ingrese los nombres">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Apellido Paterno<b style="color:red">(*)</b>:</label>
+                                <label for="">Apellido Paterno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_ape_pa_editar" placeholder="Ingrese el Apellido paterno">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Apellido Materno<b style="color:red">(*)</b>:</label>
+                                <label for="">Apellido Materno<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_apema_editar" placeholder="Ingrese el Apellido materno">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Sexo<b style="color:red">(*)</b>:</label>
+                                <label for="">Sexo<b class="text-danger">(*)</b>:</label>
                                 <select name="" id="txt_sexo_editar" class="form-control">
                                     <option value="FEMENINO">FEMENINO</option>
                                     <option value="MASCULINO">MASCULINO</option>
                                 </select>
                             </div>
                             <div class="col-4 form-group">
-                                <label for="">Fecha de nacimiento<b style="color:red">(*)</b>:</label>
+                                <label for="">Fecha de nacimiento<b class="text-danger">(*)</b>:</label>
                                 <input type="date" class="form-control" id="txt_fecha_na_editar">
                             </div>
                             <div class="col-4 form-group">
@@ -270,7 +270,7 @@
                                 <input type="text" class="form-control" id="txt_tele_editar" placeholder="Ingrese el teléfono o celular">
                             </div>
                             <div class="col-8 form-group">
-                                <label for="">Dirección<b style="color:red">(*)</b>:</label>
+                                <label for="">Dirección<b class="text-danger">(*)</b>:</label>
                                 <textarea class="form-control" id="txt_direc_editar" rows="2" style="resize:none" placeholder="Ingrese la dirección"></textarea>
                             </div>
                            
@@ -292,7 +292,7 @@
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-one-profile3" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab3">
                 <div class="row">
-                             <div class="col-12 form-group" style="color:red">
+                             <div class="col-12 form-group text-danger">
                                 <h6><b>OJO: Este registro no puede ir vacio, bien llenar datos de la Mamá o del Papá</b></h6>
                             </div>
                             <div class="col-6 form-group">
@@ -302,23 +302,23 @@
                             </div>
                             <div class="col-6 form-group">
                                 <label for="">Nombre y Apellidos Papá:</label>
-                                <input type="text" class="form-control" id="txt_nom_pa_editar"  style="background-color:white;" placeholder="Ingrese los nombres y apellidos de Papa">
+                                <input type="text" class="form-control bg-white" id="txt_nom_pa_editar"  placeholder="Ingrese los nombres y apellidos de Papa">
                             </div>
                             <div class="col-6 form-group">
                                 <label for="">Teléfono o Celular Papá:</label>
-                                <input type="text" class="form-control" id="txt_cel_pa_editar"  style="background-color:white;" placeholder="Ingrese el celular o movil de Papá">
+                                <input type="text" class="form-control bg-white" id="txt_cel_pa_editar"  placeholder="Ingrese el celular o movil de Papá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">DNI Mamá<b style="color:red">(*)</b>:</label>
+                                <label for="">DNI Mamá<b class="text-danger">(*)</b>:</label>
                                 <input type="text" class="form-control" id="txt_dni_ma_editar" placeholder="Ingrese el DNI de Mamá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Nombre y Apellidos Mamá<b style="color:red">(*)</b>:</label>
-                                <input type="text" class="form-control" id="txt_nom_ma_editar"  style="background-color:white;" placeholder="Ingrese los Nombres y apellidos de Mamá">
+                                <label for="">Nombre y Apellidos Mamá<b class="text-danger">(*)</b>:</label>
+                                <input type="text" class="form-control bg-white" id="txt_nom_ma_editar"  placeholder="Ingrese los Nombres y apellidos de Mamá">
                             </div>
                             <div class="col-6 form-group">
-                                <label for="">Teléfono o Celular Mamá<b style="color:red">(*)</b>:</label>
-                                <input type="text" class="form-control" id="txt_cel_ma_editar"  style="background-color:white;" placeholder="Ingrese el celular o movil de Mamá">
+                                <label for="">Teléfono o Celular Mamá<b class="text-danger">(*)</b>:</label>
+                                <input type="text" class="form-control bg-white" id="txt_cel_ma_editar"  placeholder="Ingrese el celular o movil de Mamá">
                             </div>
                         </div>
                 </div>
@@ -329,7 +329,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-arrow-right-from-bracket"></i>Cerrar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
         <button type="button" class="btn btn-success" onclick="Modificar_alumno()"><i class="fas fa-edit"></i> Modificar</button>
       </div>
     </div>
@@ -509,8 +509,8 @@ input.addEventListener('input',function(){
 <div class="modal fade" id="modal_importar" tabindex="-1" role="dialog" aria-labelledby="titulo_importar" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="titulo_importar" style="color:white"><b>Importar estudiantes desde Excel</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white" id="titulo_importar"><b>Importar estudiantes desde Excel</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">

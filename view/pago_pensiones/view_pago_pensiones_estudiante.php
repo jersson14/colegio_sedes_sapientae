@@ -34,7 +34,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-md-2" role="document">
-                                    <label for="">Año académico || Grado || Nivel académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Año académico || Grado || Nivel académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_año" style="width:100%">
                                     </select>
                                 </div>
@@ -52,7 +52,7 @@
                     <div class="table-responsive" style="text-align:center">
                         <div class="card-body">
                             <table id="tabla_pago_pension" class="table table-striped table-bordered" style="width:100%">
-                                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                                <thead class="tabla-cabecera">
                                     <tr>
                                         <th style="text-align:center">Nro.</th>
                                         <th style="text-align:center">DNI</th>
@@ -80,19 +80,19 @@
     <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header" style="background-color:#1FA0E0;">
-                    <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>PAGO DE PENSIONES</b></h5>
+                <div class="modal-header ventana-cabecera">
+                    <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>PAGO DE PENSIONES</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 form-group" style="color:red">
+                        <div class="col-12 form-group text-danger">
                             <h6><b>Campos Obligatorios (*)</b></h6>
                         </div>
                         <div class="col-6 form-group">
-                            <label for="">Concepto<b style="color:red">(*)</b>:</label>
+                            <label for="">Concepto<b class="text-danger">(*)</b>:</label>
                             <input type="text" class="form-control" id="txt_id_matricula" hidden>
                             <select class="form-control" id="select_concepto" style="width:100%">
                                 <option value="PENSION">PENSION</option>
@@ -102,17 +102,17 @@
                             </select>
                         </div>
                         <div class="col-6 form-group">
-                            <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                            <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                             <select class="form-control" id="select_nivel" style="width:100%">
                             </select>
                         </div>
                         <div class="col-6 form-group">
-                            <label for="">Pensión<b style="color:red">(*)</b>:</label>
+                            <label for="">Pensión<b class="text-danger">(*)</b>:</label>
                             <select class="form-control" id="select_pension" style="width:100%">
                             </select>
                         </div>
                         <div class="col-6 form-group">
-                            <label for="">Monto a Pagar<b style="color:red">(*)</b>:</label>
+                            <label for="">Monto a Pagar<b class="text-danger">(*)</b>:</label>
                             <input type="text" class="form-control" id="txt_monto_pagar">
                         </div>
                         <div class="col-12 form-group">
@@ -167,7 +167,7 @@
                             <div class="table-responsive" style="text-align:center">
                                 <div class="card-body">
                                     <table id="tabla_pagos2" class="display compact" style="width:100%; text-align:center;">
-                                        <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                                        <thead class="tabla-cabecera">
                                             <tr style="text-align:center;">
                                                 <th style="text-align:center;">Nro.</th>
                                                 <th style="text-align:center;">Recibo</th>
@@ -194,7 +194,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-arrow-right-from-bracket"></i>Cerrar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
                 </div>
             </div>
         </div>

@@ -35,7 +35,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-md-2" role="document">
-                                    <label for="">Año académico || Grado || Nivel académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Año académico || Grado || Nivel académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_año" style="width:100%">
                                     </select>
                                 </div>
@@ -53,7 +53,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_horario" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Año escolar</th>
@@ -80,29 +80,29 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE HORARIOS POR AULA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE HORARIOS POR AULA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-4 form-group">
-            <label for="">Año académico<b style="color:red">(*)</b>:</label>
+            <label for="">Año académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_año" style="width:100%" disabled>
             </select>              
           </div>
           <div class="col-4 form-group">
-            <label for="">Aula - Nivel Académico<b style="color:red">(*)</b>:</label>
+            <label for="">Aula - Nivel Académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_aula" style="width:100%">
             </select>              
           </div>
           <div class="col-4 form-group">
-                <label for="">Día<b style="color:red">(*)</b>:</label>
+                <label for="">Día<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_dia" style="width:100%">
                     <option value="">--SELECCIONE UN DÍA--</option>
                     <option value="LUNES">LUNES</option>
@@ -113,13 +113,13 @@
                 </select>              
             </div>
           <div class="col-6 form-group">
-            <label for="">Horas<b style="color:red">(*)</b>:</label>
+            <label for="">Horas<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_horas" style="width:100%">
             </select>          
         </div>
           
         <div class="col-6 form-group">
-            <label for="">Asignatura<b style="color:red">(*)</b>:</label>
+            <label for="">Asignatura<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_curso" style="width:100%">
             </select>          
         </div>
@@ -160,10 +160,10 @@
 <div class="modal fade" id="modal_ver_horario" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
-    <div class="modal-header" style="background-color:#1FA0E0">
-    <div class="col-12 form-group" style="color:white; margin-bottom: 0;">
-        <h5 class="modal-title" id="lb_titulo" style="color:white; margin-bottom: 0;"></h5>
-        <h5 class="modal-title" id="lb_titulo2" style="color:white; margin-bottom: 0;"></h5>
+    <div class="modal-header ventana-cabecera">
+    <div class="col-12 form-group text-white mb-0">
+        <h5 class="modal-title text-white mb-0" id="lb_titulo"></h5>
+        <h5 class="modal-title text-white mb-0" id="lb_titulo2"></h5>
         </div>        
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -175,7 +175,7 @@
           <div class="table-responsive" style="text-align:center">
             <div class="card-body">
             <table id="tabla_vista_horario" class="display compact" style="width:100%" style="text-align:center">
-                <thead style="background-color:#0A5D86;color:#FFFFFF; ">
+                <thead class="tabla-cabecera">
                   <tr style="text-align:center">
                       <th style="text-align:center">Hora</th>
                       <th style="text-align:center">Lunes</th>
@@ -192,7 +192,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-arrow-right-from-bracket"></i>Cerrar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
       </div>
     </div>
   </div>
@@ -201,29 +201,29 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE HORARIOS POR AULA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE HORARIOS POR AULA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-4 form-group">
-            <label for="">Año académico<b style="color:red">(*)</b>:</label>
+            <label for="">Año académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_año_editar" style="width:100%" disabled>
             </select>              
           </div>
           <div class="col-4 form-group">
-            <label for="">Aula - Nivel Académico<b style="color:red">(*)</b>:</label>
+            <label for="">Aula - Nivel Académico<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_aula_editar" style="width:100%">
             </select>              
           </div>
           <div class="col-4 form-group">
-                <label for="">Día<b style="color:red">(*)</b>:</label>
+                <label for="">Día<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_dia_editar" style="width:100%">
                     <option value="">--SELECCIONE UN DÍA--</option>
                     <option value="LUNES">LUNES</option>
@@ -234,13 +234,13 @@
                 </select>              
             </div>
           <div class="col-6 form-group">
-            <label for="">Horas<b style="color:red">(*)</b>:</label>
+            <label for="">Horas<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_horas_editar" style="width:100%">
             </select>          
         </div>
           
         <div class="col-6 form-group">
-            <label for="">Asignatura<b style="color:red">(*)</b>:</label>
+            <label for="">Asignatura<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_curso_editar" style="width:100%">
             </select>          
         </div>

@@ -46,7 +46,7 @@ function listar_ingresos_diversos(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -82,9 +82,9 @@ function listar_ingresos_diversos(){
       {"data":"estado",
         render: function(data,type,row){
                 if(data=='VALIDO'){
-                return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fa fa-trash'></i> Anular</button>";
+                return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fas fa-trash'></i> Anular</button>";
                 }else{
-                return "<button hidden class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button hidden class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fa fa-trash'></i> Anular</button>&nbsp;&nbsp; <button class='view btn btn-warning  btn-sm' title='Motivo de anulación'><i class='fa fa-eye'></i> Ver motivo de anulación</button>";
+                return "<button hidden class='editar btn btn-primary  btn-sm' title='Editar datos de especialidad'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button hidden class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fas fa-trash'></i> Anular</button>&nbsp;&nbsp; <button class='view btn btn-warning  btn-sm' title='Motivo de anulación'><i class='fas fa-eye'></i> Ver motivo de anulación</button>";
                 }
         }   
     },        
@@ -156,7 +156,7 @@ function listar_ingresos_diversos_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -192,9 +192,9 @@ function listar_ingresos_diversos_filtro(){
     {"data":"estado",
       render: function(data,type,row){
               if(data=='VALIDO'){
-              return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de ingreso'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fa fa-trash'></i> Anular</button>";
+              return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de ingreso'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fas fa-trash'></i> Anular</button>";
               }else{
-                return "<button hidden class='editar btn btn-primary  btn-sm' title='Editar datos de ingreso'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button hidden class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fa fa-trash'></i> Anular</button>&nbsp;&nbsp; <button class='view btn btn-warning  btn-sm' title='Motivo de anulación'><i class='fa fa-eye'></i> Ver motivo de anulación</button>";
+                return "<button hidden class='editar btn btn-primary  btn-sm' title='Editar datos de ingreso'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button hidden class='delete btn btn-danger  btn-sm' title='Anular ingreso'><i class='fas fa-trash'></i> Anular</button>&nbsp;&nbsp; <button class='view btn btn-warning  btn-sm' title='Motivo de anulación'><i class='fas fa-eye'></i> Ver motivo de anulación</button>";
               }
       }   
   },
@@ -462,7 +462,7 @@ function listar_ingresos_pensiones(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -561,7 +561,7 @@ function listar_ingresos_pensiones_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -655,7 +655,7 @@ function listar_diferencia(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -755,7 +755,7 @@ function listar_diferencia_filtro(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {

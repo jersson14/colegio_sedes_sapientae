@@ -46,7 +46,7 @@ function listar_matriculados(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -81,7 +81,7 @@ function listar_matriculados(){
         {"data":"provincia"},
         {"data":"departamento"},
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fa fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fas fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fas fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fas fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fas fa-trash'></i> Eliminar</button>"},
         
     ],
 
@@ -149,7 +149,7 @@ function listar_matriculados_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -184,7 +184,7 @@ function listar_matriculados_filtro(){
       {"data":"provincia"},
       {"data":"departamento"},
 
-      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fa fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fa fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fa fa-trash'></i> Eliminar</button>"},
+      {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostras datos'><i class='fas fa-eye'></i> Ver</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos de matrícula'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='cedula btn btn-warning  btn-sm' title='Imprimir Matrícula'><i class='fas fa-print'></i> Imprimir cédula</button>&nbsp;&nbsp;<button class='beca btn btn-info btn-sm' title='Beca o descuento en las pensiones'><i class='fas fa-percent'></i> Beca</button>&nbsp;&nbsp;<button class='delete btn btn-danger btn-sm' title='Eliminar matriculado'><i class='fas fa-trash'></i> Eliminar</button>"},
       
   ],
 

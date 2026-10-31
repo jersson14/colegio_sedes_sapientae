@@ -56,7 +56,7 @@
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Mes</th><th class="lb-tipo-personal-plural">Docentes</th><th class="text-right">Bruto</th><th class="text-right">Descuentos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Estado</th><th>Aprobada por</th><th>Acción</th></tr>
                 </thead>
                 <tbody id="tbody_planillas"></tbody>
@@ -68,7 +68,7 @@
                 <span class="float-right" id="botones_detalle"></span></h5>
               <div class="table-responsive">
                 <table class="table table-sm table-bordered table-striped">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                  <thead class="tabla-cabecera">
                     <tr><th class="lb-tipo-personal">Docente</th><th>Contrato</th><th class="text-right">Horas</th><th class="text-right">Base</th><th class="text-right">Ingresos</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Forma de pago</th><th>Acción</th></tr>
                   </thead>
                   <tbody id="tbody_detalle"></tbody>
@@ -81,7 +81,7 @@
           <div class="tab-pane fade" id="tab_contratos" role="tabpanel">
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th class="lb-tipo-personal">Docente</th><th>Contrato</th><th>Desde</th><th class="text-right">Sueldo / tarifa</th><th class="text-right">Horas/sem.</th><th>Forma de pago</th><th>Cuenta bancaria</th><th class="text-right">Adelantos pendientes</th><th>Acción</th></tr>
                 </thead>
                 <tbody id="tbody_contratos"></tbody>
@@ -92,8 +92,8 @@
           <!-- Adelantos -->
           <div class="tab-pane fade" id="tab_adelantos" role="tabpanel">
             <div class="row">
-              <div class="col-md-4 form-group"><label><span class="lb-tipo-personal">Docente</span><b style="color:red">(*)</b>:</label><select class="form-control" id="select_docente_ade"></select></div>
-              <div class="col-md-2 form-group"><label>Monto<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_ade"></div>
+              <div class="col-md-4 form-group"><label><span class="lb-tipo-personal">Docente</span><b class="text-danger">(*)</b>:</label><select class="form-control" id="select_docente_ade"></select></div>
+              <div class="col-md-2 form-group"><label>Monto<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_ade"></div>
               <div class="col-md-2 form-group"><label>Fecha:</label><input type="date" class="form-control" id="txt_fecha_ade"></div>
               <div class="col-md-2 form-group"><label>Forma de pago:</label><select class="form-control" id="select_metodo_ade"></select></div>
               <div class="col-md-2 form-group"><label>Sale de:</label><select class="form-control" id="select_cuenta_ade"></select></div>
@@ -109,7 +109,7 @@
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Fecha</th><th class="lb-tipo-personal">Docente</th><th class="text-right">Monto</th><th>Forma de pago</th><th>Referencia</th><th>Observación</th><th>Situación</th><th>Estado</th><th></th></tr>
                 </thead>
                 <tbody id="tbody_adelantos"></tbody>
@@ -122,7 +122,7 @@
             <button class="btn btn-success mb-2" onclick="Abrir_Concepto()"><i class="fas fa-plus"></i> Nuevo concepto</button>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Concepto</th><th>Tipo</th><th>Forma</th><th class="text-right">Valor por defecto</th><th>Estado</th><th></th></tr>
                 </thead>
                 <tbody id="tbody_conceptos"></tbody>
@@ -139,18 +139,18 @@
 <!-- Contrato -->
 <div class="modal fade" id="modal_contrato" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document"><div class="modal-content">
-    <div class="modal-header" style="background-color:#1FA0E0;"><h5 class="modal-title" style="color:white"><b id="lb_contrato">CONTRATO</b></h5>
+    <div class="modal-header ventana-cabecera"><h5 class="modal-title text-white"><b id="lb_contrato">CONTRATO</b></h5>
       <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
     <div class="modal-body">
       <input type="hidden" id="txt_id_contrato"><input type="hidden" id="txt_docente_contrato">
       <div class="alert alert-info" id="aviso_contrato" style="display:none">Al registrar un contrato nuevo, el actual queda finalizado el día anterior a la nueva fecha de inicio.</div>
       <div class="row">
-        <div class="col-md-4 form-group"><label>Tipo de contrato<b style="color:red">(*)</b>:</label><select class="form-control" id="select_tipo_contrato"></select></div>
-        <div class="col-md-4 form-group"><label>Fecha de inicio<b style="color:red">(*)</b>:</label><input type="date" class="form-control" id="txt_inicio_contrato"></div>
-        <div class="col-md-4 form-group grupo-mensual"><label>Sueldo mensual<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_sueldo_contrato"></div>
-        <div class="col-md-4 form-group grupo-hora"><label>Tarifa por hora<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_tarifa_contrato"></div>
+        <div class="col-md-4 form-group"><label>Tipo de contrato<b class="text-danger">(*)</b>:</label><select class="form-control" id="select_tipo_contrato"></select></div>
+        <div class="col-md-4 form-group"><label>Fecha de inicio<b class="text-danger">(*)</b>:</label><input type="date" class="form-control" id="txt_inicio_contrato"></div>
+        <div class="col-md-4 form-group grupo-mensual"><label>Sueldo mensual<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_sueldo_contrato"></div>
+        <div class="col-md-4 form-group grupo-hora"><label>Tarifa por hora<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_tarifa_contrato"></div>
         <div class="col-md-4 form-group"><label>Horas semanales:</label><input type="number" step="0.5" min="0" class="form-control" id="txt_horas_contrato"></div>
-        <div class="col-md-4 form-group"><label>Forma de pago<b style="color:red">(*)</b>:</label><select class="form-control" id="select_metodo_contrato"></select></div>
+        <div class="col-md-4 form-group"><label>Forma de pago<b class="text-danger">(*)</b>:</label><select class="form-control" id="select_metodo_contrato"></select></div>
         <div class="col-md-4 form-group"><label>Banco:</label><input type="text" class="form-control" id="txt_banco_contrato" maxlength="100"></div>
         <div class="col-md-4 form-group"><label>N.° de cuenta:</label><input type="text" class="form-control" id="txt_cuenta_contrato" maxlength="40"></div>
         <div class="col-md-12 form-group"><label>Observación:</label><input type="text" class="form-control" id="txt_obs_contrato" maxlength="255"></div>
@@ -167,7 +167,7 @@
 <!-- Editar detalle (borrador) -->
 <div class="modal fade" id="modal_detalle" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document"><div class="modal-content">
-    <div class="modal-header" style="background-color:#1FA0E0;"><h5 class="modal-title" style="color:white"><b id="lb_detalle"></b></h5>
+    <div class="modal-header ventana-cabecera"><h5 class="modal-title text-white"><b id="lb_detalle"></b></h5>
       <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
     <div class="modal-body">
       <input type="hidden" id="txt_id_detalle">
@@ -192,12 +192,12 @@
 <!-- Pagar -->
 <div class="modal fade" id="modal_pagar" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document"><div class="modal-content">
-    <div class="modal-header" style="background-color:#28a745;"><h5 class="modal-title" style="color:white"><b id="lb_pagar"></b></h5>
+    <div class="modal-header bg-success"><h5 class="modal-title text-white"><b id="lb_pagar"></b></h5>
       <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
     <div class="modal-body">
       <input type="hidden" id="txt_id_pagar">
       <div class="row">
-        <div class="col-md-3 form-group"><label>Monto<b style="color:red">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_pagar_doc"></div>
+        <div class="col-md-3 form-group"><label>Monto<b class="text-danger">(*)</b>:</label><input type="number" step="0.01" min="0" class="form-control" id="txt_monto_pagar_doc"></div>
         <div class="col-md-3 form-group"><label>Fecha:</label><input type="date" class="form-control" id="txt_fecha_pagar_doc"></div>
         <div class="col-md-3 form-group"><label>Forma de pago:</label><select class="form-control" id="select_metodo_pagar_doc"></select></div>
         <div class="col-md-3 form-group"><label>Sale de:</label><select class="form-control" id="select_cuenta_pagar_doc"></select></div>
@@ -214,11 +214,11 @@
 <!-- Concepto -->
 <div class="modal fade" id="modal_concepto" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document"><div class="modal-content">
-    <div class="modal-header" style="background-color:#1FA0E0;"><h5 class="modal-title" style="color:white"><b>CONCEPTO DE PLANILLA</b></h5>
+    <div class="modal-header ventana-cabecera"><h5 class="modal-title text-white"><b>CONCEPTO DE PLANILLA</b></h5>
       <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
     <div class="modal-body">
       <input type="hidden" id="txt_id_concepto">
-      <div class="form-group"><label>Nombre<b style="color:red">(*)</b>:</label><input type="text" class="form-control" id="txt_nombre_concepto" maxlength="80"></div>
+      <div class="form-group"><label>Nombre<b class="text-danger">(*)</b>:</label><input type="text" class="form-control" id="txt_nombre_concepto" maxlength="80"></div>
       <div class="row">
         <div class="col-6 form-group"><label>Tipo:</label><select class="form-control" id="select_tipo_concepto"><option value="INGRESO">INGRESO</option><option value="DESCUENTO">DESCUENTO</option></select></div>
         <div class="col-6 form-group"><label>Forma:</label><select class="form-control" id="select_forma_concepto"><option value="MONTO">MONTO FIJO</option><option value="PORCENTAJE">PORCENTAJE DEL SUELDO</option></select></div>

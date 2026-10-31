@@ -35,17 +35,17 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-2 form-group">
-                                    <label for="">Año académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Año académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_año_buscar" style="width:100%">
                                     </select>
                                 </div>
                                 <div class="col-2 form-group">
-                                    <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_nivel_buscar" style="width:100%">
                                     </select>
                                 </div>
                                 <div class="col-2 form-group">
-                                    <label for="">Grado o Aula<b style="color:red">(*)</b>:</label>
+                                    <label for="">Grado o Aula<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_aula_buscar" style="width:100%">
                                     </select>
                                 </div>
@@ -63,7 +63,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_matricula" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">DNI</th>
@@ -94,8 +94,8 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="titulo_matricula" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="titulo_matricula" style="color:white"><b>Nueva matrícula</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white" id="titulo_matricula"><b>Nueva matrícula</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -113,12 +113,12 @@
         <section class="mp-paso" data-paso="1">
           <div class="row">
             <div class="col-md-8 form-group">
-              <label for="select_estudiante">Estudiante<b style="color:red">(*)</b>:</label>
+              <label for="select_estudiante">Estudiante<b class="text-danger">(*)</b>:</label>
               <select class="js-example-basic-single" id="select_estudiante" style="width:100%"></select>
               <small class="text-muted">¿No está en la lista? <a href="#" onclick="$('#modal_registro').data('fm-salir', true).modal('hide'); cargar_contenido('contenido_principal','alumnos/view_alumnos.php'); return false;">Regístrelo primero en Estudiantes</a>.</small>
             </div>
             <div class="col-md-4 form-group">
-              <label for="select_año">Año escolar<b style="color:red">(*)</b>:</label>
+              <label for="select_año">Año escolar<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_año" style="width:100%"></select>
             </div>
           </div>
@@ -153,7 +153,7 @@
               <input type="text" inputmode="decimal" class="form-control" id="txt_alum_nuevo" value="0">
             </div>
             <div class="col-md-4 form-group">
-              <label for="txt_matricula">Pago de matrícula<b style="color:red">(*)</b>:</label>
+              <label for="txt_matricula">Pago de matrícula<b class="text-danger">(*)</b>:</label>
               <input type="text" inputmode="decimal" class="form-control" id="txt_matricula" value="0">
             </div>
             <div class="col-12"><small class="text-muted" id="mp_montos_ayuda"></small></div>
@@ -175,11 +175,11 @@
             <legend>Acceso del estudiante al sistema</legend>
             <div class="row">
               <div class="col-md-4 form-group">
-                <label for="txt_usu">Usuario<b style="color:red">(*)</b>:</label>
+                <label for="txt_usu">Usuario<b class="text-danger">(*)</b>:</label>
                 <input type="text" class="form-control" id="txt_usu" maxlength="50" autocomplete="off">
               </div>
               <div class="col-md-4 form-group">
-                <label for="txt_contra">Contraseña inicial<b style="color:red">(*)</b>:</label>
+                <label for="txt_contra">Contraseña inicial<b class="text-danger">(*)</b>:</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="txt_contra" maxlength="50" autocomplete="off">
                   <div class="input-group-append"><button type="button" class="btn btn-outline-secondary" id="mp_generar" title="Crear una contraseña fácil de dictar">Generar</button></div>
@@ -197,11 +197,11 @@
             <legend>Forma de pago de lo que se cobra hoy</legend>
             <div class="row">
               <div class="col-md-4 form-group">
-                <label for="select_metodo_matricula">Forma de pago<b style="color:red">(*)</b>:</label>
+                <label for="select_metodo_matricula">Forma de pago<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_metodo_matricula"></select>
               </div>
               <div class="col-md-4 form-group">
-                <label for="select_cuenta_matricula">Caja / cuenta<b style="color:red">(*)</b>:</label>
+                <label for="select_cuenta_matricula">Caja / cuenta<b class="text-danger">(*)</b>:</label>
                 <select class="form-control" id="select_cuenta_matricula"></select>
               </div>
               <div class="col-md-4 form-group">
@@ -251,8 +251,8 @@
 <div class="modal fade" id="modal_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>DATOS DE LA MATRICULA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>DATOS DE LA MATRICULA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -260,7 +260,7 @@
       <div class="modal-body">
         <div class="row">
             <div class="col-5 form-group">
-                <label for="">DNI - Estudiante<b style="color:red">(*)</b>:</label>
+                <label for="">DNI - Estudiante<b class="text-danger">(*)</b>:</label>
                 <input type="text" class="form-control" id="estudiante" disabled>
             </div>
             <div class="col-2 form-group">
@@ -280,20 +280,20 @@
                 </select>                
             </div>
             <div class="col-3 form-group">
-                <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                 <input type="text" class="form-control" id="txt_nivel_mas" disabled >
             </div>
           
             <div class="col-3 form-group">
-                <label for="txt_foto">Pago por Admisión <b style="color:red">(*)</b>:</label>
+                <label for="txt_foto">Pago por Admisión <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_admision_mas" placeholder="Ingrese el monto" disabled  >
             </div>
             <div class="col-3 form-group">
-                <label for="txt_foto">Pago Alumno Nuevo <b style="color:red">(*)</b>:</label>
+                <label for="txt_foto">Pago Alumno Nuevo <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_alum_nuevo_mas" placeholder="Ingrese el monto" disabled>
             </div>
             <div class="col-3 form-group">
-            <label for="txt_foto">Pago de Matrícula <b style="color:red">(*)</b>:</label>
+            <label for="txt_foto">Pago de Matrícula <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_matricula_mas" placeholder="Ingrese el monto" disabled>
             </div>
 
@@ -323,19 +323,19 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE MATRICULA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DE MATRICULA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-        <div class="col-12 form-group" style="color:red">
+        <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
             </div>
             <div class="col-5 form-group">
-                <label for="">DNI - Estudiante<b style="color:red">(*)</b>:</label>
+                <label for="">DNI - Estudiante<b class="text-danger">(*)</b>:</label>
                 <input type="text" id="txt_id_matricula" hidden>
                 <input type="text" id="txt_id_estudiante" hidden>
                 <input type="text" class="form-control" id="select_estudiante_editar" disabled>
@@ -358,20 +358,20 @@
             </div>
            
             <div class="col-3 form-group">
-                <label for="">Nivel Académico<b style="color:red">(*)</b>:</label>
+                <label for="">Nivel Académico<b class="text-danger">(*)</b>:</label>
                 <input type="text" class="form-control" id="txt_nivel_editar">
             </div>
           
             <div class="col-3 form-group">
-                <label for="txt_foto">Pago por Admisión <b style="color:red">(*)</b>:</label>
+                <label for="txt_foto">Pago por Admisión <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_admision_editar" value="0" placeholder="Ingrese el monto">
             </div>
             <div class="col-3 form-group">
-                <label for="txt_foto">Pago Alumno Nuevo <b style="color:red">(*)</b>:</label>
+                <label for="txt_foto">Pago Alumno Nuevo <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_alum_nuevo_editar" value="0" placeholder="Ingrese el monto">
             </div>
             <div class="col-3 form-group">
-            <label for="txt_foto">Pago de Matrícula <b style="color:red">(*)</b>:</label>
+            <label for="txt_foto">Pago de Matrícula <b class="text-danger">(*)</b>:</label>
                 <input type="number" class="form-control" id="txt_matricula_editar" value="0" placeholder="Ingrese el monto">
             </div>
             <div class="col-4 form-group">
@@ -403,8 +403,8 @@
 <div class="modal fade" id="modal_beca" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#17A2B8;">
-        <h5 class="modal-title" style="color:white"><b>BECA O DESCUENTO</b></h5>
+      <div class="modal-header bg-info">
+        <h5 class="modal-title text-white"><b>BECA O DESCUENTO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
@@ -421,7 +421,7 @@
           </div>
           <div class="col-6 form-group beca-campos"><label id="lb_beca_valor">Valor:</label><input type="text" inputmode="decimal" class="form-control" id="txt_beca_valor"></div>
           <div class="col-6 form-group beca-campos"><label>Desde las pensiones que vencen el:</label><input type="date" class="form-control" id="txt_beca_desde"></div>
-          <div class="col-12 form-group beca-campos"><label>Motivo<b style="color:red">(*)</b>:</label><input type="text" class="form-control" id="txt_beca_motivo" maxlength="255" placeholder="p. ej. beca por rendimiento, descuento por hermanos"></div>
+          <div class="col-12 form-group beca-campos"><label>Motivo<b class="text-danger">(*)</b>:</label><input type="text" class="form-control" id="txt_beca_motivo" maxlength="255" placeholder="p. ej. beca por rendimiento, descuento por hermanos"></div>
           <div class="col-12"><small class="text-muted">Se aplica a las pensiones (no a la mora ni a la matrícula). Si deja la fecha vacía, se aplica a todas las del año. Lo ya pagado no cambia; el cambio queda en la auditoría.</small></div>
         </div>
       </div>

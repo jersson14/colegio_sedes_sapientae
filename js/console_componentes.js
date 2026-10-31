@@ -46,7 +46,7 @@ function listar_componentes(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -70,7 +70,7 @@ function listar_componentes(){
       }
       },        {"data":"nombre_asig"},
         {           
-             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver componentes o criterios'><i class='fa fa-check'></i> Componentes de curso</button>"
+             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver componentes o criterios'><i class='fas fa-check'></i> Componentes de curso</button>"
         },
         {"data":"estado",
             render: function(data,type,row){
@@ -82,7 +82,7 @@ function listar_componentes(){
             }   
         },
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>"},
 
     ],
 
@@ -146,7 +146,7 @@ function listar_componentes_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -170,7 +170,7 @@ function listar_componentes_filtro(){
     }
     },      {"data":"nombre_asig"},
       {           
-           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver componentes o criterios'><i class='fa fa-check'></i> Componentes de curso</button>"
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver componentes o criterios'><i class='fas fa-check'></i> Componentes de curso</button>"
       },
       {"data":"estado",
           render: function(data,type,row){
@@ -182,7 +182,7 @@ function listar_componentes_filtro(){
           }   
       },
 
-      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>"},
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>"},
 
   ],
 
@@ -372,7 +372,7 @@ function listar_componentes_curso(id) {
       {"data": "nombre_asig"},
       {"data": "competencias"},
       {"data": "descripción_observa"},
-      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"}
+      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>"}
     ],
     "language": idioma_espanol,
     "select": true

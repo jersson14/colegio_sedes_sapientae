@@ -47,7 +47,7 @@ function listar_periodo(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -60,9 +60,9 @@ function listar_periodo(){
         {"data":"año_escolar"},
         {"data":"tipo_perido"},
 
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar periodos'><i class='fa fa-eye'></i> Mostrar Periodos</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar periodos'><i class='fas fa-eye'></i> Mostrar Periodos</button>"},
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar datos'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>"},
         
     ],
 
@@ -115,7 +115,7 @@ function listar_periodo_año(id) {
       { "data": "periodos" },
       { "data": "fecha_inicio" },
       { "data": "fecha_fin" },
-      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"}
+      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>"}
     ],
     "language": idioma_espanol,
     "select": true

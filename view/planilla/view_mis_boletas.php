@@ -20,7 +20,7 @@
     <div class="card">
       <div class="card-body table-responsive">
         <table class="table table-striped table-bordered table-sm">
-          <thead style="background-color:#0A5D86;color:#FFFFFF;">
+          <thead class="tabla-cabecera">
             <tr><th>Mes</th><th>Contrato</th><th class="text-right">Sueldo / horas</th><th class="text-right">Ingresos</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th><th>Estado</th><th></th></tr>
           </thead>
           <tbody id="tbody_mis_boletas"></tbody>

@@ -46,7 +46,7 @@ function listar_pago_pension(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -74,7 +74,7 @@ function listar_pago_pension(){
         {"data":"FECHA_pago"},
 
 
-        {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='kardex btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+        {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fas fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fas fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='kardex btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fas fa-print'></i> Kardex de pago</button>"},
         
     ],
 
@@ -140,7 +140,7 @@ function listar_pago_pension_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -168,7 +168,7 @@ function listar_pago_pension_filtro(){
       {"data":"FECHA_pago"},
 
 
-      {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fa fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fa fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='kardex btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fa fa-print'></i> Kardex de pago</button>"},
+      {"defaultContent":"<button class='pagar btn btn-success  btn-sm' title='Mostras datos'><i class='fas fa-coins'></i> Pagar pensión</button>&nbsp;&nbsp;<button class='mostrar btn btn-primary  btn-sm' title='Ver pagos'><i class='fas fa-eye'></i> Ver pagos</button>&nbsp;&nbsp; <button class='kardex btn btn-warning  btn-sm' title='Imprimir kardex de pago'><i class='fas fa-print'></i> Kardex de pago</button>"},
       
   ],
 
@@ -576,12 +576,12 @@ function listar_pagos(id) {
 
             {"data":"concepto",
               render: function(data,type,row){
-                  let botones = "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fa fa-print'></i> Recibo</button> ";
+                  let botones = "<button class='imprimir btn btn-success btn-sm' title='Imprimir recibo'><i class='fas fa-print'></i> Recibo</button> ";
                   if(data=='PENSION' || data=='MORA'){
                     if(row.n_metodos <= 1){
-                      botones += "<button class='editar_1 btn btn-primary btn-sm' title='Editar pago'><i class='fa fa-edit'></i> Editar</button>";
+                      botones += "<button class='editar_1 btn btn-primary btn-sm' title='Editar pago'><i class='fas fa-edit'></i> Editar</button>";
                     }
-                    botones += "<button class='anular btn btn-danger btn-sm' title='Anular el recibo'><i class='fa fa-trash'></i> Anular</button>";
+                    botones += "<button class='anular btn btn-danger btn-sm' title='Anular el recibo'><i class='fas fa-trash'></i> Anular</button>";
                   }
                   return botones;
           }

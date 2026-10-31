@@ -34,12 +34,12 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-3 form-group">
-                                    <label for="">Fecha inicio</label><b style="color:red">(*)</b>:</label>
+                                    <label for="">Fecha inicio</label><b class="text-danger">(*)</b>:</label>
                                     <input type="date" class="form-control" id="txtfechainicio">
 
                                 </div>
                                 <div class="col-3 form-group">
-                                    <label for="">Fecha final<b style="color:red">(*)</b>:</label>
+                                    <label for="">Fecha final<b class="text-danger">(*)</b>:</label>
                                     <input type="date" class="form-control" id="txtfechafin">
 
                                 </div>
@@ -57,7 +57,7 @@
               <div class="table-responsive" style="text-align:center">
               <div class="card-body">
               <table id="tabla_comunicados" class="table table-striped table-bordered" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                  <thead class="tabla-cabecera">
                       <tr>
                           <th style="text-align:center">Nro.</th>
                           <th style="text-align:center">Tipo</th>
@@ -86,41 +86,41 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO DE COMUNICADOS</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO DE COMUNICADOS</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-              <label for="">Tipo comunicado<b style="color:red">(*)</b>:</label>
+              <label for="">Tipo comunicado<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_tipo" style="width:100%">
                   <option value="POR GRADO">POR GRADO</option>
                   <option value="GENERAL">GENERAL</option>
               </select>          
           </div>
           <div class="col-12 form-group" id="grado_container" >
-              <label for="">Grado académico<b style="color:red">(*)</b>:</label>
+              <label for="">Grado académico<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_grado" style="width:100%">
                   <!-- Opciones del grado académico -->
               </select>             
           </div>
 
           <div class="col-12 form-group">
-            <label for="">Título<b style="color:red">(*)</b>:</label>
+            <label for="">Título<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_titulo">
           </div>
           <div class="col-12 form-group">
-            <label for="">Decripción<b style="color:red">(*)</b>:</label>
+            <label for="">Decripción<b class="text-danger">(*)</b>:</label>
             <textarea class="form-control" id="txt_descripcion" rows="3" style="resize:none"></textarea>
           </div>
           <div class="col-12">
-              <label for="txt_foto">Subir Foto <b style="color:red">*</b>:</label>
+              <label for="txt_foto">Subir Foto <b class="text-danger">*</b>:</label>
               <div class="custom-file">
                   <input type="file" class="custom-file-input" id="txt_foto" accept="image/*" onchange="previewImage(event)">
                   <label class="custom-file-label" for="txt_foto">Seleccione Foto...</label>
@@ -141,19 +141,19 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DE COMUNICADO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DE COMUNICADO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-              <label for="">Tipo comunicado<b style="color:red">(*)</b>:</label>
+              <label for="">Tipo comunicado<b class="text-danger">(*)</b>:</label>
               <input type="text" id="txt_id_comu" hidden>
               <select class="form-control" id="select_tipo_editar" style="width:100%">
                   <option value="POR GRADO">POR GRADO</option>
@@ -161,22 +161,22 @@
               </select>          
           </div>
           <div class="col-12 form-group" id="grado_container" >
-              <label for="">Grado académico<b style="color:red">(*)</b>:</label>
+              <label for="">Grado académico<b class="text-danger">(*)</b>:</label>
               <select class="form-control" id="select_grado_editar" style="width:100%">
                   <!-- Opciones del grado académico -->
               </select>             
           </div>
 
           <div class="col-12 form-group">
-            <label for="">Título<b style="color:red">(*)</b>:</label>
+            <label for="">Título<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_titulo_editar">
           </div>
           <div class="col-12 form-group">
-            <label for="">Decripción<b style="color:red">(*)</b>:</label>
+            <label for="">Decripción<b class="text-danger">(*)</b>:</label>
             <textarea class="form-control" id="txt_descripcion_editar" rows="3" style="resize:none"></textarea>
           </div>
           <div class="col-6 form-group">
-              <label for="">Estado<b style="color:red">(*)</b>:</label>
+              <label for="">Estado<b class="text-danger">(*)</b>:</label>
               <select name="" id="txt_estado" class="form-control">
                   <option value="ACTIVO">ACTIVO</option>
                   <option value="INACTIVO">INACTIVO</option>
@@ -185,7 +185,7 @@
           <div class="col-6">
             <input type="text" id="txt_foto_actual" hidden>
 
-                <label for="txt_foto">Subir Foto <b style="color:red">*</b>:</label>
+                <label for="txt_foto">Subir Foto <b class="text-danger">*</b>:</label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="txt_foto_editar" accept="image/*" onchange="previewImage3(event)">
                     <label class="custom-file-label" for="txt_foto_editar">Seleccione Foto...</label>
@@ -207,8 +207,8 @@
 <div class="modal fade" id="modal_ver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-    <div class="modal-header" style="background-color:#fff; text-align:center; display: flex; justify-content: center; align-items: center;">
-      <h5 class="" id="lb_titulo_datos2" style="color:black; margin-bottom: 0; width: 100%; text-align:center;">
+    <div class="modal-header bg-white text-center d-flex justify-content-center align-items-center">
+      <h5 class="text-dark mb-0 w-100 text-center" id="lb_titulo_datos2">
       </h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 10px;">
         <span aria-hidden="true">&times;</span>
@@ -218,7 +218,7 @@
         <div class="row">
           
           <div class="col-12 form-group">
-            <label for="">Decripción<b style="color:red">(*)</b>:</label>
+            <label for="">Decripción<b class="text-danger">(*)</b>:</label>
             <textarea class="form-control" id="txt_descripcion_ver" rows="3" style="resize:none" readonly></textarea>
           </div>
 
@@ -385,8 +385,8 @@ document.getElementById('txtfechafin').value = y + "-" + m + "-" + d;
 <div class="modal fade" id="modal_lectura" tabindex="-1" role="dialog" aria-labelledby="titulo_lectura" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="titulo_lectura" style="color:white"><b>¿Quién leyó el comunicado?</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white" id="titulo_lectura"><b>¿Quién leyó el comunicado?</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body" id="lec_cuerpo"></div>

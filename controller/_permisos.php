@@ -40,6 +40,8 @@ return [
         'controller/asistencias/controlador_listar_alumnos_totales_dia_estudiante.php' => ['ESTUDIANTE'],
         'controller/asistencias/controlador_listar_alumnos_totales_estu.php' => ['ESTUDIANTE'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        // ayuda contextual (Fase 13, paso 16): secciones de docs/guia_rapida.md
+        'controller/ayuda/controlador_ayuda.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         // avisos a las familias (Fase 13): el controlador limita los tipos por rol (auxiliar: faltas, tareas, comunicados; contadora: pensiones)
         'controller/avisos/controlador_avisos.php' => ['AUXILIAR', 'CONTADOR'],

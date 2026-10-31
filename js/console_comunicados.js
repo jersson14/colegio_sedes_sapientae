@@ -47,7 +47,7 @@ function listar_comunicado(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -70,7 +70,7 @@ function listar_comunicado(){
 
         {"data":"titulo"},
         {"data":"descripcion"},
-        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fa fa-check-double'></i> Lectura</button></div>"},
+        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fas fa-check-double'></i> Lectura</button></div>"},
 
         {"data":"estado",
             render: function(data,type,row){
@@ -86,9 +86,9 @@ function listar_comunicado(){
         {"data":"estado",
           render: function(data,type,row){
                   if(data=='ACTIVO'){
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger disabled btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fas fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger disabled btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button>";
                   }else{
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fas fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button>";
                   }
           }   
       },
@@ -160,7 +160,7 @@ function listar_comunicado_filtro(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -183,7 +183,7 @@ function listar_comunicado_filtro(){
 
         {"data":"titulo"},
         {"data":"descripcion"},
-        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fa fa-check-double'></i> Lectura</button></div>"},
+        {"defaultContent":"<div class='text-nowrap'><button class='mostrar btn btn-warning  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Ver</button> <button class='lectura btn btn-info btn-sm' title='Qué familias lo leyeron'><i class='fas fa-check-double'></i> Lectura</button></div>"},
 
         {"data":"estado",
             render: function(data,type,row){
@@ -199,9 +199,9 @@ function listar_comunicado_filtro(){
         {"data":"estado",
           render: function(data,type,row){
                   if(data=='ACTIVO'){
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger disabled btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fas fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger disabled btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button>";
                   }else{
-                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fa fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>";
+                  return "<button class='editar btn btn-primary  btn-sm' title='Editar datos de comunicado'><i class='fas fa-edit'>Editar</i></button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button>";
                   }
           }   
       },
@@ -569,7 +569,7 @@ function listar_comunicado_dash() {
       { "data": "titulo" },
       { "data": "descripcion" },
       {
-        "defaultContent": "<button class='mostrar btn btn-warning btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Ver</button>"
+        "defaultContent": "<button class='mostrar btn btn-warning btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Ver</button>"
       },
       {
         "data": "estado",

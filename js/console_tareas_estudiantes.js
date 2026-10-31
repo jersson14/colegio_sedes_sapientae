@@ -60,7 +60,7 @@ function listar_tareas_id(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -79,7 +79,7 @@ function listar_tareas_id(){
       {"data":"archivo_tarea",
         render: function(data,type,row){
                 if(data==''){
-                    return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                    return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                 }else{
                   return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                 }
@@ -88,7 +88,7 @@ function listar_tareas_id(){
         {"data":"archivo_evnio_tarea",
           render: function(data,type,row){
                   if(data==''){
-                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                   }else{
                     return "<a class='btn btn-primary btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file'></i> Ver tarea enviada</a>";
                   }
@@ -109,11 +109,11 @@ function listar_tareas_id(){
       {"data":"ESTADO",
         render: function (data, type, row ) {
           if(data=='PENDIENTE'){
-            return "<button  class='agregar btn btn-secondary btn-sm'  style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+            return "<button  class='agregar btn btn-secondary btn-sm'  style='margin-right: 10px;' title='Subir tarea'><i class='fas fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
           }else if(data=='ENVIADO'){
-            return "<button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+            return "<button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Subir tarea'><i class='fas fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
           }else{
-            return "<button  class='ver btn btn-success btn-sm' style='margin-right: 10px;' title='Ver nota de tarea'><i class='fa fa-eye'></i> Ver calificación</button>";             
+            return "<button  class='ver btn btn-success btn-sm' style='margin-right: 10px;' title='Ver nota de tarea'><i class='fas fa-eye'></i> Ver calificación</button>";             
 
           }
         }
@@ -185,7 +185,7 @@ function listar_tareas(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -204,7 +204,7 @@ function listar_tareas(){
         {"data":"archivo_tarea",
           render: function(data,type,row){
                   if(data==''){
-                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                      return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                   }else{
                     return "<a class='btn btn-success btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver material de la tarea'><i class='fas fa-photo-video'></i> Ver material</a>";
                   }
@@ -213,7 +213,7 @@ function listar_tareas(){
           {"data":"archivo_evnio_tarea",
             render: function(data,type,row){
                     if(data==''){
-                        return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fa fa-file-pdf'></i></button>";
+                        return "<button class='btn btn-danger btn-sm' disabled title='Ver archivo'><i class='fas fa-file-pdf'></i></button>";
                     }else{
                       return "<a class='btn btn-primary btn-sm' href='../controller/tareas/controlador_archivos_tarea.php?carpeta="+encodeURIComponent(data)+"' target='_blank' title='Ver archivo'><i class='fas fa-file'></i> Ver tarea enviada</a>";
                     }
@@ -234,11 +234,11 @@ function listar_tareas(){
         {"data":"ESTADO",
           render: function (data, type, row ) {
             if(data=='PENDIENTE'){
-              return "<button  class='agregar btn btn-secondary btn-sm'  style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+              return "<button  class='agregar btn btn-secondary btn-sm'  style='margin-right: 10px;' title='Subir tarea'><i class='fas fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
             }else if(data=='ENVIADO'){
-              return "<button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Subir tarea'><i class='fa fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>";             
+              return "<button  class='agregar btn btn-secondary btn-sm' hidden style='margin-right: 10px;' title='Subir tarea'><i class='fas fa-upload'></i> Subir tarea</button><button class='editar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>";             
             }else{
-              return "<button  class='ver btn btn-success btn-sm' style='margin-right: 10px;' title='Ver nota de tarea'><i class='fa fa-eye'></i> Ver calificación</button>";             
+              return "<button  class='ver btn btn-success btn-sm' style='margin-right: 10px;' title='Ver nota de tarea'><i class='fas fa-eye'></i> Ver calificación</button>";             
 
             }
           }
@@ -311,7 +311,7 @@ function listar_tareas_menu_estudiante(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -398,7 +398,7 @@ function listar_examenes_menu_estudiante(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -718,7 +718,7 @@ $('#tabla_tarea').on('click', '.ver', function() {
   document.getElementById('txt_descripcion_ver').value = data.descripcion;
   document.getElementById('txt_observacion').value = data.observacion;
 
-  document.getElementById('titulo_h1').innerHTML = '<b>NOTA DE LA TAREA CON EL TEMA: <span style="color:blue">' + textoSeguro(data.tema)+'</span></b>';
+  document.getElementById('titulo_h1').innerHTML = '<b>NOTA DE LA TAREA CON EL TEMA: <span class="text-primary">' + textoSeguro(data.tema)+'</span></b>';
 
  // Asignar el valor de la calificación al h2
   var nota = document.getElementById('titulo_h2').innerHTML = data.calificacion;
@@ -726,12 +726,12 @@ $('#tabla_tarea').on('click', '.ver', function() {
 // Verificar la calificación y asignar el texto correspondiente con el color
 if (notaAprobada(nota)) {
   // Colocar la nota en verde y mostrar "FELICITACIONES" con un emoji de trofeo
-  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: green;">' + textoSeguro(data.calificacion) + '</span></b>';
-  document.getElementById('subtitulo_h3').innerHTML = '<b><span style="color: green;">🏆 FELICITACIONES 🏆</span></b>';
+  document.getElementById('titulo_h2').innerHTML = '<b><span class="text-success">' + textoSeguro(data.calificacion) + '</span></b>';
+  document.getElementById('subtitulo_h3').innerHTML = '<b><span class="text-success">🏆 FELICITACIONES 🏆</span></b>';
 } else {
   // Colocar la nota en rojo y mostrar "TIENES QUE MEJORAR" con un emoji de advertencia
-  document.getElementById('titulo_h2').innerHTML = '<b><span style="color: red;">' + textoSeguro(data.calificacion) + '</span></b>';
-  document.getElementById('subtitulo_h3').innerHTML = '<b><span style="color: red;">⚠️ TIENES QUE MEJORAR ⚠️</span></b>';
+  document.getElementById('titulo_h2').innerHTML = '<b><span class="text-danger">' + textoSeguro(data.calificacion) + '</span></b>';
+  document.getElementById('subtitulo_h3').innerHTML = '<b><span class="text-danger">⚠️ TIENES QUE MEJORAR ⚠️</span></b>';
 }
 
 

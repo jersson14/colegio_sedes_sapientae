@@ -33,7 +33,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_indicadores" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Código</th>
                       <th style="text-align:center">Tipo</th>
@@ -60,19 +60,19 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>NUEVA CATEGORÍA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>NUEVA CATEGORÍA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo<b class="text-danger">(*)</b>:</label>
             <select name="" id="txt_tipo" class="form-control">
                 <option value="" disabled selected>Seleccionar</option>
                 <option value="GASTOS">EGRESOS</option>
@@ -80,12 +80,12 @@
             </select>
         </div>
           <div class="col-12 form-group">
-            <label for="">Grupo<b style="color:red">(*)</b>:</label>
+            <label for="">Grupo<b class="text-danger">(*)</b>:</label>
             <select id="txt_grupo" class="form-control"><option value="">Elija primero el tipo</option></select>
           </div>
 
           <div class="col-12 form-group">
-            <label for="">Nombre<b style="color:red">(*)</b>:</label>
+            <label for="">Nombre<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre" placeholder="Ingrese el nombre de la categoría">
           </div>
           <div class="col-12 form-group">
@@ -105,19 +105,19 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR CATEGORÍA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR CATEGORÍA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-12 form-group">
-            <label for="">Tipo<b style="color:red">(*)</b>:</label>
+            <label for="">Tipo<b class="text-danger">(*)</b>:</label>
             <select name="" id="txt_tipo_editar" class="form-control">
                 <option value="" disabled selected>Seleccionar</option>
                 <option value="GASTOS">EGRESOS</option>
@@ -126,12 +126,12 @@
             <input type="text" id="id_indiciador" hidden>
         </div>
           <div class="col-12 form-group" id="fila_grupo_editar">
-            <label for="">Grupo<b style="color:red">(*)</b>:</label>
+            <label for="">Grupo<b class="text-danger">(*)</b>:</label>
             <select id="txt_grupo_editar" class="form-control"></select>
           </div>
 
           <div class="col-12 form-group">
-            <label for="">Nombre<b style="color:red">(*)</b>:</label>
+            <label for="">Nombre<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre_editar" placeholder="Ingrese el nombre de la categoría">
           </div>
           <div class="col-12 form-group">
@@ -139,7 +139,7 @@
             <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;" placeholder="Ingrese alguna descripción si desea"></textarea>
           </div>
           <div class="col-12 form-group">
-            <label for="">Estado<b style="color:red">(*)</b>:</label>
+            <label for="">Estado<b class="text-danger">(*)</b>:</label>
               <select name="" id="txt_estatus" class="form-control">
                 <option value="ACTIVO">ACTIVO</option>
                 <option value="INACTIVO">INACTIVO</option>

@@ -13,7 +13,7 @@ function Listar_Formas_Pago(){
     resp.cuentas.forEach(function(c){
       filas += "<tr><td>" + c.tipo + "</td><td><b>" + esc(c.nombre) + "</b></td><td>" + esc(c.banco) + "</td><td>" + esc(c.numero_cuenta)
              + "</td><td>" + esc(c.codigo_interbancario) + "</td><td>" + formatoMoneda(c.saldo_inicial) + "</td><td>" + formatoMoneda(c.cobrado)
-             + "</td><td>" + badge_estado(c.estado) + "</td><td><button class='btn btn-primary btn-sm' onclick='Abrir_Cuenta(" + c.id_cuenta + ")'><i class='fa fa-edit'></i> Editar</button></td></tr>";
+             + "</td><td>" + badge_estado(c.estado) + "</td><td><button class='btn btn-primary btn-sm' onclick='Abrir_Cuenta(" + c.id_cuenta + ")'><i class='fas fa-edit'></i> Editar</button></td></tr>";
     });
     $("#tbody_cuentas").html(filas);
     filas = "";
@@ -22,7 +22,7 @@ function Listar_Formas_Pago(){
       filas += "<tr><td><b>" + esc(m.nombre) + "</b>" + (historico ? " <small class='text-muted'>(pagos anteriores)</small>" : "") + "</td><td>" + m.tipo
              + "</td><td>" + (m.requiere_referencia == 1 ? "Sí" : "No") + "</td><td>" + (m.requiere_cuenta == 1 ? "Sí" : "No") + "</td><td>" + m.comision_pct
              + "</td><td>" + m.usos + "</td><td>" + badge_estado(m.estado) + "</td><td>"
-             + (historico ? "" : "<button class='btn btn-primary btn-sm' onclick='Abrir_Metodo(" + m.id_metodo + ")'><i class='fa fa-edit'></i> Editar</button>") + "</td></tr>";
+             + (historico ? "" : "<button class='btn btn-primary btn-sm' onclick='Abrir_Metodo(" + m.id_metodo + ")'><i class='fas fa-edit'></i> Editar</button>") + "</td></tr>";
     });
     $("#tbody_metodos").html(filas);
   });

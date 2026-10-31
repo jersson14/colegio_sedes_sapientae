@@ -36,7 +36,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-md-3" role="document">
-                                    <label for="">Año académico<b style="color:red">(*)</b>:</label>
+                                    <label for="">Año académico<b class="text-danger">(*)</b>:</label>
                                     <select class="form-control" id="select_año" style="width:100%">
                                     </select>
                                 </div>
@@ -90,7 +90,7 @@
                         <div class="table-responsive" style="text-align:center">
                             <div class="row">
                                 <div class="col-lg-12 form-group" style="text-align:center">
-                                    <label for="" style="color:#000000">LEYENDA: </label>
+                                    <label for="" class="text-dark">LEYENDA: </label>
                                     <span class="badge bg-success"> P = PRESENTE</span>
                                     <span class="badge bg-warning"> T = TARDE</span>
                                     <span class="badge bg-danger"> A = AUSENTE</span>
@@ -100,7 +100,7 @@
                             </div>
                             <div class="card-body">
                                 <table id="tabla_asistencia_totales_dia" class="table table-striped table-bordered" style="width:100%">
-                                    <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                                    <thead class="tabla-cabecera">
                                         <tr>
                                             <th style="text-align:center">Nro.</th>
                                             <th style="text-align:center">DNI</th>
@@ -165,7 +165,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-3" role="document">
-                                            <label for="">Año académico<b style="color:red">(*)</b>:</label>
+                                            <label for="">Año académico<b class="text-danger">(*)</b>:</label>
                                             <select class="form-control" id="select_año_2" style="width:100%">
                                             </select>
                                         </div>
@@ -214,7 +214,7 @@
                                 <div class="table-responsive" style="text-align:center">
                                     <div class="card-body">
                                         <table id="tabla_asistencia_totales" class="table table-striped table-bordered" style="width:100%">
-                                            <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                                            <thead class="tabla-cabecera">
                                                 <tr>
                                                     <th style="text-align:center">Nro.</th>
                                                     <th style="text-align:center">DNI</th>

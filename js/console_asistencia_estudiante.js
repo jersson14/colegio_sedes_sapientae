@@ -114,7 +114,7 @@ function listar_alumnos_totales() {
       },
       {
         extend: 'print',
-        text: '<i class="fa fa-print"></i> ',
+        text: '<i class="fas fa-print"></i> ',
         titleAttr: 'Imprimir',
         title: function () {
           return "LISTA DE ASISTENCIAS POR MES";
@@ -206,7 +206,7 @@ function listar_alumnos_totales_dia() {
       },
       {
         extend: 'print',
-        text: '<i class="fa fa-print"></i> ',
+        text: '<i class="fas fa-print"></i> ',
         titleAttr: 'Imprimir',
         title: function () {
           return "LISTA DE ASISTENCIAS POR DIA";

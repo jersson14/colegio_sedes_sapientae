@@ -30,7 +30,7 @@
           </div>
           <div class="card-body table-responsive">
             <table class="table table-striped table-bordered table-sm" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                 <tr><th>Tipo</th><th>Nombre</th><th>Banco</th><th>N.° de cuenta</th><th>CCI / CBU</th><th>Saldo inicial</th><th>Cobrado</th><th>Estado</th><th>Acción</th></tr>
               </thead>
               <tbody id="tbody_cuentas"></tbody>
@@ -47,7 +47,7 @@
           </div>
           <div class="card-body table-responsive">
             <table class="table table-striped table-bordered table-sm" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                 <tr><th>Nombre</th><th>Tipo</th><th>Pide n.° de operación</th><th>Pide caja/cuenta</th><th>Comisión %</th><th>Usos</th><th>Estado</th><th>Acción</th></tr>
               </thead>
               <tbody id="tbody_metodos"></tbody>
@@ -62,15 +62,15 @@
 <div class="modal fade" id="modal_cuenta" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="lb_titulo_cuenta" style="color:white; text-align:center"><b>CAJA / CUENTA</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="lb_titulo_cuenta"><b>CAJA / CUENTA</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="txt_id_cuenta">
         <div class="row">
           <div class="col-md-4 form-group">
-            <label>Tipo<b style="color:red">(*)</b>:</label>
+            <label>Tipo<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_tipo_cuenta">
               <option value="CAJA">CAJA (efectivo)</option>
               <option value="BANCO">CUENTA BANCARIA</option>
@@ -78,7 +78,7 @@
             </select>
           </div>
           <div class="col-md-8 form-group">
-            <label>Nombre<b style="color:red">(*)</b>:</label>
+            <label>Nombre<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre_cuenta" maxlength="100" placeholder="Ej. BANCO X CUENTA CORRIENTE">
           </div>
           <div class="col-md-4 form-group">
@@ -122,19 +122,19 @@
 <div class="modal fade" id="modal_metodo" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="lb_titulo_metodo" style="color:white; text-align:center"><b>MÉTODO DE PAGO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="lb_titulo_metodo"><b>MÉTODO DE PAGO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="txt_id_metodo">
         <div class="row">
           <div class="col-12 form-group">
-            <label>Nombre<b style="color:red">(*)</b>:</label>
+            <label>Nombre<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre_metodo" maxlength="60" placeholder="Ej. YAPE, PLIN, NEQUI, MERCADO PAGO">
           </div>
           <div class="col-md-6 form-group">
-            <label>Tipo<b style="color:red">(*)</b>:</label>
+            <label>Tipo<b class="text-danger">(*)</b>:</label>
             <select class="form-control" id="select_tipo_metodo">
               <option>EFECTIVO</option><option>TARJETA</option><option>TRANSFERENCIA</option><option>DEPOSITO</option>
               <option>BILLETERA</option><option>CHEQUE</option><option>OTRO</option>

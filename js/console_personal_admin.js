@@ -64,7 +64,7 @@ function listar_personal_administrativo(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> <b>Imprimir</b>',
+      text:      '<i class="fas fa-print"></i> <b>Imprimir</b>',
       titleAttr: 'Imprimir',
       
       title: function() {
@@ -118,7 +118,7 @@ function listar_personal_administrativo(){
         {"data":"tipo_rol","visible": false},        
       
         
-        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del estudiante'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button>"},
         
     ],
 

@@ -47,7 +47,7 @@ function listar_aula_hora(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -71,7 +71,7 @@ function listar_aula_hora(){
         }
         },        {"data":"turno"},
         {           
-             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horas aula'><i class='fa fa-eye'></i> Horas por aula</button>"
+             "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horas aula'><i class='fas fa-eye'></i> Horas por aula</button>"
         },
         {"data":"estado",
             render: function(data,type,row){
@@ -83,7 +83,7 @@ function listar_aula_hora(){
             }   
         },
 
-        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>"},
+        {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>"},
 
     ],
 
@@ -150,7 +150,7 @@ function listar_aula_hora_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -174,7 +174,7 @@ function listar_aula_hora_filtro(){
         }
         },      {"data":"turno"},
       {           
-           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horas aula'><i class='fa fa-eye'></i> Horas por aula</button>"
+           "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver horas aula'><i class='fas fa-eye'></i> Horas por aula</button>"
       },
       {"data":"estado",
           render: function(data,type,row){
@@ -186,7 +186,7 @@ function listar_aula_hora_filtro(){
           }   
       },
 
-      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fa fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fa fa-trash'></i> Eliminar</button>"},
+      {"defaultContent":"<button class='editar btn btn-primary  btn-sm' title='Editar componentes'><i class='fas fa-edit'></i> Editar</button>&nbsp;&nbsp; <button class='delete btn btn-danger  btn-sm' title='Eliminar componentes'><i class='fas fa-trash'></i> Eliminar</button>"},
 
   ],
 
@@ -384,7 +384,7 @@ function listar_horas_aula_editar(id,año) {
       {"data": "turno"},
       {"data": "hora_inicio"},
       {"data": "hora_fin"},
-      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fa fa-trash'></i> Eliminar</button>"}
+      {"defaultContent": "<button class='delete btn btn-danger btn-sm' title='Eliminar datos de especialidad'><i class='fas fa-trash'></i> Eliminar</button>"}
     ],
     "language": idioma_espanol,
     "select": true

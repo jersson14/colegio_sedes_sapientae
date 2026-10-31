@@ -64,7 +64,7 @@ function listar_alumnos(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> <b>Imprimir</b>',
+      text:      '<i class="fas fa-print"></i> <b>Imprimir</b>',
       titleAttr: 'Imprimir',
       
       title: function() {
@@ -121,10 +121,10 @@ function listar_alumnos(){
         {"data":"docente_estatus", "orderable": false,
             render: function(data,type,row){
                 var estado = data === 'ACTIVO'
-                    ? "&nbsp;&nbsp;<button class='estado btn btn-warning btn-sm' data-estado='INACTIVO' title='El docente ya no podrá ingresar al sistema (su historial se conserva)'><i class='fa fa-user-slash'></i> Desactivar</button>"
-                    : "&nbsp;&nbsp;<button class='estado btn btn-info btn-sm' data-estado='ACTIVO' title='Permitir de nuevo el ingreso al sistema'><i class='fa fa-user-check'></i> Activar</button>";
-                return "<div class='text-nowrap'><button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fa fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del docente'><i class='fa fa-edit'></i> Editar</button>"
-                    + estado + "&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fa fa-trash'></i> Eliminar</button></div>";
+                    ? "&nbsp;&nbsp;<button class='estado btn btn-warning btn-sm' data-estado='INACTIVO' title='El docente ya no podrá ingresar al sistema (su historial se conserva)'><i class='fas fa-user-slash'></i> Desactivar</button>"
+                    : "&nbsp;&nbsp;<button class='estado btn btn-info btn-sm' data-estado='ACTIVO' title='Permitir de nuevo el ingreso al sistema'><i class='fas fa-user-check'></i> Activar</button>";
+                return "<div class='text-nowrap'><button class='mostrar btn btn-success  btn-sm' title='Mostrar datos'><i class='fas fa-eye'></i> Mostrar</button>&nbsp;&nbsp;<button class='editar btn btn-primary  btn-sm' title='Editar datos del docente'><i class='fas fa-edit'></i> Editar</button>"
+                    + estado + "&nbsp;&nbsp;<button class='delete btn btn-danger  btn-sm' title='Eliminar registro'><i class='fas fa-trash'></i> Eliminar</button></div>";
             }
         },
         

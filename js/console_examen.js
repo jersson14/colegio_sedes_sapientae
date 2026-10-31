@@ -46,7 +46,7 @@ function listar_examenes(){
   },
     {
       extend:    'print',
-      text:      '<i class="fa fa-print"></i> ',
+      text:      '<i class="fas fa-print"></i> ',
       titleAttr: 'Imprimir',
       
     title: function() {
@@ -75,7 +75,7 @@ function listar_examenes(){
         {"data":"FECHA_EXAMEN"},
          
         {
-            "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Alumnos para examen</button>"
+            "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fas fa-check'></i> Alumnos para examen</button>"
         },
         {"data":"ESTADO",
           render: function(data,type,row){
@@ -89,9 +89,9 @@ function listar_examenes(){
       {"data":"ESTADO",
           render: function (data, type, row ) {
             if(data=='PENDIENTE'){
-                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fas fa-trash'></i> Eliminar</button>";             
             }else if(data=='REALIZADO'){
-                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fas fa-trash'></i> Eliminar</button>";             
           }
           }
         },       
@@ -158,7 +158,7 @@ function listar_examenes_filtro(){
 },
   {
     extend:    'print',
-    text:      '<i class="fa fa-print"></i> ',
+    text:      '<i class="fas fa-print"></i> ',
     titleAttr: 'Imprimir',
     
   title: function() {
@@ -186,7 +186,7 @@ function listar_examenes_filtro(){
       {"data":"FECHA_EXAMEN"},
        
       {
-          "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fa fa-check'></i> Alumnos para examen</button>"
+          "defaultContent": "<button class='mostrar btn btn-success btn-sm' title='Ver tarea realizada'><i class='fas fa-check'></i> Alumnos para examen</button>"
       },
 
       {"data":"ESTADO",
@@ -201,9 +201,9 @@ function listar_examenes_filtro(){
       {"data":"ESTADO",
           render: function (data, type, row ) {
             if(data=='PENDIENTE'){
-                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;'  title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' title='Eliminar datos'><i class='fas fa-trash'></i> Eliminar</button>";             
             }else if(data=='REALIZADO'){
-                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fa fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fa fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fa fa-trash'></i> Eliminar</button>";             
+                  return "<button class='activar btn btn-warning btn-sm' style='margin-right: 10px;' hidden title='Finalizar examen'><i class='fas fa-thumbs-up'></i> Finalizar</button>&nbsp;<button class='editar  btn btn-primary btn-sm' style='margin-right: 10px;'  title='Editar datos'><i class='fas fa-edit'></i> Editar</button>&nbsp;<button style='margin-right: 10px;' class='delete btn btn-danger btn-sm' hidden title='Eliminar datos'><i class='fas fa-trash'></i> Eliminar</button>";             
           }
           }
         },        
@@ -299,7 +299,7 @@ function Modificar_Estatus_examen(id,estatus,temita){
         var data = tbl_examen.row(this).data();
     }
       Swal.fire({
-        title: 'Desea dejar como realizado el examen con el tema: <b style="color:blue">'+textoSeguro(data.tema_examen)+'</b>?',
+        title: 'Desea dejar como realizado el examen con el tema: <b class="text-primary">'+textoSeguro(data.tema_examen)+'</b>?',
         text: "Una vez realizado se deshabilitara el boton eliminar ya que el examen de desarrollo con éxito.",
         icon: 'warning',
         showCancelButton: true,

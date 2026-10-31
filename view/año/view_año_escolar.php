@@ -33,7 +33,7 @@
           <div class="table-responsive" style="text-align:center">
           <div class="card-body">
           <table id="tabla_año_escolar" class="table table-striped table-bordered" style="width:100%">
-              <thead style="background-color:#0A5D86;color:#FFFFFF;">
+              <thead class="tabla-cabecera">
                   <tr>
                       <th style="text-align:center">Nro.</th>
                       <th style="text-align:center">Año escolar</th>
@@ -61,35 +61,35 @@
 <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>REGISTRO AÑO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>REGISTRO AÑO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-4 form-group">
-            <label for="">Año escolar<b style="color:red">(*)</b>:</label>
+            <label for="">Año escolar<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_año" onkeypress="return soloNumeros(event)">
           </div>
           <div class="col-8 form-group">
-            <label for="">Nombre de año<b style="color:red">(*)</b>:</label>
+            <label for="">Nombre de año<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre" onkeypress="return sololetras(event)">
           </div>
           <div class="col-6 form-group">
-            <label for="">Fecha de inicio<b style="color:red">(*)</b>:</label>
+            <label for="">Fecha de inicio<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_inicio" onkeypress="return sololetras(event)">
           </div>
           <div class="col-6 form-group">
-            <label for="">Fecha de Finalización<b style="color:red">(*)</b>:</label>
+            <label for="">Fecha de Finalización<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fin" onkeypress="return sololetras(event)">
           </div>
           <div class="col-12 form-group">
-            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+            <label for="">Descripción<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_descripcion" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
         </div>
@@ -105,40 +105,40 @@
 <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color:#1FA0E0;">
-        <h5 class="modal-title" id="exampleModalLabel" style="color:white; text-align:center"><b>EDITAR DATOS DEL AÑO ACADÉMICO</b></h5>
+      <div class="modal-header ventana-cabecera">
+        <h5 class="modal-title text-white text-center" id="exampleModalLabel"><b>EDITAR DATOS DEL AÑO ACADÉMICO</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-12 form-group" style="color:red">
+          <div class="col-12 form-group text-danger">
             <h6><b>Campos Obligatorios (*)</b></h6>
           </div>
           <div class="col-4 form-group">
-            <label for="">Año escolar<b style="color:red">(*)</b>:</label>
+            <label for="">Año escolar<b class="text-danger">(*)</b>:</label>
             <input type="text" id="txt_idaño" hidden>
             <input type="text" class="form-control" id="txt_año_editar" onkeypress="return soloNumeros(event)">
           </div>
           <div class="col-8 form-group">
-            <label for="">Nombre de año<b style="color:red">(*)</b>:</label>
+            <label for="">Nombre de año<b class="text-danger">(*)</b>:</label>
             <input type="text" class="form-control" id="txt_nombre_editar" onkeypress="return sololetras(event)">
           </div>
           <div class="col-6 form-group">
-            <label for="">Fecha de inicio<b style="color:red">(*)</b>:</label>
+            <label for="">Fecha de inicio<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_inicio_editar" onkeypress="return sololetras(event)">
           </div>
           <div class="col-6 form-group">
-            <label for="">Fecha de Finalización<b style="color:red">(*)</b>:</label>
+            <label for="">Fecha de Finalización<b class="text-danger">(*)</b>:</label>
             <input type="date" class="form-control" id="txt_fin_editar" onkeypress="return sololetras(event)">
           </div>
           <div class="col-12 form-group">
-            <label for="">Descripción<b style="color:red">(*)</b>:</label>
+            <label for="">Descripción<b class="text-danger">(*)</b>:</label>
             <textarea name="" id="txt_descripcion_editar" rows="3" class="form-control" style="resize:none;"></textarea>
           </div>
           <div class="col-12 form-group">
-            <label for="">Estado<b style="color:red">(*)</b>:</label>
+            <label for="">Estado<b class="text-danger">(*)</b>:</label>
               <select name="" id="txt_estatus" class="form-control">
                 <option value="ACTIVO">ACTIVO</option>
                 <option value="INACTIVO">INACTIVO</option>

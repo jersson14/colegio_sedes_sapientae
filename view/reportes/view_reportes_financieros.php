@@ -73,7 +73,7 @@
             <div class="mb-2 text-right"><button class="btn btn-danger btn-sm" onclick="Abrir_PDF('estado_resultados')"><i class="fas fa-file-pdf"></i> PDF</button></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered" id="rf_resultados" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Concepto</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">% del total</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Concepto</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">% del total</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -86,7 +86,7 @@
             <div style="height:320px"><canvas id="rf_mensual_grafico"></canvas></div>
             <div class="table-responsive mt-3">
               <table class="table table-sm table-bordered table-striped" id="rf_mensual" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Mes</th><th class="text-right">Ingresos</th><th class="text-right">Egresos</th><th class="text-right">Utilidad</th><th class="text-right">Ingresos año anterior</th><th class="text-right">Egresos año anterior</th><th class="text-right">Utilidad año anterior</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Mes</th><th class="text-right">Ingresos</th><th class="text-right">Egresos</th><th class="text-right">Utilidad</th><th class="text-right">Ingresos año anterior</th><th class="text-right">Egresos año anterior</th><th class="text-right">Utilidad año anterior</th></tr></thead>
                 <tbody></tbody>
                 <tfoot></tfoot>
               </table>
@@ -98,7 +98,7 @@
             <div class="mb-2 text-right"><button class="btn btn-danger btn-sm" onclick="Abrir_PDF('flujo_caja')"><i class="fas fa-file-pdf"></i> PDF</button></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" id="rf_flujo" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;">
+                <thead class="tabla-cabecera">
                   <tr><th>Caja / cuenta</th><th>Tipo</th><th class="text-right">Saldo inicial</th><th class="text-right">Cobros</th><th class="text-right">Transf. recibidas</th><th class="text-right">Ajustes (+)</th><th class="text-right">Pagos</th><th class="text-right">Transf. enviadas</th><th class="text-right">Ajustes (−)</th><th class="text-right">Saldo final</th></tr>
                 </thead>
                 <tbody></tbody>
@@ -115,14 +115,14 @@
               <div class="col-lg-6">
                 <h5 class="text-success"><b>Cobros por forma de pago</b></h5>
                 <table class="table table-sm table-bordered table-striped" id="rf_metodos_ingreso" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Forma de pago</th><th>Caja / cuenta</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">Comisión</th><th class="text-right">%</th></tr></thead>
+                  <thead class="tabla-cabecera"><tr><th>Forma de pago</th><th>Caja / cuenta</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">Comisión</th><th class="text-right">%</th></tr></thead>
                   <tbody></tbody><tfoot></tfoot>
                 </table>
               </div>
               <div class="col-lg-6">
                 <h5 class="text-danger"><b>Pagos por forma de pago</b></h5>
                 <table class="table table-sm table-bordered table-striped" id="rf_metodos_egreso" style="width:100%">
-                  <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Forma de pago</th><th>Caja / cuenta</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">Comisión</th><th class="text-right">%</th></tr></thead>
+                  <thead class="tabla-cabecera"><tr><th>Forma de pago</th><th>Caja / cuenta</th><th class="text-right">Operaciones</th><th class="text-right">Monto</th><th class="text-right">Comisión</th><th class="text-right">%</th></tr></thead>
                   <tbody></tbody><tfoot></tfoot>
                 </table>
               </div>
@@ -144,19 +144,19 @@
             </div>
             <div class="table-responsive rf-moro" id="rf_moro_alumnos">
               <table class="table table-sm table-bordered table-striped" id="rf_morosidad_alumnos" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Alumno</th><th>Documento</th><th>Nivel</th><th>Grado</th><th>Teléfonos</th><th>Meses vencidos</th><th class="text-right">Máx. días</th><th class="text-right">Pensión</th><th class="text-right">Mora</th><th class="text-right">Deuda</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Alumno</th><th>Documento</th><th>Nivel</th><th>Grado</th><th>Teléfonos</th><th>Meses vencidos</th><th class="text-right">Máx. días</th><th class="text-right">Pensión</th><th class="text-right">Mora</th><th class="text-right">Deuda</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
             <div class="table-responsive rf-moro" id="rf_moro_detalle" style="display:none">
               <table class="table table-sm table-bordered table-striped" id="rf_morosidad_detalle" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Alumno</th><th>Nivel</th><th>Grado</th><th>Mes</th><th>Vencimiento</th><th class="text-right">Días de atraso</th><th class="text-right">Precio</th><th class="text-right">Pagado</th><th class="text-right">Saldo pensión</th><th class="text-right">Mora</th><th class="text-right">Deuda</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Alumno</th><th>Nivel</th><th>Grado</th><th>Mes</th><th>Vencimiento</th><th class="text-right">Días de atraso</th><th class="text-right">Precio</th><th class="text-right">Pagado</th><th class="text-right">Saldo pensión</th><th class="text-right">Mora</th><th class="text-right">Deuda</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
             <div class="table-responsive rf-moro" id="rf_moro_aulas" style="display:none">
               <table class="table table-sm table-bordered table-striped" id="rf_morosidad_aulas" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Nivel › grado</th><th class="text-right">Alumnos con deuda</th><th class="text-right">Deuda</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Nivel › grado</th><th class="text-right">Alumnos con deuda</th><th class="text-right">Deuda</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -168,7 +168,7 @@
             <div class="row text-center" id="rf_proyeccion_tarjetas"></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" id="rf_proyeccion" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Mes</th><th>Vencimiento</th><th class="text-right">Matrículas</th><th class="text-right">Esperado</th><th class="text-right">Cobrado</th><th class="text-right">Vencido sin cobrar</th><th class="text-right">Mora pendiente</th><th class="text-right">Por vencer</th><th style="width:16%">Avance</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Mes</th><th>Vencimiento</th><th class="text-right">Matrículas</th><th class="text-right">Esperado</th><th class="text-right">Cobrado</th><th class="text-right">Vencido sin cobrar</th><th class="text-right">Mora pendiente</th><th class="text-right">Por vencer</th><th style="width:16%">Avance</th></tr></thead>
                 <tbody></tbody><tfoot></tfoot>
               </table>
             </div>
@@ -180,7 +180,7 @@
             <div class="row" id="rf_planilla_tipos"></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" id="rf_planilla" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Mes</th><th>Estado</th><th>Tipo de contrato</th><th class="text-right">Docentes</th><th class="text-right">Horas</th><th class="text-right">Sueldo / horas</th><th class="text-right">Bonos y otros</th><th class="text-right">Costo bruto</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Mes</th><th>Estado</th><th>Tipo de contrato</th><th class="text-right">Docentes</th><th class="text-right">Horas</th><th class="text-right">Sueldo / horas</th><th class="text-right">Bonos y otros</th><th class="text-right">Costo bruto</th><th class="text-right">Descuentos</th><th class="text-right">Adelantos</th><th class="text-right">Neto</th><th class="text-right">Pagado</th></tr></thead>
                 <tbody></tbody><tfoot></tfoot>
               </table>
             </div>
@@ -192,7 +192,7 @@
             <div class="row text-center" id="rf_cierres_tarjetas"></div>
             <div class="table-responsive">
               <table class="table table-sm table-bordered table-striped" id="rf_cierres" style="width:100%">
-                <thead style="background-color:#0A5D86;color:#FFFFFF;"><tr><th>Fecha</th><th>Caja</th><th class="text-right">Saldo inicial</th><th class="text-right">Entradas</th><th class="text-right">Salidas</th><th class="text-right">Esperado</th><th class="text-right">Contado</th><th class="text-right">Diferencia</th><th>Ajustado</th><th>Observación</th><th>Usuario</th></tr></thead>
+                <thead class="tabla-cabecera"><tr><th>Fecha</th><th>Caja</th><th class="text-right">Saldo inicial</th><th class="text-right">Entradas</th><th class="text-right">Salidas</th><th class="text-right">Esperado</th><th class="text-right">Contado</th><th class="text-right">Diferencia</th><th>Ajustado</th><th>Observación</th><th>Usuario</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
