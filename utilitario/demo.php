@@ -66,3 +66,30 @@ function demo_controladores_bloqueados() {
 function demo_controlador_bloqueado($ruta) {
     return modo_demo() && in_array($ruta, demo_controladores_bloqueados(), true);
 }
+
+/** Usuarios de prueba que la pantalla de ingreso muestra en la demo (scripts/demo/generar_demo.php; todos con DEMO_CLAVE). */
+const DEMO_CLAVE = 'Colegio2026';
+const DEMO_USUARIOS = [
+    ['Administrador', 'DIRECCION', 'Todo el colegio'],
+    ['Contador', 'CONTADOR', 'Caja, pensiones y cuentas'],
+    ['Auxiliar', 'AUXILIAR', 'Asistencia y tareas'],
+    ['Docente', 'MHUAMAN', 'Matemática, 1.° a 3.° de secundaria'],
+    ['Docente', 'EPEREZ', 'Tutora de 1.° de primaria'],
+    ['Estudiante', '77368344', '1.° de secundaria, al día'],
+    ['Estudiante', '75448446', '1.° de primaria, con deuda'],
+    ['Enfermera', 'ENFERMERA', 'Atenciones de enfermería'],
+    ['Psicóloga', 'PSICOLOGA', 'Atenciones de psicología'],
+];
+
+/** Los usuarios de prueba que existen y están activos (vacío fuera de la demo). */
+function demo_usuarios_ingreso() {
+    if (!modo_demo()) { return []; }
+    try {
+        require_once __DIR__ . '/../model/model_conexion.php';
+        $q = (new conexionBD())->conexionPDO()->query("SELECT usu_usuario FROM usuario WHERE usu_estatus = 'ACTIVO'");
+        $activos = array_flip($q->fetchAll(PDO::FETCH_COLUMN));
+    } catch (Throwable $e) {
+        return [];
+    }
+    return array_values(array_filter(DEMO_USUARIOS, function ($u) use ($activos) { return isset($activos[$u[1]]); }));
+}

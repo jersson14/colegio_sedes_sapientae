@@ -11,7 +11,9 @@
 <?php
   // Identidad del colegio (Configuración > Apariencia): nombre, lema, escudo y colores
   require_once __DIR__ . '/utilitario/tema.php';
+  require_once __DIR__ . '/utilitario/demo.php';
   $TEMA = tema_actual();
+  $DEMO_USUARIOS = demo_usuarios_ingreso();
   $e = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); };
   $escudo = $TEMA['logo'] ?: 'img/logo1.png';
 ?>
@@ -54,6 +56,17 @@
     .ing-caja .form-control { height: 46px; border-radius: 10px 0 0 10px; font-size: 1rem; }
     .ing-caja .input-group-text { border-radius: 0 10px 10px 0; background: #fff; cursor: pointer; min-width: 46px; justify-content: center; }
     .ing-caja .form-control:focus { border-color: var(--tema-primario-borde); box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--tema-primario) 22%, transparent); }
+    /* Versión de demostración: usuarios de prueba (utilitario/demo.php) */
+    .ing-demo { margin-top: 22px; border: 1px solid #E6E3DE; border-radius: 12px; background: #fff; overflow: hidden; }
+    .ing-demo header { padding: 10px 14px; background: #FFF3D6; color: #6B4A00; font-size: .88rem; }
+    .ing-demo header b { display: block; font-size: .95rem; color: #4A3300; }
+    .ing-demo table { width: 100%; margin: 0; font-size: .86rem; }
+    .ing-demo td { padding: 0; border-top: 1px solid #F0EEEA; }
+    .ing-demo button { display: flex; width: 100%; gap: 10px; align-items: baseline; text-align: left; border: 0; background: none; padding: 8px 14px; color: #1C1E22; }
+    .ing-demo button:hover, .ing-demo button:focus { background: #F7F5F2; outline: none; }
+    .ing-demo .rol { flex: 0 0 104px; font-weight: 700; color: #4A4D53; }
+    .ing-demo .usu { flex: 0 0 auto; font-family: ui-monospace, Consolas, monospace; font-weight: 600; color: var(--tema-primario); }
+    .ing-demo .que { flex: 1; color: #6B6F76; font-size: .8rem; text-align: right; }
     .ing-caja .btn-entrar {
       width: 100%; height: 48px; border: 0; border-radius: 10px; font-weight: 700; font-size: 1.05rem;
       background: var(--tema-primario); color: var(--tema-primario-texto); transition: background-color .18s ease;
@@ -110,6 +123,29 @@
       </div>
       <button class="btn btn-entrar" id="entrar" onclick="Iniciar_Sesion()"><i class="fas fa-sign-in-alt mr-2"></i>Ingresar</button>
       <p class="ing-ayuda"><i class="fas fa-question-circle"></i> ¿Olvidó su contraseña? Pídala a la secretaría o a la dirección del colegio.</p>
+      <?php if ($DEMO_USUARIOS) { ?>
+      <section class="ing-demo" aria-labelledby="ing_demo_titulo">
+        <header><b id="ing_demo_titulo"><i class="fas fa-flask mr-1"></i>Versión de demostración</b>
+          Elija un usuario de prueba. La contraseña de todos es <code><?php echo $e(DEMO_CLAVE); ?></code>.</header>
+        <table><tbody>
+          <?php foreach ($DEMO_USUARIOS as [$rol, $usu, $que]) { ?>
+          <tr><td><button type="button" class="ing-demo-usuario" data-usuario="<?php echo $e($usu); ?>" title="Usar este usuario">
+            <span class="rol"><?php echo $e($rol); ?></span><span class="usu"><?php echo $e($usu); ?></span><span class="que"><?php echo $e($que); ?></span>
+          </button></td></tr>
+          <?php } ?>
+        </tbody></table>
+      </section>
+      <script>
+        // Al elegir un usuario de prueba se llenan el usuario y la contraseña
+        document.querySelectorAll('.ing-demo-usuario').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.getElementById('txt_usuario').value = b.dataset.usuario;
+            document.getElementById('txt_contra').value = <?php echo json_encode(DEMO_CLAVE); ?>;
+            document.getElementById('entrar').focus();
+          });
+        });
+      </script>
+      <?php } ?>
     </div>
   </main>
 <!-- jQuery -->
