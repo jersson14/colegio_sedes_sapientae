@@ -65,7 +65,7 @@ window.PanelAdmin = (function () {
     items.push(p.tareas_por_calificar
       ? { c: 'pi-aviso', i: 'fa-inbox', t: plural(p.tareas_por_calificar, 'tarea entregada por calificar', 'tareas entregadas por calificar'), s: 'Los docentes las ven en su registro de tareas', a: ir('tareas/view_registro_tareas.php', 'Ver registro') }
       : { c: 'pi-bien', i: 'fa-check', t: 'Todas las tareas entregadas están calificadas', s: '', a: '' });
-    items.push({ c: 'pi-info', i: 'fa-notes-medical', t: 'Atenciones de salud este mes', s: 'Enfermería ' + p.enfermeria_mes + ' · Psicología ' + p.psicologia_mes, a: ir('atenciones/view_atencion_enfermeria.php', 'Ver') });
+    items.push({ c: 'pi-info', i: 'fa-notes-medical', t: 'Atenciones de salud este mes', s: 'Enfermería ' + p.enfermeria_mes + ' · Psicología ' + p.psicologia_mes, a: ir('salud/view_enfermeria.php', 'Ver') });
     var r = datos.ultimo_respaldo, hace = r ? dias(r.substr(0, 10), datos.hoy) : null;
     items.push(r === null || hace > 7
       ? { c: 'pi-alerta', i: 'fa-database', t: r === null ? 'No hay respaldos de la base de datos' : 'Último respaldo hace ' + plural(hace, 'día', 'días'), s: 'Genere uno y descárguelo fuera del servidor', a: ir('configuracion/view_respaldos.php', 'Respaldar') }

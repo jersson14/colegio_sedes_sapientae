@@ -20,8 +20,10 @@ check "el listado de estudiantes trae la edad calculada" "$(q "select TIMESTAMPD
 echo "== Notas: cada docente en sus cursos"
 MAT_JOSE=$(sqlf "select m.id_matricula from matricula m where m.id_aula=5 and m.\`id_año\`=5 limit 1")
 MAT_OTRA=$(q "select id_matricula from matricula where id_aula=18 limit 1")
-nota() { code JOSE --data-urlencode "registros=[{\"id_matri\":$1,\"perio\":40,\"cri\":$2,\"nota\":\"15\",\"conclu\":\"\"}]" $B/controller/notas/controlador_registro_notas.php; }
-check "NO registra notas con un criterio de otro docente" "403" "$(nota $MAT_JOSE 42)"
+# Planilla de notas del docente (controlador_registro_notas_curso): curso del criterio 1, periodo 40
+CUR1=$(q "select id_detalle_asignatura from criterios where id_criterio=1")
+nota() { code JOSE -d "accion=guardar&curso=${3:-$CUR1}&periodo=40" --data-urlencode "cambios=[{\"matricula\":$1,\"criterio\":$2,\"nota\":\"15\"}]" $B/controller/notas/controlador_registro_notas_curso.php; }
+check "NO registra notas con un criterio de otro docente (ni en el curso ajeno)" "403 403" "$(nota $MAT_JOSE 42) $(nota $MAT_JOSE 42 $(q "select id_detalle_asignatura from criterios where id_criterio=42"))"
 check "NO registra notas a un estudiante de otra aula" "403" "$(nota $MAT_OTRA 1)"
 check "sí registra en su curso y su aula" "200" "$(nota $MAT_JOSE 1)"
 
@@ -29,7 +31,7 @@ echo "== Exámenes: cada docente en sus cursos"
 EX=$B/controller/examenes
 check "NO crea examen en un curso ajeno" "403" "$(code jorge -d 'asig=20&tema=X&fecha=2030-01-01&descrip=X' $EX/controlador_registro_examenes.php)"
 check "NO modifica, elimina ni cierra un examen ajeno" "403 403 403" "$(code JOSE -d 'id=E0000005&asig=20&tema=X&fecha=2030-01-01&descrip=X' $EX/controlador_modificar_examen.php) $(code JOSE -d 'id=E0000005' $EX/controlador_eliminar_examenes.php) $(code JOSE -d 'id=E0000005&estatus=FINALIZADO' $EX/controlador_modificar_estado_examen.php)"
-check "NO ve los alumnos de un curso ajeno; sí los suyos" "403 200" "$(code jorge -d 'id=20' $EX/controlador_listar_alumnos_examen.php) $(code jorge -d 'id=44' $EX/controlador_listar_alumnos_examen.php)"
+check "su lista de exámenes trae solo sus cursos" "0" "$(post jorge -d accion=examenes $B/controller/docente/controlador_trabajos.php | php -r '$d=json_decode(stream_get_contents(STDIN),true); $mios=array_column($d["cursos"],"id"); echo count(array_filter($d["items"],function($x)use($mios){return !in_array($x["curso"],$mios);}));')"
 check "el examen ajeno sigue igual" "1" "$(q "select count(*) from examen where id_examen='E0000005' and tema_examen<>'X'")"
 
 echo "== Activar / desactivar"
@@ -52,7 +54,7 @@ check "NO reenvía una tarea ya calificada" "400" "$(code DANIEL20 -F iddetalle=
 check "(sigue calificada)" "CALIFICADO" "$(q 'select estado from detalle_tarea where id_detalle_tarea=46')"
 check "sí envía una tarea pendiente" "ENVIADO" "$(code DANIEL20 -F iddetalle=57 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php > /dev/null; q 'select estado from detalle_tarea where id_detalle_tarea=57')"
 check "y la puede reenviar mientras no esté calificada (el mismo controlador entrega y reenvía)" "200" "$(code DANIEL20 -F iddetalle=57 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php)"
-check "el docente la ve marcada fuera de plazo (entrega vencida)" "1" "$(post jorge -d id=T0000004 $B/controller/tareas/controlador_listar_tabla_envio_tareas.php | php -r '$d=json_decode(stream_get_contents(STDIN),true); foreach($d["data"] as $e){ if($e["id_detalle_tarea"]==57){ echo $e["fuera_plazo"]; } }')"
+check "el docente la ve fuera de plazo en el Registro de tareas (envío después de la entrega)" "1" "$(post jorge -d "curso=$(q "select id_detalle_asignatura from tareas where id_tarea='T0000004'")" $B/controller/registro_tareas/controlador_registro.php | php -r '$d=json_decode(stream_get_contents(STDIN),true); $f=""; foreach($d["tareas"] as $t){ if($t["id"]==="T0000004"){ $f=$t["fecha_entrega"]; } } foreach($d["estudiantes"] as $e){ foreach((array)$e["envios"] as $v){ if($v["id"]==57){ echo (int)($v["fecha_envio"] > $f); } } }')"
 q "update tareas set estado='FINALIZADO' where id_tarea='T0000006'" > /dev/null
 check "NO envía a una tarea que el docente cerró" "400" "$(code DANIEL20 -F iddetalle=68 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php)"
 

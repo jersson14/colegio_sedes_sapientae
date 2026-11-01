@@ -544,34 +544,28 @@ return array (
         2 => 'controller/controlador_listar_solicitudes.php',
       ),
     ),
-    'atenciones/view_atencion_enfermeria.php' => 
+    'salud/view_enfermeria.php' => 
     array (
       'titulo' => 'Enfermería',
       'seccion' => 'COMUNICACIÓN Y SALUD',
       'controladores' => 
       array (
-        0 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        1 => 'controller/atencion_enfermeria/controlador_listar_atención_enfermeria.php',
-        2 => 'controller/atencion_enfermeria/controlador_listar_atención_enfermeria_filtros.php',
-        3 => 'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php',
-        4 => 'controller/atencion_enfermeria/controlador_registro_enfermeria.php',
-        5 => 'controller/atencion_psicologica/controlador_cargar_matriculado_año.php',
-        6 => 'controller/aulas/controlador_cargar_select_nivel.php',
+        0 => 'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php',
+        1 => 'controller/atencion_enfermeria/controlador_registro_enfermeria.php',
+        2 => 'controller/ayuda/controlador_ayuda.php',
+        3 => 'controller/salud/controlador_atenciones.php',
       ),
     ),
-    'atenciones/view_atencion_psicologia.php' => 
+    'salud/view_psicologia.php' => 
     array (
       'titulo' => 'Psicología',
       'seccion' => 'COMUNICACIÓN Y SALUD',
       'controladores' => 
       array (
-        0 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        1 => 'controller/atencion_psicologica/controlador_cargar_matriculado_año.php',
-        2 => 'controller/atencion_psicologica/controlador_listar_atención_psicologica.php',
-        3 => 'controller/atencion_psicologica/controlador_listar_atención_psicologica_filtros.php',
-        4 => 'controller/atencion_psicologica/controlador_modificar_atencion_psico.php',
-        5 => 'controller/atencion_psicologica/controlador_registro_psicologia.php',
-        6 => 'controller/aulas/controlador_cargar_select_nivel.php',
+        0 => 'controller/atencion_psicologica/controlador_modificar_atencion_psico.php',
+        1 => 'controller/atencion_psicologica/controlador_registro_psicologia.php',
+        2 => 'controller/ayuda/controlador_ayuda.php',
+        3 => 'controller/salud/controlador_atenciones.php',
       ),
     ),
     'año/view_año_escolar.php' => 
@@ -782,73 +776,51 @@ return array (
         1 => 'view/MPDF/REPORTE/boleta_docente.php',
       ),
     ),
-    'notas/view_notas_profesor.php' => 
+    'notas/view_registro_notas.php' => 
     array (
       'titulo' => 'Notas de mis cursos',
       'seccion' => 'CONTABILIDAD',
       'controladores' => 
       array (
-        0 => 'controller/asignaturas/controlador_cargar_select_grado.php',
-        1 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        2 => 'controller/matricula/controlador_cargar_select_año.php',
-        3 => 'controller/matricula/controlador_traernivel.php',
-        4 => 'controller/notas/controlador_cargar_periodos.php',
-        5 => 'controller/notas/controlador_cargar_periodos_cargados_estudiante.php',
-        6 => 'controller/notas/controlador_cargar_select_grado_profesor.php',
-        7 => 'controller/notas/controlador_listar_criterios_notas_mostrar_profesor.php',
-        8 => 'controller/notas/controlador_listar_criterios_notas_profesor.php',
-        9 => 'controller/notas/controlador_listar_matriculas_filtro_profesor.php',
-        10 => 'controller/notas/controlador_registro_notas.php',
-        11 => 'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php',
+        0 => 'controller/notas/controlador_registro_notas_curso.php',
       ),
     ),
-    'tareas/view_tareas_profesor.php' => 
+    'docente/view_tareas_docente.php' => 
     array (
       'titulo' => 'Tareas de mis cursos',
       'seccion' => 'CONTABILIDAD',
       'controladores' => 
       array (
-        0 => 'controller/asignaturas/controlador_cargar_select_grado.php',
-        1 => 'controller/examenes/controlador_listar_alumnos_examen.php',
-        2 => 'controller/examenes/controlador_listar_examenes_profesor.php',
-        3 => 'controller/matricula/controlador_cargar_select_año.php',
-        4 => 'controller/matricula/controlador_traernivel.php',
-        5 => 'controller/notas/controlador_cargar_select_grado_profesor.php',
+        0 => 'controller/ayuda/controlador_ayuda.php',
+        1 => 'controller/docente/controlador_trabajos.php',
+        2 => 'controller/examenes/controlador_eliminar_examenes.php',
+        3 => 'controller/examenes/controlador_modificar_estado_examen.php',
+        4 => 'controller/examenes/controlador_modificar_examen.php',
+        5 => 'controller/examenes/controlador_registro_examenes.php',
         6 => 'controller/tareas/controlador_archivos_tarea.php',
-        7 => 'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php',
-        8 => 'controller/tareas/controlador_eliminar_tarea.php',
-        9 => 'controller/tareas/controlador_listar_tabla_envio_tareas.php',
-        10 => 'controller/tareas/controlador_listar_tareas_profesor.php',
-        11 => 'controller/tareas/controlador_listar_tareas_profesor_solo.php',
-        12 => 'controller/tareas/controlador_modificar_estado_tarea.php',
-        13 => 'controller/tareas/controlador_modificar_tareas.php',
-        14 => 'controller/tareas/controlador_registro_calificacion.php',
-        15 => 'controller/tareas/controlador_registro_tareas.php',
+        7 => 'controller/tareas/controlador_eliminar_tarea.php',
+        8 => 'controller/tareas/controlador_modificar_estado_tarea.php',
+        9 => 'controller/tareas/controlador_modificar_tareas.php',
+        10 => 'controller/tareas/controlador_registro_tareas.php',
       ),
     ),
-    'examen/view_examen_profesor.php' => 
+    'docente/view_examenes_docente.php' => 
     array (
       'titulo' => 'Exámenes de mis cursos',
       'seccion' => 'CONTABILIDAD',
       'controladores' => 
       array (
-        0 => 'controller/asignatura_docente/controlador_cargar_docente.php',
-        1 => 'controller/asignaturas/controlador_cargar_select_grado.php',
+        0 => 'controller/ayuda/controlador_ayuda.php',
+        1 => 'controller/docente/controlador_trabajos.php',
         2 => 'controller/examenes/controlador_eliminar_examenes.php',
-        3 => 'controller/examenes/controlador_listar_alumnos_examen.php',
-        4 => 'controller/examenes/controlador_listar_examenes_profesor.php',
-        5 => 'controller/examenes/controlador_listar_examenes_profesor_solo.php',
-        6 => 'controller/examenes/controlador_modificar_estado_examen.php',
-        7 => 'controller/examenes/controlador_modificar_examen.php',
-        8 => 'controller/examenes/controlador_registro_examenes.php',
-        9 => 'controller/matricula/controlador_cargar_select_año.php',
-        10 => 'controller/matricula/controlador_traernivel.php',
-        11 => 'controller/notas/controlador_cargar_select_grado_profesor.php',
-        12 => 'controller/tareas/controlador_archivos_tarea.php',
-        13 => 'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php',
-        14 => 'controller/tareas/controlador_cargar_select_cursos_docente.php',
-        15 => 'controller/tareas/controlador_listar_tabla_envio_tareas.php',
-        16 => 'controller/tareas/controlador_registro_calificacion.php',
+        3 => 'controller/examenes/controlador_modificar_estado_examen.php',
+        4 => 'controller/examenes/controlador_modificar_examen.php',
+        5 => 'controller/examenes/controlador_registro_examenes.php',
+        6 => 'controller/tareas/controlador_archivos_tarea.php',
+        7 => 'controller/tareas/controlador_eliminar_tarea.php',
+        8 => 'controller/tareas/controlador_modificar_estado_tarea.php',
+        9 => 'controller/tareas/controlador_modificar_tareas.php',
+        10 => 'controller/tareas/controlador_registro_tareas.php',
       ),
     ),
     'estudiante/view_mis_notas.php' => 
@@ -959,8 +931,8 @@ return array (
         28 => 'comunicado/view_comunicado.php',
         29 => 'avisos/view_avisos.php',
         30 => 'solicitudes/view_solicitudes.php',
-        31 => 'atenciones/view_atencion_enfermeria.php',
-        32 => 'atenciones/view_atencion_psicologia.php',
+        31 => 'salud/view_enfermeria.php',
+        32 => 'salud/view_psicologia.php',
         33 => 'año/view_año_escolar.php',
         34 => 'periodo/view_periodo.php',
         35 => 'nivel_academico/view_nivel_academico.php',
@@ -1029,7 +1001,7 @@ return array (
     array (
       'vistas' => 
       array (
-        0 => 'atenciones/view_atencion_enfermeria.php',
+        0 => 'salud/view_enfermeria.php',
         1 => 'planilla/view_mis_boletas.php',
       ),
       'indice' => 
@@ -1046,7 +1018,7 @@ return array (
     array (
       'vistas' => 
       array (
-        0 => 'atenciones/view_atencion_psicologia.php',
+        0 => 'salud/view_psicologia.php',
         1 => 'planilla/view_mis_boletas.php',
       ),
       'indice' => 
@@ -1093,13 +1065,13 @@ return array (
       'vistas' => 
       array (
         0 => 'planilla/view_mis_boletas.php',
-        1 => 'notas/view_notas_profesor.php',
+        1 => 'notas/view_registro_notas.php',
         2 => 'aula_virtual/view_aula_virtual.php',
         3 => 'horario/view_calendario.php',
-        4 => 'tareas/view_tareas_profesor.php',
+        4 => 'docente/view_tareas_docente.php',
         5 => 'tareas/view_registro_tareas.php',
         6 => 'asistencia/view_registro_asistencia.php',
-        7 => 'examen/view_examen_profesor.php',
+        7 => 'docente/view_examenes_docente.php',
       ),
       'indice' => 
       array (

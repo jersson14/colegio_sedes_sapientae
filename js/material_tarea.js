@@ -1,5 +1,5 @@
 // Material de las tareas (docente y administrador): documentos, videos subidos y enlaces de video.
-// Lo usan view_tareas.php y view_tareas_profesor.php. Los límites vienen del servidor en window.LIMITES_TAREA.
+// Lo usan view_tareas.php (dirección) y docente/view_tareas_docente.php. Los límites vienen del servidor en window.LIMITES_TAREA.
 window.MaterialTarea = (function () {
   var DOCUMENTOS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'rar'];
   var VIDEOS = ['mp4', 'webm', 'm4v', 'mov'];

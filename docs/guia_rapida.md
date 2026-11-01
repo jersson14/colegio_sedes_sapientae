@@ -127,6 +127,20 @@ Al abrir un curso:
 - **Personas:** el docente y los estudiantes del aula (solo sus nombres).
 - **Calificaciones:** el estudiante ve el estado y la nota de cada tarea y su promedio.
 
+## Pantallas del docente
+
+- **Notas de mis cursos:** arriba se elige el curso (cada uno con su color) y el bimestre. La planilla muestra a los estudiantes en filas y los criterios en columnas (C1, C2…; sus nombres completos están debajo). Escriba las notas como en una hoja de cálculo: **Enter** o **↓** bajan a la fila siguiente y las flechas mueven entre casillas. Una nota fuera de la escala se marca en rojo y no se guarda. El promedio se calcula al escribir. Las casillas cambiadas se ven en amarillo hasta pulsar **Guardar**; dejar una casilla vacía borra esa nota. El globito de cada casilla agrega una conclusión. Un bimestre finalizado (candado) solo se puede ver; para corregirlo hay que pedirlo a la dirección. Si el curso no tiene criterios, la dirección los registra en Criterios de evaluación.
+- **Tareas de mis cursos:** pestañas **Abiertas**, **Por revisar** (alguien entregó) y **Cerradas**, y un filtro por curso. Cada tarea muestra cuántos entregaron. **Nueva tarea** abre un formulario con curso, tema, indicaciones, fecha de entrega, archivos y enlaces de video. **Revisar y calificar** abre el Registro de tareas de ese curso. **Cerrar** deja de recibir entregas; **Eliminar** solo aparece si nadie entregó todavía.
+- **Exámenes de mis cursos:** pestañas **Próximos**, **Sin marcar como realizados** y **Realizados**. **Programar examen** pide curso, tema, descripción, fecha y hora.
+- **Mis boletas de pago** (todo el personal): una tarjeta por mes con el neto, el detalle y el botón **Ver boleta**. Arriba, lo cobrado en el año y lo que falta cobrar.
+
+## Enfermería y Psicología
+
+- Arriba: atenciones de hoy, de la semana, del mes y estudiantes atendidos en el año.
+- Fechas rápidas (**Hoy**, **7 días**, **30 días**, **Este año**, **Todo**) o un rango propio, y un buscador por estudiante, DNI o motivo. Las atenciones se agrupan por día. Al lado, los motivos más frecuentes.
+- **Nueva atención:** escriba el nombre o el DNI del estudiante y elíjalo de la lista. Luego el motivo (sugiere los más frecuentes), el diagnóstico o la evaluación y las observaciones. Queda registrado quién atendió.
+- **Historial** muestra todas las atenciones anteriores del estudiante. Enfermería y Psicología no ven las atenciones de la otra.
+
 ## Pantallas del estudiante
 
 Si el estudiante tiene más de un año, arriba elige cuál ver.

@@ -451,13 +451,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','salud/view_enfermeria.php')" class="nav-link">
                   <i class="nav-icon fas fa-briefcase-medical"></i>
                   <p>Enfermería</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','salud/view_psicologia.php')" class="nav-link">
                   <i class="nav-icon fas fa-brain"></i>
                   <p>Psicología</p>
                 </a>
@@ -672,7 +672,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_enfermeria.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','salud/view_enfermeria.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Enfermería</p>
                     </a>
@@ -695,7 +695,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','atenciones/view_atencion_psicologia.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','salud/view_psicologia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Psicología
@@ -829,7 +829,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','notas/view_registro_notas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Notas de mis cursos</p>
                     </a>
@@ -847,7 +847,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','docente/view_tareas_docente.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Tareas de mis cursos</p>
                     </a>
@@ -876,7 +876,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','docente/view_examenes_docente.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Exámenes de mis cursos</p>
                     </a>
@@ -1459,8 +1459,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php');Barra_Activa(this);return false;"><i class="fas fa-clipboard-check"></i>Asistencia</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php');Barra_Activa(this);return false;"><i class="fas fa-chalkboard"></i>Aula</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-file-signature"></i>Exámenes</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_registro_notas.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','docente/view_examenes_docente.php');Barra_Activa(this);return false;"><i class="fas fa-file-signature"></i>Exámenes</a>
   </nav>
 <?php } ?>
 <footer class="main-footer">

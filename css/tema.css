@@ -232,3 +232,7 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
 .ayuda-texto .ayuda-seccion { margin-top: 1rem; font-weight: 700; color: var(--tema-primario); }
 .ayuda-texto .ayuda-seccion:first-child { margin-top: 0; }
 .ayuda-texto h6 { font-weight: 700; }
+
+/* Ventanas de SweetAlert con el color del colegio (los botones con color propio, como Eliminar, lo conservan) */
+.swal2-popup .swal2-styled.swal2-confirm { background-color: var(--tema-primario); }
+.swal2-popup .swal2-styled.swal2-confirm:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tema-primario) 35%, transparent); }

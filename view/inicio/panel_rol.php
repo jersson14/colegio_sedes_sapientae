@@ -12,17 +12,17 @@ $foto = $foto_ses !== '' && substr($foto_ses, -1) !== '/' && is_file(__DIR__ . '
 $titulos = ['CONTADOR' => 'Contabilidad', 'DOCENTE' => 'Docente', 'ESTUDIANTE' => 'Estudiante', 'AUXILIAR' => 'Auxiliar de educación', 'ENFERMERA' => 'Enfermería', 'PSICOLOGA' => 'Psicología'];
 // Accesos rápidos de cada rol: [vista o función JS, ícono, texto]
 $accesos = [
-    'DOCENTE' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Tomar asistencia'], ['tareas/view_tareas_profesor.php', 'fa-tasks', 'Tareas'],
-                  ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'], ['notas/view_notas_profesor.php', 'fa-star-half-alt', 'Notas'],
-                  ['examen/view_examen_profesor.php', 'fa-file-signature', 'Exámenes']],
+    'DOCENTE' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Tomar asistencia'], ['docente/view_tareas_docente.php', 'fa-tasks', 'Tareas'],
+                  ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'], ['notas/view_registro_notas.php', 'fa-star-half-alt', 'Notas'],
+                  ['docente/view_examenes_docente.php', 'fa-file-signature', 'Exámenes']],
     'ESTUDIANTE' => [['estudiante/view_mis_tareas.php', 'fa-tasks', 'Mis tareas'], ['estudiante/view_mis_notas.php', 'fa-star-half-alt', 'Mis notas'],
                      ['horario/view_calendario.php', 'fa-clock', 'Mi horario'], ['estudiante/view_mi_asistencia.php', 'fa-calendar-check', 'Mi asistencia'],
                      ['estudiante/view_mis_pagos.php', 'fa-receipt', 'Mis pagos']],
     'AUXILIAR' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Registro de asistencia'], ['asistencia_docente/view_asistencia_docente.php', 'fa-user-check', 'Asistencia docente'],
                    ['horario/view_horario.php', 'fa-clock', 'Horarios'], ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'],
                    ['reportes/view_reporte_estudiantes.php', 'fa-list-alt', 'Reporte de estudiantes']],
-    'ENFERMERA' => [['atenciones/view_atencion_enfermeria.php', 'fa-notes-medical', 'Atenciones de enfermería'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
-    'PSICOLOGA' => [['atenciones/view_atencion_psicologia.php', 'fa-brain', 'Atenciones psicológicas'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
+    'ENFERMERA' => [['salud/view_enfermeria.php', 'fa-notes-medical', 'Atenciones de enfermería'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
+    'PSICOLOGA' => [['salud/view_psicologia.php', 'fa-brain', 'Atenciones psicológicas'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
     'CONTADOR' => [['pago_pensiones/view_pago_pensiones.php', 'fa-cash-register', 'Cobrar pensión'], ['ingresos_y_egresos/view_egresos.php', 'fa-file-invoice-dollar', 'Registrar gasto'],
                    ['contabilidad/view_cajas_bancos.php', 'fa-university', 'Cajas y bancos'], ['planilla/view_planilla.php', 'fa-users-cog', 'Planilla'],
                    ['reportes/view_reportes_financieros.php', 'fa-chart-line', 'Reportes']],
@@ -132,7 +132,7 @@ $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_E
       </div>
       <div class="col-lg-8">
         <section class="pi-tarjeta">
-          <header><h2>Atenciones recientes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'' . ($rol === 'ENFERMERA' ? 'atenciones/view_atencion_enfermeria.php' : 'atenciones/view_atencion_psicologia.php') . '\');return false;">Nueva atención <i class="fas fa-arrow-right"></i></a>'; ?></header>
+          <header><h2>Atenciones recientes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'' . ($rol === 'ENFERMERA' ? 'salud/view_enfermeria.php' : 'salud/view_psicologia.php') . '\');return false;">Nueva atención <i class="fas fa-arrow-right"></i></a>'; ?></header>
           <ul class="pi-pendientes" id="pr_salud"><li class="pi-tenue">Cargando…</li></ul>
         </section>
       </div>

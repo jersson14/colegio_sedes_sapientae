@@ -50,7 +50,7 @@ function AulaVirtual_Iniciar() {
   // Entrega_Abrir está en js/entrega_tarea.js (la vista lo carga solo para estudiantes)
   $(document).on('click.av', '.av-entregar', function () { Entrega_Abrir(AV.curso.tareas[+$(this).data('i')], function () { AulaVirtual_Abrir(AV.curso.curso.id, 'tablon'); }); });
   $(document).on('click.av', '.av-revisar', function () { window.RT_CURSO_INICIAL = AV.curso.curso.id; cargar_contenido('contenido_principal', 'tareas/view_registro_tareas.php'); });
-  $(document).on('click.av', '.av-nueva', function () { cargar_contenido('contenido_principal', AulaVirtual_Rol() === 'DOCENTE' ? 'tareas/view_tareas_profesor.php' : 'tareas/view_tareas.php'); });
+  $(document).on('click.av', '.av-nueva', function () { cargar_contenido('contenido_principal', AulaVirtual_Rol() === 'DOCENTE' ? 'docente/view_tareas_docente.php' : 'tareas/view_tareas.php'); });
   $(document).on('click.av', '.av-calendario', function () { cargar_contenido('contenido_principal', 'horario/view_calendario.php'); });
   $(document).on('click.av', '.av-desc-mas', function () { $(this).prev('.av-desc').toggleClass('abierta'); $(this).text($(this).prev('.av-desc').hasClass('abierta') ? 'Ver menos' : 'Ver más'); });
   var inicial = window.AV_CURSO_INICIAL;

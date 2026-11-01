@@ -26,18 +26,24 @@ return [
         'controller/alumnos/controlador_buscar_global.php' => ['AUXILIAR', 'CONTADOR'],
         'controller/alumnos/controlador_ficha.php' => ['AUXILIAR', 'CONTADOR'],
         // asignatura_docente
-        'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR'],
         // asignaturas
-        'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR'],
         // asistencia_docente
         'controller/asistencia_docente/controlador_dia.php' => ['AUXILIAR'],
         'controller/asistencia_docente/controlador_guardar.php' => ['AUXILIAR'],
         'controller/asistencia_docente/controlador_resumen.php' => ['AUXILIAR'],
         // asistencias
-        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],
+        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR'],
         'controller/asistencias/controlador_listar_alumnos_totales.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales_dia.php' => ['AUXILIAR'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        // enfermería y psicología: cada rol ve solo su tipo de atención (lo decide el controlador)
+        'controller/salud/controlador_atenciones.php' => ['ENFERMERA', 'PSICOLOGA'],
+        // tareas y exámenes de mis cursos (docente): listado por curso; guardar usa los controladores de tareas y exámenes
+        'controller/docente/controlador_trabajos.php' => ['DOCENTE'],
+        // registro de notas por curso: el docente solo sus cursos (lo revisa el controlador)
+        'controller/notas/controlador_registro_notas_curso.php' => ['DOCENTE'],
         // pantallas del estudiante: cada controlador usa solo la matrícula del estudiante en sesión
         'controller/estudiante/controlador_mis_tareas.php' => ['ESTUDIANTE'],
         'controller/estudiante/controlador_mis_notas.php' => ['ESTUDIANTE'],
@@ -61,14 +67,9 @@ return [
         'controller/registro_asistencia/controlador_guardar.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/registro_asistencia/controlador_planilla.php' => ['AUXILIAR', 'DOCENTE'],
         // atencion_enfermeria
-        'controller/atencion_enfermeria/controlador_listar_atención_enfermeria.php' => ['ENFERMERA'],
-        'controller/atencion_enfermeria/controlador_listar_atención_enfermeria_filtros.php' => ['ENFERMERA'],
         'controller/atencion_enfermeria/controlador_modificar_atencion_enferme.php' => ['ENFERMERA'],
         'controller/atencion_enfermeria/controlador_registro_enfermeria.php' => ['ENFERMERA'],
         // atencion_psicologica
-        'controller/atencion_psicologica/controlador_cargar_matriculado_año.php' => ['ENFERMERA', 'PSICOLOGA'],
-        'controller/atencion_psicologica/controlador_listar_atención_psicologica.php' => ['PSICOLOGA'],
-        'controller/atencion_psicologica/controlador_listar_atención_psicologica_filtros.php' => ['PSICOLOGA'],
         'controller/atencion_psicologica/controlador_modificar_atencion_psico.php' => ['PSICOLOGA'],
         'controller/atencion_psicologica/controlador_registro_psicologia.php' => ['PSICOLOGA'],
         // aula_horas
@@ -81,7 +82,7 @@ return [
         'controller/aula_horas/controlador_modificar_aula_horas.php' => ['AUXILIAR'],
         'controller/aula_horas/controlador_registro_aula_horas.php' => ['AUXILIAR'],
         // aulas
-        'controller/aulas/controlador_cargar_select_nivel.php' => ['AUXILIAR', 'CONTADOR', 'ENFERMERA', 'PSICOLOGA'],
+        'controller/aulas/controlador_cargar_select_nivel.php' => ['AUXILIAR', 'CONTADOR'],
         // componentes
         // comunicados
         'controller/comunicados/controlador_listar_comunicados2.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
@@ -114,9 +115,7 @@ return [
         // empresa
         // examenes
         'controller/examenes/controlador_eliminar_examenes.php' => ['DOCENTE'],
-        'controller/examenes/controlador_listar_alumnos_examen.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/examenes/controlador_listar_examenes_profesor.php' => ['DOCENTE'],
-        'controller/examenes/controlador_listar_examenes_profesor_solo.php' => ['DOCENTE'],
+        'controller/examenes/controlador_listar_alumnos_examen.php' => ['AUXILIAR'],
         'controller/examenes/controlador_modificar_estado_examen.php' => ['DOCENTE'],
         'controller/examenes/controlador_modificar_examen.php' => ['DOCENTE'],
         'controller/examenes/controlador_registro_examenes.php' => ['DOCENTE'],
@@ -147,17 +146,11 @@ return [
         'controller/ingresos/controlador_modificar_ingreso.php' => ['CONTADOR'],
         'controller/ingresos/controlador_registrar_ingresos.php' => ['CONTADOR'],
         // matricula
-        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE'],
-        'controller/matricula/controlador_traernivel.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR', 'CONTADOR'],
+        'controller/matricula/controlador_traernivel.php' => ['AUXILIAR'],
         // nivel_academico
         // notas
-        'controller/notas/controlador_cargar_periodos.php' => ['DOCENTE'],
-        'controller/notas/controlador_cargar_periodos_cargados_estudiante.php' => ['DOCENTE'],
-        'controller/notas/controlador_cargar_select_grado_profesor.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/notas/controlador_listar_criterios_notas_mostrar_profesor.php' => ['DOCENTE'],
-        'controller/notas/controlador_listar_criterios_notas_profesor.php' => ['DOCENTE'],
-        'controller/notas/controlador_listar_matriculas_filtro_profesor.php' => ['DOCENTE'],
-        'controller/notas/controlador_registro_notas.php' => ['DOCENTE'],
+        'controller/notas/controlador_cargar_select_grado_profesor.php' => ['AUXILIAR'],
         // pago_pension
         'controller/pago_pension/controlador_cargar_formas_pago.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_cargar_select_pension.php' => ['CONTADOR'],
@@ -208,14 +201,13 @@ return [
         'controller/reportes/controlador_resultados.php' => ['CONTADOR'],
         // tareas
         'controller/tareas/controlador_archivos_tarea.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/tareas/controlador_cargar_select_cursos_docente.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php' => ['AUXILIAR'],
+        'controller/tareas/controlador_cargar_select_cursos_docente.php' => ['AUXILIAR'],
         'controller/tareas/controlador_eliminar_tarea.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/tareas/controlador_listar_tabla_envio_tareas.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/tareas/controlador_listar_tabla_envio_tareas.php' => ['AUXILIAR'],
         'controller/tareas/controlador_listar_tareas.php' => ['AUXILIAR'],
         'controller/tareas/controlador_listar_tareas_filtro.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas_profesor.php' => ['DOCENTE'],
-        'controller/tareas/controlador_listar_tareas_profesor_solo.php' => ['AUXILIAR', 'DOCENTE'],
+        'controller/tareas/controlador_listar_tareas_profesor_solo.php' => ['AUXILIAR'],
         'controller/tareas/controlador_modificar_estado_tarea.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_modificar_tareas.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_registro_calificacion.php' => ['AUXILIAR', 'DOCENTE'],
