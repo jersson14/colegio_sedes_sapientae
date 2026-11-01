@@ -124,9 +124,10 @@ return array (
       'controladores' => 
       array (
         0 => 'controller/aula_virtual/controlador_aula_virtual.php',
-        1 => 'controller/ayuda/controlador_ayuda.php',
-        2 => 'controller/tareas/controlador_archivos_tarea.php',
-        3 => 'controller/tareas/controlador_registro_tareas_estudiante.php',
+        1 => 'controller/aula_virtual/controlador_material.php',
+        2 => 'controller/ayuda/controlador_ayuda.php',
+        3 => 'controller/tareas/controlador_archivos_tarea.php',
+        4 => 'controller/tareas/controlador_registro_tareas_estudiante.php',
       ),
     ),
     'docente/view_tareas_docente.php' => 

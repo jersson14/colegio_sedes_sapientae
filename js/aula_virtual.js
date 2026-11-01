@@ -1,7 +1,8 @@
-// Aula virtual: tarjetas de los cursos y, dentro de cada curso, tablón de tareas, horario, personas y calificaciones.
+// Aula virtual: tarjetas de los cursos y, dentro de cada curso, tablón de tareas, material de apoyo, horario, personas y calificaciones.
 // El estudiante entrega sus tareas aquí (mismo controlador que la pantalla de tareas); el docente revisa en el Registro de tareas.
 var AV = { lista: null, curso: null, pestana: 'tablon' };
 var AV_URL = '../controller/aula_virtual/controlador_aula_virtual.php';
+var AV_MATERIAL = '../controller/aula_virtual/controlador_material.php';
 var AV_DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 var AV_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
 
@@ -52,6 +53,12 @@ function AulaVirtual_Iniciar() {
   $(document).on('click.av', '.av-revisar', function () { window.RT_CURSO_INICIAL = AV.curso.curso.id; cargar_contenido('contenido_principal', 'tareas/view_registro_tareas.php'); });
   $(document).on('click.av', '.av-nueva', function () { cargar_contenido('contenido_principal', 'docente/view_tareas_docente.php'); });
   $(document).on('click.av', '.av-calendario', function () { cargar_contenido('contenido_principal', 'horario/view_calendario.php'); });
+  $(document).on('click.av', '.av-ver-material', function () { AulaVirtual_Pestana('material'); });
+  $(document).on('click.av', '.av-subir', AulaVirtual_SubirAbrir);
+  $(document).on('submit.av', '#av_form_material', function (e) { e.preventDefault(); AulaVirtual_SubirGuardar(); });
+  $(document).on('click.av', '.av-mat-eliminar', function () { AulaVirtual_MaterialEliminar(AV.curso.material[+$(this).data('i')]); });
+  $(document).on('click.av', '.av-mat-video', function (e) { e.preventDefault(); AulaVirtual_VerVideo($(this).data('src'), $(this).data('tipo'), $(this).data('titulo')); });
+  if (window.MaterialTarea) { MaterialTarea.conectar('av_mat_archivos', 'av_mat_lista'); }
   $(document).on('click.av', '.av-desc-mas', function () { $(this).prev('.av-desc').toggleClass('abierta'); $(this).text($(this).prev('.av-desc').hasClass('abierta') ? 'Ver menos' : 'Ver más'); });
   var inicial = window.AV_CURSO_INICIAL;
   window.AV_CURSO_INICIAL = 0;
@@ -94,6 +101,7 @@ function AulaVirtual_Tarjetas() {
       AulaVirtual_Avatar(c) +
       '<div class="av-cuerpo"><div class="av-proxima">' + AulaVirtual_Proxima(c.proxima) + '</div><div class="av-estado">' + estado + '</div></div>' +
       '<footer><a href="#" class="av-ir" data-pestana="tablon" title="Tareas"><i class="fas fa-clipboard-list"></i></a>' +
+      '<a href="#" class="av-ir" data-pestana="material" title="Material de apoyo"><i class="fas fa-folder-open"></i></a>' +
       '<a href="#" class="av-ir" data-pestana="horario" title="Horario"><i class="far fa-calendar-alt"></i></a>' +
       '<a href="#" class="av-ir" data-pestana="personas" title="Personas"><i class="fas fa-users"></i></a></footer></article>';
   }).join(''));
@@ -110,6 +118,7 @@ function AulaVirtual_Abrir(curso, pestana) {
       '<div><h2>' + textoSeguro(AulaVirtual_Titulo(c.asignatura)) + '</h2><p>' + textoSeguro(AulaVirtual_Aula(c)) + '</p>' +
       '<p class="av-portada-docente">' + textoSeguro(AulaVirtual_Titulo(c.docente)) + (prox ? ' · ' + prox : '') + '</p></div>' +
       (rol !== 'ESTUDIANTE' ? '<div class="av-portada-acciones"><button type="button" class="btn btn-light btn-sm av-nueva"><i class="fas fa-plus mr-1"></i>Nueva tarea</button>' +
+        (d.puede_publicar ? '<button type="button" class="btn btn-light btn-sm av-subir"><i class="fas fa-folder-plus mr-1"></i>Subir material</button>' : '') +
         '<button type="button" class="btn btn-light btn-sm av-revisar"><i class="fas fa-check-double mr-1"></i>Revisar y calificar</button></div>' : ''));
     AulaVirtual_Pestana(pestana || 'tablon');
     $('html, body').scrollTop(0);
@@ -136,7 +145,7 @@ function AulaVirtual_Volver() {
 function AulaVirtual_Pestana(p) {
   AV.pestana = p;
   $('.av-pestanas .nav-link').removeClass('active').filter('[data-pestana="' + p + '"]').addClass('active');
-  var html = { tablon: AulaVirtual_Tablon, horario: AulaVirtual_Horario, personas: AulaVirtual_Personas, notas: AulaVirtual_Notas }[p]();
+  var html = { tablon: AulaVirtual_Tablon, material: AulaVirtual_Materiales, horario: AulaVirtual_Horario, personas: AulaVirtual_Personas, notas: AulaVirtual_Notas }[p]();
   $('#av_contenido').html(html);
 }
 
@@ -168,7 +177,11 @@ function AulaVirtual_Tablon() {
   var lateral = '<aside class="av-proximas"><h4>Próximas entregas</h4>' + (proximas.length ? proximas.slice(0, 5).map(function (t) {
     return '<p><span>' + AulaVirtual_Fecha(t.fecha_entrega, true) + '</span>' + textoSeguro(AulaVirtual_Titulo(t.tema)) + '</p>';
   }).join('') : '<p class="text-muted">' + (est ? '¡Nada pendiente!' : 'Ninguna tarea abierta.') + '</p>') +
-    '<button type="button" class="btn btn-link btn-sm px-0 av-calendario"><i class="far fa-calendar-alt mr-1"></i>Ver calendario de clases</button></aside>';
+    '<button type="button" class="btn btn-link btn-sm px-0 av-calendario"><i class="far fa-calendar-alt mr-1"></i>Ver calendario de clases</button>' +
+    '<h4 class="mt-3">Material de apoyo</h4>' + (d.material.length ? d.material.slice(0, 3).map(function (m) {
+      return '<p><span>' + AulaVirtual_Fecha(m.publicado) + '</span>' + textoSeguro(m.titulo) + '</p>';
+    }).join('') + '<button type="button" class="btn btn-link btn-sm px-0 av-ver-material"><i class="fas fa-folder-open mr-1"></i>Ver todo el material (' + d.material.length + ')</button>'
+      : '<p class="text-muted">' + (est ? 'Tu docente aún no ha subido material.' : 'Aún no hay material.') + '</p>') + '</aside>';
   var tareas = d.tareas.length ? d.tareas.map(function (t, i) {
     var pie = '';
     if (est) {
@@ -231,4 +244,95 @@ function AulaVirtual_Notas() {
   var prom = nums.length ? (nums.reduce(function (a, b) { return a + b; }, 0) / nums.length) : null;
   return (prom !== null ? '<div class="av-promedio">Promedio de tus tareas calificadas: <b class="' + (notaAprobada(prom) ? 'text-success' : 'text-danger') + '">' + prom.toFixed(1) + '</b> (' + nums.length + ' de ' + d.tareas.length + ')</div>' : '') +
     '<div class="table-responsive"><table class="table table-sm av-tabla-notas"><thead><tr><th>Tarea</th><th>Vence</th><th>Estado</th></tr></thead><tbody>' + filas + '</tbody></table></div>';
+}
+
+// ---------- Material de apoyo ----------
+function AulaVirtual_Tamano(b) { return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
+
+function AulaVirtual_IconoArchivo(nombre) {
+  var ext = String(nombre).split('.').pop().toLowerCase();
+  var tipos = { pdf: 'fa-file-pdf text-danger', doc: 'fa-file-word text-primary', docx: 'fa-file-word text-primary', xls: 'fa-file-excel text-success',
+    xlsx: 'fa-file-excel text-success', ppt: 'fa-file-powerpoint text-warning', pptx: 'fa-file-powerpoint text-warning', jpg: 'fa-file-image text-info',
+    jpeg: 'fa-file-image text-info', png: 'fa-file-image text-info', zip: 'fa-file-archive text-secondary', rar: 'fa-file-archive text-secondary',
+    mp4: 'fa-file-video text-danger', webm: 'fa-file-video text-danger', m4v: 'fa-file-video text-danger', mov: 'fa-file-video text-danger' };
+  return tipos[ext] || 'fa-file-alt text-secondary';
+}
+
+function AulaVirtual_Materiales() {
+  var d = AV.curso, color = Curso_Color(d.curso.asignatura);
+  var boton = d.puede_publicar ? '<button type="button" class="btn btn-success av-subir"><i class="fas fa-folder-plus mr-1"></i>Subir material</button>' : '';
+  if (!d.material.length) {
+    return '<div class="av-vacio"><i class="fas fa-folder-open"></i><p>' + (d.puede_publicar ? 'Aún no hay material. Suba separatas, presentaciones, lecturas o videos para sus estudiantes.'
+      : 'Tu docente aún no ha subido material de apoyo en este curso.') + '</p>' + boton + '</div>';
+  }
+  return (boton ? '<div class="av-material-barra">' + boton + '</div>' : '') + '<div class="av-material">' + d.material.map(function (m, i) {
+    var archivos = m.archivos.map(function (f) {
+      var url = AV_MATERIAL + '?id=' + m.id + '&archivo=' + encodeURIComponent(f.nombre);
+      var atributos = f.video ? ' class="av-mat-archivo av-mat-video" data-tipo="archivo" data-src="' + textoSeguro(url) + '" data-titulo="' + textoSeguro(f.nombre) + '"'
+                              : ' class="av-mat-archivo" target="_blank" rel="noopener"';
+      return '<a href="' + textoSeguro(url) + '"' + atributos + '><i class="fas ' + AulaVirtual_IconoArchivo(f.nombre) + '"></i><span>' + textoSeguro(f.nombre) +
+        '<small>' + AulaVirtual_Tamano(f.tamano) + (f.video ? ' · Ver video' : '') + '</small></span></a>';
+    }).join('');
+    var enlaces = m.enlaces.map(function (e) {
+      return e.video ? '<a href="' + textoSeguro(e.url) + '" class="av-mat-archivo av-mat-video" data-tipo="enlace" data-src="' + textoSeguro(e.video) + '" data-titulo="' + textoSeguro(m.titulo) + '">' +
+          '<i class="fab fa-youtube text-danger"></i><span>Ver video<small>' + textoSeguro(e.url) + '</small></span></a>'
+        : '<a href="' + textoSeguro(e.url) + '" class="av-mat-archivo" target="_blank" rel="noopener noreferrer"><i class="fas fa-link text-primary"></i><span>Abrir enlace<small>' + textoSeguro(e.url) + '</small></span></a>';
+    }).join('');
+    return '<article class="av-tarea av-mat"><span class="av-tarea-icono" style="background:' + color + '"><i class="fas fa-book-open"></i></span><div class="av-tarea-cuerpo">' +
+      '<div class="av-mat-cabecera"><h4>' + textoSeguro(m.titulo) + '</h4>' +
+      (d.puede_publicar ? '<button type="button" class="btn btn-sm btn-outline-danger av-mat-eliminar" data-i="' + i + '" title="Quitar este material" aria-label="Quitar este material"><i class="fas fa-trash-alt"></i></button>' : '') + '</div>' +
+      '<p class="av-tarea-fechas">Publicado ' + AulaVirtual_Fecha(m.publicado, true) + '</p>' +
+      (m.descripcion ? '<p class="av-desc">' + textoSeguro(m.descripcion) + '</p>' + (m.descripcion.length > 180 ? '<button type="button" class="btn btn-link btn-sm p-0 av-desc-mas">Ver más</button>' : '') : '') +
+      (archivos || enlaces ? '<div class="av-mat-archivos">' + archivos + enlaces + '</div>' : '') + '</div></article>';
+  }).join('') + '</div>';
+}
+
+// Video subido (se reproduce aquí) o enlace de YouTube, Drive o Vimeo (incrustado)
+function AulaVirtual_VerVideo(src, tipo, titulo) {
+  var cuerpo = tipo === 'archivo' ? '<video controls autoplay preload="metadata" src="' + textoSeguro(src) + '"></video>'
+    : '<iframe src="' + textoSeguro(src) + '" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  Swal.fire({ title: textoSeguro(titulo || 'Video'), html: '<div class="av-video">' + cuerpo + '</div>', width: 900, showConfirmButton: false, showCloseButton: true });
+}
+
+function AulaVirtual_SubirAbrir() {
+  var c = AV.curso.curso;
+  $('#av_form_material')[0].reset();
+  $('#av_mat_lista').empty();
+  $('#av_material_curso').text(AulaVirtual_Titulo(c.asignatura) + ' · ' + AulaVirtual_Aula(c) + '. Lo verán todos los estudiantes del aula.');
+  $('#av_modal_material').modal('show');
+  setTimeout(function () { $('#av_mat_titulo').trigger('focus'); }, 400);
+}
+
+function AulaVirtual_SubirGuardar() {
+  var titulo = $.trim($('#av_mat_titulo').val()), archivos = $('#av_mat_archivos')[0].files;
+  if (!titulo) { Swal.fire('Falta el título', 'Escriba un título para el material.', 'warning'); return; }
+  var enlaces = MaterialTarea.enlaces('av_mat_enlaces');
+  if (enlaces === null) { return; }
+  if (!archivos.length && !enlaces && !$.trim($('#av_mat_desc').val())) { Swal.fire('Material vacío', 'Agregue al menos un archivo, un enlace o una descripción.', 'warning'); return; }
+  var f = new FormData();
+  f.append('accion', 'guardar');
+  f.append('curso', AV.curso.curso.id);
+  f.append('titulo', titulo);
+  f.append('descripcion', $('#av_mat_desc').val());
+  f.append('enlaces', enlaces);
+  for (var i = 0; i < archivos.length; i++) { f.append('archivos[]', archivos[i]); }
+  var $b = $('#av_mat_guardar').prop('disabled', true);
+  $.ajax({ url: AV_MATERIAL, type: 'POST', data: f, processData: false, contentType: false, dataType: 'json', xhr: MaterialTarea.xhrConProgreso })
+    .done(function () {
+      $('#av_modal_material').modal('hide');
+      Swal.fire({ icon: 'success', title: 'Material publicado', text: 'Los estudiantes ya lo pueden ver en la pestaña Material.', timer: 2200, showConfirmButton: false });
+      AulaVirtual_Abrir(AV.curso.curso.id, 'material');
+    })
+    .fail(function (x) { Swal.fire('No se pudo publicar', textoSeguro((x.responseJSON && x.responseJSON.mensaje) || 'Intente de nuevo.'), 'error'); })
+    .always(function () { $b.prop('disabled', false); });
+}
+
+function AulaVirtual_MaterialEliminar(m) {
+  Swal.fire({ title: '¿Quitar este material?', html: '<b>' + textoSeguro(m.titulo) + '</b><br>Los estudiantes ya no lo verán y sus archivos se borrarán.',
+    icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, quitar', cancelButtonText: 'Cancelar' }).then(function (r) {
+    if (!r.isConfirmed) { return; }
+    $.post(AV_MATERIAL, { accion: 'eliminar', id: m.id }, null, 'json')
+      .done(function () { AulaVirtual_Abrir(AV.curso.curso.id, 'material'); })
+      .fail(function (x) { Swal.fire('No se pudo quitar', textoSeguro((x.responseJSON && x.responseJSON.mensaje) || 'Intente de nuevo.'), 'error'); });
+  });
 }

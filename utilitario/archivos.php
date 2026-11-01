@@ -273,3 +273,48 @@ function borrar_archivo_seguro($ruta_relativa, $carpeta_relativa) {
     }
     return @unlink($archivo);
 }
+
+/**
+ * Envía un archivo al navegador y termina: PDF, imágenes y videos se abren en la página; lo demás se descarga.
+ * Atiende pedidos por partes (Range) para que el video se pueda adelantar sin bajarlo entero.
+ */
+function enviar_archivo($path, $nombre) {
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($path) ?: 'application/octet-stream';
+    $tam = filesize($path);
+    $video = strpos($mime, 'video/') === 0;
+    $en_linea = $video || in_array($mime, ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'], true);
+    header('Content-Type: ' . ($mime === 'video/quicktime' ? 'video/mp4' : $mime));
+    header('X-Content-Type-Options: nosniff');
+    header('Accept-Ranges: bytes');
+    header('Content-Disposition: ' . ($en_linea ? 'inline' : 'attachment') . "; filename*=UTF-8''" . rawurlencode($nombre));
+    $inicio = 0;
+    $fin = $tam - 1;
+    if (preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'] ?? '', $m) && ($m[1] !== '' || $m[2] !== '')) {
+        if ($m[1] === '') {
+            $inicio = max(0, $tam - (int) $m[2]);
+        } else {
+            $inicio = (int) $m[1];
+            $fin = $m[2] === '' ? $tam - 1 : min((int) $m[2], $tam - 1);
+        }
+        if ($inicio > $fin || $inicio >= $tam) {
+            http_response_code(416);
+            header("Content-Range: bytes */$tam");
+            exit;
+        }
+        http_response_code(206);
+        header("Content-Range: bytes $inicio-$fin/$tam");
+    }
+    header('Content-Length: ' . ($fin - $inicio + 1));
+    set_time_limit(0);
+    $fp = fopen($path, 'rb');
+    fseek($fp, $inicio);
+    $restante = $fin - $inicio + 1;
+    while ($restante > 0 && !feof($fp) && !connection_aborted()) {
+        $bloque = fread($fp, min(1048576, $restante));
+        echo $bloque;
+        flush();
+        $restante -= strlen($bloque);
+    }
+    fclose($fp);
+    exit;
+}

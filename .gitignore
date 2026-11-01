@@ -27,3 +27,6 @@ tests/tmp/
 
 # El .htaccess de respaldos sí se versiona
 !respaldos/.htaccess
+# Material de apoyo del aula virtual
+controller/aula_virtual/material/*
+!controller/aula_virtual/material/.htaccess

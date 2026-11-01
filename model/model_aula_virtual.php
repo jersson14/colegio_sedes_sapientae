@@ -141,6 +141,33 @@ class Modelo_Aula_Virtual extends conexionBD {
         return $q->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /** Material de apoyo del curso, el más nuevo primero. */
+    public function Materiales($curso) {
+        $q = conexionBD::conexionPDO()->prepare("SELECT id_material AS id, titulo, descripcion, carpeta, enlaces, created_at AS publicado
+                                                 FROM material_curso WHERE id_detalle_asig_docente = ?
+                                                 ORDER BY created_at DESC, id_material DESC");
+        $q->execute([$curso]);
+        return $q->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function Material($id) {
+        $q = conexionBD::conexionPDO()->prepare("SELECT id_material AS id, id_detalle_asig_docente AS curso, titulo, carpeta, enlaces
+                                                 FROM material_curso WHERE id_material = ?");
+        $q->execute([$id]);
+        return $q->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function Material_Registrar($curso, $titulo, $descripcion, $carpeta, $enlaces, $usu) {
+        $c = conexionBD::conexionPDO();
+        $q = $c->prepare("INSERT INTO material_curso (id_detalle_asig_docente, titulo, descripcion, carpeta, enlaces, usu_id) VALUES (?, ?, ?, ?, ?, ?)");
+        $q->execute([$curso, $titulo, $descripcion !== '' ? $descripcion : null, $carpeta, $enlaces, $usu]);
+        return (int) $c->lastInsertId();
+    }
+
+    public function Material_Eliminar($id) {
+        conexionBD::conexionPDO()->prepare("DELETE FROM material_curso WHERE id_material = ?")->execute([$id]);
+    }
+
     /** Estudiantes del aula del curso en su año (solo nombres). */
     public function Estudiantes($aula, $anio) {
         $q = conexionBD::conexionPDO()->prepare("SELECT al.alum_nombre AS nombres, CONCAT_WS(' ', al.alum_apepat, al.alum_apemat) AS apellidos

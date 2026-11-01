@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/../_seguridad.php';
 require_once __DIR__ . '/../../utilitario/validacion.php';
+require_once __DIR__ . '/../../utilitario/archivos.php';
 require_once __DIR__ . '/../../model/model_registro_asistencia.php';
 require_once __DIR__ . '/../../model/model_registro_tareas.php';
 require_once __DIR__ . '/../../model/model_aula_virtual.php';
-// Aula virtual: accion=cursos (tarjetas) | curso (tablón, horario, personas y calificaciones de un curso).
+// Aula virtual: accion=cursos (tarjetas) | curso (tablón, material, horario, personas y calificaciones de un curso).
 // Estudiante: los cursos de su aula. Docente: los suyos. Dirección y auxiliar: los de un aula que eligen.
 $MA = new Modelo_Registro_Asistencia();
 $M = new Modelo_Aula_Virtual();
@@ -14,6 +15,24 @@ $usu = usuario_actual_id();
 /** Foto del docente solo si es un archivo de la carpeta de fotos; si no, la tarjeta muestra la inicial. */
 function av_foto($f) {
     return preg_match('#^controller/docentes/fotos/[\w.-]+\.(jpe?g|png|gif|webp)$#i', (string) $f) && is_file(__DIR__ . '/../../' . $f) ? $f : '';
+}
+
+/** Material del curso con sus archivos (nombre, tamaño, si es video) y enlaces (con la dirección para verlo dentro, si se puede). */
+function av_material(array $lista) {
+    foreach ($lista as &$m) {
+        $m['archivos'] = [];
+        $dir = preg_match('/^mat_\d+$/', (string) $m['carpeta']) ? __DIR__ . '/material/' . $m['carpeta'] : '';
+        if ($dir !== '' && is_dir($dir)) {
+            foreach (scandir($dir) as $f) {
+                if ($f[0] !== '.' && is_file($dir . '/' . $f)) {
+                    $m['archivos'][] = ['nombre' => $f, 'tamano' => filesize($dir . '/' . $f), 'video' => es_video($f)];
+                }
+            }
+        }
+        $m['enlaces'] = array_map(function ($e) { return ['url' => $e['url'], 'video' => video_incrustado($e['url'])]; }, enlaces_video_lista($m['enlaces']));
+        unset($m['carpeta']);
+    }
+    return $lista;
 }
 
 /** Próxima clase de cada curso a partir de ahora: [curso => ['dia' => 1..6, 'inicio', 'fin', 'hoy' => bool]]. */
@@ -63,9 +82,11 @@ if (($_POST['accion'] ?? 'cursos') === 'curso') {
         denegar(403, 'No tiene permiso para esta acción');
     }
     $curso['foto'] = av_foto($curso['foto']);
+    $publica = in_array($rol, ['ADMINISTRADOR', 'AUXILIAR'], true) || $rol === 'DOCENTE';   // el docente ya pasó el control de arriba
     unset($curso['usu_docente']);
     responder_json([
-        'ok' => true, 'curso' => $curso,
+        'ok' => true, 'curso' => $curso, 'puede_publicar' => $publica,
+        'material' => av_material($M->Materiales($curso['id'])),
         'tareas' => $M->Tareas($curso['id'], $matricula),
         'horario' => $M->Clases($curso['anio'], ['curso' => $curso['id']]),
         'estudiantes' => $M->Estudiantes($curso['aula'], $curso['anio']),

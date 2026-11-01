@@ -53,6 +53,8 @@ return [
         // calendario de horarios y aula virtual: cada controlador limita lo que ve cada rol (su aula, sus cursos)
         'controller/horarios/controlador_calendario.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/aula_virtual/controlador_aula_virtual.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        // material de apoyo: publica el docente de su curso (y la dirección o el auxiliar); el estudiante solo abre los de su aula
+        'controller/aula_virtual/controlador_material.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         // ayuda contextual (Fase 13, paso 16): secciones de docs/guia_rapida.md
         'controller/ayuda/controlador_ayuda.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],

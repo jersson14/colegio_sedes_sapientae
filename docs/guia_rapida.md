@@ -123,6 +123,10 @@ Al abrir un curso:
 - **Tablón:** las tareas, la más nueva primero, con su material y la fecha de entrega. A la izquierda, las **próximas entregas**.
   - El estudiante pulsa **Entregar** y elige sus archivos. Puede **cambiar la entrega** hasta que el docente califique o cierre la tarea; si el plazo venció, queda marcada como fuera de plazo. Cuando la tarea se califica ve su nota y el comentario del docente.
   - El docente ve cuántos entregaron y cuántas faltan revisar. **Revisar y calificar** abre el Registro de tareas de ese curso; **Nueva tarea** abre la pantalla de tareas.
+- **Material:** el material de apoyo del curso (separatas, presentaciones, lecturas, videos y enlaces), el más nuevo primero. En el tablón también se ven los últimos.
+  - El docente del curso (también la dirección y el auxiliar) pulsa **Subir material**, escribe un título y, si quiere, una descripción; luego elige los archivos (pdf, Word, Excel, PowerPoint, imágenes, zip o videos) y pega enlaces, uno por línea. El tamaño máximo es el mismo que para las tareas.
+  - El estudiante abre cada archivo con un clic. Los videos subidos y los enlaces de YouTube, Google Drive o Vimeo se ven dentro de la plataforma; los demás enlaces se abren en otra pestaña.
+  - El botón del tacho quita el material: los estudiantes dejan de verlo y sus archivos se borran.
 - **Horario:** los días y horas de la semana en que se dicta el curso.
 - **Personas:** el docente y los estudiantes del aula (solo sus nombres).
 - **Calificaciones:** el estudiante ve el estado y la nota de cada tarea y su promedio.

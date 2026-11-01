@@ -67,6 +67,18 @@
 .av-proximas p { font-size: .85rem; margin-bottom: 8px; }
 .av-proximas p span { display: block; font-size: .75rem; color: #6b6760; }
 .av-flujo { display: flex; flex-direction: column; gap: 12px; }
+/* Material de apoyo: tarjetas con los archivos y enlaces como fichas para abrir */
+.av-material { display: flex; flex-direction: column; gap: 12px; }
+.av-material-barra { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.av-mat-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.av-mat-archivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-top: 10px; }
+.av-mat-archivo { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #e3e1dc; border-radius: 10px; color: #1c1e22; background: #faf9f7; min-width: 0; }
+.av-mat-archivo:hover, .av-mat-archivo:focus { border-color: #b9b5ad; background: #fff; color: #1c1e22; text-decoration: none; }
+.av-mat-archivo > i { font-size: 1.5rem; flex: none; width: 26px; text-align: center; }
+.av-mat-archivo span { display: flex; flex-direction: column; min-width: 0; font-weight: 600; font-size: .88rem; overflow-wrap: anywhere; }
+.av-mat-archivo small { font-weight: 400; color: #6b6760; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.av-video { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; }
+.av-video iframe, .av-video video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .av-tarea { background: #fff; border: 1px solid #e3e1dc; border-radius: 12px; padding: 16px; display: flex; gap: 14px; }
 .av-tarea-icono { width: 40px; height: 40px; border-radius: 50%; color: #fff; display: inline-flex; align-items: center; justify-content: center; flex: none; }
 .av-tarea-cuerpo { flex: 1; min-width: 0; }
