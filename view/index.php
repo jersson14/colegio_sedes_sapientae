@@ -14,16 +14,10 @@ if (!empty($_SESSION['S_DEBE_CAMBIAR'])) {
 }
 ?>
 <?php
-if (isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO'])) {
-  // Verificar si la ruta es 'controller/alumnos/fotos/'
-  if ($_SESSION['S_FOTO'] === 'controller/alumnos/fotos/') {
-    $rutaFoto = '../img/blanco1.jpg';
-  } else {
-    $rutaFoto = '../' . $_SESSION['S_FOTO'];
-  }
-} else {
-  $rutaFoto = '../img/blanco1.jpg';
-}
+// Foto del usuario; sin foto (la ruta es solo la carpeta, termina en "/") o si el archivo no existe, la imagen en blanco
+$foto = (string) ($_SESSION['S_FOTO'] ?? '');
+$rutaFoto = ($foto !== '' && substr($foto, -1) !== '/' && is_file(__DIR__ . '/../' . $foto))
+  ? '../' . htmlspecialchars($foto, ENT_QUOTES, 'UTF-8') : '../img/blanco1.jpg';
 ?>
 <!DOCTYPE html>
 <!--
@@ -99,7 +93,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
+              <img src="<?php echo $rutaFoto; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
             </a>
@@ -156,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-              <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
+              <img src="<?php echo $rutaFoto; ?>" class="img-circle elevation-1" width="15" height="18" alt="" onerror="this.onerror=null;this.src='../img/blanco1.jpg'">
 
               <b>Usuario: <?php echo $_SESSION['S_COMPLETO'] ?></b>
               <i class="fas fa-caret-down"></i>
@@ -197,7 +191,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-1 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="../<?php echo isset($_SESSION['S_FOTO']) && !empty($_SESSION['S_FOTO']) ? $_SESSION['S_FOTO'] : '../img/blanco1.jpg'; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
+            <img src="<?php echo $rutaFoto; ?>" class="img-circle elevation-2" style="max-width: 100%;height: auto;">
 
           </div>
           <div class="info">
