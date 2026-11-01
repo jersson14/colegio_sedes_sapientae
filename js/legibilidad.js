@@ -22,7 +22,10 @@
     mal: ['VENCIDO', 'VENCIDA', 'DESAPROBADO', 'DESAPROBADA', 'AUSENTE', 'FALTA', 'ANULADO', 'ANULADA', 'RECHAZADO', 'RECHAZADA',
           'FUERA DE PLAZO', 'BLOQUEADO', 'BLOQUEADA', 'NO ENTREGADO', 'NO ENTREGADA'],
     neutro: ['INACTIVO', 'INACTIVA', 'NO', 'SIN USUARIO', 'CERRADO', 'CERRADA', 'FINALIZADO', 'FINALIZADA', 'ANTIGUO', 'ANTIGUA',
-             'MASCULINO', 'FEMENINO', 'INICIAL', 'PRIMARIA', 'SECUNDARIA', 'SUSPENDIDO']
+             'SUSPENDIDO', 'TODOS'],
+    // No son estados, pero cada valor conserva su color de siempre: nivel (inicial ámbar, primaria verde, secundaria azul) y sexo
+    'nivel-ini': ['INICIAL'], 'nivel-pri': ['PRIMARIA'], 'nivel-sec': ['SECUNDARIA'],
+    masc: ['MASCULINO'], fem: ['FEMENINO']
   };
   var CLASE = {};
   Object.keys(ESTADOS).forEach(function (k) { ESTADOS[k].forEach(function (t) { CLASE[t] = 'est-' + k; }); });
@@ -56,7 +59,7 @@
   function etiqueta(el) {
     var t = texto(el).toUpperCase(), c = CLASE[t];
     if (!c) { return; }
-    $(el).removeClass('est-ok est-pend est-info est-mal est-neutro').addClass('lg-estado ' + c);
+    $(el).removeClass('est-ok est-pend est-info est-mal est-neutro est-nivel-ini est-nivel-pri est-nivel-sec est-masc est-fem bg-primary bg-success bg-warning bg-danger bg-info bg-dark bg-secondary').addClass('lg-estado ' + c);
     if (mayusculas(texto(el))) { cambiarTexto(el, oracion); }
   }
 

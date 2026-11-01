@@ -163,6 +163,11 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
 .badge.est-info   { background-color: #E3EDFB !important; color: #1D4F9A !important; }
 .badge.est-mal    { background-color: #FBE5E1 !important; color: #A1301F !important; }
 .badge.est-neutro { background-color: #EEEDEA !important; color: #4A4D53 !important; }
+.badge.est-nivel-ini { background-color: #FFF0D1 !important; color: #8A5A00 !important; }
+.badge.est-nivel-pri { background-color: #DDF2E4 !important; color: #1F6B42 !important; }
+.badge.est-nivel-sec { background-color: #DFE9FA !important; color: #1D4F9A !important; }
+.badge.est-masc      { background-color: #DCEBFB !important; color: #1A5694 !important; }
+.badge.est-fem       { background-color: #FBE3EF !important; color: #A02764 !important; }
 .lg-vacio { padding: 18px 8px; color: #6B6F76; }
 .lg-vacio i { margin-right: 6px; }
 

@@ -37,6 +37,7 @@ EST=$(grep -A2 "ok: \[" "$(dirname "$0")/../js/legibilidad.js")
 check "activo, pagado, calificado y presente son verdes" "4" "$(echo "$EST" | grep -o "'ACTIVO'\|'PAGADO'\|'CALIFICADO'\|'PRESENTE'" | wc -l)"
 check "vencido, anulado y ausente son rojos" "3" "$(grep -A2 "mal: \[" "$(dirname "$0")/../js/legibilidad.js" | grep -o "'VENCIDO'\|'ANULADO'\|'AUSENTE'" | wc -l)"
 check "los cinco colores están definidos en el tema" "5" "$(grep -c '^\.badge\.est-\(ok\|pend\|info\|mal\|neutro\)' "$(dirname "$0")/../css/tema.css")"
+check "nivel y sexo conservan su color (no gris): inicial, primaria, secundaria, masculino, femenino" "5 0" "$(grep -c '^\.badge\.est-\(nivel-ini\|nivel-pri\|nivel-sec\|masc\|fem\) ' "$(dirname "$0")/../css/tema.css") $(grep -A1 "neutro: \[" "$(dirname "$0")/../js/legibilidad.js" | grep -c "MASCULINO\|SECUNDARIA")"
 
 echo "== Carga"
 check "el index carga legibilidad.js después de tablas_mejoras.js (todos los roles)" "1 1" "$(grep -A1 'tablas_mejoras.js' $T/JERSSON123.html | grep -c 'legibilidad.js') $(grep -c 'js/legibilidad.js' $T/DANIEL20.html)"
