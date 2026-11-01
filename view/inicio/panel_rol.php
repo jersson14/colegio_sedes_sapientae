@@ -16,7 +16,7 @@ $accesos = [
                   ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'], ['notas/view_notas_profesor.php', 'fa-star-half-alt', 'Notas'],
                   ['examen/view_examen_profesor.php', 'fa-file-signature', 'Exámenes']],
     'ESTUDIANTE' => [['tareas/view_tareas_estudiante.php', 'fa-tasks', 'Mis tareas'], ['notas/view_notas_estudiante.php', 'fa-star-half-alt', 'Mis notas'],
-                     ['horario/view_horario_edtudiante.php', 'fa-clock', 'Mi horario'], ['asistencia/view_asistencia_reporte_estudiante.php', 'fa-calendar-check', 'Mi asistencia'],
+                     ['horario/view_calendario.php', 'fa-clock', 'Mi horario'], ['asistencia/view_asistencia_reporte_estudiante.php', 'fa-calendar-check', 'Mi asistencia'],
                      ['pago_pensiones/view_pago_pensiones_estudiante.php', 'fa-receipt', 'Mis pagos']],
     'AUXILIAR' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Registro de asistencia'], ['asistencia_docente/view_asistencia_docente.php', 'fa-user-check', 'Asistencia docente'],
                    ['horario/view_horario.php', 'fa-clock', 'Horarios'], ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'],

@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?><script src="../js/console_horarios.js?rev=<?php echo time();?>"></script>
+<?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; require_once __DIR__ . '/../../utilitario/parametros.php'; ?><script src="../js/console_horarios.js?rev=<?php echo time();?>"></script>
 <link rel="stylesheet" href="../plantilla/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
 <!-- Content Header (Page header) -->
@@ -121,7 +121,8 @@
                     <option value="MIERCOLES">MIERCOLES</option>
                     <option value="JUEVES">JUEVES</option>
                     <option value="VIERNES">VIERNES</option>
-                </select>              
+<?php if (parametro('clases_sabado') === '1') { ?>                    <option value="SABADO">SÁBADO</option>
+<?php } ?>                </select>              
             </div>
           <div class="col-6 form-group">
             <label for="">Horas<b class="text-danger">(*)</b>:</label>
@@ -242,7 +243,8 @@
                     <option value="MIERCOLES">MIERCOLES</option>
                     <option value="JUEVES">JUEVES</option>
                     <option value="VIERNES">VIERNES</option>
-                </select>              
+<?php if (parametro('clases_sabado') === '1') { ?>                    <option value="SABADO">SÁBADO</option>
+<?php } ?>                </select>              
             </div>
           <div class="col-6 form-group">
             <label for="">Horas<b class="text-danger">(*)</b>:</label>

@@ -106,7 +106,9 @@ foreach ($roles_vistas as $rol => $vistas) {
     foreach ($alcance_global($roles_texto[$rol] ?? '') as $c) { $usa[$c][$rol]['index'] = true; }
     foreach ($comunes as $c) { $usa[$c][$rol]['index (todos)'] = true; }
     foreach (array_keys($vistas) as $vista) {
-        $tv = $leer("view/$vista");
+        // Los bloques de la vista condicionados a otro rol (if rol_actual() === 'ESTUDIANTE' ... ) no cuentan
+        $tv = preg_replace_callback("#<\?php if \(rol_actual\(\) === '([A-Z]+)'\) \{ \?>(.*?)<\?php \} \?>#s",
+            function ($b) use ($rol) { return $b[1] === $rol ? $b[2] : ''; }, $leer("view/$vista"));
         $texto = $tv;
         preg_match_all('#<script src="\.\./js/([\w\-ñ]+\.js)#u', $tv, $mm);
         // Todo script que la pantalla carga cuenta completo (aunque el index ya lo cargue: la pantalla lo vuelve a ejecutar)

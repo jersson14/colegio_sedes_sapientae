@@ -12,11 +12,11 @@ Para quien instala, actualiza o mantiene el servidor del sistema.
 
 1. **Respaldo** de la base antes de tocar nada (ver *Respaldos*).
 2. Copiar el código. **No subir** al servidor: `.git/`, `respaldos/`, `tests/`, `node_modules/`, `config/config.local.php` de otra máquina.
-3. **Migraciones**: aplicar en orden, con un usuario administrador de la base, las que falten de `database/migraciones/` (001 a 022):
+3. **Migraciones**: aplicar en orden, con un usuario administrador de la base, las que falten de `database/migraciones/` (001 a 023):
    ```
    mysql --default-character-set=utf8mb4 -u root -p colegio2 < database/migraciones/0NN_nombre.sql
    ```
-   Cada migración se probó primero en la base de prueba `colegio2_test` (ver *Pruebas*). Las migraciones 008 a 022 incluyen datos, triggers o reparaciones: no se deben aplicar dos veces.
+   Cada migración se probó primero en la base de prueba `colegio2_test` (ver *Pruebas*). Las migraciones 008 a 023 incluyen datos, triggers o reparaciones: no se deben aplicar dos veces.
 4. **Configuración del servidor**: copiar `config/config.local.php.example` como `config/config.local.php` y completar:
    - usuario y clave de la base (el usuario restringido de la aplicación, no root);
    - `'produccion' => true` (oculta los errores de PHP y los guarda en `logs/php_errores.log`).

@@ -7,7 +7,7 @@ require_once 'model_conexion.php';
  */
 class Modelo_Panel_Rol extends conexionBD {
     private $c;
-    const DIAS = [1 => 'LUNES', 2 => 'MARTES', 3 => 'MIERCOLES', 4 => 'JUEVES', 5 => 'VIERNES'];
+    const DIAS = [1 => 'LUNES', 2 => 'MARTES', 3 => 'MIERCOLES', 4 => 'JUEVES', 5 => 'VIERNES', 6 => 'SABADO'];
 
     private function uno($sql, $p = []) { $q = $this->c->prepare($sql); $q->execute($p); return $q->fetch(PDO::FETCH_ASSOC) ?: []; }
     private function todos($sql, $p = []) { $q = $this->c->prepare($sql); $q->execute($p); return $q->fetchAll(PDO::FETCH_ASSOC); }

@@ -179,7 +179,10 @@ window.RegistroTareas = (function () {
     });
     $('#rt_anio').off('change').on('change', function () { $('#rt_curso').val(''); $('#rt_periodo').val(0); cargar(); });
     $('#rt_curso, #rt_periodo').off('change').on('change', function () { cargar(); });
-    cargar({ anio: 0, curso: 0, periodo: 0 });
+    // Desde el aula virtual se abre directamente en un curso
+    var inicial = window.RT_CURSO_INICIAL || 0;
+    window.RT_CURSO_INICIAL = 0;
+    cargar({ anio: 0, curso: inicial, periodo: 0 });
   }
 
   return { iniciar: iniciar, excel: excel, imprimir: imprimir };

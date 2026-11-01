@@ -40,6 +40,9 @@ return [
         'controller/asistencias/controlador_listar_alumnos_totales_dia_estudiante.php' => ['ESTUDIANTE'],
         'controller/asistencias/controlador_listar_alumnos_totales_estu.php' => ['ESTUDIANTE'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        // calendario de horarios y aula virtual: cada controlador limita lo que ve cada rol (su aula, sus cursos)
+        'controller/horarios/controlador_calendario.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        'controller/aula_virtual/controlador_aula_virtual.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         // ayuda contextual (Fase 13, paso 16): secciones de docs/guia_rapida.md
         'controller/ayuda/controlador_ayuda.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
         'controller/panel/controlador_panel_rol.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
@@ -122,11 +125,8 @@ return [
         'controller/horarios/controlador_eliminar_horario_unico.php' => ['AUXILIAR'],
         'controller/horarios/controlador_listar_horarios.php' => ['AUXILIAR'],
         'controller/horarios/controlador_listar_horarios_editar.php' => ['AUXILIAR'],
-        'controller/horarios/controlador_listar_horarios_estudiante_id.php' => ['ESTUDIANTE'],
-        'controller/horarios/controlador_listar_horarios_estudiante_id_año.php' => ['ESTUDIANTE'],
-        'controller/horarios/controlador_listar_horarios_estudiante_todo.php' => ['ESTUDIANTE'],
         'controller/horarios/controlador_listar_horarios_filtro.php' => ['AUXILIAR'],
-        'controller/horarios/controlador_listar_horarios_id.php' => ['AUXILIAR', 'ESTUDIANTE'],
+        'controller/horarios/controlador_listar_horarios_id.php' => ['AUXILIAR'],
         'controller/horarios/controlador_modificar_horarios.php' => ['AUXILIAR'],
         'controller/horarios/controlador_registro_horario_aula.php' => ['AUXILIAR'],
         // indicadores
@@ -239,7 +239,7 @@ return [
         'view/MPDF/REPORTE/boleta_pago.php' => ['CONTADOR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/estado_resultados.php' => ['CONTADOR'],
         'view/MPDF/REPORTE/flujo_caja.php' => ['CONTADOR'],
-        'view/MPDF/REPORTE/horario.php' => ['AUXILIAR', 'ESTUDIANTE'],
+        'view/MPDF/REPORTE/horario.php' => ['AUXILIAR'],
         'view/MPDF/REPORTE/kardex.php' => ['CONTADOR', 'ESTUDIANTE'],
         'view/MPDF/REPORTE/libreta.php' => ['ESTUDIANTE'],   // la suya; el aula completa solo la dirección
         'view/MPDF/REPORTE/morosidad.php' => ['CONTADOR'],

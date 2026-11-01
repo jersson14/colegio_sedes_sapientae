@@ -114,6 +114,28 @@ El resumen de la derecha muestra, por estudiante, los P, T, F y J del mes y el %
 
 Los docentes solo ven las aulas donde enseñan. No se puede marcar días futuros.
 
+## Aula virtual
+
+Menú: **Aula virtual** (estudiantes y docentes también la tienen en la barra inferior del celular, como **Aula**). Cada curso es una tarjeta con su color, el docente, la próxima clase y lo pendiente: al estudiante, las tareas **por entregar** o **sin entregar**; al docente, las entregas **por revisar**. La dirección y el auxiliar eligen el grado y sección.
+
+Al abrir un curso:
+
+- **Tablón:** las tareas, la más nueva primero, con su material y la fecha de entrega. A la izquierda, las **próximas entregas**.
+  - El estudiante pulsa **Entregar** y elige sus archivos. Puede **cambiar la entrega** hasta que el docente califique o cierre la tarea; si el plazo venció, queda marcada como fuera de plazo. Cuando la tarea se califica ve su nota y el comentario del docente.
+  - El docente ve cuántos entregaron y cuántas faltan revisar. **Revisar y calificar** abre el Registro de tareas de ese curso; **Nueva tarea** abre la pantalla de tareas.
+- **Horario:** los días y horas de la semana en que se dicta el curso.
+- **Personas:** el docente y los estudiantes del aula (solo sus nombres).
+- **Calificaciones:** el estudiante ve el estado y la nota de cada tarea y su promedio.
+
+## Calendario de horarios
+
+Menú: **Cursos y horarios → Calendario de horarios** (el estudiante: **Horario y asistencia → Mi horario**; el docente: **Mi horario**).
+
+- **Semana:** las clases de cada día por hora, con el color de cada curso. **Mes:** una línea por clase en cada día del año escolar. **Lista:** ideal en el celular.
+- La dirección y el auxiliar eligen el grado y sección. El docente ve **Mis clases** (todas sus aulas) o el horario completo de un aula donde enseña. El estudiante ve el de su aula.
+- Tocar una clase muestra el curso, el docente y la hora, y abre el curso en el aula virtual. **Imprimir** imprime la vista elegida.
+- El horario se arma en **Cursos y horarios → Horarios**. Con **Clases los sábados** en Parámetros del sistema también se pueden poner clases el sábado.
+
 ## Revisar tareas: Registro de tareas
 
 Menú: **Académico → Tareas → Registro de tareas** (docentes: **Notas y tareas**; auxiliar: **Revisar tareas**).

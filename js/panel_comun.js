@@ -125,3 +125,18 @@ function Aviso_WhatsApp_Url(celular, texto) {
   if (pref && !(d.indexOf(pref) === 0 && d.length > 9)) { d = pref + d; }
   return 'https://wa.me/' + d + '?text=' + encodeURIComponent(texto);
 }
+
+// Color fijo de cada curso (por el nombre de la asignatura): el mismo en el calendario y en el aula virtual
+var CURSO_COLORES = ['#1967d2', '#137333', '#c5221f', '#b45309', '#8430ce', '#007b83', '#b80672', '#3949ab', '#5f6368', '#795548', '#0b8043', '#d93025'];
+function Curso_Color(nombre) {
+  var h = 0, t = String(nombre || '').toUpperCase();
+  if (t.indexOf('RECREO') === 0) { return '#9aa0a6'; }
+  for (var i = 0; i < t.length; i++) { h = (h * 31 + t.charCodeAt(i)) >>> 0; }
+  return CURSO_COLORES[h % CURSO_COLORES.length];
+}
+
+// Abre el aula virtual directamente en un curso (desde el calendario, el inicio u otra pantalla)
+function AulaVirtual_Ir(curso) {
+  window.AV_CURSO_INICIAL = curso;
+  cargar_contenido('contenido_principal', 'aula_virtual/view_aula_virtual.php');
+}

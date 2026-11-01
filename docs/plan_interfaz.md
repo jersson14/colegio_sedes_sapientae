@@ -289,7 +289,14 @@ Paso 16 hecho el 2026-10-31 (`tests/pruebas_fase13_pulido.sh`):
 
 - **Íconos:** un solo juego (Font Awesome 5, prefijo `fas`). Corregido: 17 botones "Cerrar" usaban un nombre de Font Awesome 6 (`fa-arrow-right-from-bracket`) y se veían sin ícono. La prueba revisa que cada ícono usado exista en la versión instalada.
 - **Estilos en línea:** 907 colores fijos pasaron a clases: `tabla-cabecera` y `ventana-cabecera` (color del colegio), `resaltado` y las de Bootstrap (`text-danger` para los (*), `text-center`, `mb-0`…). Ya no se usan los selectores por atributo `[style*=...]` del tema. Sin `font-family: cooper`. Solo quedan en línea las muestras de color de Apariencia y del panel.
-- **Ayuda contextual:** botón **?** junto al título de 13 pantallas complejas, que muestra su sección de `docs/guia_rapida.md` (`js/ayuda.js`, `controller/ayuda/controlador_ayuda.php`). La guía se escapa al convertirla en HTML.
+- **Ayuda contextual:** botón **?** junto al título de las pantallas complejas (13; luego 15), que muestra su sección de `docs/guia_rapida.md` (`js/ayuda.js`, `controller/ayuda/controlador_ayuda.php`). La guía se escapa al convertirla en HTML.
+
+Después de la hoja de ruta (2026-10-31, pedido de la dirección; migración 023, `tests/pruebas_fase13_aula_virtual.sh`):
+
+- **Calendario de horarios** (`view/horario/view_calendario.php`, `js/horario_calendario.js`): las clases semanales en vista de **semana, mes y lista** (FullCalendar 5 de la plantilla, sin librerías nuevas), dentro de las fechas del año escolar. Dirección y auxiliar: cualquier aula; docente: sus clases o un aula donde enseña; estudiante: su aula (reemplaza "Mi horario", cuya pantalla vieja se quitó). Color fijo por curso (`Curso_Color`, también en el aula virtual) y el recreo en gris.
+- **Sábados en el horario:** migración 023 (día `SABADO` y validación de cruces); el editor lo ofrece solo con "Clases los sábados" activado.
+- **Aula virtual** (`view/aula_virtual/view_aula_virtual.php`, `js/aula_virtual.js`, `model/model_aula_virtual.php`): tarjetas por curso al estilo de un aula en línea, con docente, próxima clase y pendientes. Dentro: tablón de tareas con próximas entregas, horario, personas y calificaciones. El estudiante entrega desde ahí con el mismo controlador de tareas (`js/aula_virtual_entrega.js`, solo se carga para él); el docente pasa a revisar y calificar en el Registro de tareas del curso.
+- La herramienta de permisos ahora respeta los bloques de una vista condicionados a un rol (`if (rol_actual() === '...')`).
 
 El orden busca primero lo que evita errores en los datos, luego lo que más tiempo ahorra cada día y al final lo estético.
 

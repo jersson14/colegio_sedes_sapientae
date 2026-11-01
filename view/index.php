@@ -62,6 +62,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Apariencia del colegio (Configuración > Apariencia) -->
   <?php echo tema_css_variables($TEMA); ?>
   <link rel="stylesheet" href="../css/tema.css?rev=<?php echo filemtime(__DIR__ . '/../css/tema.css'); ?>">
+  <link rel="stylesheet" href="../css/aula_virtual.css?rev=<?php echo filemtime(__DIR__ . '/../css/aula_virtual.css'); ?>">
   <link rel="stylesheet" href="../css/inicio.css?rev=<?php echo filemtime(__DIR__ . '/../css/inicio.css'); ?>">
 </head>
 
@@ -284,6 +285,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php')" class="nav-link">
+                      <i class="nav-icon fas fa-chalkboard text-info"></i>
+                      <p>Aula virtual</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Tareas</p>
@@ -319,6 +326,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a href="#" onclick="cargar_contenido('contenido_principal','horario/view_horario.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Horarios</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','horario/view_calendario.php')" class="nav-link">
+                      <i class="nav-icon far fa-calendar-alt text-info"></i>
+                      <p>Calendario de horarios</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -731,6 +744,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','horario/view_calendario.php')" class="nav-link">
+                      <i class="nav-icon far fa-calendar-alt text-info"></i>
+                      <p>Calendario de horarios</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','aula_hora/view_aula_hora.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Horas de clase por aula</p>
@@ -747,6 +766,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php')" class="nav-link">
+                      <i class="nav-icon fas fa-chalkboard text-info"></i>
+                      <p>Aula virtual</p>
+                    </a>
+                  </li>
                   <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
@@ -810,6 +835,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php')" class="nav-link">
+                      <i class="nav-icon fas fa-chalkboard text-info"></i>
+                      <p>Aula virtual</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','horario/view_calendario.php')" class="nav-link">
+                      <i class="nav-icon far fa-calendar-alt text-info"></i>
+                      <p>Mi horario</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Tareas de mis cursos</p>
@@ -866,6 +903,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php')" class="nav-link">
+                      <i class="nav-icon fas fa-chalkboard text-info"></i>
+                      <p>Aula virtual</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mis tareas</p>
@@ -890,7 +933,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','horario/view_horario_edtudiante.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','horario/view_calendario.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mi horario</p>
                     </a>
@@ -1405,7 +1448,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <?php if ($_SESSION['S_ROL'] == "ESTUDIANTE") { ?>
   <nav class="barra-inferior" aria-label="Accesos principales">
     <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-tasks"></i>Tareas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php');Barra_Activa(this);return false;"><i class="fas fa-chalkboard"></i>Aula</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-receipt"></i>Pagos</a>
     <a href="index.php?ir=avisos#avisos"><i class="fas fa-bullhorn"></i>Avisos</a>
@@ -1415,7 +1458,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <nav class="barra-inferior" aria-label="Accesos principales">
     <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php');Barra_Activa(this);return false;"><i class="fas fa-clipboard-check"></i>Asistencia</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-tasks"></i>Tareas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php');Barra_Activa(this);return false;"><i class="fas fa-chalkboard"></i>Aula</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','examen/view_examen_profesor.php');Barra_Activa(this);return false;"><i class="fas fa-file-signature"></i>Exámenes</a>
   </nav>

@@ -10,6 +10,8 @@ var AYUDA_SECCIONES = {
   'reportes/view_reporte_estudiantes.php': ['Reporte de estudiantes a medida', 'Filtros y columnas en todas las listas'],
   'comunicado/view_comunicado.php': ['Comunicados: quién los leyó'],
   'avisos/view_avisos.php': ['Avisos a las familias'],
+  'aula_virtual/view_aula_virtual.php': ['Aula virtual'],
+  'horario/view_calendario.php': ['Calendario de horarios'],
   'configuracion/view_cambio_anio.php': ['Cambio de año escolar (solo administrador)'],
   'configuracion/view_permisos.php': ['Permisos por rol (solo administrador)'],
   'configuracion/view_parametros.php': ['Parámetros del sistema (solo administrador)'],
