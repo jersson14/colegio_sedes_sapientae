@@ -84,6 +84,11 @@ foreach (explode("\n", $index) as $linea) {
         $pila[] = $r[1];
         continue;
     }
+    // Bloques del modo demostración (utilitario/demo.php): no cambian el rol, solo esconden en la demo; su cierre no debe sacar el rol
+    if (preg_match('/<\?php\s+if\s*\(\s*!?\s*(demo_vista_bloqueada|modo_demo)\b/', $linea)) {
+        $pila[] = $pila ? end($pila) : ['*'];
+        continue;
+    }
     if ($pila && preg_match('/^\s*(<\?php)?\s*\}\s*(\?>)?\s*$/', $linea)) {
         array_pop($pila);
         continue;

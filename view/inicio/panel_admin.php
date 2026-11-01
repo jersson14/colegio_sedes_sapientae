@@ -49,7 +49,7 @@ $e = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); 
         <span class="pi-dato-icono"><i class="fas fa-user-tie"></i></span>
         <span><b id="pi_administrativos">–</b><span>Personal administrativo</span><small>activo</small></span>
       </a>
-      <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php');return false;" class="pi-dato">
+      <a href="#" onclick="<?php require_once __DIR__ . '/../../utilitario/demo.php'; echo demo_vista_bloqueada('usuario/view_usuario.php') ? '' : "cargar_contenido('contenido_principal','usuario/view_usuario.php');"; ?>return false;" class="pi-dato">
         <span class="pi-dato-icono"><i class="fas fa-id-badge"></i></span>
         <span><b id="pi_usuarios">–</b><span>Usuarios del sistema</span><small id="pi_usuarios_det"></small></span>
       </a>

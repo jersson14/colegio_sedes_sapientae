@@ -66,6 +66,13 @@ if (!empty($_SESSION['S_DEBE_CAMBIAR'])
         denegar(403, 'No tiene permiso para esta acción');
     }
 
+    // Versión de demostración: acciones deshabilitadas (utilitario/demo.php)
+    require_once __DIR__ . '/../utilitario/demo.php';
+    if (demo_controlador_bloqueado($ruta)) {
+        registrar_acceso_denegado($ruta, 'MODO_DEMO');
+        denegar(403, 'Esta opción está deshabilitada en la versión de demostración');
+    }
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_valido()) {
         registrar_acceso_denegado($ruta, 'CSRF_INVALIDO');
         denegar(403, 'Token de seguridad inválido. Recargue la página.');

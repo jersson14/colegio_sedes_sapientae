@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Corre todas las suites HTTP, cada una sobre colegio2_test recién reiniciada.
-# Uso: bash tests/ejecutar_todo.sh   (necesita config/config.local.php con ['db' => ['nombre' => 'colegio2_test']])
+# Uso: bash tests/ejecutar_todo.sh   (necesita config/config.local.php con ['db' => ['nombre' => 'colegio2_test'], 'modo_demo' => false])
 R=$(cd "$(dirname "$0")/.." && pwd)
 grep -q colegio2_test "$R/config/config.local.php" 2>/dev/null || { echo "Falta config/config.local.php apuntando a colegio2_test"; exit 1; }
 total=0

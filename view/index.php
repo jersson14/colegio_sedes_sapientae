@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utilitario/sesion.php';
 require_once __DIR__ . '/../utilitario/regional.php';
 require_once __DIR__ . '/../utilitario/tema.php';
+require_once __DIR__ . '/../utilitario/demo.php';
 iniciar_sesion_segura();
 if (!isset($_SESSION['S_ID'])) {
   header('Location: ../index.php');
@@ -79,6 +80,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
+          <?php if (modo_demo()) { ?>
+            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="Algunas opciones de configuración están deshabilitadas"><i class="fas fa-flask mr-1"></i>Versión de demostración</span></li>
+          <?php } ?>
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown" style="text-align:justify;">
 
@@ -98,10 +102,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <?php if (!modo_demo()) { ?>
               <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
                 <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
               </a>
               <div class="dropdown-divider"></div>
+              <?php } ?>
               <a href="../controller/usuario/controlador_cerrar_sesion.php" class="dropdown-item">
                 <i class="fas fa-power-off mr-2"></i><u><b>Cerrar Sesión</b></u>
               </a>
@@ -134,6 +140,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
+          <?php if (modo_demo()) { ?>
+            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="Algunas opciones de configuración están deshabilitadas"><i class="fas fa-flask mr-1"></i>Versión de demostración</span></li>
+          <?php } ?>
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown" style="text-align:justify;">
 
@@ -156,10 +165,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <?php if (!modo_demo()) { ?>
               <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
                 <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
               </a>
               <div class="dropdown-divider"></div>
+              <?php } ?>
               <a href="../controller/usuario/controlador_cerrar_sesion.php" class="dropdown-item">
                 <i class="fas fa-power-off mr-2"></i><u><b>Cerrar Sesión</b></u>
               </a>
@@ -457,18 +468,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-header menu-seccion">ORGANIZACIÓN DEL COLEGIO</li>
+              <?php if (!demo_vista_bloqueada('año/view_año_escolar.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','año/view_año_escolar.php')" class="nav-link">
                   <i class="nav-icon fas fa-calendar-alt"></i>
                   <p>Años escolares</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('periodo/view_periodo.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','periodo/view_periodo.php')" class="nav-link">
                   <i class="nav-icon fas fa-calendar-week"></i>
                   <p>Periodos</p>
                 </a>
               </li>
+              <?php } ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','nivel_academico/view_nivel_academico.php')" class="nav-link">
                   <i class="nav-icon fas fa-layer-group"></i>
@@ -487,73 +502,93 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Secciones</p>
                 </a>
               </li>
+              <?php if (!demo_vista_bloqueada('configuracion/view_cambio_anio.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_cambio_anio.php')" class="nav-link">
                   <i class="nav-icon fas fa-forward"></i>
                   <p>Cambio de año escolar</p>
                 </a>
               </li>
+              <?php } ?>
               <li class="nav-header menu-seccion">CONFIGURACIÓN</li>
+              <?php if (!demo_vista_bloqueada('usuario/view_usuario.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','usuario/view_usuario.php')" class="nav-link">
                   <i class="nav-icon fas fa-users-cog"></i>
                   <p>Usuarios</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('roles/view_roles.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','roles/view_roles.php')" class="nav-link">
                   <i class="nav-icon fas fa-sitemap"></i>
                   <p>Roles</p>
                 </a>
               </li>
+              <?php } ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','especialidades/view_especialidades.php')" class="nav-link">
                   <i class="nav-icon fas fa-graduation-cap"></i>
                   <p>Especialidades</p>
                 </a>
               </li>
+              <?php if (!demo_vista_bloqueada('configuracion/view_formas_pago.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-university"></i>
                   <p>Formas de pago y cuentas</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_regional.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_regional.php')" class="nav-link">
                   <i class="nav-icon fas fa-globe-americas"></i>
                   <p>Datos regionales</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_apariencia.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_apariencia.php')" class="nav-link">
                   <i class="nav-icon fas fa-palette"></i>
                   <p>Apariencia</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_permisos.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_permisos.php')" class="nav-link">
                   <i class="nav-icon fas fa-user-shield"></i>
                   <p>Permisos por rol</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_parametros.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_parametros.php')" class="nav-link">
                   <i class="nav-icon fas fa-sliders-h"></i>
                   <p>Parámetros del sistema</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_auditoria.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_auditoria.php')" class="nav-link">
                   <i class="nav-icon fas fa-history"></i>
                   <p>Auditoría</p>
                 </a>
               </li>
+              <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_respaldos.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_respaldos.php')" class="nav-link">
                   <i class="nav-icon fas fa-database"></i>
                   <p>Respaldos</p>
                 </a>
               </li>
+              <?php } ?>
               <li class="nav-item">
                 <a href="https://drive.google.com/file/d/1k5VviNH7amB6DeXcakwoB3wJI031cgcJ/view?usp=drive_link" target="_blank" rel="noopener" class="nav-link">
                   <i class="nav-icon fas fa-film"></i>
@@ -647,12 +682,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>Avisos a las familias</p>
                 </a>
               </li>
+              <?php if (!demo_vista_bloqueada('configuracion/view_formas_pago.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_formas_pago.php')" class="nav-link">
                   <i class="nav-icon fas fa-credit-card"></i>
                   <p>Formas de pago y cuentas</p>
                 </a>
               </li>
+              <?php } ?>
             <?php } ?>
             <?php if ($_SESSION['S_ROL'] == "ENFERMERA") { ?>
               <li class="nav-item">

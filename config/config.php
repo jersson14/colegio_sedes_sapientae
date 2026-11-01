@@ -20,6 +20,9 @@ $config = [
     'login_minutos_bloqueo' => 15,
     // Tamaño máximo (MB) de cada video subido a una tarea; el servidor debe aceptarlo (ver .htaccess / .user.ini)
     'video_max_mb' => 100,
+    // Demostración pública (utilitario/demo.php): esconde usuarios, roles y configuración y no deja cambiar contraseñas.
+    // En la rama "venta" va en false.
+    'modo_demo' => true,
 ];
 
 if (file_exists(__DIR__ . '/config.local.php')) {
