@@ -9,7 +9,6 @@ function listar_alumnos_totales() {
 
   let mes = document.getElementById('select_meses').value;
   let aula = document.getElementById('select_aula_buscar').value;
-  console.log(mes, aula); // Verifica los valores
 
   // Inicializa o reinicializa el DataTable
   tbl_alumnos_asistencia2 = $("#tabla_asistencia_totales").DataTable({
@@ -28,7 +27,6 @@ function listar_alumnos_totales() {
       "type": 'POST',
       "data": { año:año,mes: mes, aula: aula },
       "dataSrc": function (json) {
-        console.log(json); // Verifica la estructura de la respuesta
         // Asegúrate de que 'data' es la clave correcta
         return json.data || []; // Devuelve un array vacío si 'data' es indefinido
       }
@@ -99,7 +97,6 @@ function listar_alumnos_totales_dia() {
   let año = document.getElementById('select_año').value;
   let mes = document.getElementById('select_meses_buscar').value;
   let aula = document.getElementById('select_aula_buscar_2').value;
-  console.log(mes, aula); // Verifica los valores
 
   // Inicializa o reinicializa el DataTable
   tbl_alumnos_asistencia2_dia = $("#tabla_asistencia_totales_dia").DataTable({
@@ -118,7 +115,6 @@ function listar_alumnos_totales_dia() {
       "type": 'POST',
       "data": { año:año,mes: mes, aula: aula },
       "dataSrc": function (json) {
-        console.log(json); // Verifica la estructura de la respuesta
         // Asegúrate de que 'data' es la clave correcta
         return json.data || []; // Devuelve un array vacío si 'data' es indefinido
       }

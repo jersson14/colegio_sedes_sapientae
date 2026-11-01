@@ -374,7 +374,6 @@ function listar_horas_aula_editar(id,año) {
     "type": 'POST',
     "data": { id: id ,año:año},
     "dataSrc": function (json) {
-        console.log("Respuesta del servidor:", json); // Añade esta línea para depuración
         return json.aaData;
         }
     },

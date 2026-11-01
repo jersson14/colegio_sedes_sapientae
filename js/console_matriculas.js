@@ -204,7 +204,6 @@ function Cargar_Select_estudiante() {
     type: 'POST',
     dataType: 'json'
   }).done(function(data) {
-    console.log("Datos recibidos:", data);
     let cadena = "<option value=''>Seleccionar Estudiante</option>";
     if (Array.isArray(data) && data.length > 0) {
       data.forEach(function(item) {
@@ -227,14 +226,11 @@ function Cargar_Select_estudiante() {
     }
   }).fail(function(jqXHR, textStatus, errorThrown) {
     console.error("Error en la petición AJAX de estudiantes:", textStatus, errorThrown);
-    console.log("Respuesta del servidor:", jqXHR.responseText);
   });
 }
 
 
 function debugSelect2() {
-  console.log("Select2 para estudiantes:", $('#select_estudiante').select2('data'));
-  console.log("¿Select2 está abierto?", $('.select2-container--open').length > 0);
 }
 function Cargar_Select_Grado(){
     $.ajax({

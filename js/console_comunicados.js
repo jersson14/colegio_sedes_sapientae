@@ -235,8 +235,6 @@ $('#tabla_comunicados').on('click','.editar',function(){
   document.getElementById('txt_foto_actual').value=data.imagen;
 
   var imgElement = document.getElementById('preview3');
-console.log('Data:', data);  // Verifica que los datos sean correctos
-console.log('Image URL:', data.imagen);  // Verifica la URL de la imagen
 
 if (imgElement) {
   if (data.imagen && data.imagen.trim() !== '') {
@@ -289,8 +287,6 @@ $('#tabla_comunicados').on('click','.mostrar',function(){
   document.getElementById('txt_descripcion_ver').value=data.descripcion;
 
   var imgElement = document.getElementById('preview4');
-console.log('Data:', data);  // Verifica que los datos sean correctos
-console.log('Image URL:', data.imagen);  // Verifica la URL de la imagen
 
 if (imgElement) {
   if (data.imagen && data.imagen.trim() !== '') {
@@ -324,8 +320,6 @@ function AbrirComunicado(data) {
     document.getElementById('txt_descripcion_ver').value = data.descripcion;
     
     var imgElement = document.getElementById('preview4');
-    console.log('Data:', data);
-    console.log('Image URL:', data.imagen);
     
     if (imgElement) {
       if (data.imagen && data.imagen.trim() !== '') {
@@ -342,7 +336,6 @@ function AbrirComunicado(data) {
       console.error('Elemento img con id preview4 no encontrado');
     }
   } else {
-    console.log('El comunicado está INACTIVO. No se abrirá el modal.');
   }
 }
 function Cargar_Select_Grado(){
@@ -617,8 +610,6 @@ function mostrarDatosModal(data) {
   document.getElementById('txt_descripcion_ver').value = data.descripcion;
 
   var imgElement = document.getElementById('preview4');
-  console.log('Data:', data);  // Verifica que los datos sean correctos
-  console.log('Image URL:', data.imagen);  // Verifica la URL de la imagen
 
   if (imgElement) {
     if (data.imagen && data.imagen.trim() !== '') {

@@ -279,7 +279,6 @@ function Agregar_componente_editar() {
 
   // Verificar si ya existe la combinación de fechas y periodo en la tabla
   if (verificarFechasEditar(perio, inicio, fin)) {
-      console.log(perio, inicio, fin);
       return Swal.fire("Mensaje de Advertencia", "El componente con este periodo y estas fechas ya fue agregado a la tabla", "warning");
   }
 

@@ -194,8 +194,6 @@ $('#tabla_alumnos').on('click','.editar',function(){
   document.getElementById('foto_actual').value=data.alum_fotoperfil;
 
   var imgElement = document.getElementById('preview3');
-  console.log('Data:', data);  // Verifica que los datos sean correctos
-  console.log('Image URL:', data.alum_fotoperfil);  // Verifica la URL de la imagen
 
   if (imgElement) {
     if (data.alum_fotoperfil && data.alum_fotoperfil.trim() !== '') {

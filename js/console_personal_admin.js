@@ -212,8 +212,6 @@ $('#tabla_personal_administrativo').on('click','.mostrar',function(){
   document.getElementById('txt_direc_mas').value=data.personal_adm_direccion;
   
   var imgElement = document.getElementById('preview2');
-  console.log('Data:', data);  // Verifica que los datos sean correctos
-  console.log('Image URL:', data.personal_adm_fotoperfil);  // Verifica la URL de la imagen
   
   if (imgElement) {
     if (data.personal_adm_fotoperfil && data.personal_adm_fotoperfil.trim() !== '') {
@@ -259,8 +257,6 @@ $('#tabla_personal_administrativo').on('click','.editar',function(){
   document.getElementById('txt_foto_actual').value=data.personal_adm_fotoperfil;
 
   var imgElement = document.getElementById('preview3');
-console.log('Data:', data);  // Verifica que los datos sean correctos
-console.log('Image URL:', data.personal_adm_fotoperfil);  // Verifica la URL de la imagen
 
 if (imgElement) {
   if (data.personal_adm_fotoperfil && data.personal_adm_fotoperfil.trim() !== '') {

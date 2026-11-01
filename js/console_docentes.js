@@ -186,8 +186,6 @@ $('#tabla_docentes').on('click','.mostrar',function(){
   document.getElementById('txt_direc_mas').value=data.docente_direccion;
   
   var imgElement = document.getElementById('preview2');
-  console.log('Data:', data);  // Verifica que los datos sean correctos
-  console.log('Image URL:', data.docente_fotoperfil);  // Verifica la URL de la imagen
   
   if (imgElement) {
     if (data.docente_fotoperfil && data.docente_fotoperfil.trim() !== '') {
@@ -233,8 +231,6 @@ $('#tabla_docentes').on('click','.editar',function(){
   document.getElementById('txt_foto_actual').value=data.docente_fotoperfil;
 
   var imgElement = document.getElementById('preview3');
-console.log('Data:', data);  // Verifica que los datos sean correctos
-console.log('Image URL:', data.docente_fotoperfil);  // Verifica la URL de la imagen
 
 if (imgElement) {
   if (data.docente_fotoperfil && data.docente_fotoperfil.trim() !== '') {

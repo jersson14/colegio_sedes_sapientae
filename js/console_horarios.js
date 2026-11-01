@@ -283,9 +283,7 @@ function Cargar_Select_Grado() {
         año: año
       }
     }).done(function(resp) {
-      console.log(resp);  // Esto te permitirá ver la respuesta en la consola del navegador
       let data = JSON.parse(resp);
-      console.log(data);  // Esto mostrará los datos después de parsearlos
    
       let cadena = "<option value='' disabled selected>--SELECCIONE UN RANGO DE HORA--</option>";
    
