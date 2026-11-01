@@ -59,25 +59,13 @@ return array (
         0 => 'controller/reportes/controlador_reporte_estudiantes.php',
       ),
     ),
-    'notas/view_notas.php' => 
+    'notas/view_registro_notas.php' => 
     array (
       'titulo' => 'Notas',
       'seccion' => 'ACADÉMICO',
       'controladores' => 
       array (
-        0 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        1 => 'controller/aulas/controlador_cargar_select_nivel.php',
-        2 => 'controller/matricula/controlador_cargar_select_año.php',
-        3 => 'controller/notas/controlador_cargar_periodos.php',
-        4 => 'controller/notas/controlador_cargar_periodos_cargados.php',
-        5 => 'controller/notas/controlador_editar_notas.php',
-        6 => 'controller/notas/controlador_editar_notas_padre.php',
-        7 => 'controller/notas/controlador_listar_criterios_notas.php',
-        8 => 'controller/notas/controlador_listar_criterios_notas_mostrar.php',
-        9 => 'controller/notas/controlador_listar_criterios_notas_mostrar_padres.php',
-        10 => 'controller/notas/controlador_listar_matriculas_filtro.php',
-        11 => 'controller/notas/controlador_registro_notas.php',
-        12 => 'controller/notas/controlador_registro_notas_padres.php',
+        0 => 'controller/notas/controlador_registro_notas_curso.php',
       ),
     ),
     'componentes/view_componentes.php' => 
@@ -114,27 +102,19 @@ return array (
         2 => 'view/MPDF/REPORTE/libreta.php',
       ),
     ),
-    'examen/view_examen.php' => 
+    'docente/view_examenes_docente.php' => 
     array (
       'titulo' => 'Exámenes',
       'seccion' => 'ACADÉMICO',
       'controladores' => 
       array (
-        0 => 'controller/asignatura_docente/controlador_cargar_docente.php',
-        1 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        2 => 'controller/aulas/controlador_cargar_select_nivel.php',
-        3 => 'controller/examenes/controlador_eliminar_examenes.php',
-        4 => 'controller/examenes/controlador_listar_alumnos_examen.php',
-        5 => 'controller/examenes/controlador_listar_examenes.php',
-        6 => 'controller/examenes/controlador_listar_examenes_filtro.php',
-        7 => 'controller/examenes/controlador_listar_examenes_profesor_solo.php',
-        8 => 'controller/examenes/controlador_modificar_estado_examen.php',
-        9 => 'controller/examenes/controlador_modificar_examen.php',
-        10 => 'controller/examenes/controlador_registro_examenes.php',
-        11 => 'controller/tareas/controlador_archivos_tarea.php',
-        12 => 'controller/tareas/controlador_cargar_select_cursos_docente.php',
-        13 => 'controller/tareas/controlador_listar_tabla_envio_tareas.php',
-        14 => 'controller/tareas/controlador_registro_calificacion.php',
+        0 => 'controller/ayuda/controlador_ayuda.php',
+        1 => 'controller/docente/controlador_trabajos.php',
+        2 => 'controller/examenes/controlador_eliminar_examenes.php',
+        3 => 'controller/examenes/controlador_modificar_estado_examen.php',
+        4 => 'controller/examenes/controlador_modificar_examen.php',
+        5 => 'controller/examenes/controlador_registro_examenes.php',
+        6 => 'controller/tareas/controlador_archivos_tarea.php',
       ),
     ),
     'aula_virtual/view_aula_virtual.php' => 
@@ -149,27 +129,19 @@ return array (
         3 => 'controller/tareas/controlador_registro_tareas_estudiante.php',
       ),
     ),
-    'tareas/view_tareas.php' => 
+    'docente/view_tareas_docente.php' => 
     array (
       'titulo' => 'Tareas',
       'seccion' => 'ACADÉMICO',
       'controladores' => 
       array (
-        0 => 'controller/asignatura_docente/controlador_cargar_docente.php',
-        1 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        2 => 'controller/aulas/controlador_cargar_select_nivel.php',
-        3 => 'controller/examenes/controlador_listar_alumnos_examen.php',
-        4 => 'controller/tareas/controlador_archivos_tarea.php',
-        5 => 'controller/tareas/controlador_cargar_select_cursos_docente.php',
-        6 => 'controller/tareas/controlador_eliminar_tarea.php',
-        7 => 'controller/tareas/controlador_listar_tabla_envio_tareas.php',
-        8 => 'controller/tareas/controlador_listar_tareas.php',
-        9 => 'controller/tareas/controlador_listar_tareas_filtro.php',
-        10 => 'controller/tareas/controlador_listar_tareas_profesor_solo.php',
-        11 => 'controller/tareas/controlador_modificar_estado_tarea.php',
-        12 => 'controller/tareas/controlador_modificar_tareas.php',
-        13 => 'controller/tareas/controlador_registro_calificacion.php',
-        14 => 'controller/tareas/controlador_registro_tareas.php',
+        0 => 'controller/ayuda/controlador_ayuda.php',
+        1 => 'controller/docente/controlador_trabajos.php',
+        2 => 'controller/tareas/controlador_archivos_tarea.php',
+        3 => 'controller/tareas/controlador_eliminar_tarea.php',
+        4 => 'controller/tareas/controlador_modificar_estado_tarea.php',
+        5 => 'controller/tareas/controlador_modificar_tareas.php',
+        6 => 'controller/tareas/controlador_registro_tareas.php',
       ),
     ),
     'tareas/view_registro_tareas.php' => 
@@ -763,53 +735,6 @@ return array (
         1 => 'view/MPDF/REPORTE/boleta_docente.php',
       ),
     ),
-    'notas/view_registro_notas.php' => 
-    array (
-      'titulo' => 'Notas de mis cursos',
-      'seccion' => 'CONTABILIDAD',
-      'controladores' => 
-      array (
-        0 => 'controller/notas/controlador_registro_notas_curso.php',
-      ),
-    ),
-    'docente/view_tareas_docente.php' => 
-    array (
-      'titulo' => 'Tareas de mis cursos',
-      'seccion' => 'CONTABILIDAD',
-      'controladores' => 
-      array (
-        0 => 'controller/ayuda/controlador_ayuda.php',
-        1 => 'controller/docente/controlador_trabajos.php',
-        2 => 'controller/examenes/controlador_eliminar_examenes.php',
-        3 => 'controller/examenes/controlador_modificar_estado_examen.php',
-        4 => 'controller/examenes/controlador_modificar_examen.php',
-        5 => 'controller/examenes/controlador_registro_examenes.php',
-        6 => 'controller/tareas/controlador_archivos_tarea.php',
-        7 => 'controller/tareas/controlador_eliminar_tarea.php',
-        8 => 'controller/tareas/controlador_modificar_estado_tarea.php',
-        9 => 'controller/tareas/controlador_modificar_tareas.php',
-        10 => 'controller/tareas/controlador_registro_tareas.php',
-      ),
-    ),
-    'docente/view_examenes_docente.php' => 
-    array (
-      'titulo' => 'Exámenes de mis cursos',
-      'seccion' => 'CONTABILIDAD',
-      'controladores' => 
-      array (
-        0 => 'controller/ayuda/controlador_ayuda.php',
-        1 => 'controller/docente/controlador_trabajos.php',
-        2 => 'controller/examenes/controlador_eliminar_examenes.php',
-        3 => 'controller/examenes/controlador_modificar_estado_examen.php',
-        4 => 'controller/examenes/controlador_modificar_examen.php',
-        5 => 'controller/examenes/controlador_registro_examenes.php',
-        6 => 'controller/tareas/controlador_archivos_tarea.php',
-        7 => 'controller/tareas/controlador_eliminar_tarea.php',
-        8 => 'controller/tareas/controlador_modificar_estado_tarea.php',
-        9 => 'controller/tareas/controlador_modificar_tareas.php',
-        10 => 'controller/tareas/controlador_registro_tareas.php',
-      ),
-    ),
     'estudiante/view_mis_notas.php' => 
     array (
       'titulo' => 'Mis notas',
@@ -890,12 +815,12 @@ return array (
         0 => 'alumnos/view_alumnos.php',
         1 => 'matricula/view_matricula.php',
         2 => 'reportes/view_reporte_estudiantes.php',
-        3 => 'notas/view_notas.php',
+        3 => 'notas/view_registro_notas.php',
         4 => 'componentes/view_componentes.php',
         5 => 'boletas/view_boletas.php',
-        6 => 'examen/view_examen.php',
+        6 => 'docente/view_examenes_docente.php',
         7 => 'aula_virtual/view_aula_virtual.php',
-        8 => 'tareas/view_tareas.php',
+        8 => 'docente/view_tareas_docente.php',
         9 => 'tareas/view_registro_tareas.php',
         10 => 'asignaturas/view_asignatura.php',
         11 => 'docente_asignatura/view_docenteasignatura.php',
@@ -1029,7 +954,7 @@ return array (
         4 => 'horario/view_calendario.php',
         5 => 'aula_hora/view_aula_hora.php',
         6 => 'aula_virtual/view_aula_virtual.php',
-        7 => 'tareas/view_tareas.php',
+        7 => 'docente/view_tareas_docente.php',
         8 => 'tareas/view_registro_tareas.php',
         9 => 'reportes/view_reporte_estudiantes.php',
         10 => 'avisos/view_avisos.php',

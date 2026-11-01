@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row mb-2 align-items-end">
       <div class="col-sm-8">
-        <h1 class="m-0 pagina-titulo">Notas de mis cursos</h1>
+        <h1 class="m-0 pagina-titulo"><?php echo rol_actual() === 'DOCENTE' ? 'Notas de mis cursos' : 'Notas'; ?></h1>
         <p class="pagina-ayuda">Elige el curso y el bimestre, escribe las notas y guarda.</p>
       </div>
       <div class="col-sm-4 d-flex justify-content-sm-end">

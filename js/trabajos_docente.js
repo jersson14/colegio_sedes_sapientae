@@ -1,14 +1,9 @@
 // Tareas y exámenes de mis cursos (docente): tarjetas por curso con su avance, y formularios para crear y editar.
 // Guarda con los controladores de tareas y exámenes de siempre (revisan que el curso sea del docente).
-var TD = { tipo: null, datos: null, curso: '', filtro: 'abiertas' };
+var TD = { tipo: null, datos: null, curso: '', aula: '', filtro: 'abiertas' };
 var TD_URL = '../controller/docente/controlador_trabajos.php';
-// Controladores de siempre para guardar (escritos completos para que la revisión de permisos los encuentre)
-var TD_GUARDAR = {
-  tareas: { nuevo: '../controller/tareas/controlador_registro_tareas.php', editar: '../controller/tareas/controlador_modificar_tareas.php',
-            estado: '../controller/tareas/controlador_modificar_estado_tarea.php', eliminar: '../controller/tareas/controlador_eliminar_tarea.php' },
-  examenes: { nuevo: '../controller/examenes/controlador_registro_examenes.php', editar: '../controller/examenes/controlador_modificar_examen.php',
-              estado: '../controller/examenes/controlador_modificar_estado_examen.php', eliminar: '../controller/examenes/controlador_eliminar_examenes.php' }
-};
+// Rutas para guardar: las pasa cada vista (tareas o exámenes), así cada rol solo usa las suyas
+var TD_GUARDAR = {};
 
 function TD_Titulo(t) { return window.PanelComun ? PanelComun.titulo(t || '') : (t || ''); }
 function TD_Aula(c) { return TD_Titulo(c.grado) + (c.seccion && c.seccion !== 'UNICO' ? ' ' + c.seccion : '') + ' · ' + TD_Titulo(c.nivel); }
@@ -25,8 +20,8 @@ function TD_Fecha(f, conHora) {
 // aaaa-mm-dd hh:mm:ss -> valor de un <input type="datetime-local">
 function TD_ParaInput(f) { return f ? String(f).replace(' ', 'T').slice(0, 16) : ''; }
 
-function TareasDocente_Iniciar() { TD_Iniciar('tareas'); }
-function ExamenesDocente_Iniciar() { TD_Iniciar('examenes'); }
+function TareasDocente_Iniciar(rutas) { TD_GUARDAR.tareas = rutas; TD_Iniciar('tareas'); }
+function ExamenesDocente_Iniciar(rutas) { TD_GUARDAR.examenes = rutas; TD_Iniciar('examenes'); }
 
 function TD_Iniciar(tipo) {
   TD.tipo = tipo;
@@ -35,6 +30,7 @@ function TD_Iniciar(tipo) {
   $(document).off('.td');
   $(document).on('change.td', '#td_anio', function () { TD_Cargar(); });
   $(document).on('click.td', '.td-curso', function () { TD.curso = String($(this).data('curso')); TD_Pintar(); });
+  $(document).on('change.td', '#td_aula', function () { TD.aula = $(this).val(); TD.curso = ''; TD_Pintar(); });
   $(document).on('click.td', '.td-filtro', function () { TD.filtro = $(this).data('filtro'); TD_Pintar(); });
   $(document).on('click.td', '#td_nuevo', function () { TD_Formulario(null); });
   $(document).on('click.td', '.td-editar', function () { TD_Formulario(TD.datos.items[+$(this).data('i')]); });
@@ -70,13 +66,21 @@ function TD_Grupo(x) {
 function TD_Pintar() {
   var d = TD.datos, tareas = TD.tipo === 'tareas';
   if (!d.cursos.length) { $('#td_contenido').html('<div class="av-vacio"><i class="fas fa-chalkboard"></i><p>No tiene cursos asignados en este año escolar.</p></div>'); return; }
-  var enCurso = d.items.filter(function (x) { return !TD.curso || String(x.curso) === TD.curso; });
+  // Con muchos cursos (dirección) se elige primero el aula
+  var aulas = Cursos_Aulas(d.cursos), porAula = aulas.length > 1 && d.cursos.length > 8;
+  if (porAula && !aulas.some(function (a) { return a.clave === TD.aula; })) { TD.aula = aulas[0].clave; }
+  var cursosAula = porAula ? d.cursos.filter(function (c) { return Curso_Aula_Clave(c) === TD.aula; }) : d.cursos;
+  var idsAula = cursosAula.map(function (c) { return +c.id; });
+  var deAula = d.items.filter(function (x) { return idsAula.indexOf(+x.curso) !== -1; });
+  var enCurso = deAula.filter(function (x) { return !TD.curso || String(x.curso) === TD.curso; });
   var filtros = tareas ? [['abiertas', 'Abiertas', 'fa-hourglass-half'], ['revisar', 'Por revisar', 'fa-inbox'], ['cerradas', 'Cerradas', 'fa-lock']]
                        : [['proximos', 'Próximos', 'fa-calendar-day'], ['pasados', 'Sin marcar como realizados', 'fa-exclamation-circle'], ['realizados', 'Realizados', 'fa-check']];
   var n = {};
   filtros.forEach(function (f) { n[f[0]] = enCurso.filter(function (x) { return x._grupo === f[0]; }).length; });
-  var cursos = '<div class="rn-cursos"><button type="button" class="rn-curso td-curso' + (TD.curso === '' ? ' activo' : '') + '" data-curso="" style="--av-color:var(--tema-primario)"><b>Todos mis cursos</b><span>' +
-    d.items.length + (tareas ? ' tareas' : ' exámenes') + '</span></button>' + d.cursos.map(function (c) {
+  var cursos = '<div class="rn-cursos">' + (porAula ? '<select class="form-control rn-aula" id="td_aula" aria-label="Grado y sección">' + aulas.map(function (a) {
+      return '<option value="' + textoSeguro(a.clave) + '"' + (a.clave === TD.aula ? ' selected' : '') + '>' + textoSeguro(a.nombre) + '</option>';
+    }).join('') + '</select>' : '') + '<button type="button" class="rn-curso td-curso' + (TD.curso === '' ? ' activo' : '') + '" data-curso="" style="--av-color:var(--tema-primario)"><b>' +
+    (porAula ? 'Todos los cursos' : 'Todos mis cursos') + '</b><span>' + deAula.length + (tareas ? ' tareas' : ' exámenes') + '</span></button>' + cursosAula.map(function (c) {
       var k = d.items.filter(function (x) { return +x.curso === +c.id; }).length;
       return '<button type="button" class="rn-curso td-curso' + (TD.curso === String(c.id) ? ' activo' : '') + '" data-curso="' + c.id + '" style="--av-color:' + Curso_Color(c.asignatura) + '">' +
         '<b>' + textoSeguro(TD_Titulo(c.asignatura)) + '</b><span>' + textoSeguro(TD_Aula(c)) + ' · ' + k + '</span></button>';

@@ -26,7 +26,6 @@ return [
         'controller/alumnos/controlador_buscar_global.php' => ['AUXILIAR', 'CONTADOR'],
         'controller/alumnos/controlador_ficha.php' => ['AUXILIAR', 'CONTADOR'],
         // asignatura_docente
-        'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR'],
         // asignaturas
         'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR'],
         // asistencia_docente
@@ -43,7 +42,7 @@ return [
         // enfermería y psicología: cada rol ve solo su tipo de atención (lo decide el controlador)
         'controller/salud/controlador_atenciones.php' => ['ENFERMERA', 'PSICOLOGA'],
         // tareas y exámenes de mis cursos (docente): listado por curso; guardar usa los controladores de tareas y exámenes
-        'controller/docente/controlador_trabajos.php' => ['DOCENTE'],
+        'controller/docente/controlador_trabajos.php' => ['AUXILIAR', 'DOCENTE'],
         // registro de notas por curso: el docente solo sus cursos (lo revisa el controlador)
         'controller/notas/controlador_registro_notas_curso.php' => ['DOCENTE'],
         // pantallas del estudiante: cada controlador usa solo la matrícula del estudiante en sesión
@@ -115,7 +114,6 @@ return [
         // empresa
         // examenes
         'controller/examenes/controlador_eliminar_examenes.php' => ['DOCENTE'],
-        'controller/examenes/controlador_listar_alumnos_examen.php' => ['AUXILIAR'],
         'controller/examenes/controlador_modificar_estado_examen.php' => ['DOCENTE'],
         'controller/examenes/controlador_modificar_examen.php' => ['DOCENTE'],
         'controller/examenes/controlador_registro_examenes.php' => ['DOCENTE'],
@@ -194,12 +192,7 @@ return [
         // tareas
         'controller/tareas/controlador_archivos_tarea.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_cargar_select_cursos_docente.php' => ['AUXILIAR'],
         'controller/tareas/controlador_eliminar_tarea.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/tareas/controlador_listar_tabla_envio_tareas.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas_filtro.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas_profesor_solo.php' => ['AUXILIAR'],
         'controller/tareas/controlador_modificar_estado_tarea.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_modificar_tareas.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_registro_calificacion.php' => ['AUXILIAR', 'DOCENTE'],

@@ -140,3 +140,17 @@ function AulaVirtual_Ir(curso) {
   window.AV_CURSO_INICIAL = curso;
   cargar_contenido('contenido_principal', 'aula_virtual/view_aula_virtual.php');
 }
+
+// Aula de un curso (nivel, grado y sección) como clave, y la lista de aulas distintas de una lista de cursos.
+// Las pantallas de la dirección muestran un selector de aula cuando hay muchos cursos.
+function Curso_Aula_Clave(c) { return [c.nivel, c.grado, c.seccion].join('|'); }
+function Cursos_Aulas(cursos) {
+  var vistas = {}, res = [];
+  cursos.forEach(function (c) {
+    var k = Curso_Aula_Clave(c);
+    if (vistas[k]) { return; }
+    vistas[k] = 1;
+    res.push({ clave: k, nombre: PanelComun.titulo(c.nivel) + ' · ' + PanelComun.titulo(c.grado) + (c.seccion && c.seccion !== 'UNICO' ? ' ' + c.seccion : '') });
+  });
+  return res;
+}

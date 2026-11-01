@@ -11,6 +11,10 @@ function RegistroNotas_Iniciar() {
   $(document).off('.rn');
   $(document).on('change.rn', '#rn_anio', function () { RegistroNotas_Ir({ anio: $(this).val(), curso: 0, periodo: 0 }); });
   $(document).on('click.rn', '.rn-curso', function () { RegistroNotas_Ir({ curso: $(this).data('curso') }); });
+  $(document).on('change.rn', '#rn_aula', function () {
+    var k = $(this).val(), c = RN.datos.cursos.filter(function (x) { return Curso_Aula_Clave(x) === k; })[0];
+    if (c) { RegistroNotas_Ir({ curso: c.id }); }
+  });
   $(document).on('click.rn', '.rn-periodo', function () { RegistroNotas_Ir({ periodo: $(this).data('periodo') }); });
   $(document).on('input.rn', '.rn-nota', function () { RegistroNotas_Cambio($(this)); });
   $(document).on('keydown.rn', '.rn-nota', RegistroNotas_Teclas);
@@ -38,7 +42,13 @@ function RegistroNotas_Cargar(params) {
     $('#rn_anio').html(d.anios.map(function (a) {
       return '<option value="' + a.id + '">Año ' + textoSeguro(a.anio) + (a.estado === 'ACTIVO' ? ' (actual)' : '') + '</option>';
     }).join('')).val(d.anio);
-    $('#rn_cursos').html(d.cursos.map(function (c) {
+    // Con muchos cursos (dirección) se elige primero el aula y se muestran solo sus cursos
+    var aulas = Cursos_Aulas(d.cursos), clave = d.curso ? Curso_Aula_Clave(d.curso) : '';
+    var porAula = aulas.length > 1 && d.cursos.length > 8;
+    var visibles = porAula ? d.cursos.filter(function (c) { return Curso_Aula_Clave(c) === clave; }) : d.cursos;
+    $('#rn_cursos').html((porAula ? '<select class="form-control rn-aula" id="rn_aula" aria-label="Grado y sección">' + aulas.map(function (a) {
+      return '<option value="' + textoSeguro(a.clave) + '"' + (a.clave === clave ? ' selected' : '') + '>' + textoSeguro(a.nombre) + '</option>';
+    }).join('') + '</select>' : '') + visibles.map(function (c) {
       return '<button type="button" class="rn-curso' + (d.curso && +d.curso.id === +c.id ? ' activo' : '') + '" data-curso="' + c.id + '" style="--av-color:' + Curso_Color(c.asignatura) + '">' +
         '<b>' + textoSeguro(RegistroNotas_Titulo(c.asignatura)) + '</b><span>' + textoSeguro(RegistroNotas_Aula(c)) + '</span></button>';
     }).join(''));

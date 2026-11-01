@@ -507,3 +507,4 @@
 @media (max-width: 767.98px) {
   .cb-cierre-caja { grid-template-columns: 1fr; }
 }
+.rn-aula { flex: none; width: auto; min-width: 220px; align-self: center; font-weight: 600; }

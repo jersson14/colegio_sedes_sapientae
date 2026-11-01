@@ -259,3 +259,34 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
 .small-box.rf-tarjeta.bg-warning h4 { color: #8a5a00; }
 .small-box.rf-tarjeta.bg-info h4 { color: #1a56c4; }
 .small-box.rf-tarjeta.bg-primary h4, .small-box.rf-tarjeta.tema-fondo h4 { color: var(--tema-primario); }
+
+/* ---------- Pantallas de catálogo (tablas de DataTables) con el estilo de las pantallas nuevas ---------- */
+/* Tarjetas: bordes suaves y sin sombra pesada */
+.content .card { border: 1px solid #e3e1dc; border-radius: 12px; box-shadow: none; }
+.content .card > .card-header { background: #fff; border-bottom: 1px solid #f0efeb; border-radius: 12px 12px 0 0; }
+.content .card > .card-header .card-title, .content .card > .card-header h3 { font-weight: 700; font-size: 1.05rem; }
+/* Encabezado de tabla claro, con una línea del color del colegio */
+thead.tabla-cabecera, thead.tabla-cabecera th { background-color: #f8f7f4 !important; color: #3c4043 !important; }
+thead.tabla-cabecera th { border-bottom: 2px solid var(--tema-primario) !important; border-top: 0 !important; font-size: .82rem; font-weight: 700; vertical-align: bottom; }
+table.dataTable tbody td { vertical-align: middle; }
+/* Botones de cada fila: con borde y fondo blanco (menos ruido visual en tablas largas) */
+table.dataTable td .btn { padding: .2rem .55rem; font-size: .8rem; border-radius: 8px; box-shadow: none; margin: 1px; }
+table.dataTable td .btn-danger { background: #fff; color: #b3261e; border-color: #f1b8b3; }
+table.dataTable td .btn-danger:hover { background: #fce8e6; color: #b3261e; }
+table.dataTable td .btn-success { background: #fff; color: #137333; border-color: #b7dfc2; }
+table.dataTable td .btn-success:hover { background: #e6f4ea; color: #137333; }
+table.dataTable td .btn-warning { background: #fff; color: #8a5a00; border-color: #f3d58c; }
+table.dataTable td .btn-warning:hover { background: #fef7e0; color: #8a5a00; }
+table.dataTable td .btn-info { background: #fff; color: #1a56c4; border-color: #b8cdf5; }
+table.dataTable td .btn-info:hover { background: #e8f0fe; color: #1a56c4; }
+table.dataTable td .btn-primary, table.dataTable td .btn-secondary, table.dataTable td .btn-dark {
+  background: #fff; color: var(--tema-primario); border-color: color-mix(in srgb, var(--tema-primario) 35%, #fff);
+}
+table.dataTable td .btn-primary:hover, table.dataTable td .btn-secondary:hover, table.dataTable td .btn-dark:hover { background: color-mix(in srgb, var(--tema-primario) 8%, #fff); }
+/* Botones de búsqueda de los filtros: el principal con el color del colegio, "Listar todo" con borde */
+.content .card-body .btn-danger:has(.fa-search) { background: var(--tema-primario); border-color: var(--tema-primario); color: var(--tema-primario-texto, #fff); }
+.content .card-body .btn-success:has(.fa-search) { background: #fff; border-color: var(--tema-primario); color: var(--tema-primario); }
+.content .card-body .btn-success:has(.fa-search):hover { background: color-mix(in srgb, var(--tema-primario) 8%, #fff); }
+/* Botones de exportar (Excel, PDF, Imprimir) */
+.dt-buttons .btn { background: #fff !important; border: 1px solid #dcd9d2 !important; color: #3c4043 !important; border-radius: 8px !important; }
+.dt-buttons .btn:hover { border-color: var(--tema-primario) !important; color: var(--tema-primario) !important; }

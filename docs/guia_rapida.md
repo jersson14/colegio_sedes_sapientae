@@ -145,6 +145,8 @@ En **Pagos realizados** se reimprime cualquier recibo o se **anula** con su moti
 
 ## Pantallas del docente
 
+La dirección usa las mismas pantallas de **Notas**, **Tareas** y **Exámenes** (y el auxiliar la de Tareas) con todos los cursos del colegio: arriba se elige primero el **grado y sección** y luego el curso.
+
 - **Notas de mis cursos:** arriba se elige el curso (cada uno con su color) y el bimestre. La planilla muestra a los estudiantes en filas y los criterios en columnas (C1, C2…; sus nombres completos están debajo). Escriba las notas como en una hoja de cálculo: **Enter** o **↓** bajan a la fila siguiente y las flechas mueven entre casillas. Una nota fuera de la escala se marca en rojo y no se guarda. El promedio se calcula al escribir. Las casillas cambiadas se ven en amarillo hasta pulsar **Guardar**; dejar una casilla vacía borra esa nota. El globito de cada casilla agrega una conclusión. Un bimestre finalizado (candado) solo se puede ver; para corregirlo hay que pedirlo a la dirección. Si el curso no tiene criterios, la dirección los registra en Criterios de evaluación.
 - **Tareas de mis cursos:** pestañas **Abiertas**, **Por revisar** (alguien entregó) y **Cerradas**, y un filtro por curso. Cada tarea muestra cuántos entregaron. **Nueva tarea** abre un formulario con curso, tema, indicaciones, fecha de entrega, archivos y enlaces de video. **Revisar y calificar** abre el Registro de tareas de ese curso. **Cerrar** deja de recibir entregas; **Eliminar** solo aparece si nadie entregó todavía.
 - **Exámenes de mis cursos:** pestañas **Próximos**, **Sin marcar como realizados** y **Realizados**. **Programar examen** pide curso, tema, descripción, fecha y hora.

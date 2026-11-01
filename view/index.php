@@ -253,7 +253,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_registro_notas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Notas</p>
                     </a>
@@ -271,7 +271,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" onclick="cargar_contenido('contenido_principal','examen/view_examen.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','docente/view_examenes_docente.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Exámenes</p>
                     </a>
@@ -291,7 +291,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','docente/view_tareas_docente.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Tareas</p>
                     </a>
@@ -773,7 +773,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','docente/view_tareas_docente.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>
                         Tareas
