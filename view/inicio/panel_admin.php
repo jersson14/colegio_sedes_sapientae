@@ -22,7 +22,7 @@ $e = function ($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); 
       <nav class="pi-accesos" aria-label="Accesos rápidos">
         <button type="button" onclick="cargar_contenido('contenido_principal','asistencia/view_registro_asistencia.php')"><i class="fas fa-clipboard-check"></i> Tomar asistencia</button>
         <button type="button" onclick="cargar_contenido('contenido_principal','matricula/view_matricula.php')"><i class="fas fa-user-plus"></i> Matricular</button>
-        <button type="button" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')"><i class="fas fa-cash-register"></i> Cobrar pensión</button>
+        <button type="button" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_caja.php')"><i class="fas fa-cash-register"></i> Cobrar pensión</button>
         <button type="button" onclick="cargar_contenido('contenido_principal','comunicado/view_comunicado.php')"><i class="fas fa-bullhorn"></i> Nuevo comunicado</button>
         <button type="button" onclick="cargar_contenido('contenido_principal','reportes/view_reporte_estudiantes.php')"><i class="fas fa-list-alt"></i> Reportes</button>
       </nav>

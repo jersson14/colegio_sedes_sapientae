@@ -435,3 +435,75 @@
   .cj-cobro { position: static; }
   .cj-cifras { margin-left: 0; width: 100%; justify-content: space-between; }
 }
+
+/* ---------- Ingresos y Gastos ---------- */
+.mv-grupos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
+.mv-grupos .pe-filtro { padding: 5px 12px; min-height: 34px; font-size: .82rem; }
+.mv-anulados { margin: 0 0 0 auto; font-size: .82rem; color: #6b6760; font-weight: 500; display: flex; gap: 6px; align-items: center; }
+.mv-dia { display: flex; justify-content: space-between; }
+.mv-movs { background: #fff; border: 1px solid #e3e1dc; border-radius: 12px; overflow: hidden; margin-bottom: 6px; }
+.mv-mov { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-top: 1px solid #f0efeb; }
+.mv-mov:first-child { border-top: 0; }
+.mv-mov.anulado { opacity: .55; }
+.mv-mov.anulado .mv-monto { text-decoration: line-through; }
+.mv-icono { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex: none; font-size: .9rem; }
+.mv-icono.ingreso { background: #e6f4ea; color: #137333; }
+.mv-icono.gasto { background: #fce8e6; color: #b3261e; }
+.mv-icono.cobro { background: #e8f0fe; color: #1a56c4; }
+.mv-cuerpo { flex: 1; min-width: 0; }
+.mv-cuerpo b { display: block; font-size: .95rem; }
+.mv-cuerpo small { color: #6b6760; font-size: .8rem; }
+.mv-cuerpo p { margin: 2px 0 0; font-size: .85rem; color: #3c4043; }
+.mv-monto { text-align: right; font-weight: 800; font-size: 1.05rem; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.mv-monto span { display: flex; gap: 4px; }
+.mv-monto .btn { font-weight: 400; }
+@media (max-width: 575.98px) {
+  .mv-mov { flex-wrap: wrap; }
+  .mv-monto { width: 100%; flex-direction: row; justify-content: space-between; }
+  .mv-anulados { margin-left: 0; }
+}
+
+/* ---------- Pensiones por nivel ---------- */
+.pn-nivel { background: #fff; border: 1px solid #e3e1dc; border-top: 5px solid var(--av-color); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+.pn-nivel header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; }
+.pn-nivel h2 { font-size: 1.2rem; font-weight: 700; margin: 0; }
+.pn-nivel header p { margin: 0; color: #6b6760; font-size: .85rem; }
+.pn-mes { text-align: left; background: #fff; border: 2px solid #e3e1dc; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.pn-mes:hover { border-color: var(--av-color); }
+.pn-mes b { font-size: .95rem; }
+.pn-mes strong { font-size: 1.15rem; }
+.pn-mes small { font-size: .75rem; color: #6b6760; }
+.pn-mes .av-chip { align-self: flex-start; margin-top: 4px; }
+.pn-mes.fuera { border-color: #f1b8b3; background: #fffafa; }
+
+/* ---------- Cajas y bancos ---------- */
+.cb-cuentas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: 8px; }
+.cb-total { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 12px; }
+.cb-total span { color: #6b6760; font-weight: 600; }
+.cb-total b { font-size: 1.4rem; }
+.cb-cuenta {
+  --cb-color: var(--tema-primario); text-align: left; background: #fff; border: 2px solid #e3e1dc; border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 2px; position: relative;
+}
+.cb-cuenta.cb-caja { --cb-color: #137333; } .cb-cuenta.cb-banco { --cb-color: #1a56c4; } .cb-cuenta.cb-billetera { --cb-color: #8430ce; }
+.cb-cuenta:hover { border-color: var(--cb-color); }
+.cb-cuenta.activa { border-color: var(--cb-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cb-color) 18%, transparent); }
+.cb-icono { position: absolute; top: 12px; right: 14px; width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--cb-color) 12%, #fff); color: var(--cb-color); }
+.cb-cuenta small { font-size: .74rem; color: #6b6760; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.cb-cuenta b { font-size: 1rem; padding-right: 44px; }
+.cb-cuenta strong { font-size: 1.5rem; font-weight: 800; margin: 2px 0; }
+.cb-hoy, .cb-cierre { font-size: .78rem; color: #6b6760; }
+.cb-hoy i { font-style: normal; font-weight: 700; }
+.cb-cuenta .av-chip { align-self: flex-start; margin-top: 4px; }
+.cb-concil { font-size: .75rem; font-weight: 500; color: #3c4043; display: flex; gap: 4px; align-items: center; margin: 0; }
+.cb-cierre-caja { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; background: #fff; border: 1px solid #e3e1dc; border-radius: 12px; padding: 16px 18px; }
+.cb-cuentas-cierre { list-style: none; padding: 0; margin: 0; }
+.cb-cuentas-cierre li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0efeb; }
+.cb-cuentas-cierre li span { color: #6b6760; }
+.cb-esperado { font-size: 1.15rem; border-bottom: 0 !important; }
+.cb-esperado span { color: #202124 !important; font-weight: 700; }
+.cb-diferencia { min-height: 1.6em; margin: 8px 0; font-size: 1.05rem; }
+@media (max-width: 767.98px) {
+  .cb-cierre-caja { grid-template-columns: 1fr; }
+}

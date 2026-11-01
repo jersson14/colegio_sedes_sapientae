@@ -20,14 +20,14 @@ check "controller/_pantallas.php coincide con el menú (regenerarlo con --genera
 
 echo "== Permisos por rol"
 check "solo la dirección entra" "403 403" "$(code MANUEL123 -d accion=listar $P) $(code MANUEL123 -d accion=listar $PA)"
-check "de fábrica: el auxiliar no ve pensiones, sí el reporte de estudiantes (pensiones se le puede dar)" "001 101" "$(celda pensiones/view_pensiones.php AUXILIAR) $(celda reportes/view_reporte_estudiantes.php AUXILIAR)"
+check "de fábrica: el auxiliar no ve pensiones, sí el reporte de estudiantes (pensiones se le puede dar)" "001 101" "$(celda pensiones/view_pensiones_nivel.php AUXILIAR) $(celda reportes/view_reporte_estudiantes.php AUXILIAR)"
 check "y sus controladores responden igual (400 = entra, faltan datos)" "403 400" "$(code MANUEL123 $PEN) $(code MANUEL123 $REP)"
-guardar AUXILIAR pensiones/view_pensiones.php 1 > /dev/null
+guardar AUXILIAR pensiones/view_pensiones_nivel.php 1 > /dev/null
 guardar AUXILIAR reportes/view_reporte_estudiantes.php 0 > /dev/null
-check "dar pensiones y quitar el reporte: queda marcado como cambio" "111 011" "$(celda pensiones/view_pensiones.php AUXILIAR) $(celda reportes/view_reporte_estudiantes.php AUXILIAR)"
+check "dar pensiones y quitar el reporte: queda marcado como cambio" "111 011" "$(celda pensiones/view_pensiones_nivel.php AUXILIAR) $(celda reportes/view_reporte_estudiantes.php AUXILIAR)"
 check "los controladores siguen el cambio" "200 403" "$(code MANUEL123 $PEN) $(code MANUEL123 $REP)"
 login MANUEL123
-check "menú del auxiliar: pensiones en MÁS PANTALLAS y el reporte oculto" "1 1" "$(grep -c "data-vista=\"pensiones/view_pensiones.php\"" $T/MANUEL123.html) $(grep -o 'PANTALLAS_QUITADAS = [^;]*' $T/MANUEL123.html | grep -c reporte_estudiantes)"
+check "menú del auxiliar: pensiones en MÁS PANTALLAS y el reporte oculto" "1 1" "$(grep -c "data-vista=\"pensiones/view_pensiones_nivel.php\"" $T/MANUEL123.html) $(grep -o 'PANTALLAS_QUITADAS = [^;]*' $T/MANUEL123.html | grep -c reporte_estudiantes)"
 check "lo que el auxiliar usa en su inicio no se pierde" "200" "$(code MANUEL123 $B/controller/panel/controlador_panel_rol.php)"
 check "el docente no se ve afectado" "403" "$(code JOSE $PEN)"
 check "pantallas críticas y propias de otro rol no se pueden dar" "400 400 400" "$(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_permisos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_respaldos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=DOCENTE&vista=estudiante/view_mis_pagos.php&permitido=1' $P)"

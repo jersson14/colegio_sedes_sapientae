@@ -363,13 +363,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
               <li class="nav-header menu-seccion">PENSIONES Y CAJA</li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_caja.php')" class="nav-link">
                   <i class="nav-icon fas fa-hand-holding-usd"></i>
                   <p>Cobrar pensión</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones_nivel.php')" class="nav-link">
                   <i class="nav-icon fas fa-file-invoice"></i>
                   <p>Pensiones</p>
                 </a>
@@ -381,13 +381,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_movimientos_ingresos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Ingresos</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
+                    <a href="#" onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_movimientos_gastos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Gastos</p>
                     </a>
@@ -401,7 +401,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cuentas.php')" class="nav-link">
                   <i class="nav-icon fas fa-cash-register"></i>
                   <p>Cajas y bancos</p>
                 </a>
@@ -587,7 +587,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','pensiones/view_pensiones_nivel.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Pensiones</p>
                     </a>
@@ -604,13 +604,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_ingresos.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_movimientos_ingresos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Ingresos</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_egresos.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','ingresos_y_egresos/view_movimientos_gastos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Gastos</p>
                     </a>
@@ -624,7 +624,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php')" class="nav-link">
+                <a href="#" onclick="cargar_contenido('contenido_principal','contabilidad/view_cuentas.php')" class="nav-link">
                   <i class="nav-icon fas fa-university"></i>
                   <p>Cajas y bancos</p>
                 </a>
@@ -1150,7 +1150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
         <div class="card">
           <div class="card-header"><h3 class="card-title"><i class="fas fa-university"></i> <b>Saldos de cajas y cuentas</b></h3>
-            <a href="#" class="float-right" onclick="cargar_contenido('contenido_principal','contabilidad/view_cajas_bancos.php');return false;">Ir a Cajas y bancos <i class="fas fa-arrow-circle-right"></i></a></div>
+            <a href="#" class="float-right" onclick="cargar_contenido('contenido_principal','contabilidad/view_cuentas.php');return false;">Ir a Cajas y bancos <i class="fas fa-arrow-circle-right"></i></a></div>
           <div class="card-body p-0">
             <table class="table table-sm table-striped mb-0">
               <thead><tr><th>Caja / cuenta</th><th>Tipo</th><th class="text-right">Entradas hoy</th><th class="text-right">Salidas hoy</th><th class="text-right">Saldo</th><th>Último cierre</th></tr></thead>

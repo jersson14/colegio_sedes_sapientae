@@ -107,9 +107,7 @@ return [
         // egresos
         'controller/egresos/controlador_anular_egreso.php' => ['CONTADOR'],
         'controller/egresos/controlador_cargar_select_indicadores_egresos.php' => ['CONTADOR'],
-        'controller/egresos/controlador_listar_diferencia.php' => ['CONTADOR'],
         'controller/egresos/controlador_listar_diferencia_filtro.php' => ['CONTADOR'],
-        'controller/egresos/controlador_listar_egresos_diversos.php' => ['CONTADOR'],
         'controller/egresos/controlador_listar_egresos_diversos_filtros.php' => ['CONTADOR'],
         'controller/egresos/controlador_modificar_egreso.php' => ['CONTADOR'],
         'controller/egresos/controlador_registrar_egreso.php' => ['CONTADOR'],
@@ -141,9 +139,7 @@ return [
         // ingresos
         'controller/ingresos/controlador_anular_ingreso.php' => ['CONTADOR'],
         'controller/ingresos/controlador_cargar_select_indicadores.php' => ['CONTADOR'],
-        'controller/ingresos/controlador_listar_ingresos_diversos.php' => ['CONTADOR'],
         'controller/ingresos/controlador_listar_ingresos_diversos_filtros.php' => ['CONTADOR'],
-        'controller/ingresos/controlador_listar_ingresos_pensiones.php' => ['CONTADOR'],
         'controller/ingresos/controlador_listar_ingresos_pensiones_filtros.php' => ['CONTADOR'],
         'controller/ingresos/controlador_modificar_ingreso.php' => ['CONTADOR'],
         'controller/ingresos/controlador_registrar_ingresos.php' => ['CONTADOR'],

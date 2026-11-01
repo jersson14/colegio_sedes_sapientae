@@ -236,3 +236,26 @@ body.layout-fixed .main-sidebar .sidebar { flex: 1 1 auto; min-height: 0; height
 /* Ventanas de SweetAlert con el color del colegio (los botones con color propio, como Eliminar, lo conservan) */
 .swal2-popup .swal2-styled.swal2-confirm { background-color: var(--tema-primario); }
 .swal2-popup .swal2-styled.swal2-confirm:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tema-primario) 35%, transparent); }
+
+/* ---------- Pantallas con pestañas y recuadros de AdminLTE (planilla, reportes, etc.) con el estilo de las pantallas nuevas ---------- */
+.card.card-outline-tabs { border: 1px solid #e3e1dc; border-top: 1px solid #e3e1dc; border-radius: 12px; box-shadow: none; }
+.card.card-outline-tabs > .card-header { background: transparent !important; border-bottom: 1px solid #e3e1dc !important; padding: 0 12px !important; }
+.card.card-outline-tabs > .card-header .nav-tabs { border: 0; gap: 4px; }
+.card.card-outline-tabs > .card-header .nav-link {
+  color: #5f6368 !important; font-weight: 600; border: 0 !important; border-bottom: 3px solid transparent !important; border-radius: 0 !important;
+  background: transparent !important; padding: 12px 14px; margin-bottom: -1px;
+}
+.card.card-outline-tabs > .card-header .nav-link:hover { color: var(--tema-primario) !important; }
+.card.card-outline-tabs > .card-header .nav-link.active { color: var(--tema-primario) !important; border-bottom-color: var(--tema-primario) !important; }
+.small-box.rf-tarjeta {
+  background: #fff !important; color: #202124 !important; border: 1px solid #e3e1dc; border-radius: 12px; box-shadow: none;
+}
+.small-box.rf-tarjeta .inner { padding: 12px 16px; }
+.small-box.rf-tarjeta .inner p { color: #6b6760; font-size: .82rem; font-weight: 600; margin: 0; order: -1; }
+.small-box.rf-tarjeta .inner { display: flex; flex-direction: column; }
+.small-box.rf-tarjeta h4 { font-size: 1.5rem; font-weight: 800; margin: 2px 0 0; }
+.small-box.rf-tarjeta.bg-success h4 { color: #137333; }
+.small-box.rf-tarjeta.bg-danger h4 { color: #b3261e; }
+.small-box.rf-tarjeta.bg-warning h4 { color: #8a5a00; }
+.small-box.rf-tarjeta.bg-info h4 { color: #1a56c4; }
+.small-box.rf-tarjeta.bg-primary h4, .small-box.rf-tarjeta.tema-fondo h4 { color: var(--tema-primario); }

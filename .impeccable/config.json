@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "css/tema.css"
+        ],
+        "createdAt": "2026-11-01T14:07:24.104Z",
+        "reason": "Claude: L245 is an underline tab indicator (border-bottom 3px) with border-radius: 0 !important, not a rounded card"
+      }
+    ]
+  }
+}

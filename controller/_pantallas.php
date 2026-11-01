@@ -324,30 +324,22 @@ return array (
         3 => 'controller/ayuda/controlador_ayuda.php',
       ),
     ),
-    'pago_pensiones/view_pago_pensiones.php' => 
+    'pago_pensiones/view_caja.php' => 
     array (
       'titulo' => 'Cobrar pensión',
       'seccion' => 'PENSIONES Y CAJA',
       'controladores' => 
       array (
-        0 => 'controller/asistencias/controlador_cargar_select_aula_id.php',
-        1 => 'controller/aulas/controlador_cargar_select_nivel.php',
-        2 => 'controller/matricula/controlador_cargar_select_año.php',
-        3 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
-        4 => 'controller/pago_pension/controlador_cargar_select_pension.php',
-        5 => 'controller/pago_pension/controlador_detalle_pago_pension.php',
-        6 => 'controller/pago_pension/controlador_eliminar_pago_pension.php',
-        7 => 'controller/pago_pension/controlador_listar_matriculas.php',
-        8 => 'controller/pago_pension/controlador_listar_matriculas_filtro.php',
-        9 => 'controller/pago_pension/controlador_listar_tabla_pagos.php',
-        10 => 'controller/pago_pension/controlador_modificar_pago_solo.php',
-        11 => 'controller/pago_pension/controlador_saldo_pension.php',
-        12 => 'view/MPDF/REPORTE/boleta_pago.php',
-        13 => 'view/MPDF/REPORTE/kardex.php',
-        14 => 'view/MPDF/REPORTE/recibo.php',
+        0 => 'controller/pago_pension/controlador_caja.php',
+        1 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
+        2 => 'controller/pago_pension/controlador_detalle_pago_pension.php',
+        3 => 'controller/pago_pension/controlador_eliminar_pago_pension.php',
+        4 => 'view/MPDF/REPORTE/boleta_pago.php',
+        5 => 'view/MPDF/REPORTE/kardex.php',
+        6 => 'view/MPDF/REPORTE/recibo.php',
       ),
     ),
-    'pensiones/view_pensiones.php' => 
+    'pensiones/view_pensiones_nivel.php' => 
     array (
       'titulo' => 'Pensiones',
       'seccion' => 'PENSIONES Y CAJA',
@@ -363,26 +355,23 @@ return array (
         7 => 'controller/pensiones/controlador_registro_pensiones.php',
       ),
     ),
-    'ingresos_y_egresos/view_ingresos.php' => 
+    'ingresos_y_egresos/view_movimientos_ingresos.php' => 
     array (
       'titulo' => 'Ingresos',
       'seccion' => 'PENSIONES Y CAJA',
       'controladores' => 
       array (
-        0 => 'controller/egresos/controlador_listar_diferencia.php',
-        1 => 'controller/egresos/controlador_listar_diferencia_filtro.php',
-        2 => 'controller/ingresos/controlador_anular_ingreso.php',
-        3 => 'controller/ingresos/controlador_cargar_select_indicadores.php',
-        4 => 'controller/ingresos/controlador_listar_ingresos_diversos.php',
-        5 => 'controller/ingresos/controlador_listar_ingresos_diversos_filtros.php',
-        6 => 'controller/ingresos/controlador_listar_ingresos_pensiones.php',
-        7 => 'controller/ingresos/controlador_listar_ingresos_pensiones_filtros.php',
-        8 => 'controller/ingresos/controlador_modificar_ingreso.php',
-        9 => 'controller/ingresos/controlador_registrar_ingresos.php',
-        10 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
+        0 => 'controller/egresos/controlador_listar_diferencia_filtro.php',
+        1 => 'controller/ingresos/controlador_anular_ingreso.php',
+        2 => 'controller/ingresos/controlador_cargar_select_indicadores.php',
+        3 => 'controller/ingresos/controlador_listar_ingresos_diversos_filtros.php',
+        4 => 'controller/ingresos/controlador_listar_ingresos_pensiones_filtros.php',
+        5 => 'controller/ingresos/controlador_modificar_ingreso.php',
+        6 => 'controller/ingresos/controlador_registrar_ingresos.php',
+        7 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
       ),
     ),
-    'ingresos_y_egresos/view_egresos.php' => 
+    'ingresos_y_egresos/view_movimientos_gastos.php' => 
     array (
       'titulo' => 'Gastos',
       'seccion' => 'PENSIONES Y CAJA',
@@ -390,14 +379,12 @@ return array (
       array (
         0 => 'controller/egresos/controlador_anular_egreso.php',
         1 => 'controller/egresos/controlador_cargar_select_indicadores_egresos.php',
-        2 => 'controller/egresos/controlador_listar_diferencia.php',
-        3 => 'controller/egresos/controlador_listar_diferencia_filtro.php',
-        4 => 'controller/egresos/controlador_listar_egresos_diversos.php',
-        5 => 'controller/egresos/controlador_listar_egresos_diversos_filtros.php',
-        6 => 'controller/egresos/controlador_modificar_egreso.php',
-        7 => 'controller/egresos/controlador_registrar_egreso.php',
-        8 => 'controller/egresos/controlador_ver_comprobante.php',
-        9 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
+        2 => 'controller/egresos/controlador_listar_diferencia_filtro.php',
+        3 => 'controller/egresos/controlador_listar_egresos_diversos_filtros.php',
+        4 => 'controller/egresos/controlador_modificar_egreso.php',
+        5 => 'controller/egresos/controlador_registrar_egreso.php',
+        6 => 'controller/egresos/controlador_ver_comprobante.php',
+        7 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
       ),
     ),
     'ingresos_y_egresos/view_indicadores.php' => 
@@ -413,7 +400,7 @@ return array (
         4 => 'controller/indicadores/controlador_registro_indicadores.php',
       ),
     ),
-    'contabilidad/view_cajas_bancos.php' => 
+    'contabilidad/view_cuentas.php' => 
     array (
       'titulo' => 'Cajas y bancos',
       'seccion' => 'PENSIONES Y CAJA',
@@ -766,21 +753,6 @@ return array (
         0 => 'controller/respaldos/controlador_respaldos.php',
       ),
     ),
-    'pago_pensiones/view_caja.php' => 
-    array (
-      'titulo' => 'Cobrar pensión',
-      'seccion' => 'CONTABILIDAD',
-      'controladores' => 
-      array (
-        0 => 'controller/pago_pension/controlador_caja.php',
-        1 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
-        2 => 'controller/pago_pension/controlador_detalle_pago_pension.php',
-        3 => 'controller/pago_pension/controlador_eliminar_pago_pension.php',
-        4 => 'view/MPDF/REPORTE/boleta_pago.php',
-        5 => 'view/MPDF/REPORTE/kardex.php',
-        6 => 'view/MPDF/REPORTE/recibo.php',
-      ),
-    ),
     'planilla/view_mis_boletas.php' => 
     array (
       'titulo' => 'Mis boletas de pago',
@@ -933,12 +905,12 @@ return array (
         15 => 'asistencia/view_registro_asistencia.php',
         16 => 'asistencia/view_asistencia_reportes.php',
         17 => 'asistencia_docente/view_asistencia_docente.php',
-        18 => 'pago_pensiones/view_pago_pensiones.php',
-        19 => 'pensiones/view_pensiones.php',
-        20 => 'ingresos_y_egresos/view_ingresos.php',
-        21 => 'ingresos_y_egresos/view_egresos.php',
+        18 => 'pago_pensiones/view_caja.php',
+        19 => 'pensiones/view_pensiones_nivel.php',
+        20 => 'ingresos_y_egresos/view_movimientos_ingresos.php',
+        21 => 'ingresos_y_egresos/view_movimientos_gastos.php',
         22 => 'ingresos_y_egresos/view_indicadores.php',
-        23 => 'contabilidad/view_cajas_bancos.php',
+        23 => 'contabilidad/view_cuentas.php',
         24 => 'reportes/view_reportes_financieros.php',
         25 => 'docentes/view_docentes.php',
         26 => 'personal_admin/view_personal_admin.php',
@@ -986,11 +958,11 @@ return array (
       'vistas' => 
       array (
         0 => 'pago_pensiones/view_caja.php',
-        1 => 'pensiones/view_pensiones.php',
-        2 => 'ingresos_y_egresos/view_ingresos.php',
-        3 => 'ingresos_y_egresos/view_egresos.php',
+        1 => 'pensiones/view_pensiones_nivel.php',
+        2 => 'ingresos_y_egresos/view_movimientos_ingresos.php',
+        3 => 'ingresos_y_egresos/view_movimientos_gastos.php',
         4 => 'ingresos_y_egresos/view_indicadores.php',
-        5 => 'contabilidad/view_cajas_bancos.php',
+        5 => 'contabilidad/view_cuentas.php',
         6 => 'planilla/view_planilla.php',
         7 => 'reportes/view_reportes_financieros.php',
         8 => 'reportes/view_reporte_estudiantes.php',

@@ -137,6 +137,12 @@ Al abrir un curso:
 
 En **Pagos realizados** se reimprime cualquier recibo o se **anula** con su motivo (no se borra: queda anulado). Para corregir un monto, anule el recibo y cobre de nuevo. El enlace **Kardex de pagos** baja el PDF del estudiante.
 
+## Ingresos, Gastos, Pensiones y Cajas y bancos
+
+- **Ingresos** y **Gastos:** arriba, el total del periodo y la diferencia entre ingresos y gastos. Fechas rápidas, filtro por categoría (con su total) y buscador. Los movimientos se agrupan por día. En Ingresos aparecen también los cobros hechos en Cobrar pensión (solo para ver). **Nuevo ingreso** o **Nuevo gasto** pide la categoría, el monto, la fecha, la forma de pago y la caja o cuenta; en los gastos también a quién se pagó, el número de comprobante y el comprobante escaneado. Cada movimiento se puede editar o **anular** con su motivo.
+- **Pensiones:** una sección por nivel con sus meses como tarjetas (precio, mora, vencimiento y pagos). Toque un mes para cambiarlo; si no tiene pagos, también se puede eliminar. **Generar cronograma** crea todos los meses de un nivel de una vez. Si algún vencimiento cae fuera del año escolar se marca en rojo, y **Revisar y ajustar** lo corrige.
+- **Cajas y bancos:** una tarjeta por caja o cuenta con su saldo. Debajo, sus **movimientos** (en los bancos se marca cada uno al aparecer en el extracto), el **cierre de caja** (escriba el efectivo contado y verá si cuadra, sobra o falta) y las **transferencias**. **Depositar o mover dinero** registra depósitos, retiros y movimientos entre cuentas.
+
 ## Pantallas del docente
 
 - **Notas de mis cursos:** arriba se elige el curso (cada uno con su color) y el bimestre. La planilla muestra a los estudiantes en filas y los criterios en columnas (C1, C2…; sus nombres completos están debajo). Escriba las notas como en una hoja de cálculo: **Enter** o **↓** bajan a la fila siguiente y las flechas mueven entre casillas. Una nota fuera de la escala se marca en rojo y no se guarda. El promedio se calcula al escribir. Las casillas cambiadas se ven en amarillo hasta pulsar **Guardar**; dejar una casilla vacía borra esa nota. El globito de cada casilla agrega una conclusión. Un bimestre finalizado (candado) solo se puede ver; para corregirlo hay que pedirlo a la dirección. Si el curso no tiene criterios, la dirección los registra en Criterios de evaluación.

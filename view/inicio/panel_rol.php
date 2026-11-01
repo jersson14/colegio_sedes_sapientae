@@ -23,8 +23,8 @@ $accesos = [
                    ['reportes/view_reporte_estudiantes.php', 'fa-list-alt', 'Reporte de estudiantes']],
     'ENFERMERA' => [['salud/view_enfermeria.php', 'fa-notes-medical', 'Atenciones de enfermería'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
     'PSICOLOGA' => [['salud/view_psicologia.php', 'fa-brain', 'Atenciones psicológicas'], ['planilla/view_mis_boletas.php', 'fa-money-check-alt', 'Mis boletas']],
-    'CONTADOR' => [['pago_pensiones/view_caja.php', 'fa-cash-register', 'Cobrar pensión'], ['ingresos_y_egresos/view_egresos.php', 'fa-file-invoice-dollar', 'Registrar gasto'],
-                   ['contabilidad/view_cajas_bancos.php', 'fa-university', 'Cajas y bancos'], ['planilla/view_planilla.php', 'fa-users-cog', 'Planilla'],
+    'CONTADOR' => [['pago_pensiones/view_caja.php', 'fa-cash-register', 'Cobrar pensión'], ['ingresos_y_egresos/view_movimientos_gastos.php', 'fa-file-invoice-dollar', 'Registrar gasto'],
+                   ['contabilidad/view_cuentas.php', 'fa-university', 'Cajas y bancos'], ['planilla/view_planilla.php', 'fa-users-cog', 'Planilla'],
                    ['reportes/view_reportes_financieros.php', 'fa-chart-line', 'Reportes']],
 ][$rol] ?? [];
 $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_Estudiante()'][$rol] ?? '';
