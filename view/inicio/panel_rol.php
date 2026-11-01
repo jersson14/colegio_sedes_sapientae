@@ -15,9 +15,9 @@ $accesos = [
     'DOCENTE' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Tomar asistencia'], ['tareas/view_tareas_profesor.php', 'fa-tasks', 'Tareas'],
                   ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'], ['notas/view_notas_profesor.php', 'fa-star-half-alt', 'Notas'],
                   ['examen/view_examen_profesor.php', 'fa-file-signature', 'Exámenes']],
-    'ESTUDIANTE' => [['tareas/view_tareas_estudiante.php', 'fa-tasks', 'Mis tareas'], ['notas/view_notas_estudiante.php', 'fa-star-half-alt', 'Mis notas'],
-                     ['horario/view_calendario.php', 'fa-clock', 'Mi horario'], ['asistencia/view_asistencia_reporte_estudiante.php', 'fa-calendar-check', 'Mi asistencia'],
-                     ['pago_pensiones/view_pago_pensiones_estudiante.php', 'fa-receipt', 'Mis pagos']],
+    'ESTUDIANTE' => [['estudiante/view_mis_tareas.php', 'fa-tasks', 'Mis tareas'], ['estudiante/view_mis_notas.php', 'fa-star-half-alt', 'Mis notas'],
+                     ['horario/view_calendario.php', 'fa-clock', 'Mi horario'], ['estudiante/view_mi_asistencia.php', 'fa-calendar-check', 'Mi asistencia'],
+                     ['estudiante/view_mis_pagos.php', 'fa-receipt', 'Mis pagos']],
     'AUXILIAR' => [['asistencia/view_registro_asistencia.php', 'fa-clipboard-check', 'Registro de asistencia'], ['asistencia_docente/view_asistencia_docente.php', 'fa-user-check', 'Asistencia docente'],
                    ['horario/view_horario.php', 'fa-clock', 'Horarios'], ['tareas/view_registro_tareas.php', 'fa-th', 'Registro de tareas'],
                    ['reportes/view_reporte_estudiantes.php', 'fa-list-alt', 'Reporte de estudiantes']],
@@ -82,7 +82,7 @@ $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_E
         </section>
         <?php } else { ?>
         <section class="pi-tarjeta">
-          <header><h2>Mi asistencia del mes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'asistencia/view_asistencia_reporte_estudiante.php\');return false;">Ver detalle <i class="fas fa-arrow-right"></i></a>'; ?></header>
+          <header><h2>Mi asistencia del mes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'estudiante/view_mi_asistencia.php\');return false;">Ver detalle <i class="fas fa-arrow-right"></i></a>'; ?></header>
           <div id="pr_asistencia"><p class="pi-tenue mb-0">Cargando…</p></div>
         </section>
         <?php } ?>
@@ -95,7 +95,7 @@ $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_E
             <header><h2>Tareas por calificar</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'tareas/view_registro_tareas.php\');return false;">Registro de tareas <i class="fas fa-arrow-right"></i></a>'; ?></header>
             <ul class="pi-pendientes" id="pr_tareas"><li class="pi-tenue">Cargando…</li></ul>
           <?php } else { ?>
-            <header><h2>Tareas pendientes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'tareas/view_tareas_estudiante.php\');return false;">Mis tareas <i class="fas fa-arrow-right"></i></a>'; ?></header>
+            <header><h2>Tareas pendientes</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'estudiante/view_mis_tareas.php\');return false;">Mis tareas <i class="fas fa-arrow-right"></i></a>'; ?></header>
             <ul class="pi-pendientes" id="pr_tareas"><li class="pi-tenue">Cargando…</li></ul>
           <?php } ?>
         </section>
@@ -111,7 +111,7 @@ $foto_js = ['DOCENTE' => 'editar_foto_docente()', 'ESTUDIANTE' => 'editar_foto_E
           <ul class="pi-pendientes" id="pr_notas"><li class="pi-tenue">Cargando…</li></ul>
         </section>
         <section class="pi-tarjeta">
-          <header><h2>Pensiones</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'pago_pensiones/view_pago_pensiones_estudiante.php\');return false;">Mis pagos <i class="fas fa-arrow-right"></i></a>'; ?></header>
+          <header><h2>Pensiones</h2><?php echo '<a href="#" onclick="cargar_contenido(\'contenido_principal\',\'estudiante/view_mis_pagos.php\');return false;">Mis pagos <i class="fas fa-arrow-right"></i></a>'; ?></header>
           <ul class="pi-pendientes" id="pr_pensiones"><li class="pi-tenue">Cargando…</li></ul>
         </section>
         <?php } ?>

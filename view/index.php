@@ -897,7 +897,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','estudiante/view_mis_notas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mis notas</p>
                     </a>
@@ -909,7 +909,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','tareas/view_tareas_estudiante.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','estudiante/view_mis_tareas.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mis tareas</p>
                     </a>
@@ -927,7 +927,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','asistencia/view_asistencia_reporte_estudiante.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','estudiante/view_mi_asistencia.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mi asistencia</p>
                     </a>
@@ -951,7 +951,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <ul class="nav nav-treeview">
 
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','estudiante/view_mis_pagos.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Mis pagos</p>
                     </a>
@@ -1449,8 +1449,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <nav class="barra-inferior" aria-label="Accesos principales">
     <a href="index.php" class="activo"><i class="fas fa-home"></i>Inicio</a>
     <a href="#" onclick="cargar_contenido('contenido_principal','aula_virtual/view_aula_virtual.php');Barra_Activa(this);return false;"><i class="fas fa-chalkboard"></i>Aula</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','notas/view_notas_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
-    <a href="#" onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones_estudiante.php');Barra_Activa(this);return false;"><i class="fas fa-receipt"></i>Pagos</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','estudiante/view_mis_notas.php');Barra_Activa(this);return false;"><i class="fas fa-star-half-alt"></i>Notas</a>
+    <a href="#" onclick="cargar_contenido('contenido_principal','estudiante/view_mis_pagos.php');Barra_Activa(this);return false;"><i class="fas fa-receipt"></i>Pagos</a>
     <a href="index.php?ir=avisos#avisos"><i class="fas fa-bullhorn"></i>Avisos</a>
   </nav>
 <?php } ?>
@@ -1638,7 +1638,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/panel_comun.js?rev=<?php echo time(); ?>"></script>
 <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?><script src="../js/panel_admin.js?rev=<?php echo time(); ?>"></script><?php } ?>
 <?php if ($_SESSION['S_ROL'] != "ADMINISTRADOR") { ?><script src="../js/panel_rol.js?rev=<?php echo time(); ?>"></script><?php } ?>
-<script src="../js/console_tareas_estudiantes.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_empresa.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_examen_profesor.js?rev=<?php echo time(); ?>"></script>
 <script src="../utilitario/DataTables/datatables.min.js"></script>

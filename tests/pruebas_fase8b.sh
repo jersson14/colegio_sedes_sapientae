@@ -4,8 +4,11 @@ source "$(dirname "$0")/lib.sh"
 P=$B/controller/planilla
 A=$B/controller/asistencia_docente
 saldo_caja() { q "call SP_SALDO_CUENTA(1, '9999-12-31', @s); select @s;"; }
-HOY=$(date +%Y-%m-%d); ANIO=$(date +%Y); MES=$((10#$(date +%m)))
-D1=$(date +%Y-%m-01); D2=$(date +%Y-%m-02); D3=$HOY
+HOY=$(date +%Y-%m-%d)
+# Mes de las pruebas: el actual, o el anterior si hoy es 1 o 2 (el día 2 aún sería futuro y se rechazaría)
+if [ $((10#$(date +%d))) -le 2 ]; then BASE=$(date -d "$(date +%Y-%m-01) -1 day" +%Y-%m-%d); else BASE=$HOY; fi
+ANIO=$(date -d "$BASE" +%Y); MES=$((10#$(date -d "$BASE" +%m)))
+D1=$(date -d "$BASE" +%Y-%m-01); D2=$(date -d "$BASE" +%Y-%m-02); D3=$BASE
 crear_contador
 EF=$(q "select id_metodo from metodos_pago where nombre='EFECTIVO'")
 TC=$(q "select id_tipo_contrato from tipos_contrato where nombre='TIEMPO COMPLETO'"); PH=$(q "select id_tipo_contrato from tipos_contrato where nombre='POR HORAS'")
@@ -49,7 +52,7 @@ check "generarla otra vez -> 2" "2" "$(post CONTA1 -d "anio=$ANIO&mes=$MES&tipo_
 DA=$(q "select id_detalle from planilla_detalle where id_planilla=$PA")
 
 echo "== Adelanto, aprobación y pago del personal administrativo"
-check "adelanto de 200 al auxiliar (se descuenta en su borrador: neto 1300)" "1 1300.00" "$(post CONTA1 -d "tipo_personal=ADMINISTRATIVO&docente=$AUX&monto=200&fecha=$HOY&metodo=$EF&cuenta=1" $P/controlador_adelanto_registrar.php | jq_ codigo) $(q "select neto from planilla_detalle where id_detalle=$DA")"
+check "adelanto de 200 al auxiliar (se descuenta en su borrador: neto 1300)" "1 1300.00" "$(post CONTA1 -d "tipo_personal=ADMINISTRATIVO&docente=$AUX&monto=200&fecha=$D3&metodo=$EF&cuenta=1" $P/controlador_adelanto_registrar.php | jq_ codigo) $(q "select neto from planilla_detalle where id_detalle=$DA")"
 check "la contadora NO aprueba; el administrador sí" "403 1" "$(code CONTA1 -d "id=$PA" $P/controlador_planilla_aprobar.php) $(post JERSSON123 -d "id=$PA" $P/controlador_planilla_aprobar.php | jq_ codigo)"
 check "pagar 1300 al auxiliar -> planilla PAGADA" "1 PAGADA" "$(post CONTA1 -d "id=$DA&monto=1300&metodo=$EF&cuenta=1&fecha=$HOY" $P/controlador_pagar.php | jq_ codigo) $(q "select estado from planillas where id_planilla=$PA")"
 check "egresos en 5.1.2 = 1500 y ninguno en 5.1.1" "1500.00 0" "$(q "select sum(e.monto) from egresos e join indicadores i on i.id_indicadores=e.id_indicador where i.codigo='5.1.2' and e.estado='VALIDO'") $(q "select count(*) from egresos e join indicadores i on i.id_indicadores=e.id_indicador where i.codigo='5.1.1' and e.estado='VALIDO'")"

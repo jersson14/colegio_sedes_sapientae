@@ -30,7 +30,7 @@ login MANUEL123
 check "menú del auxiliar: pensiones en MÁS PANTALLAS y el reporte oculto" "1 1" "$(grep -c "data-vista=\"pensiones/view_pensiones.php\"" $T/MANUEL123.html) $(grep -o 'PANTALLAS_QUITADAS = [^;]*' $T/MANUEL123.html | grep -c reporte_estudiantes)"
 check "lo que el auxiliar usa en su inicio no se pierde" "200" "$(code MANUEL123 $B/controller/panel/controlador_panel_rol.php)"
 check "el docente no se ve afectado" "403" "$(code JOSE $PEN)"
-check "pantallas críticas y propias de otro rol no se pueden dar" "400 400 400" "$(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_permisos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_respaldos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=DOCENTE&vista=pago_pensiones/view_pago_pensiones_estudiante.php&permitido=1' $P)"
+check "pantallas críticas y propias de otro rol no se pueden dar" "400 400 400" "$(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_permisos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=AUXILIAR&vista=configuracion/view_respaldos.php&permitido=1' $P) $(code JERSSON123 -d 'accion=guardar&rol=DOCENTE&vista=estudiante/view_mis_pagos.php&permitido=1' $P)"
 check "aunque se fuerce en la tabla, permisos no se abre a otro rol" "403" "$($M -e "insert into permisos_pantalla values ('AUXILIAR','configuracion/view_permisos.php',1,null,now())"; code MANUEL123 -d accion=listar $P)"
 guardar AUXILIAR reportes/view_reporte_estudiantes.php 1 > /dev/null
 check "volver a lo de fábrica borra el cambio" "101" "$(celda reportes/view_reporte_estudiantes.php AUXILIAR)"

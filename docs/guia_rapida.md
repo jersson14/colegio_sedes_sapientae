@@ -127,6 +127,15 @@ Al abrir un curso:
 - **Personas:** el docente y los estudiantes del aula (solo sus nombres).
 - **Calificaciones:** el estudiante ve el estado y la nota de cada tarea y su promedio.
 
+## Pantallas del estudiante
+
+Si el estudiante tiene más de un año, arriba elige cuál ver.
+
+- **Mis tareas:** pestañas **Por entregar** (agrupadas en vence hoy, mañana, esta semana o más adelante), **Atrasadas**, **Entregadas** y **Calificadas**, y un filtro por curso. **Entregar** abre una ventana para elegir los archivos; se puede cambiar la entrega hasta que el docente califique. En las calificadas se ve la nota y el comentario del docente.
+- **Mis notas:** promedio del año, puesto en el aula, cursos aprobados y asistencia. Las notas de cada curso por bimestre y del año; al tocar un curso se ven sus notas por criterio. **Descargar libreta** baja el PDF del bimestre elegido o del año.
+- **Mis pagos:** lo pagado en el año, lo vencido (con la mora) y el próximo pago. Cada mes con su estado (pagada, por pagar, vence pronto, vencida o exonerada) y la lista de pagos con su **recibo**. **Kardex de pagos** baja el PDF completo.
+- **Mi asistencia:** el porcentaje de asistencia, cuántos días hubo de cada marca y un calendario por mes con colores. Al lado, la lista de faltas y tardanzas con su observación.
+
 ## Calendario de horarios
 
 Menú: **Cursos y horarios → Calendario de horarios** (el estudiante: **Horario y asistencia → Mi horario**; el docente: **Mi horario**).

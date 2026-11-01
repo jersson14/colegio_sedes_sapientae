@@ -48,10 +48,10 @@ check "estado inválido: rechazado" "400" "$(code JERSSON123 -d "id=$JOSE_ID&est
 echo "== Reenvío de tareas (hasta que el docente califique o cierre)"
 login DANIEL20
 echo "mi tarea" > $T/mi_tarea.pdf
-check "NO reenvía una tarea ya calificada" "400" "$(code DANIEL20 -F iddetalle=46 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_modificar_tareas_estudiante.php)"
+check "NO reenvía una tarea ya calificada" "400" "$(code DANIEL20 -F iddetalle=46 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php)"
 check "(sigue calificada)" "CALIFICADO" "$(q 'select estado from detalle_tarea where id_detalle_tarea=46')"
 check "sí envía una tarea pendiente" "ENVIADO" "$(code DANIEL20 -F iddetalle=57 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php > /dev/null; q 'select estado from detalle_tarea where id_detalle_tarea=57')"
-check "y la puede reenviar mientras no esté calificada" "200" "$(code DANIEL20 -F iddetalle=57 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_modificar_tareas_estudiante.php)"
+check "y la puede reenviar mientras no esté calificada (el mismo controlador entrega y reenvía)" "200" "$(code DANIEL20 -F iddetalle=57 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php)"
 check "el docente la ve marcada fuera de plazo (entrega vencida)" "1" "$(post jorge -d id=T0000004 $B/controller/tareas/controlador_listar_tabla_envio_tareas.php | php -r '$d=json_decode(stream_get_contents(STDIN),true); foreach($d["data"] as $e){ if($e["id_detalle_tarea"]==57){ echo $e["fuera_plazo"]; } }')"
 q "update tareas set estado='FINALIZADO' where id_tarea='T0000006'" > /dev/null
 check "NO envía a una tarea que el docente cerró" "400" "$(code DANIEL20 -F iddetalle=68 -F "archivos[]=@$T/mi_tarea.pdf" $B/controller/tareas/controlador_registro_tareas_estudiante.php)"

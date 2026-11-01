@@ -14,7 +14,7 @@ echo "== Primer ingreso con la contraseña temporal"
 login DANIEL20 Temporal8x
 check "puede ingresar" "1" "$(grep -c 'Cree su contraseña' $T/DANIEL20.html)"
 check "el sistema solo muestra la pantalla de cambio" "0" "$(grep -c 'id=\"contenido_principal\"' $T/DANIEL20.html)"
-check "los demás controladores quedan bloqueados" "403" "$(code DANIEL20 -X POST $B/controller/asistencias/controlador_listar_alumnos_totales_estu.php)"
+check "los demás controladores quedan bloqueados" "403" "$(code DANIEL20 -X POST $B/controller/estudiante/controlador_mi_asistencia.php)"
 check "(con el motivo)" "1" "$(grep -c 'temporal' $T/out)"
 check "contraseña actual equivocada: rechazado" "400" "$(code DANIEL20 -d 'actual=otra&nueva=MiClave2026&confirmar=MiClave2026' $MC)"
 check "confirmación distinta: rechazado" "400" "$(code DANIEL20 -d 'actual=Temporal8x&nueva=MiClave2026&confirmar=MiClave2027' $MC)"
@@ -22,7 +22,7 @@ check "igual a la temporal: rechazado" "400" "$(code DANIEL20 -d 'actual=Tempora
 check "muy corta: rechazado" "400" "$(code DANIEL20 -d 'actual=Temporal8x&nueva=Corta1&confirmar=Corta1' $MC)"
 check "igual al usuario: rechazado" "400" "$(code DANIEL20 -d 'actual=Temporal8x&nueva=daniel20&confirmar=daniel20' $MC)"
 check "válida: cambiada y ya no es temporal" "true 0" "$(post DANIEL20 -d 'actual=Temporal8x&nueva=MiClave2026&confirmar=MiClave2026' $MC | jq_ ok) $(q "select debe_cambiar_clave from usuario where usu_id=$DID")"
-check "en la misma sesión ya puede usar el sistema" "200" "$(code DANIEL20 -X POST $B/controller/asistencias/controlador_listar_alumnos_totales_estu.php)"
+check "en la misma sesión ya puede usar el sistema" "200" "$(code DANIEL20 -X POST $B/controller/estudiante/controlador_mi_asistencia.php)"
 login DANIEL20 MiClave2026
 check "entra con la nueva contraseña al sistema completo" "1" "$(grep -c 'id=\"contenido_principal\"' $T/DANIEL20.html)"
 check "la temporal ya no sirve" "CREDENCIALES" "$(curl -s -c $T/x.jar -b $T/x.jar -o /dev/null $B/index.php; curl -s -c $T/x.jar -b $T/x.jar -d 'u=DANIEL20&c=Temporal8x' $B/controller/usuario/controlador_iniciar_sesion.php | jq_ motivo)"

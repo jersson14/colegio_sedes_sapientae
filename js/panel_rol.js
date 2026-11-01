@@ -71,7 +71,7 @@ window.PanelRol = (function () {
       $('#pr_tareas').html(d.tareas.map(function (t) {
         return item(+t.vencida ? 'pi-alerta' : 'pi-aviso', +t.vencida ? 'fa-exclamation' : 'fa-hourglass-half', textoSeguro(C.titulo(t.tema)),
           textoSeguro(C.titulo(t.curso)) + ' · ' + (+t.vencida ? 'venció ' : 'entrega ') + textoSeguro(cuando(t.entrega).toLowerCase()),
-          C.ir('tareas/view_tareas_estudiante.php', +t.vencida ? 'Enviar' : 'Ver'));
+          C.ir('estudiante/view_mis_tareas.php', +t.vencida ? 'Enviar' : 'Ver'));
       }).join(''));
     }
     examenes();

@@ -6,7 +6,7 @@ var AYUDA_SECCIONES = {
   'boletas/view_boletas.php': ['Libretas de notas'],
   'asistencia/view_registro_asistencia.php': ['Tomar asistencia: Registro de asistencia'],
   'tareas/view_registro_tareas.php': ['Revisar tareas: Registro de tareas'],
-  'tareas/view_tareas_estudiante.php': ['Envío de tareas: cuándo se puede reenviar'],
+  'estudiante/view_mis_tareas.php': ['Envío de tareas: cuándo se puede reenviar'],
   'reportes/view_reporte_estudiantes.php': ['Reporte de estudiantes a medida', 'Filtros y columnas en todas las listas'],
   'comunicado/view_comunicado.php': ['Comunicados: quién los leyó'],
   'avisos/view_avisos.php': ['Avisos a las familias'],

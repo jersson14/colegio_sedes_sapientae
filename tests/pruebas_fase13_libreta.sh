@@ -51,6 +51,6 @@ check "sin datos de una región fija en el PDF ni en el código" "0" "$(grep -rl
 
 echo "== Pantallas"
 check "Libretas de notas en el menú y su script" "1 1" "$(grep -c '<p>Libretas de notas</p>' $T/JERSSON123.html) $(curl -s -b $T/JERSSON123.jar $B/view/boletas/view_boletas.php | grep -c 'libretas.js')"
-check "el estudiante tiene el botón de su libreta" "1" "$(grep -c "class='libreta " $V/js/console_notas_estudiante.js)"
+check "el estudiante tiene el botón de su libreta (Mis notas)" "1" "$(grep -c "REPORTE/libreta.php?matricula=" $V/js/mi_portal.js)"
 check "ya no existen las boletas antiguas" "0 0 0" "$(ls $V/js/console_boletas.js $V/view/MPDF/REPORTE/notas_por_bimestre.php $V/view/MPDF/REPORTE/notas_general.php 2>/dev/null | wc -l) 0 0"
 terminar

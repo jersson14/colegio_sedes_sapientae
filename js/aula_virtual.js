@@ -12,7 +12,7 @@ function AulaVirtual_Aula(c) { return AulaVirtual_Titulo(c.grado) + (c.seccion &
 // "lun 3 nov, 23:59" (con el año si no es el actual)
 function AulaVirtual_Fecha(f, conHora) {
   if (!f) { return ''; }
-  var d = new Date(String(f).replace(' ', 'T'));
+  var d = new Date(String(f).length === 10 ? f + 'T00:00:00' : String(f).replace(' ', 'T'));   // fecha sola = hora local (en UTC caería el día anterior)
   if (isNaN(d)) { return textoSeguro(f); }
   var s = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'][d.getDay()] + ' ' + d.getDate() + ' ' + AV_MESES[d.getMonth()];
   if (d.getFullYear() !== new Date().getFullYear()) { s += ' ' + d.getFullYear(); }
@@ -47,8 +47,8 @@ function AulaVirtual_Iniciar() {
   $(document).on('keydown.av', '.av-tarjeta', function (e) { if (e.key === 'Enter') { $(this).trigger('click'); } });
   $(document).on('click.av', '#av_volver', AulaVirtual_Volver);
   $(document).on('click.av', '.av-pestanas .nav-link', function (e) { e.preventDefault(); AulaVirtual_Pestana($(this).data('pestana')); });
-  $(document).on('click.av', '.av-entregar', function () { AulaVirtual_Entrega(+$(this).data('i')); });
-  $(document).on('click.av', '#av_entrega_enviar', function () { AulaVirtual_Enviar(); });   // en js/aula_virtual_entrega.js (solo estudiantes)
+  // Entrega_Abrir está en js/entrega_tarea.js (la vista lo carga solo para estudiantes)
+  $(document).on('click.av', '.av-entregar', function () { Entrega_Abrir(AV.curso.tareas[+$(this).data('i')], function () { AulaVirtual_Abrir(AV.curso.curso.id, 'tablon'); }); });
   $(document).on('click.av', '.av-revisar', function () { window.RT_CURSO_INICIAL = AV.curso.curso.id; cargar_contenido('contenido_principal', 'tareas/view_registro_tareas.php'); });
   $(document).on('click.av', '.av-nueva', function () { cargar_contenido('contenido_principal', AulaVirtual_Rol() === 'DOCENTE' ? 'tareas/view_tareas_profesor.php' : 'tareas/view_tareas.php'); });
   $(document).on('click.av', '.av-calendario', function () { cargar_contenido('contenido_principal', 'horario/view_calendario.php'); });

@@ -10,7 +10,7 @@ echo "== Íconos y estilos"
 faltan=$(grep -rhoE "\bfa[srb]? fa-[a-z0-9-]+" view js --include=*.php --include=*.js | grep -v MPDF | awk '{print $2}' | sort -u | while read i; do grep -q "\.$i:before" $FA || echo $i; done | tr '\n' ' ')
 check "todos los íconos existen en Font Awesome 5 (sin nombres de la versión 6)" "" "$(echo $faltan)"
 check "un solo prefijo: sin 'fa fa-' de Font Awesome 4" "0" "$(grep -rlE '(^|[^a-z-])fa fa-' view js --include=*.php --include=*.js | grep -vc MPDF)"
-check "sin colores fijos en línea (solo los calculados: muestras de Apariencia, panel y color de cada curso)" "view/configuracion/view_apariencia.php js/panel_admin.js js/horario_calendario.js js/aula_virtual.js js/apariencia.js" "$(grep -rlE 'style="[^"]*(color|background)' view js --include=*.php --include=*.js | grep -v MPDF | sort -r | tr '\n' ' ' | sed 's/ $//')"
+check "sin colores fijos en línea (solo los calculados: muestras de Apariencia, panel y color de cada curso)" "view/configuracion/view_apariencia.php js/panel_admin.js js/mi_portal.js js/horario_calendario.js js/aula_virtual.js js/apariencia.js" "$(grep -rlE 'style="[^"]*(color|background)' view js --include=*.php --include=*.js | grep -v MPDF | sort -r | tr '\n' ' ' | sed 's/ $//')"
 check "el tema da color a las cabeceras de tabla y de ventana" "2" "$(grep -cE '^\.(tabla|ventana)-cabecera \{' css/tema.css)"
 check "sin fuentes heredadas (cooper, arial black)" "0" "$(grep -rliE 'cooper|arial black' view js css --include=*.php --include=*.js --include=*.css | grep -vc MPDF)"
 

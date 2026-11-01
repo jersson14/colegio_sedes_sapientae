@@ -1,6 +1,6 @@
 <?php require_once __DIR__ . '/../../utilitario/vista_segura.php'; ?>
 <script src="../js/aula_virtual.js?rev=<?php echo time(); ?>"></script>
-<?php if (rol_actual() === 'ESTUDIANTE') { ?><script src="../js/aula_virtual_entrega.js?rev=<?php echo time(); ?>"></script><?php } ?>
+<?php if (rol_actual() === 'ESTUDIANTE') { ?><script src="../js/entrega_tarea.js?rev=<?php echo time(); ?>"></script><?php } ?>
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -50,30 +50,6 @@
   </div>
 </div>
 
-<!-- Entregar una tarea (estudiante) -->
-<div class="modal fade" id="av_modal_entrega" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header ventana-cabecera">
-        <h5 class="modal-title text-white" id="av_entrega_titulo">Entregar tarea</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="av_entrega_id">
-        <p class="text-muted small mb-2" id="av_entrega_aviso"></p>
-        <div class="form-group mb-0">
-          <label for="av_entrega_archivos">Archivos de su trabajo <b class="text-danger">(*)</b></label>
-          <input type="file" class="form-control-file" id="av_entrega_archivos" multiple>
-          <small class="text-muted">Puede elegir varios archivos (fotos, PDF, Word…). Si vuelve a entregar, reemplazan a los anteriores.</small>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cerrar</button>
-        <button type="button" class="btn btn-success" id="av_entrega_enviar"><i class="fas fa-upload mr-1"></i>Entregar</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script>
   AulaVirtual_Iniciar();
 </script>

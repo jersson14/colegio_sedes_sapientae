@@ -62,5 +62,5 @@ check "aula virtual en el menú de dirección, auxiliar, docente y estudiante" "
 check "calendario de horarios en los cuatro; 'Mi horario' del estudiante (menú e inicio) es el calendario" "1 1 1 2 0" "$(for u in JERSSON123 MANUEL123 JOSE DANIEL20; do grep -c "cargar_contenido('contenido_principal','horario/view_calendario.php')\"" $T/$u.html; done | paste -sd' ') $(grep -c view_horario_edtudiante $T/DANIEL20.html)"
 check "en el celular, 'Aula' en la barra del estudiante y del docente" "1 1" "$(grep -c '<i class="fas fa-chalkboard"></i>Aula</a>' $T/DANIEL20.html) $(grep -c '<i class="fas fa-chalkboard"></i>Aula</a>' $T/JOSE.html)"
 check "el estudiante ya no usa los listados del horario viejo" "403" "$(code DANIEL20 $B/controller/horarios/controlador_listar_horarios_estudiante_todo.php)"
-check "la entrega de tareas solo se carga para el estudiante" "1 0" "$(curl -s -b $T/DANIEL20.jar $B/view/aula_virtual/view_aula_virtual.php | grep -c aula_virtual_entrega.js) $(curl -s -b $T/JOSE.jar $B/view/aula_virtual/view_aula_virtual.php | grep -c aula_virtual_entrega.js)"
+check "la entrega de tareas solo se carga para el estudiante" "1 0" "$(curl -s -b $T/DANIEL20.jar $B/view/aula_virtual/view_aula_virtual.php | grep -c entrega_tarea.js) $(curl -s -b $T/JOSE.jar $B/view/aula_virtual/view_aula_virtual.php | grep -c entrega_tarea.js)"
 terminar

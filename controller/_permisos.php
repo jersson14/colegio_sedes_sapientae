@@ -28,18 +28,21 @@ return [
         // asignatura_docente
         'controller/asignatura_docente/controlador_cargar_docente.php' => ['AUXILIAR', 'DOCENTE'],
         // asignaturas
-        'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        'controller/asignaturas/controlador_cargar_select_grado.php' => ['AUXILIAR', 'DOCENTE'],
         // asistencia_docente
         'controller/asistencia_docente/controlador_dia.php' => ['AUXILIAR'],
         'controller/asistencia_docente/controlador_guardar.php' => ['AUXILIAR'],
         'controller/asistencia_docente/controlador_resumen.php' => ['AUXILIAR'],
         // asistencias
-        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'ESTUDIANTE', 'PSICOLOGA'],
+        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ENFERMERA', 'PSICOLOGA'],
         'controller/asistencias/controlador_listar_alumnos_totales.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales_dia.php' => ['AUXILIAR'],
-        'controller/asistencias/controlador_listar_alumnos_totales_dia_estudiante.php' => ['ESTUDIANTE'],
-        'controller/asistencias/controlador_listar_alumnos_totales_estu.php' => ['ESTUDIANTE'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        // pantallas del estudiante: cada controlador usa solo la matrícula del estudiante en sesión
+        'controller/estudiante/controlador_mis_tareas.php' => ['ESTUDIANTE'],
+        'controller/estudiante/controlador_mis_notas.php' => ['ESTUDIANTE'],
+        'controller/estudiante/controlador_mis_pagos.php' => ['ESTUDIANTE'],
+        'controller/estudiante/controlador_mi_asistencia.php' => ['ESTUDIANTE'],
         // calendario de horarios y aula virtual: cada controlador limita lo que ve cada rol (su aula, sus cursos)
         'controller/horarios/controlador_calendario.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/aula_virtual/controlador_aula_virtual.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
@@ -112,7 +115,6 @@ return [
         // examenes
         'controller/examenes/controlador_eliminar_examenes.php' => ['DOCENTE'],
         'controller/examenes/controlador_listar_alumnos_examen.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/examenes/controlador_listar_examenes_estudiante_solo_pendiente.php' => ['ESTUDIANTE'],
         'controller/examenes/controlador_listar_examenes_profesor.php' => ['DOCENTE'],
         'controller/examenes/controlador_listar_examenes_profesor_solo.php' => ['DOCENTE'],
         'controller/examenes/controlador_modificar_estado_examen.php' => ['DOCENTE'],
@@ -145,19 +147,15 @@ return [
         'controller/ingresos/controlador_modificar_ingreso.php' => ['CONTADOR'],
         'controller/ingresos/controlador_registrar_ingresos.php' => ['CONTADOR'],
         // matricula
-        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/matricula/controlador_traernivel.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR', 'CONTADOR', 'DOCENTE'],
+        'controller/matricula/controlador_traernivel.php' => ['AUXILIAR', 'DOCENTE'],
         // nivel_academico
         // notas
-        'controller/notas/controlador_cargar_años_por_estudiante.php' => ['ESTUDIANTE'],
         'controller/notas/controlador_cargar_periodos.php' => ['DOCENTE'],
-        'controller/notas/controlador_cargar_periodos_cargados_estudiante.php' => ['DOCENTE', 'ESTUDIANTE'],
-        'controller/notas/controlador_cargar_select_grado_profesor.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/notas/controlador_listar_criterios_notas_mostrar_estudiante.php' => ['ESTUDIANTE'],
-        'controller/notas/controlador_listar_criterios_notas_mostrar_padres.php' => ['ESTUDIANTE'],
+        'controller/notas/controlador_cargar_periodos_cargados_estudiante.php' => ['DOCENTE'],
+        'controller/notas/controlador_cargar_select_grado_profesor.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/notas/controlador_listar_criterios_notas_mostrar_profesor.php' => ['DOCENTE'],
         'controller/notas/controlador_listar_criterios_notas_profesor.php' => ['DOCENTE'],
-        'controller/notas/controlador_listar_matriculas_filtro_alumnos.php' => ['ESTUDIANTE'],
         'controller/notas/controlador_listar_matriculas_filtro_profesor.php' => ['DOCENTE'],
         'controller/notas/controlador_registro_notas.php' => ['DOCENTE'],
         // pago_pension
@@ -166,11 +164,8 @@ return [
         'controller/pago_pension/controlador_detalle_pago_pension.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_eliminar_pago_pension.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_listar_matriculas.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_listar_matriculas_año_id.php' => ['ESTUDIANTE'],
         'controller/pago_pension/controlador_listar_matriculas_filtro.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_listar_matriculas_id.php' => ['ESTUDIANTE'],
-        'controller/pago_pension/controlador_listar_pension_todo.php' => ['ESTUDIANTE'],
-        'controller/pago_pension/controlador_listar_tabla_pagos.php' => ['CONTADOR', 'ESTUDIANTE'],
+        'controller/pago_pension/controlador_listar_tabla_pagos.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_modificar_pago_solo.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_saldo_pension.php' => ['CONTADOR'],
         // pensiones
@@ -213,22 +208,16 @@ return [
         'controller/reportes/controlador_resultados.php' => ['CONTADOR'],
         // tareas
         'controller/tareas/controlador_archivos_tarea.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_cargar_curso_id_detalle_estudiante.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        'controller/tareas/controlador_cargar_curso_id_detalle_profesor.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_cargar_select_cursos_docente.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/tareas/controlador_cargar_select_grado_estudiante.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
         'controller/tareas/controlador_eliminar_tarea.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_listar_tabla_envio_tareas.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_listar_tareas.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas_estudiante.php' => ['DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_listar_tareas_estudiante_solo.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_listar_tareas_estudiante_solo_pendiente.php' => ['ESTUDIANTE'],
         'controller/tareas/controlador_listar_tareas_filtro.php' => ['AUXILIAR'],
-        'controller/tareas/controlador_listar_tareas_profesor.php' => ['DOCENTE', 'ESTUDIANTE'],
-        'controller/tareas/controlador_listar_tareas_profesor_solo.php' => ['AUXILIAR', 'DOCENTE', 'ESTUDIANTE'],
+        'controller/tareas/controlador_listar_tareas_profesor.php' => ['DOCENTE'],
+        'controller/tareas/controlador_listar_tareas_profesor_solo.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_modificar_estado_tarea.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_modificar_tareas.php' => ['AUXILIAR', 'DOCENTE'],
-        'controller/tareas/controlador_modificar_tareas_estudiante.php' => ['ESTUDIANTE'],
         'controller/tareas/controlador_registro_calificacion.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_registro_tareas.php' => ['AUXILIAR', 'DOCENTE'],
         'controller/tareas/controlador_registro_tareas_estudiante.php' => ['ESTUDIANTE'],
