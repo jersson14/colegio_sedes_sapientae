@@ -766,6 +766,21 @@ return array (
         0 => 'controller/respaldos/controlador_respaldos.php',
       ),
     ),
+    'pago_pensiones/view_caja.php' => 
+    array (
+      'titulo' => 'Cobrar pensión',
+      'seccion' => 'CONTABILIDAD',
+      'controladores' => 
+      array (
+        0 => 'controller/pago_pension/controlador_caja.php',
+        1 => 'controller/pago_pension/controlador_cargar_formas_pago.php',
+        2 => 'controller/pago_pension/controlador_detalle_pago_pension.php',
+        3 => 'controller/pago_pension/controlador_eliminar_pago_pension.php',
+        4 => 'view/MPDF/REPORTE/boleta_pago.php',
+        5 => 'view/MPDF/REPORTE/kardex.php',
+        6 => 'view/MPDF/REPORTE/recibo.php',
+      ),
+    ),
     'planilla/view_mis_boletas.php' => 
     array (
       'titulo' => 'Mis boletas de pago',
@@ -970,7 +985,7 @@ return array (
     array (
       'vistas' => 
       array (
-        0 => 'pago_pensiones/view_pago_pensiones.php',
+        0 => 'pago_pensiones/view_caja.php',
         1 => 'pensiones/view_pensiones.php',
         2 => 'ingresos_y_egresos/view_ingresos.php',
         3 => 'ingresos_y_egresos/view_egresos.php',

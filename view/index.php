@@ -581,7 +581,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_pago_pensiones.php')" class="nav-link">
+                    <a onclick="cargar_contenido('contenido_principal','pago_pensiones/view_caja.php')" class="nav-link">
                       <i class="nav-icon far fa-circle"></i>
                       <p>Cobrar pensión</p>
                     </a>

@@ -34,10 +34,12 @@ return [
         'controller/asistencia_docente/controlador_guardar.php' => ['AUXILIAR'],
         'controller/asistencia_docente/controlador_resumen.php' => ['AUXILIAR'],
         // asistencias
-        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR', 'CONTADOR'],
+        'controller/asistencias/controlador_cargar_select_aula_id.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales.php' => ['AUXILIAR'],
         'controller/asistencias/controlador_listar_alumnos_totales_dia.php' => ['AUXILIAR'],
         // panel de inicio de cada rol (Fase 13): los datos son siempre los del usuario de la sesión
+        // caja (Cobrar pensión): buscar estudiante y estado de cuenta; cobrar usa el controlador de pagos de siempre
+        'controller/pago_pension/controlador_caja.php' => ['CONTADOR'],
         // enfermería y psicología: cada rol ve solo su tipo de atención (lo decide el controlador)
         'controller/salud/controlador_atenciones.php' => ['ENFERMERA', 'PSICOLOGA'],
         // tareas y exámenes de mis cursos (docente): listado por curso; guardar usa los controladores de tareas y exámenes
@@ -146,21 +148,15 @@ return [
         'controller/ingresos/controlador_modificar_ingreso.php' => ['CONTADOR'],
         'controller/ingresos/controlador_registrar_ingresos.php' => ['CONTADOR'],
         // matricula
-        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR', 'CONTADOR'],
+        'controller/matricula/controlador_cargar_select_año.php' => ['AUXILIAR'],
         'controller/matricula/controlador_traernivel.php' => ['AUXILIAR'],
         // nivel_academico
         // notas
         'controller/notas/controlador_cargar_select_grado_profesor.php' => ['AUXILIAR'],
         // pago_pension
         'controller/pago_pension/controlador_cargar_formas_pago.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_cargar_select_pension.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_detalle_pago_pension.php' => ['CONTADOR'],
         'controller/pago_pension/controlador_eliminar_pago_pension.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_listar_matriculas.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_listar_matriculas_filtro.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_listar_tabla_pagos.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_modificar_pago_solo.php' => ['CONTADOR'],
-        'controller/pago_pension/controlador_saldo_pension.php' => ['CONTADOR'],
         // pensiones
         'controller/pensiones/controlador_ajustar_vencimientos.php' => ['CONTADOR'],
         'controller/pensiones/controlador_anios_escolares.php' => ['CONTADOR'],

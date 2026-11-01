@@ -377,3 +377,61 @@
   .sa-motivos { position: static; order: -1; }
   .sa-buscar { max-width: none; width: 100%; }
 }
+
+/* ---------- Cobrar pensión (caja) ---------- */
+.cj-buscador { position: relative; margin-bottom: 16px; }
+.cj-buscador > i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9aa0a6; }
+.cj-buscador input { height: 52px; padding-left: 44px; font-size: 1.05rem; border-radius: 12px; }
+.cj-resultados {
+  position: absolute; z-index: 20; left: 0; right: 0; top: 56px; background: #fff; border: 1px solid #e3e1dc; border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .12); max-height: 360px; overflow: auto; padding: 6px;
+}
+.cj-resultado { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; border-radius: 8px; padding: 8px 10px; }
+.cj-resultado:hover, .cj-resultado:focus { background: #f6f5f2; }
+.cj-resultado small { display: block; color: #6b6760; font-size: .8rem; }
+.cj-cuerpo { display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: start; }
+.cj-estudiante { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; background: #fff; border: 1px solid #e3e1dc; border-radius: 12px; padding: 14px 18px; }
+.cj-estudiante > .av-avatar { width: 54px; height: 54px; font-size: 1.5rem; }
+.cj-estudiante h2 { font-size: 1.25rem; font-weight: 700; margin: 0; }
+.cj-estudiante p { margin: 0; color: #6b6760; font-size: .88rem; }
+.cj-cifras { margin-left: auto; display: flex; gap: 18px; }
+.cj-cifras span { display: flex; flex-direction: column; }
+.cj-cifras small { font-size: .72rem; color: #6b6760; font-weight: 600; }
+.cj-cifras b { font-size: 1.15rem; }
+.cj-meses { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.cj-mes, .cj-otro {
+  position: relative; text-align: left; background: #fff; border: 2px solid #e3e1dc; border-radius: 12px; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 2px; transition: border-color .12s, box-shadow .12s;
+}
+.cj-mes:hover:not(.cerrado), .cj-otro:hover:not(.cerrado) { border-color: var(--tema-primario); }
+.cj-mes b, .cj-otro b { font-size: .95rem; }
+.cj-mes strong, .cj-otro strong { font-size: 1.15rem; }
+.cj-mes small, .cj-otro small { font-size: .74rem; color: #6b6760; }
+.cj-mes .av-chip, .cj-otro .av-chip { align-self: flex-start; margin-top: 4px; }
+.cj-vencida { border-color: #f1b8b3; }
+.cj-mes.cerrado, .cj-otro.cerrado { background: #f6fbf7; cursor: default; opacity: .8; }
+.cj-check {
+  position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d6d3cc;
+  display: inline-flex; align-items: center; justify-content: center; color: transparent; font-size: .7rem;
+}
+.cerrado .cj-check { display: none; }
+.elegido { border-color: var(--tema-primario) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--tema-primario) 18%, transparent); }
+.elegido .cj-check { background: var(--tema-primario); border-color: var(--tema-primario); color: #fff; }
+.cj-cobro { background: #fff; border: 1px solid #e3e1dc; border-radius: 12px; padding: 14px 16px; position: sticky; top: 70px; }
+.cj-cobro h4 { font-size: 1.05rem; font-weight: 700; }
+.cj-cobro h5 { font-size: .9rem; font-weight: 700; margin: 12px 0 6px; }
+.cj-linea { border-bottom: 1px solid #f0efeb; padding: 8px 0; display: flex; flex-direction: column; gap: 4px; }
+.cj-linea-cab { display: flex; justify-content: space-between; align-items: center; }
+.cj-quitar { border: 0; background: none; color: #9aa0a6; padding: 2px 6px; border-radius: 6px; }
+.cj-quitar:hover { color: #b3261e; background: #fce8e6; }
+.cj-exo { font-size: .82rem; margin: 2px 0 0; display: flex; gap: 6px; align-items: center; font-weight: 500; }
+.cj-total { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 4px; }
+.cj-total b { font-size: 1.6rem; font-weight: 800; }
+.cj-fp { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.cj-fp-fila { display: flex; gap: 6px; }
+.cj-fp-fila .cj-fp-monto { max-width: 100px; }
+@media (max-width: 991.98px) {
+  .cj-cuerpo { grid-template-columns: 1fr; }
+  .cj-cobro { position: static; }
+  .cj-cifras { margin-left: 0; width: 100%; justify-content: space-between; }
+}

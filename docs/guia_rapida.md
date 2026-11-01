@@ -127,6 +127,16 @@ Al abrir un curso:
 - **Personas:** el docente y los estudiantes del aula (solo sus nombres).
 - **Calificaciones:** el estudiante ve el estado y la nota de cada tarea y su promedio.
 
+## Cobrar pensión (contador)
+
+1. Escriba el nombre, apellido o DNI del estudiante y elíjalo. La lista ya muestra si tiene deuda vencida.
+2. Arriba se ve lo vencido, lo que falta pagar en el año y lo pagado. Debajo, una tarjeta por mes (las vencidas con borde rojo) y los otros conceptos (matrícula, admisión, alumno nuevo) con lo que falta pagar de cada uno.
+3. Toque los meses o conceptos que paga. A la derecha se arma el cobro: el monto se puede bajar si paga una parte, y en los meses con mora se puede **exonerar la mora** escribiendo el motivo.
+4. Elija la forma de pago; la caja o cuenta se sugiere sola. Si paga con dos formas (por ejemplo, parte en efectivo y parte por transferencia), use **Pagar con otra forma más** y reparta los montos. Las tarjetas y transferencias piden el número de operación.
+5. **Cobrar** registra el pago y ofrece imprimir el recibo.
+
+En **Pagos realizados** se reimprime cualquier recibo o se **anula** con su motivo (no se borra: queda anulado). Para corregir un monto, anule el recibo y cobre de nuevo. El enlace **Kardex de pagos** baja el PDF del estudiante.
+
 ## Pantallas del docente
 
 - **Notas de mis cursos:** arriba se elige el curso (cada uno con su color) y el bimestre. La planilla muestra a los estudiantes en filas y los criterios en columnas (C1, C2…; sus nombres completos están debajo). Escriba las notas como en una hoja de cálculo: **Enter** o **↓** bajan a la fila siguiente y las flechas mueven entre casillas. Una nota fuera de la escala se marca en rojo y no se guarda. El promedio se calcula al escribir. Las casillas cambiadas se ven en amarillo hasta pulsar **Guardar**; dejar una casilla vacía borra esa nota. El globito de cada casilla agrega una conclusión. Un bimestre finalizado (candado) solo se puede ver; para corregirlo hay que pedirlo a la dirección. Si el curso no tiene criterios, la dirección los registra en Criterios de evaluación.

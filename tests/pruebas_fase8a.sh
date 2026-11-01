@@ -37,7 +37,7 @@ check "día 31 en febrero = último día (2028 bisiesto)" "2028-02-29" "$(q "sel
 check "el docente no genera pensiones" "403" "$(code JOSE -d "anio=$A27&nivel=1&desde=3&hasta=4&dia=0&precio=1" $P/controlador_generar_pensiones.php)"
 
 echo "== Cobro y morosidad solo con las pensiones del año de la matrícula"
-check "el selector de la matrícula 40 (año 5) no muestra las de 2027" "10" "$(post CONTA1 -d "id_matri=40" $B/controller/pago_pension/controlador_cargar_select_pension.php | php -r 'echo count(json_decode(stream_get_contents(STDIN),true));')"
+check "la caja de la matrícula 40 (año 5) no muestra las pensiones de 2027" "10" "$(post CONTA1 -d "accion=estado&matricula=40" $B/controller/pago_pension/controlador_caja.php | php -r 'echo count(json_decode(stream_get_contents(STDIN),true)["pensiones"]);')"
 check "la vista de estado sigue con 150 filas" "150" "$(q "select count(*) from vw_estado_pensiones")"
 P27=$(q "select id_pensiones from pensiones where id_anio=$A27 and id_nivel_academico=1 and mes='MARZO'")
 EF=$(q "select id_metodo from metodos_pago where nombre='EFECTIVO'")
