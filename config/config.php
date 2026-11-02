@@ -22,7 +22,7 @@ $config = [
     'video_max_mb' => 100,
     // Demostración pública (utilitario/demo.php): esconde usuarios, roles y configuración y no deja cambiar contraseñas.
     // En la rama "venta" va en false.
-    'modo_demo' => true,
+    'modo_demo' => false,
 ];
 
 if (file_exists(__DIR__ . '/config.local.php')) {
