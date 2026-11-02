@@ -15,6 +15,7 @@ const DEMO_VISTAS_BLOQUEADAS = [
     'configuracion/view_parametros.php',
     'configuracion/view_regional.php',
     'configuracion/view_apariencia.php',
+    'configuracion/view_pagina_web.php',
     'configuracion/view_formas_pago.php',
     'configuracion/view_auditoria.php',
     'configuracion/view_respaldos.php',

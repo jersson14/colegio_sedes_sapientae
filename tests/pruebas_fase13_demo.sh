@@ -14,7 +14,7 @@ check "lo que comparten otras pantallas sigue libre (ayuda, listar estudiantes, 
 
 echo "== Dónde se aplica"
 check "la seguridad de los controladores y de las pantallas lo revisan" "1 1" "$(grep -c 'demo_controlador_bloqueado(\$ruta)' $R/controller/_seguridad.php) $(grep -c 'demo_vista_bloqueada(\$__vista)' $R/utilitario/vista_segura.php)"
-check "el menú esconde las 12 pantallas (13 enlaces) y el cambio de contraseña" "13 2" "$(grep -c "<?php if (!demo_vista_bloqueada(" $R/view/index.php) $(grep -c '<?php if (!modo_demo()) { ?>' $R/view/index.php)"
+check "el menú esconde las 13 pantallas (14 enlaces) y el cambio de contraseña" "14 2" "$(grep -c "<?php if (!demo_vista_bloqueada(" $R/view/index.php) $(grep -c '<?php if (!modo_demo()) { ?>' $R/view/index.php)"
 check "con 'modo_demo' en false (pruebas y rama venta) todo se ve: Usuarios en el menú y su lista responde" "1 200" "$(grep -c "'usuario/view_usuario.php')\" class=\"nav-link\"" $T/JERSSON123.html) $(code JERSSON123 -X POST $B/controller/usuario/controlador_listar_usuario.php)"
 check "los usuarios de prueba del ingreso existen en la demo y solo se muestran con el modo demo" "9 0" "$(D 'echo count(DEMO_USUARIOS);') $(curl -s $B/index.php | grep -c 'ing-demo-usuario\"')"
 check "el generador de la demo crea esos usuarios" "1 1 1" "$(grep -c "'DIRECCION', 9, 'ADMINISTRADOR'" $R/scripts/demo/generar_demo.php) $(grep -c "'CONTADOR', 11, 'CONTADOR'" $R/scripts/demo/generar_demo.php) $(grep -c "const CLAVE = 'Colegio2026'" $R/scripts/demo/generar_demo.php)"

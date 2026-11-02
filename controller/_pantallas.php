@@ -690,6 +690,16 @@ return array (
         1 => 'controller/empresa/controlador_listar_empresa.php',
       ),
     ),
+    'configuracion/view_pagina_web.php' => 
+    array (
+      'titulo' => 'Página web',
+      'seccion' => 'CONFIGURACIÓN',
+      'controladores' => 
+      array (
+        0 => 'controller/ayuda/controlador_ayuda.php',
+        1 => 'controller/configuracion/controlador_pagina_web.php',
+      ),
+    ),
     'configuracion/view_permisos.php' => 
     array (
       'titulo' => 'Permisos por rol',
@@ -858,10 +868,11 @@ return array (
         42 => 'configuracion/view_formas_pago.php',
         43 => 'configuracion/view_regional.php',
         44 => 'configuracion/view_apariencia.php',
-        45 => 'configuracion/view_permisos.php',
-        46 => 'configuracion/view_parametros.php',
-        47 => 'configuracion/view_auditoria.php',
-        48 => 'configuracion/view_respaldos.php',
+        45 => 'configuracion/view_pagina_web.php',
+        46 => 'configuracion/view_permisos.php',
+        47 => 'configuracion/view_parametros.php',
+        48 => 'configuracion/view_auditoria.php',
+        49 => 'configuracion/view_respaldos.php',
       ),
       'indice' => 
       array (

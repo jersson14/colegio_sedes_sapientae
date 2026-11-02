@@ -557,6 +557,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <?php } ?>
+              <?php if (!demo_vista_bloqueada('configuracion/view_pagina_web.php')) { ?>
+              <li class="nav-item">
+                <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_pagina_web.php')" class="nav-link">
+                  <i class="nav-icon fas fa-globe"></i>
+                  <p>Página web</p>
+                </a>
+              </li>
+              <?php } ?>
               <?php if (!demo_vista_bloqueada('configuracion/view_permisos.php')) { ?>
               <li class="nav-item">
                 <a href="#" onclick="cargar_contenido('contenido_principal','configuracion/view_permisos.php')" class="nav-link">

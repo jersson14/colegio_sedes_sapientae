@@ -246,6 +246,19 @@ Menú: **Configuración → Parámetros del sistema**.
 
 **Valores de fábrica** vuelve a los originales (hay que pulsar Guardar).
 
+## Página web del colegio (solo administrador)
+
+Al entrar a la dirección del sistema, las familias ven primero la **página pública** del colegio. Su botón **Ingresar al Sistema** lleva al ingreso. Desde **Configuración → Página web** se cambia lo que muestra:
+
+- **Portada:** saludo, título, etiqueta, frase y la foto grande. Lo ideal es una foto horizontal de buena calidad, de hasta 5 MB.
+- **Cifras:** los cuatro números destacados, como años de experiencia o estudiantes. Una cifra con el texto vacío no se muestra.
+- **Nuestra institución:** presentación (una línea en blanco separa los párrafos), puntos destacados (uno por línea) y una foto.
+- **Niveles educativos:** cada nivel se puede mostrar u ocultar y marcar como destacado. Los niveles ocultos tampoco aparecen en el formulario de contacto.
+- **Valores:** hasta seis. Si todos quedan sin título, la sección no aparece.
+- **Contacto y redes:** dirección, teléfono, correo, horario, WhatsApp (muestra un botón flotante) y enlaces de Facebook, Instagram, TikTok y YouTube. Lo que quede vacío no se muestra.
+
+El nombre, el escudo y los colores de la página son los de **Configuración → Apariencia**. Las consultas del formulario **Solicitar información** llegan a **Solicitudes**. En la versión de demostración esta pantalla está deshabilitada.
+
 ## Respaldos (solo administrador)
 
 Menú: **Configuración → Respaldos**.

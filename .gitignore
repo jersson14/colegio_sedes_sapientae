@@ -30,3 +30,6 @@ tests/tmp/
 # Material de apoyo del aula virtual
 controller/aula_virtual/material/*
 !controller/aula_virtual/material/.htaccess
+# Fotos que sube el colegio para su página web
+img/web/*
+!img/web/.htaccess

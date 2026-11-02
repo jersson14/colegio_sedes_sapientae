@@ -1,7 +1,7 @@
 Options -Indexes
 
 # Al entrar al sitio se abre la página pública del colegio; su botón "Ingresar al Sistema" lleva al login (index.php)
-DirectoryIndex landing.html index.php
+DirectoryIndex landing.php index.php
 
 # Archivos internos que nunca se sirven por la web (Fase 9): respaldos y scripts SQL, documentación,
 # scripts, logs, dependencias y el repositorio git (código e historial)
