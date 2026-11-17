@@ -81,7 +81,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
           <?php if (modo_demo()) { ?>
-            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="Algunas opciones de configuración están deshabilitadas"><i class="fas fa-flask mr-1"></i>Versión de demostración</span></li>
+            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="<?php echo demo_restringido() ? 'Algunas opciones de configuración están deshabilitadas' : 'Superadministrador: todo habilitado'; ?>"><i class="fas fa-flask mr-1"></i>Versión de demostración<?php echo demo_restringido() ? '' : ' · superadministrador'; ?></span></li>
           <?php } ?>
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown" style="text-align:justify;">
@@ -102,7 +102,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <?php if (!modo_demo()) { ?>
+              <?php if (!demo_restringido()) { ?>
               <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
                 <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
               </a>
@@ -141,7 +141,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
           <?php if (modo_demo()) { ?>
-            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="Algunas opciones de configuración están deshabilitadas"><i class="fas fa-flask mr-1"></i>Versión de demostración</span></li>
+            <li class="nav-item d-none d-md-flex align-items-center mr-2"><span class="badge badge-warning px-2 py-1" title="<?php echo demo_restringido() ? 'Algunas opciones de configuración están deshabilitadas' : 'Superadministrador: todo habilitado'; ?>"><i class="fas fa-flask mr-1"></i>Versión de demostración<?php echo demo_restringido() ? '' : ' · superadministrador'; ?></span></li>
           <?php } ?>
           <!-- Notifications Dropdown Menu -->
           <li class="nav-item dropdown" style="text-align:justify;">
@@ -165,7 +165,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="fas fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <?php if (!modo_demo()) { ?>
+              <?php if (!demo_restringido()) { ?>
               <a href="#" class="dropdown-item" onclick="Cuenta.abrir();return false;">
                 <i class="fas fa-key mr-2"></i>Cambiar mi contraseña
               </a>
@@ -1674,6 +1674,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="../js/console_matriculas.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_usuario.js?rev=<?php echo time(); ?>"></script>
 <script src="../js/console_tareas_profesor.js?rev=<?php echo time(); ?>"></script>
+<script>window.DEMO_RESTRINGIDO = <?php echo demo_restringido() ? 'true' : 'false'; ?>;</script>
 <script src="../js/panel_comun.js?rev=<?php echo time(); ?>"></script>
 <?php if ($_SESSION['S_ROL'] == "ADMINISTRADOR") { ?><script src="../js/panel_admin.js?rev=<?php echo time(); ?>"></script><?php } ?>
 <?php if ($_SESSION['S_ROL'] != "ADMINISTRADOR") { ?><script src="../js/panel_rol.js?rev=<?php echo time(); ?>"></script><?php } ?>

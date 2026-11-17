@@ -118,6 +118,22 @@ function Comunicado_Abrir(id, el) {
 
 // Enlace de WhatsApp con el mensaje ya escrito (se abre en el teléfono o en WhatsApp Web; lo envía la persona).
 // Agrega el prefijo del país configurado si el número no lo trae. Devuelve '' si el número no sirve.
+// Versión de demostración: los celulares de la demo son inventados y pueden ser de personas reales, así que ningún
+// enlace de WhatsApp se abre (ni se marca el aviso como enviado): se muestra el mensaje que se habría enviado.
+// Va en la fase de captura para adelantarse a los demás manejadores del clic.
+if (typeof document !== 'undefined') document.addEventListener('click', function (e) {
+  if (!window.DEMO_RESTRINGIDO || !e.target.closest) { return; }
+  var a = e.target.closest('a[href^="https://wa.me/"]');
+  if (!a) { return; }
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  var texto = '';
+  try { texto = new URL(a.href).searchParams.get('text') || ''; } catch (x) {}
+  Swal.fire({ icon: 'info', title: 'WhatsApp deshabilitado en la demo',
+    html: '<p>En la versión completa se abre WhatsApp con este mensaje ya escrito, listo para enviarlo a la familia:</p>'
+      + '<div style="text-align:left;white-space:pre-wrap;background:#F6F5F2;border:1px solid #E6E3DE;border-radius:8px;padding:10px 12px;font-size:.92rem">' + textoSeguro(texto) + '</div>' });
+}, true);
+
 function Aviso_WhatsApp_Url(celular, texto) {
   var d = String(celular || '').replace(/\D/g, '');
   if (d.length < 6) { return ''; }

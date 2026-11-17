@@ -57,6 +57,18 @@ function tema_texto_sobre($fondo) {
     return tema_contraste($fondo, '#FFFFFF') >= tema_contraste($fondo, '#1A1A1A') ? '#FFFFFF' : '#1A1A1A';
 }
 
+/**
+ * Escudo del colegio: la ruta guardada solo si el archivo existe en este servidor (las imágenes subidas no viajan con git);
+ * si no, el escudo de fábrica img/logo1.png, para que el ingreso, el menú y los PDF nunca muestren una imagen rota.
+ */
+function tema_logo($ruta) {
+    $ruta = (string) $ruta;
+    if ($ruta !== '' && substr($ruta, -1) !== '/' && is_file(__DIR__ . '/../' . $ruta)) {
+        return $ruta;
+    }
+    return is_file(__DIR__ . '/../img/logo1.png') ? 'img/logo1.png' : '';
+}
+
 /** Datos de apariencia del colegio (con valores por defecto si aún no se configuró). */
 function tema_actual() {
     static $tema = null;
@@ -75,7 +87,7 @@ function tema_actual() {
     $tema = [
         'nombre' => $fila['emp_razon'] ?? '',
         'lema' => $fila['lema'] ?? '',
-        'logo' => $fila['emp_logo'] ?? '',
+        'logo' => tema_logo($fila['emp_logo'] ?? ''),
         'estilo_menu' => in_array($fila['estilo_menu'] ?? '', ['COLOR', 'OSCURO', 'CLARO'], true) ? $fila['estilo_menu'] : TEMA_DEFECTO['estilo_menu'],
         'primario' => $p,
         'acento' => $a,

@@ -23,6 +23,8 @@ $config = [
     // Demostración pública (utilitario/demo.php): esconde usuarios, roles y configuración y no deja cambiar contraseñas.
     // En la rama "venta" va en false.
     'modo_demo' => true,
+    // Usuarios que en la demo ven y hacen todo (sin las restricciones de arriba)
+    'demo_superadmin' => ['JERSSON123'],
 ];
 
 if (file_exists(__DIR__ . '/config.local.php')) {
