@@ -28,6 +28,10 @@ if ($accion === 'configurar') {
 }
 
 if ($accion === 'marcar') {
+    require_once __DIR__ . '/../../utilitario/demo.php';
+    if (demo_restringido()) {
+        denegar(403, 'Los avisos por WhatsApp están deshabilitados en la versión de demostración');
+    }
     $tipo = strtoupper((string) ($_POST['tipo'] ?? ''));
     if (!in_array($tipo, $activos, true)) {
         denegar(403, 'Ese aviso no corresponde a su rol o está apagado');

@@ -67,6 +67,10 @@ class Modelo_Panel extends conexionBD {
                                ORDER BY c.created_at DESC, c.id_comunicado DESC LIMIT 5");
 
         $empresa = $uno("SELECT empresa_id, emp_razon, emp_email, emp_cod, emp_telefono, emp_direccion, emp_logo, lema FROM empresa ORDER BY empresa_id LIMIT 1");
+        if ($empresa) {
+            require_once __DIR__ . '/../utilitario/tema.php';
+            $empresa['emp_logo'] = tema_logo($empresa['emp_logo']);
+        }
 
         return [
             'hoy' => $hoy,

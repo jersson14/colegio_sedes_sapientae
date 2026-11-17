@@ -44,8 +44,24 @@ function modo_demo() {
     return $demo;
 }
 
+/**
+ * Superadministradores de la demo (config.php 'demo_superadmin'): con su usuario ven y hacen todo, como en la versión
+ * completa (por ejemplo, subir el escudo en Apariencia). Para el resto de usuarios rigen las restricciones.
+ */
+function demo_es_superadmin() {
+    if (session_status() !== PHP_SESSION_ACTIVE || empty($_SESSION['S_USU'])) { return false; }
+    $config = require __DIR__ . '/../config/config.php';
+    $lista = array_map('strtoupper', (array) ($config['demo_superadmin'] ?? []));
+    return in_array(strtoupper(html_entity_decode((string) $_SESSION['S_USU'], ENT_QUOTES, 'UTF-8')), $lista, true);
+}
+
+/** ¿Rigen las restricciones de la demo para quien está usando el sistema? */
+function demo_restringido() {
+    return modo_demo() && !demo_es_superadmin();
+}
+
 function demo_vista_bloqueada($vista) {
-    return modo_demo() && in_array($vista, DEMO_VISTAS_BLOQUEADAS, true);
+    return demo_restringido() && in_array($vista, DEMO_VISTAS_BLOQUEADAS, true);
 }
 
 /** Controladores rechazados: los de las pantallas bloqueadas que ninguna otra pantalla usa, más las acciones sueltas. */
@@ -65,7 +81,7 @@ function demo_controladores_bloqueados() {
 }
 
 function demo_controlador_bloqueado($ruta) {
-    return modo_demo() && in_array($ruta, demo_controladores_bloqueados(), true);
+    return demo_restringido() && in_array($ruta, demo_controladores_bloqueados(), true);
 }
 
 /** Usuarios de prueba que la pantalla de ingreso muestra en la demo (scripts/demo/generar_demo.php; todos con DEMO_CLAVE). */
